@@ -24,7 +24,7 @@
 		<nav class="navbar navbar-default" role="navigation">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#example-navbar-collapse">
-					<img class="img-responsive-sm" style="width: 36px;" src="<?php echo $siteUrl.'webroot/webroot/frontend/images/menu.png'; ?>">
+					<img class="img-responsive-sm" style="width: 36px;" src="<?php echo $siteUrl.'webroot/frontend/images/menu.png'; ?>">
 				</button>
 				<a class="navbar-brand" href="<?php echo $siteUrl.'/searches'; ?>">
 					<img src="<?php echo $siteUrl.'/siteicons/logo.png'; ?>">
