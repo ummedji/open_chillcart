@@ -256,7 +256,7 @@
 									<div class="col-md-12"><div class="cardDetailHead"><?php echo __('Cash on delivery', true); ?></div></div>
 									<div class="col-md-4">
 										<label class="editpayment active">
-											<img style="height:24px;" alt="cod_icon" title="cod_icon" src="<?php echo $siteUrl.'/frontend/images/cod_icon.png'; ?>">
+											<img style="height:24px;" alt="cod_icon" title="cod_icon" src="<?php echo $siteUrl.'/webroot/frontend/images/cod_icon.png'; ?>">
 			        						<input type="radio" name="data[Order][paymentMethod]" value="cod" checked = "checked"/>
 											<span class="editAdd "><?php echo __('Cash on delivery', true); ?></span>
 			        					</label> 
@@ -468,7 +468,7 @@
 				</div>
 				<div class="form-group clearfix">
 					<label class="control-label col-md-4"><?php echo __('CVV', true); ?><span class="star">*</span>
-						<img src="<?php echo $siteUrl; ?>/frontend/images/cvv.gif" class="cvv"> :
+						<img src="<?php echo $siteUrl; ?>/webroot/frontend/images/cvv.gif" class="cvv"> :
 					</label>
 					<div class="col-md-4">
 						<div class="input-group cc merged input-group-card-number">

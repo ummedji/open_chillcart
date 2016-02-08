@@ -64,7 +64,7 @@
 			            <i class="fa fa-search icon"></i>
 			         </div>
 			         <div class="panel-heading">
-			         	<img class="img-responsive-sm" src="<?php echo $siteUrl.'/frontend/images/storeimage.jpg'; ?>">
+			         	<img class="img-responsive-sm" src="<?php echo $siteUrl.'/webroot/frontend/images/storeimage.jpg'; ?>">
 			         	<div class="hiw_mask"></div>
 			         </div>
 			         <div class="panel-body">
@@ -83,7 +83,7 @@
 			            <i class="fa fa-cart-plus icon"></i>
 			         </div>
 			         <div class="panel-heading">
-			         	<img class="img-responsive-sm" src="<?php echo $siteUrl.'/frontend/images/placeorderimage.jpg'; ?>">
+			         	<img class="img-responsive-sm" src="<?php echo $siteUrl.'/webroot/frontend/images/placeorderimage.jpg'; ?>">
 			         	<div class="hiw_mask"></div>
 			         </div>
 			         <div class="panel-body">
@@ -98,7 +98,7 @@
 			            <i class="fa fa-clock-o icon"></i>
 			         </div>
 			         <div class="panel-heading">
-			         	<img class="img-responsive-sm" src="<?php echo $siteUrl.'/frontend/images/scheduleimage.jpg'; ?>">
+			         	<img class="img-responsive-sm" src="<?php echo $siteUrl.'/webroot/frontend/images/scheduleimage.jpg'; ?>">
 			         	<div class="hiw_mask"></div>
 			         </div>
 			         <div class="panel-body">
@@ -113,7 +113,7 @@
 			            <i class="fa fa-gift icon"></i>
 			         </div>
 			         <div class="panel-heading">
-			         	<img class="img-responsive-sm" src="<?php echo $siteUrl.'/frontend/images/getdeliverimages.jpg'; ?>">
+			         	<img class="img-responsive-sm" src="<?php echo $siteUrl.'/webroot/frontend/images/getdeliverimages.jpg'; ?>">
 			         	<div class="hiw_mask"></div>
 			         </div>
 			         <div class="panel-body">
