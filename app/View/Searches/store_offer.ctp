@@ -11,7 +11,7 @@
 				
 				<?php if (!empty($storeOffers)) { ?>
 						<div class="offer_codes_img">
-							<img alt="" src="<?php echo $siteUrl.'/webroot/frontend/images/store_offer.png'; ?>" title="">
+							<img alt="" src="<?php echo $siteUrl.'/frontend/images/store_offer.png'; ?>" title="">
 							<span class="ribn-red">
 								<span><?php echo  $storeOffers['Storeoffer']['offer_percentage'].'% OFF '; ?></span>
 							</span>							
@@ -33,7 +33,7 @@
 
 					?>
 						<div class="offer_codes_img">
-							<img alt="" src="<?php echo $siteUrl.'/webroot/frontend/images/store_offer.png'; ?>" title="">
+							<img alt="" src="<?php echo $siteUrl.'/frontend/images/store_offer.png'; ?>" title="">
 							<span class="ribn-red">
 								<span>0% OFF</span>
 							</span>							

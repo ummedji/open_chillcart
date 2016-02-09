@@ -11,7 +11,7 @@
 					<div class="col-md-12"><div class="cardDetailHead"><?php echo __('Cash on delivery', true); ?></div></div>
 					<div class="col-md-4">
 						<label class="editpayment active">
-							<img style="height:24px;" alt="cod_icon" title="cod_icon" src="<?php echo $siteUrl.'/webroot/frontend/images/cod_icon.png'; ?>">
+							<img style="height:24px;" alt="cod_icon" title="cod_icon" src="<?php echo $siteUrl.'/frontend/images/cod_icon.png'; ?>">
     						<input type="radio" name="data[Order][paymentMethod]" value="cod" checked = "checked"/>
 							<span class="editAdd "><?php echo __('Cash on delivery', true); ?></span>
     					</label> 

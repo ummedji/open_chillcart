@@ -93,17 +93,17 @@
 			<div class="social-logins">
 
 				<a class="facebook" href="javascript:voic(0);">
-					<img alt="facebook" title="facebook" src="<?php echo $siteUrl.'/webroot/frontend/images/facebook.png'; ?>">
+					<img alt="facebook" title="facebook" src="<?php echo $siteUrl.'/frontend/images/facebook.png'; ?>">
 					<i>Login with Facebook</i>
 					<div class="clr"></div>
 				</a>
 				<a class="twitter" href="javascript:voic(0);">
-					<img alt="twitter" title="twitter" src="<?php echo $siteUrl.'/webroot/frontend/images/twitter.png'; ?>">
+					<img alt="twitter" title="twitter" src="<?php echo $siteUrl.'/frontend/images/twitter.png'; ?>">
 					<i>Login with Twitter</i>
 					<div class="clr"></div>
 				</a>
 				<a class="googleplus" href="javascript:voic(0);">
-					<img alt="gplus" title="gplus" src="<?php echo $siteUrl.'/webroot/frontend/images/gplus.png'; ?>" >
+					<img alt="gplus" title="gplus" src="<?php echo $siteUrl.'/frontend/images/gplus.png'; ?>" >
 					<i>Login with Google+</i>
 					<div class="clr"></div>
 				</a>

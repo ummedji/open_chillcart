@@ -79,7 +79,7 @@
 
 													<img alt="<?php echo $value['Store']['store_name']; ?>" src="<?php echo $siteUrl.'/storelogos/'.$value['Store']['store_logo']; ?>"><?php
 												} else { ?>
-													<img alt="<?php echo $value['Store']['store_name']; ?>" src="<?php echo $siteUrl.'/webroot/frontend/images/no_store.jpg'; ?>" title="<?php echo $value['Store']['store_name']; ?>"> <?php
+													<img alt="<?php echo $value['Store']['store_name']; ?>" src="<?php echo $siteUrl.'/frontend/images/no_store.jpg'; ?>" title="<?php echo $value['Store']['store_name']; ?>"> <?php
 												} ?>
 
 									            <figcaption>
