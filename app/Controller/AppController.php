@@ -34,8 +34,8 @@ class AppController extends Controller {
 	
 	public $userRoles = array();
 	public $loggedUser = array();
-	
-	
+
+
 
 	function beforeFilter() {
 
@@ -89,10 +89,10 @@ class AppController extends Controller {
 
 	public function basicSetup() {
 
-        $this->siteUrl = 'http://'.$_SERVER['SERVER_NAME'].'/grocerynew';
+        $this->siteUrl = 'http://'.$_SERVER['HTTP_HOST'];
 		$this->set('siteUrl', $this->siteUrl);
 
-		$this->siteName = 'http://'.$_SERVER['SERVER_NAME'].'/grocerynew';
+		$this->siteName = 'http://'.$_SERVER['HTTP_HOST'];
 		$this->set('siteName', $this->siteName);
 
 		$this->siteSetting = $siteDetails = $this->Sitesetting->find('first');

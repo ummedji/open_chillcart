@@ -58,38 +58,16 @@
  * For MySQL to connect via socket specify the `unix_socket` parameter instead of `host` and `port`
  */
 class DATABASE_CONFIG {
-
-	/*public $default = array(
-		'datasource' => 'Database/Mysql',
-		'persistent' => false,
-		'host' => 'localhost',
-		'login' => 'fgn_new',
-		'password' => 'fBo31r5_',
-		'database' => 'fgn_new',
-		'prefix' => '',
-		'encoding' => 'utf8',
-	); */
-	
-	/*public $default = array(
-		'datasource' => 'Database/Mysql',
-		'persistent' => false,
-		'host' => 'localhost',
-		'login' => 'shopnet_roam',
-		'password' => 'roamsoft@123',
-		'database' => 'shopnet_stores',
-		'prefix' => '',
-		'encoding' => 'utf8',
-	);*/
     public $default = array(
-		'datasource' => 'Database/Mysql',
+		'datasource' => '',
 		'persistent' => false,
-		'host' => 'localhost',
-		'login' => 'root',
+		'host' => '',
+		'login' => '',
 		'password' => '',
-		'database' => 'grocery',
+		'database' => '',
 		'prefix' => '',
 		'encoding' => 'utf8',
-	);   
+	);
 	public $test = array(
 		'datasource' => 'Database/Mysql',
 		'persistent' => false,
@@ -100,4 +78,36 @@ class DATABASE_CONFIG {
 		'prefix' => '',
 		//'encoding' => 'utf8',
 	);
+    public function __construct()
+    {
+        if (getenv("GENERAL_DEVELOPMENT")):
+            $this->default['host'] = 'localhost';
+            $this->default['persistent'] = false;
+            $this->default['login'] = 'root';
+            $this->default['password'] = '';
+            $this->default['database'] = 'grocery';
+            $this->default['datasource'] = 'Database/Mysql';
+        elseif (getenv("ENVIRONMENT_MODE") == "STAGING"):
+            $this->default['host']       = '';
+            $this->default['port']       = '';
+            $this->default['login']      = '';
+            $this->default['password']   = '';
+            $this->default['database']   = '';
+            $this->default['datasource'] = '';
+        elseif (getenv(getenv("ENVIRONMENT_MODE") == "PRODUCTION")):
+            $this->default['host']       = '';
+            $this->default['port']       = '';
+            $this->default['login']      = '';
+            $this->default['password']   = '';
+            $this->default['database']   = '';
+            $this->default['datasource'] = '';
+        else:
+            $this->default['host'] = 'suresh-vagrant';
+            $this->default['persistent'] = false;
+            $this->default['login'] = 'root';
+            $this->default['password'] = '';
+            $this->default['database'] = 'grocery';
+            $this->default['datasource'] = 'Database/Mysql';
+        endif;
+    }
 }

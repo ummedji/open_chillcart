@@ -33,10 +33,8 @@ Configure::write('Config.language', 'eng');
  *
  * In production mode, flash messages redirect after a time interval.
  * In development mode, you need to click the flash message to continue.
- 
- 
  */
- 	date_default_timezone_set('asia/kolkata');
+ 	date_default_timezone_set('Europe/Dublin');
  
 	Configure::write('debug', 0);
 
@@ -54,6 +52,7 @@ Configure::write('Config.language', 'eng');
  *
  * @see ErrorHandler for more information on error handling and configuration.
  */
+
 	Configure::write('Error', array(
 		'handler' => 'ErrorHandler::handleError',
 		'level' => E_ALL & ~E_DEPRECATED,
@@ -281,4 +280,4 @@ Cache::config('_cake_model_', array(
 	'path' => CACHE . 'models' . DS,
 	'serialize' => ($engine === 'File'),
 	'duration' => $duration
-)); 
+));
