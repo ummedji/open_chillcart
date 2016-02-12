@@ -161,6 +161,7 @@ Cache::config('default', array('engine' => 'File'));
  * ));
  */
 
+
 preg_match('/^(?:www\.)?(?:(.+)\.)?(.+\..+)$/i', env('HTTP_HOST'), $urlmatches); 
 Configure::write('SubdomainHTTP', array('subdomain' => empty($urlmatches[1]) ? false : $urlmatches[1], 'hostURL' => empty($urlmatches[2]) ? false : $urlmatches[2])); 
 
@@ -188,6 +189,18 @@ CakeLog::config('error', array(
 	'file' => 'error',
 ));
 
+//Add the CakeS3 plugin
+Configure::write('CakeS3', array(
+        's3Key' => 'AKIAJ7UUZ7Q22HDUQKMA',
+        's3Secret' => 'DfYEkDUU17/asCOcDLqZ+T9A/2T8v9ILWIukqqAy',
+        'bucket' => 's3test56b888c6be37d',
+        'endpoint' => 's3.amazonaws.com' // [optional] Only required if your endpoint is not s3.amazonaws.com
+        )
+);
+
 App::import('Vendor', array('file' => 'autoload'));
 
+
+
 CakePlugin::loadAll();
+

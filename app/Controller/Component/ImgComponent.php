@@ -1,4 +1,7 @@
 <?php
+
+App::uses('CakeS3Component', 'Controller/Component');
+
 class ImgComponent extends Component {
 
     public $allowed_ext = array('jpg', 'jpeg', 'png', 'gif');
@@ -96,7 +99,9 @@ class ImgComponent extends Component {
 
 ////////////////////////////////////////////////////////////
 
-    public function resampleGD($srcPath, $targetdir, $image, $dst_w = null, $dst_h = null, $fixedSize = false, $centerCrop = false) {
+    public function resampleGD($srcPath, $targetdir, $image, $dst_w = null, $dst_h = null, $fixedSize = false, $centerCrop = false, $destpath) {
+
+        $this->CakeS3 = new CakeS3Component(new ComponentCollection());
 
         $dstPath = $targetdir . $image;
         $this->mkdir($targetdir);
@@ -163,11 +168,13 @@ class ImgComponent extends Component {
             break;
         }
 
+        // Local upload
         ImageCopyResampled($dst, $src, $dst_x, $dst_y, 0, 0, $new_w, $new_h, $src_w, $src_h);
         imagejpeg($dst, $dstPath, 100);
-
         @chmod($dst, 0777);
 
+        // Amazon S3 Upload
+        $result = $this->CakeS3->putObject($dstPath, $destpath.$image, S3::ACL_PUBLIC_READ);
         return true;
     }
 

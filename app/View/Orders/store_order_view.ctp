@@ -190,7 +190,7 @@
 											<td>
 
 												<div style="float:left;width:200px;">
-													<img alt="<?php echo $value['product_name']; ?>" src="<?php echo $siteUrl.'/stores/'.$value['Store']['id'].'/products/carts/'.$value['product_image']; ?>" title="<?php echo $value['Store']['store_name']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/noimage.jpg"; ?>'">
+													<img alt="<?php echo $value['product_name']; ?>" src="https://s3.amazonaws.com/s3test56b888c6be37d/stores/products/carts/<?php echo $value['product_image']; ?>" title="<?php echo $value['Store']['store_name']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/noimage.jpg"; ?>'">
 												</div>
 												<div style="clear:both;float:left;width:200px;">
 													<?php echo $value['product_name'];?>

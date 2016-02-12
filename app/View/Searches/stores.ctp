@@ -31,14 +31,8 @@
 				        <figure class="product__image" >
 				        	<a href="<?php echo $siteUrl.'/shop/'.$value['Store']['seo_url'].'/'.$value['Store']['id']; ?>">
 				            <!-- <span class="discount_image"><span>17% OFF</span></span> -->
-				            <?php
-
-							if (file_exists(WWW_ROOT.'/storelogos/'.$value['Store']['store_logo'])) { ?>
-
-								<img alt="<?php echo $value['Store']['store_name']; ?>" src="<?php echo $siteUrl.'/storelogos/'.$value['Store']['store_logo']; ?>"> <?php
-							} else { ?>
-								<img alt="<?php echo $value['Store']['store_name']; ?>" src="<?php echo $siteUrl.'/frontend/images/no_store.jpg'; ?>" title="<?php echo $value['Store']['store_name']; ?>"> <?php
-							} ?>
+				            
+								<img alt="<?php echo $value['Store']['store_name']; ?>" src="https://s3.amazonaws.com/s3test56b888c6be37d/storelogos/<?php echo $value['Store']['store_logo']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/frontend/images/no_store.jpg"; ?>'">
 
 				            <figcaption>
 				                <div class="product-addon">

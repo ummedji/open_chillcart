@@ -217,11 +217,12 @@ class CategoriesController extends AppController {
   public function store_edit($id = null) {
    $this->layout  = 'assets';
     if(!empty($this->request->data['Category']['category_name'])) {
-        $Category = $this->Category->find('all',array(
-                                'conditions'=>array(
-                                'OR'=>array(array(
-                                'Category.category_name'=>
-                            trim($this->request->data['Category']['category_name']))))));
+        $Category = $this->Category->find('first', array(
+                      'conditions' => array(
+                            'Category.parent_id' => 0,
+                            'Category.category_name' => trim($this->request->data['Category']['category_name']),
+                            'NOT' => array('Category.id' =>$this->request->data['Category']['id']))));
+
         if(!empty($Category)) {
             $this->Session->setFlash('<p>'.__('Unable to add your Category', true).'</p>', 'default', 
                                           array('class' => 'alert alert-danger'));
