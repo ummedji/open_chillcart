@@ -41,6 +41,24 @@ class SearchesController extends AppController {
 	public function index() {
 
 		$this->layout = 'frontend';
+		
+		if ($this->cityId != '') {
+			
+			$cityDetails = $this->City->findById($this->cityId);
+			if (!empty($this->areaId)) {
+
+				$areaDetails = $this->Location->findById($this->areaId);
+				$this->redirect($this->siteUrl.'/city/'.$cityDetails['City']['city_name'].'/'.
+																$areaDetails['Location']['area_name'].'/'.
+																$this->cityId.'/'.
+																$this->areaId);
+			} else {
+				$this->redirect($this->siteUrl.'/city/'.$cityDetails['City']['city_name'].'/'.
+																$this->cityId);
+			}
+			$this->redirect(array('controller' => 'searches', 'action' => 'stores', $this->cityId, $this->areaId));
+		}
+
 		$this->changeLocation();
 
 		if (!empty($this->request->data['Search']['city'])) {
