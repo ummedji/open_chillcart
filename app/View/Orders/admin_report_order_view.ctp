@@ -195,18 +195,18 @@
 												<tr>
 												<td><?php echo $count;?></td>
 												<td>
-														<span class="col-md-12 no-padding">
-															<div class="pull-left">
-																<img alt="<?php echo $value['product_name']; ?>" src="<?php echo $siteUrl.'/stores/'.$value['store_id'].'/products/carts/'.$value['product_image']; ?>" title="<?php echo $value['Store']['store_name']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/noimage.jpg"; ?>'">
-															</div><?php
-															echo $value['product_name']; ?>
-															<br><?php
-															//if (!empty($value['product_description'])) { ?>
+													<span class="col-md-12 no-padding">
+														<div class="pull-left">
+															<img alt="<?php echo $value['product_name']; ?>" src="https://s3.amazonaws.com/s3test56b888c6be37d/stores/products/carts/<?php echo $value['product_image']; ?>" title="<?php echo $value['Store']['store_name']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/noimage.jpg"; ?>'">
+														</div><?php
+														echo $value['product_name']; ?>
+														<br><?php
+														if (!empty($value['product_description'])) { ?>
 
-															<span class="table-addon colorgray">testing<?php echo $value['product_description']; ?></span> <?php
-															//} ?>
+														<span class="table-addon colorgray"><?php echo $value['product_description']; ?></span> <?php
+														} ?>
 
-														</span>
+													</span>
 												</td>
 												<td class="price"><?php
 													echo $value['product_quantity']; ?>

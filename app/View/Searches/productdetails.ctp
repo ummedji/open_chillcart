@@ -19,14 +19,14 @@
 
 			<div class="col-md-8"> 
 
-				 <?php $imageOne = $siteUrl.'/stores/'.$productDetails['Product']['store_id'].'/products/original/'.$productDetails['ProductImage'][0]['image_alias']; ?>
+				 <?php $imageOne = $siteUrl.'/stores/'.$productDetails['Product']['store_id'].'/products/home/'.$productDetails['ProductImage'][0]['image_alias']; ?>
 				 
 				<div id="sync1" class="owl-carousel">
 					<!-- <div class="item"><img src="<?php echo $imageOne;?>" alt="detailImage" title="detailImage"></div> -->
 
 					<?php					
 					foreach ($productDetails['ProductImage'] as $key => $value) { 
-						$imageSrc = $siteUrl.'/stores/'.$productDetails['Product']['store_id'].'/products/original/'.$value['image_alias']; ?>
+						$imageSrc = 'https://s3.amazonaws.com/s3test56b888c6be37d/stores/products/original/'.$value['image_alias']; ?>
 						<div class="item" >
 							<img src="<?php echo $imageSrc;?>" alt="<?php echo $productDetails['Product']['product_name']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/no-imge.jpg"; ?>'">
 						</div> <?php
@@ -36,7 +36,7 @@
 					<div id="sync2" class="owl-carousel">
 		                <?php
 						foreach ($productDetails['ProductImage'] as $key => $value) { 
-							$imageSrc = $siteUrl.'/stores/'.$productDetails['Product']['store_id'].'/products/original/'.$value['image_alias']; ?>
+							$imageSrc = 'https://s3.amazonaws.com/s3test56b888c6be37d/stores/products/original/'.$value['image_alias']; ?>
 							<div class="item" >
 								<img src="<?php echo $imageSrc;?>" alt="<?php echo $productDetails['Product']['product_name']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/no-imge.jpg"; ?>'">
 							</div> <?php

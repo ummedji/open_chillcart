@@ -80,12 +80,15 @@ class DATABASE_CONFIG {
 	);
     public function __construct()
     {
+        echo "<pre>";print_r($_ENV['USER']);echo "</pre>";
+        echo getenv("ENVIRONMENT_MODE");exit;
+
         if (getenv("GENERAL_DEVELOPMENT")):
             $this->default['host'] = 'localhost';
             $this->default['persistent'] = false;
             $this->default['login'] = 'root';
-            $this->default['password'] = '';
-            $this->default['database'] = 'grocery';
+            $this->default['password'] = 'password';
+            $this->default['database'] = 'chillcart';
             $this->default['datasource'] = 'Database/Mysql';
         elseif (getenv("ENVIRONMENT_MODE") == "STAGING"):
             $this->default['host']       = '';

@@ -40,7 +40,7 @@
 									//echo "<pre>"; print_r($values);
 									?>
 									
-									<div class="col-md-6">
+									<div class="col-md-6 col-sm-6">
 										<label class="editAdrr <?php echo ($keys == 0) ? "active" : ''; ?>">
 
 			        						<input type="radio" <?php if($keys == 0){echo "checked=\"checked\"";} ?> name="data[Order][delivery_id]" value="<?php echo $values['CustomerAddressBook']['id']; ?>" />	 

@@ -111,7 +111,7 @@
 							<tr>
 								<td><?php echo $count;?></td>
 								<td>
-									<img class="img-thumbnail" alt="<?php echo $value['product_name']; ?>" src="<?php echo $siteUrl.'/stores/'.$value['Store']['id'].'/products/carts/'.$value['ShoppingCart']['product_image']; ?>" title="<?php echo $value['Store']['store_name']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/noimage.jpg"; ?>'">
+									<img class="img-thumbnail" alt="<?php echo $value['product_name']; ?>" src="https://s3.amazonaws.com/s3test56b888c6be37d/stores/products/carts/<?php echo $value['ShoppingCart']['product_image']; ?>" title="<?php echo $value['Store']['store_name']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/noimage.jpg"; ?>'">
 								</td>
 
 

@@ -88,10 +88,10 @@ class AppController extends Controller {
 
 	public function basicSetup() {
 
-        $this->siteUrl = 'http://'.$_SERVER['HTTP_HOST'];
+        $this->siteUrl = 'http://'.$_SERVER['HTTP_HOST'].'subversion/chillcart_new';
 		$this->set('siteUrl', $this->siteUrl);
 
-		$this->siteName = 'http://'.$_SERVER['HTTP_HOST'];
+		$this->siteName = 'http://'.$_SERVER['HTTP_HOST'].'subversion/chillcart_new';
 		$this->set('siteName', $this->siteName);
 
 		$this->siteSetting = $siteDetails = $this->Sitesetting->find('first');
