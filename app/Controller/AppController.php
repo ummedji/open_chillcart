@@ -8,7 +8,6 @@ App::uses('ExceptionRenderer', 'Error');
 /**
  * Application Controller
  *
-
  */
 class AppController extends Controller {
 
