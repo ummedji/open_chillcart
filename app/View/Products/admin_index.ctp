@@ -54,9 +54,6 @@
 		               				</span>
 		               			</div>
 							</span>
-
-							<a href="#instruction_Modal" data-toggle="modal" > Instruction </a>
-
 	               			<span class="col-md-4 text-right">  <?php
 	               				echo $this->Html->link('<i class="fa fa-download"></i> Download',
 												array('action' => 'download','admin' => false),
@@ -123,45 +120,45 @@
 							</thead>
 							<tbody><?php 
                             
-                                    foreach($products_detail as $key => $value){ ?>
-								<tr class="odd gradeX" id="record<?php echo $value['Product']['id'];?>">
-									<td> <?php
-										echo $this->Form->checkbox($value['Product']['id'],
-											array('class'=>'checkboxes test' ,
-												'label'=>false,
-												'hiddenField'=>false,
-												'value'=> $value['Product']['id'])); ?> </td>
-                                    <td><?php echo $value['Product']['product_name'];?></td>
-									<td><?php echo $value['MainCategory']['category_name'];?></td>
-									<td><?php echo $value['SubCategory']['category_name'];?></td>
-									<td><?php echo $value['ProductDetail'][0]['quantity'];?></td>
-									<td align="center"> <?php 
-                                            if($value['Product']['status'] == 0) {?>
-                                                <a title="Deactive" class="buttonStatus red_bck" href="javascript:void(0);" 
-                                                onclick="statusChange(<?php echo $value['Product']['id'];?>,'Product');">
-                                            <i class="fa fa-times"></i><!-- deactive --></a>
-                                            <?php } else if($value['Product']['status'] == 1){
-                                            ?>
-                                                <a title="active" class="buttonStatus" href="javascript:void(0);" 
-                                                onclick="statusChange(<?php echo $value['Product']['id'];?>,'Product');">
-                                            <i class="fa fa-check"></i></a>
-                                            <?php } else {?>
-                                                    <a title="Pending" class="buttonStatus yellow_bck" href="javascript:void(0);" 
-                                                onclick="statusChange(<?php echo $value['Product']['id'];?>,'Product');">
-                                            <i class="fa fa-exclamation"></i><!-- Pending --></a>
-                                            <?php }?>
-                                    </td>
-									<td align="center">	<?php
-										echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',
-																array('controller'=>'Products',
-																	   'action'=>'edit',
-																		$value['Product']['id']),
-																array('class'=>'buttonEdit',
-																		'escape'=>false));?>
-                                    <a class="buttonAction" href="javascript:void(0);"
-                                        onclick="deleteprocess(<?php echo $value['Product']['id'];?>,'Product');" ><i class="fa fa-trash-o"></i></a>
-									</td>
-								</tr><?php 
+                                foreach($products_detail as $key => $value){ ?>
+									<tr class="odd gradeX" id="record<?php echo $value['Product']['id'];?>">
+										<td> <?php
+											echo $this->Form->checkbox($value['Product']['id'],
+												array('class'=>'checkboxes test' ,
+													'label'=>false,
+													'hiddenField'=>false,
+													'value'=> $value['Product']['id'])); ?> </td>
+	                                    <td><?php echo $value['Product']['product_name'];?></td>
+										<td><?php echo $value['MainCategory']['category_name'];?></td>
+										<td><?php echo $value['SubCategory']['category_name'];?></td>
+										<td><?php echo $value['ProductDetail'][0]['quantity'];?></td>
+										<td align="center"> <?php 
+	                                            if($value['Product']['status'] == 0) {?>
+	                                                <a title="Deactive" class="buttonStatus red_bck" href="javascript:void(0);" 
+	                                                onclick="statusChange(<?php echo $value['Product']['id'];?>,'Product');">
+	                                            <i class="fa fa-times"></i><!-- deactive --></a>
+	                                            <?php } else if($value['Product']['status'] == 1){
+	                                            ?>
+	                                                <a title="active" class="buttonStatus" href="javascript:void(0);" 
+	                                                onclick="statusChange(<?php echo $value['Product']['id'];?>,'Product');">
+	                                            <i class="fa fa-check"></i></a>
+	                                            <?php } else {?>
+	                                                    <a title="Pending" class="buttonStatus yellow_bck" href="javascript:void(0);" 
+	                                                onclick="statusChange(<?php echo $value['Product']['id'];?>,'Product');">
+	                                            <i class="fa fa-exclamation"></i><!-- Pending --></a>
+	                                            <?php }?>
+	                                    </td>
+										<td align="center">	<?php
+											echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',
+																	array('controller'=>'Products',
+																		   'action'=>'edit',
+																			$value['Product']['id']),
+																	array('class'=>'buttonEdit',
+																			'escape'=>false));?>
+	                                    <a class="buttonAction" href="javascript:void(0);"
+	                                        onclick="deleteprocess(<?php echo $value['Product']['id'];?>,'Product');" ><i class="fa fa-trash-o"></i></a>
+										</td>
+									</tr><?php 
 								}?>
 							</tbody>
 						</table><?php echo $this->Form->end(); ?>
@@ -170,34 +167,4 @@
 			</div>
 		</div>
 	</div>
-</div>
-
-
-
-<div class="modal fade" id="instruction_Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
-  <div class="modal-dialog" role="document">
-
-    <div class="modal-content">	
-    	<div class="modal-header menuCartHeader clearfix">
-			<button data-dismiss="modal" class="close" type="button">
-				<span aria-hidden="true">×</span>
-			</button>
-			<h4>
-				Item Images Variant
-			</h4>
-		</div>
-	      
-      <div class="modal-body">
-      	<pre> 
-      					Width		Height
-
-Carts  		 	78		64
-Home 			265		265
-Product detail	 	1024		768
-Scroll			67		55
-Original		-		-
-      	</pre>
-      </div>
-</div>
-</div>
 </div>

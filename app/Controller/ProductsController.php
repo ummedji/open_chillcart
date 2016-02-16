@@ -91,21 +91,8 @@ class ProductsController extends AppController {
                     }
                 }
 
-                #Product image Upload
-                if(!file_exists(WWW_ROOT.DS.'stores'.DS.$store_id)) {
-
-                    $this->Img->mkdir(WWW_ROOT.DS.'stores'.DS.$store_id);
-                    $path = WWW_ROOT.DS.'stores'.DS.$store_id;
-                    $this->Img->mkdir($path.DS."products");
-                    $path=$path.DS."products";
-                    $this->Img->mkdir($path.DS."home");
-                    $this->Img->mkdir($path.DS."carts");
-                    $this->Img->mkdir($path.DS."product_details");
-                    $this->Img->mkdir($path.DS."scrollimg");
-                    $this->Img->mkdir($path.DS."original");
-                }
-
-                $root      = WWW_ROOT.DS.'stores'.DS.$store_id.DS."products".DS;
+                
+                $root      = WWW_ROOT.DS.'stores'.DS."products".DS;
                 $origpath  = $root."original".DS;
                 $homepath  = $root."home".DS;
                 $cartpath  = $root."carts".DS;
@@ -243,8 +230,8 @@ class ProductsController extends AppController {
                     }
                   }
               }
-
-              $root      = WWW_ROOT.DS.'stores'.DS.$store_id.DS."products".DS;
+              
+              $root      = WWW_ROOT.DS.'stores'.DS."products".DS;
               $origpath  = $root."original".DS;
               $homepath  = $root."home".DS;
               $cartpath  = $root."carts".DS;
@@ -410,21 +397,7 @@ class ProductsController extends AppController {
                       }
                   }
 
-                  #Product image Upload
-                  if(!file_exists(WWW_ROOT.DS.'stores'.DS.$store_id)) {
-
-                      $this->Img->mkdir(WWW_ROOT.DS.'stores'.DS.$store_id);
-                      $path = WWW_ROOT.DS.'stores'.DS.$store_id;
-                      $this->Img->mkdir($path.DS."products");
-                      $path=$path.DS."products";
-                      $this->Img->mkdir($path.DS."home");
-                      $this->Img->mkdir($path.DS."carts");
-                      $this->Img->mkdir($path.DS."product_details");
-                      $this->Img->mkdir($path.DS."scrollimg");
-                      $this->Img->mkdir($path.DS."original");
-                  }
-
-                  $root      = WWW_ROOT.DS.'stores'.DS.$store_id.DS."products".DS;
+                  $root      = WWW_ROOT.DS.'stores'.DS."products".DS;
                   $origpath  = $root."original".DS;
                   $homepath  = $root."home".DS;
                   $cartpath  = $root."carts".DS;
@@ -629,6 +602,32 @@ class ProductsController extends AppController {
                                 $this->request->data['Product']['store_id'] :
                                 $this->Auth->User('Store.id');
 
+        #Product image Upload
+        if(!file_exists(WWW_ROOT.DS.'stores'.DS.'products')) {
+
+            $this->Img->mkdir(WWW_ROOT.DS.'stores'.DS.'products');
+            $path = WWW_ROOT.DS.'stores'.DS.'products';
+
+            $this->Img->mkdir($path.DS."home");
+            $this->Img->mkdir($path.DS."carts");
+            $this->Img->mkdir($path.DS."product_details");
+            $this->Img->mkdir($path.DS."scrollimg");
+            $this->Img->mkdir($path.DS."original");
+        }
+
+        $root      = WWW_ROOT.DS.'stores'.DS."products".DS;
+        $origpath  = $root."original".DS;
+        $homepath  = $root."home".DS;
+        $cartpath  = $root."carts".DS;
+        $scrollimg = $root."scrollimg".DS;
+        $prod_det_path = $root."product_details".DS;
+
+        $origpathS3  = 'stores/products/original/';
+        $homepathS3  = 'stores/products/home/';
+        $cartpathS3  = 'stores/products/carts/';
+        $scrollimgS3 = 'stores/products/scrollimg/';
+        $prod_det_pathS3 = 'stores/products/product_details/';
+
         $allowed_ext = array('jpg', 'jpeg', 'png', 'gif');
 
         $count = $exists = 0;
@@ -679,19 +678,39 @@ class ProductsController extends AppController {
 
                     $imgType = explode('.', $val);
 
-                    if (in_array($imgType[1], $allowed_ext)) {
+                    $imagesizedata = getimagesize($val);
 
-                        //$newName    = str_replace(" ","-", uniqid()  . '.' .$val);
+                    if ($imagesizedata) {
+
+                      if (in_array($imgType[1], $allowed_ext)) {
+
+                        $newName = str_replace(" ","-", uniqid(). '.' .$product['product_name'].'.'.$imgType[1]);
+
+                        $results = $this->CakeS3->putObject($val, $origpathS3.$newName, S3::ACL_PUBLIC_READ);
+                        $AmazonS3Image = $results['url'];
+
+                        #Resize
+                        $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0,$homepathS3);
+                        $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0, $cartpathS3);
+                        $this->Img->resampleGD($AmazonS3Image, $scrollimg, $newName, 67, 55, 1, 0, $scrollimgS3);
+                        $this->Img->resampleGD($AmazonS3Image, $prod_det_path, $newName, 1024, 768, 1, 0, $prod_det_pathS3);
+
+                        //unlink Images
+                        @unlink($homepath.$newName);
+                        @unlink($cartpath.$newName);
+                        @unlink($scrollimg.$newName);
+                        @unlink($prod_det_path.$newName);
+
                         $product_images['product_id']  = $this->Product->id;
                         $product_images['store_id']    = $store_id;
-                        $product_images['image']       = $val;
-                        $product_images['image_alias'] = $val;
+                        $product_images['image']       = $newName ;
+                        $product_images['image_alias'] = $newName;
 
                         $this->ProductImage->save($product_images);
                         $this->ProductImage->id = "";
+                      }
                     }
                   }
-
                   $count += 1;
                 }
               } else {
@@ -700,8 +719,7 @@ class ProductsController extends AppController {
             }
 
             if (!empty($count)) {
-               // $this->Session->setFlash('<p>'.__('Successfully '.$count.' Product Imported and '.$exists.' Product already exists', true).'</p>', 'default', 
-               //                                      array('class' => 'alert alert-success'));
+               // $this->Session->setFlash('<p>'.__('Successfully '.$count.' Product Imported and '.$exists.' Product already exists', true).'</p>', 'default', array('class' => 'alert alert-success'));
 
               $this->Session->setFlash('<p>'.__('Successfully items Imported', true).'</p>', 'default', 
                                                     array('class' => 'alert alert-success'));

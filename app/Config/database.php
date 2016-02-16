@@ -72,16 +72,16 @@ class DATABASE_CONFIG {
 		'datasource' => 'Database/Mysql',
 		'persistent' => false,
 		'host' => 'localhost',
-		'login' => 'user',
+		'login' => 'root',
 		'password' => 'password',
-		'database' => 'test_database_name',
+		'database' => 'chillcart',
 		'prefix' => '',
 		//'encoding' => 'utf8',
 	);
     public function __construct()
     {
-        echo "<pre>";print_r($_ENV['USER']);echo "</pre>";
-        echo getenv("ENVIRONMENT_MODE");exit;
+        // echo "<pre>";print_r($_ENV['USER']);echo "</pre>";
+        // echo getenv("ENVIRONMENT_MODE");exit;
 
         if (getenv("GENERAL_DEVELOPMENT")):
             $this->default['host'] = 'localhost';
@@ -112,5 +112,12 @@ class DATABASE_CONFIG {
             $this->default['database'] = 'grocery';
             $this->default['datasource'] = 'Database/Mysql';
         endif;
+
+        $this->default['host'] = 'localhost';
+        $this->default['persistent'] = false;
+        $this->default['login'] = 'root';
+        $this->default['password'] = 'password';
+        $this->default['database'] = 'chillcart';
+        $this->default['datasource'] = 'Database/Mysql';
     }
 }
