@@ -84,7 +84,7 @@ echo $this->element('admin/topheader'); } ?>
 	</div>
 	<!-- BEGIN FOOTER -->
 	<div class="page-footer">
-		<div class="page-footer-inner">2016 &copy; Roamsoft by Grocery.</div>
+		<div class="page-footer-inner">2016 &copy; ChillCart Ltd.</div>
 		<div class="scroll-to-top"><i class="icon-arrow-up"></i></div>
 	</div>
 
