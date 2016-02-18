@@ -124,8 +124,9 @@ class AppController extends Controller {
 						$siteDetails['Sitesetting']['stripe_publishkeyTest'] :
 						$siteDetails['Sitesetting']['stripe_publishkey'];
 
-
-		//$publishKey = $siteDetails['Sitesetting']['stripe_publishkey'];
+		
+		//Bucket
+		$this->siteBucket = $siteBucket = Configure::read('CakeS3.bucket');
 
 		
         date_default_timezone_set($this->siteSetting['Sitesetting']['site_timezone']);
@@ -135,20 +136,11 @@ class AppController extends Controller {
         Configure::write('Config.language', $language);
 
 
-
-
-        //$timezone = date_default_timezone_get();
-        //echo "The current server timezone is: " . $timezone;
-
-        //exit();
-
-
-
         $metaTitle          = $siteDetails['Sitesetting']['meta_title'];
         $metakeywords       = $siteDetails['Sitesetting']['meta_keywords'];
         $metaDescriptions   = $siteDetails['Sitesetting']['meta_description'];
 
-		$this->set(compact('siteCurrency', 'metaTitle', 'metakeywords', 'metaDescriptions', 'publishKey'));
+		$this->set(compact('siteCurrency', 'metaTitle', 'metakeywords', 'metaDescriptions', 'publishKey', 'siteBucket'));
 		
 		$this->set('loggedUser', $this->loggedUser);
 		

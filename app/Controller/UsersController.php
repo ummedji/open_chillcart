@@ -7,9 +7,10 @@ class UsersController extends AppController {
     public $name = 'Users';
 	var $helpers = array('Html', 'Session', 'Javascript', 'Ajax', 'Common');
 	public $uses = array('User', 'Customer','Notification');
-	public $components = array('Updown','Functions','Mpdf');
+	public $components = array('Functions', 'Hybridauth');
 	public function beforeFilter() {
-		$this->Auth->allow(array('signup', 'customer_customerLogin','storeLogin', 'activeLink', 'logout'));
+		$this->Auth->allow(array('signup', 'customer_customerLogin','storeLogin',
+								'activeLink', 'logout', 'social_login', 'social_endpoint'));
 		parent::beforeFilter();
 	}
 	public function index() {	
@@ -258,14 +259,17 @@ class UsersController extends AppController {
 			exit();
         }
 
+       	if (!empty($this->request->data['Customer']['customer_email'])) {
+          	//$user  = $this->User->findByUsernameAndRoleId($this->request->data['Customer']['customer_email'],4); 
 
-
-       if (!empty($this->request->data['Customer']['customer_email'])) {
-          $user  = $this->User->findByUsernameAndRoleId($this->request->data['Customer']['customer_email'],4); 
-          if(!empty($user)) {
-            $this->Session->setFlash('<p>'.__('Email already exists', true).'</p>', 'default', 
-                                                array('class' => 'alert alert-danger'));
-          } else {
+          	$user = $this->User->find('first', array(
+                      'conditions' => array('User.username' => trim($this->request->data['Customer']['customer_email']),
+                                             'User.role_id' => 4,
+                              'NOT' => array('Customer.status' => 3))));
+	        if(!empty($user)) {
+	            $this->Session->setFlash('<p>'.__('Email already exists', true).'</p>', 'default', 
+	                                                array('class' => 'alert alert-danger'));
+	        } else {
               	$this->request->data['User']['role_id']  = 4;
               	$this->request->data['User']['username'] = $this->request->data['Customer']['customer_email'];
               	$this->request->data['User']['password'] = $this->Auth->password($this->request->data['User']['password']);
@@ -309,9 +313,9 @@ class UsersController extends AppController {
              	$this->Session->setFlash('<p>'.__('You have successfully registered an account. An email has been sent with further instructions', true).'</p>', 'default', 
                                                   array('class' => 'alert alert-success'));
              	$this->redirect(array('controller' => 'Users','action' => 'customerlogin','customer'=>true));
-          }
-       }
-   }
+          	}
+       	}
+   	}
    /**
     * UsersController::customer_customerlogin()
     * Customer Login Process
@@ -501,5 +505,113 @@ class UsersController extends AppController {
 				$this->redirect(array('controller' => 'users', 'action' => 'signup'));
 			}
 		}
-	} 
+	}
+
+
+	//Social login process
+	public function social_login($provider) {
+		
+
+			if( $this->Hybridauth->connect($provider) ){
+				$this->_successfulHybridauth($provider,$this->Hybridauth->user_profile);
+	        }else{
+	            // error
+				$this->Session->setFlash($this->Hybridauth->error);
+				$this->redirect($this->Auth->loginAction);
+	        }
+	}
+
+	public function social_endpoint($provider = null) {
+		$this->Hybridauth->processEndpoint();
+	}
+	
+	private function _successfulHybridauth($provider, $incomingProfile){
+
+		$existingProfile = $this->User->find('first', array(
+									'conditions' => array('User.username' => $incomingProfile['User']['email'])));
+
+		if ($existingProfile) {
+			$this->_doSocialLogin($existingProfile,true);
+		} else {
+
+			$this->request->data['User']['role_id']  = 4;
+          	$this->request->data['User']['username'] = $incomingProfile['User']['email'];
+
+          	$tmpPassword = $this->Functions->createTempPassword(7);
+			$this->request->data['User']['password'] = $this->Auth->Password($tmpPassword);
+
+
+          	$this->User->save($this->request->data['User'],null,null);
+          	$this->request->data['Customer']['user_id'] = $this->User->id;
+          	$this->request->data['Customer']['first_name'] = $incomingProfile['User']['first_name'];
+          	$this->request->data['Customer']['last_name']  = $incomingProfile['User']['last_name'];
+          	$this->request->data['Customer']['customer_email']  = $incomingProfile['User']['email'];
+          
+          	$this->Customer->save($this->request->data['Customer'],null,null);
+          	//Mail Processing From Admin To Customer
+     	 	$newRegisteration = $this->Notification->find('first',array(
+                                                        'conditions'=>array(
+                                                        'Notification.title'=>'Customer activation')));
+          	if($newRegisteration){
+
+				$regContent = $newRegisteration['Notification']['content'];
+				$regsubject = $newRegisteration['Notification']['subject'];
+         	}
+
+            $adminEmail   = $this->siteSetting['Sitesetting']['admin_email']; 
+            $source= $this->siteUrl.'/siteicons/'.$adminDetails['Sitesetting']['site_logo'];
+
+	        $mailContent  = $regContent;
+	        $userID       = $this->Customer->id;
+	        $siteUrl      = $this->siteUrl;
+	        $activation   = $this->siteUrl. '/users/activeLink/'.$userID;
+	        $customerName = $this->request->data['Customer']['first_name'];
+
+	        $store_name   = $this->siteSetting['Sitesetting']['site_name'];
+
+	        $mailContent  = str_replace("{firstname}", $customerName, $mailContent);
+	        $mailContent  = str_replace("{activation}", $activation, $mailContent);
+	        $mailContent  = str_replace("{siteUrl}", $siteUrl, $mailContent);
+	        $mailContent  = str_replace("{store name}",$store_name, $mailContent);
+	        $mailContent .='<p> This is your tmp password:'. $this->request->data['User']['password'].'</p>';
+
+	        $email        = new CakeEmail();
+	        $email->from($adminEmail);
+	        $email->to($this->request->data['Customer']['customer_email']);
+	        $email->subject($regsubject);
+	        $email->template('register');
+	        $email->emailFormat('html');
+	        $email->viewVars(array('mailContent' => $mailContent,'source'=>$source));
+	        $email->send();
+
+	        $newProfile = $this->User->findById($this->User->id);
+	        $this->_doSocialLogin($newProfile);
+
+		}
+	}
+	
+	private function _doSocialLogin($user, $returning = false) {
+
+		$userDetails 			 = $user['User'];
+		$userDetails['Customer'] = $user['Customer'];
+
+		if (!empty($user['Customer']['id'])) {
+			if ($this->Auth->login($userDetails)) {
+				/*if($returning){
+					$this->Session->setFlash(__('Welcome back, '. $this->Auth->user('username')));
+
+				} else {
+					$this->Session->setFlash(__('Welcome to our community, '. $this->Auth->user('username')));
+				}*/
+				//$this->redirect($this->Auth->loginRedirect);
+				
+			} else {
+				$this->Session->setFlash(__('Unknown Error could not verify the user: '));
+			}
+		} else {
+			$this ->Session->setFlash('<p>'.__('Login failed, unauthorized', true).'</p>', 'default', 
+										array('class' => 'alert alert-danger'));
+		}
+		$this->redirect(array('controller' => 'users', 'action' => 'customerlogin', 'customer' => true));
+	}
 }

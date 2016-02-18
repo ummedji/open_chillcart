@@ -139,7 +139,7 @@
 							                            	  'type' => 'hidden',
 							                                  'label' => false,
 							                                  'value' => $this->request->data['Store']['store_logo'])); ?>
-										        <img class="img-responsive img_fields" src="<?php echo $siteUrl. '/storelogos/'.$this->request->data['Store']['store_logo']; ?>" alt="">
+										        <img class="img-responsive img_fields" src="https://s3.amazonaws.com/<?php echo $siteBucket.'/storelogos/'.$this->request->data['Store']['store_logo']; ?>" alt="">
 											</div>
 										</div>
 										<div class="form-group profile-box clearfix">
@@ -367,7 +367,7 @@
 											<div class="form-group">
 												<label class="col-md-3 control-label">Delivery Options <span class="star">*</span></label>
 												<div class="col-md-8 col-lg-8 checktable">
-													<div class="clearfix">
+													<div class="clearfix margin-b-20">
 														<div class="col-md-1 itemHead">
 															<input type="checkbox" class="group-checkable" data-set="#sample_1 .checkboxes"/>
 														</div>
@@ -390,7 +390,7 @@
 															$checked = 0; 
 															//echo "<pre>"; print_r($values); ?>
 
-															<div class="clearfix">
+															<div class="clearfix margin-b-5 ">
 																<div class="col-md-1 itemCont"> <?php
 																	echo $this->Form->checkbox(
 																					$value['DeliveryTimeSlot']['slot_id'],
@@ -417,7 +417,7 @@
 
 														} else { ?>
 													
-															<div class="clearfix">
+															<div class="clearfix margin-b-5">
 																<div class="col-md-1 itemCont"> <?php
 																	echo $this->Form->checkbox($value['DeliveryTimeSlot']['slot_id'],
 								                                            array('class'=>'group-checkable',

@@ -4,6 +4,7 @@
 
 App::uses('AppController', 'Controller');
 App::uses('Spreadsheet_Excel_Reader', 'Vendor');
+App::uses('File', 'Utility');
 
 class ProductsController extends AppController {
     
@@ -12,7 +13,7 @@ class ProductsController extends AppController {
 	public $uses = array('Product','Category','Brand','Store','ProductDetail', 
                       'ProductImage','User','Customer','Store');
 
-  public $components = array('Img', 'Updown');
+  public $components = array('Img', 'Updown', 'CakeS3');
 	/**
 	 * ProductsController::admin_index()
 	 * 
@@ -50,40 +51,41 @@ class ProductsController extends AppController {
        		$store_id = $this->request->data['Product']['store_id'];
             
             $Product_check = $this->Product->find('all', array(
-            						'conditions'=>array('Product.product_name'=>trim($this->request->data['Product']['product_name']),
-                                                         'Product.store_id' => $store_id)));
+                      						'conditions'=>array('Product.product_name'=>
+                                                  trim($this->request->data['Product']['product_name']),
+                                                  'Product.store_id' => $store_id,
+                                        'NOT' => array('Product.status' => 3))));
+
             if (!empty($Product_check)) {
 
                     $this->Session->setFlash('<p>'.__('Product already exists', true).'</p>', 'default', 
                                                               array('class' => 'alert alert-danger'));
             } else {
 
-                $this->request->data['Product']['store_id']        = $store_id;
+                $this->request->data['Product']['store_id'] = $store_id;
                 $this->request->data['Product']['brand_id'] =  ($this->request->data['Product']['brand_id'] != '') ? 
                                                                 $this->request->data['Product']['brand_id'] : 0;
-
-                $this->request->data['Product']['sub_category_id'] =  ($this->request->data['Product']['sub_category_id'] != '') ? 
-                                                                $this->request->data['Product']['sub_category_id'] : 0;
+                $this->request->data['Product']['sub_category_id'] =
+                                                      ($this->request->data['Product']['sub_category_id'] != '') ? 
+                                                      $this->request->data['Product']['sub_category_id'] : 0;
 
                 $this->Product->save($this->request->data['Product'], null, null);
 
                 if($this->request->data['Product']['price_option'] == "single") {
 
                     $this->request->data['ProductDetail']['product_id']    = $this->Product->id;
-                    $this->request->data['ProductDetail']['sub_name']      = (!empty($this->request->data['ProductDetail']['sub_name'])) ?
-                                                                              $this->request->data['ProductDetail']['sub_name'] :
-                                                                              $this->request->data['Product']['product_name'] ;
+                    $this->request->data['ProductDetail']['sub_name']      = 
+                                          (!empty($this->request->data['ProductDetail']['sub_name'])) ?
+                                          $this->request->data['ProductDetail']['sub_name'] :
+                                          $this->request->data['Product']['product_name'] ;
                   
                     $this->ProductDetail->save($this->request->data['ProductDetail'],null,null);
 
                 } else {
 
                   $productDetails = $this->request->data['ProductDetail'];
-
                     foreach ($productDetails as $key => $value) {
-
                       if (is_array($value)) {
-
                           $value['product_id']    = $this->Product->id;
                           $this->ProductDetail->save($value, null, null);
                           $this->ProductDetail->id = '';
@@ -91,26 +93,19 @@ class ProductsController extends AppController {
                     }
                 }
 
-                #Product image Upload
-                if(!file_exists(WWW_ROOT.DS.'stores'.DS.$store_id)) {
-
-                    $this->Img->mkdir(WWW_ROOT.DS.'stores'.DS.$store_id);
-                    $path = WWW_ROOT.DS.'stores'.DS.$store_id;
-                    $this->Img->mkdir($path.DS."products");
-                    $path=$path.DS."products";
-                    $this->Img->mkdir($path.DS."home");
-                    $this->Img->mkdir($path.DS."carts");
-                    $this->Img->mkdir($path.DS."product_details");
-                    $this->Img->mkdir($path.DS."scrollimg");
-                    $this->Img->mkdir($path.DS."original");
-                }
-
-                $root      = WWW_ROOT.DS.'stores'.DS.$store_id.DS."products".DS;
+                
+                $root      = WWW_ROOT.DS.'stores'.DS."products".DS;
                 $origpath  = $root."original".DS;
                 $homepath  = $root."home".DS;
                 $cartpath  = $root."carts".DS;
                 $scrollimg = $root."scrollimg".DS;
                 $prod_det_path = $root."product_details".DS;
+
+                $origpathS3  = 'stores/products/original/';
+                $homepathS3  = 'stores/products/home/';
+                $cartpathS3  = 'stores/products/carts/';
+                $scrollimgS3 = 'stores/products/scrollimg/';
+                $prod_det_pathS3 = 'stores/products/product_details/';
                 
                 $allowed_ext = array('image/jpg', 'image/jpeg', 'image/png', 'image/gif');
 
@@ -122,31 +117,37 @@ class ProductsController extends AppController {
 
                     if($value['name'] != "" && in_array($value['type'], $allowed_ext)) {
 
-                        $newName    = str_replace(" ","-", uniqid()  . '.' .$value['name']); 
-                        $targetdir = $origpath.DS;
+                      $newName    = str_replace(" ","-", uniqid()  . '.' .$value['name']); 
+                      $targetdir = $origpath.DS;
                         
-                        #Upload
-                        $upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
-                        
-                        #Resize
-                        $this->Img->resampleGD($targetdir.DS.$newName, $homepath, $newName, 265, 265, 1, 0);
-                        $this->Img->resampleGD($targetdir.DS.$newName, $cartpath, $newName, 78, 64, 1, 0);
-                        $this->Img->resampleGD($targetdir.DS.$newName, $scrollimg, $newName, 67, 55, 1, 0);
-                        $this->Img->resampleGD($targetdir.DS.$newName, $prod_det_path, $newName, 1024, 768, 1, 0);
-                        
-                        $product_images['product_id']  = $this->Product->id;
-                        $product_images['store_id']    = $store_id;
-                        $product_images['image']       = $value['name'];
-                        $product_images['image_alias'] = $newName;
+                      #Upload
+                      //$upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
 
-                        $this->ProductImage->save($product_images);
-                        $this->ProductImage->id = "";
+                      $result = $this->CakeS3->putObject($value['tmp_name'], $origpathS3.$newName, S3::ACL_PUBLIC_READ);
+                      $AmazonS3Image = $result['url'];
 
+                      #Resize
+                      $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0,$homepathS3);
+                      $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0, $cartpathS3);
+                      $this->Img->resampleGD($AmazonS3Image, $scrollimg, $newName, 67, 55, 1, 0, $scrollimgS3);
+                      $this->Img->resampleGD($AmazonS3Image, $prod_det_path, $newName, 1024, 768, 1, 0, $prod_det_pathS3);
+
+                      //unlink Images
+                      @unlink($homepath.$newName);
+                      @unlink($cartpath.$newName);
+                      @unlink($$scrollimg.$newName);
+                      @unlink($$prod_det_path.$newName);
+
+                      $product_images['product_id']  = $this->Product->id;
+                      $product_images['store_id']    = $store_id;
+                      $product_images['image']       = $value['name'];
+                      $product_images['image_alias'] = $newName;
+
+                      $this->ProductImage->save($product_images);
+                      $this->ProductImage->id = "";
                   	}
                   }
                 }
-
-
                 $this->Session->setFlash('<p>'.__('Your Product has been saved', true).'</p>', 'default', 
                                                   array('class' => 'alert alert-success'));
                 $this->redirect(array('controller' => 'Products','action' => 'index'));
@@ -155,15 +156,15 @@ class ProductsController extends AppController {
        }
 
 		$brand_list     = $this->Brand->find('list',array(
-                                                    'conditions'=>array('Brand.status'=>1),
-                                                    'fields'=>array('Brand.id','Brand.brand_name')));
-		$category_list  = $this->Category->find('list',
-                                        array('conditions' => array('Category.parent_id'=>0,'Category.status'=>1),
-                                              'fields'     => array('Category.id','Category.category_name')));
+                                'conditions'=>array('Brand.status'=>1),
+                                'fields'=>array('Brand.id','Brand.brand_name')));
+		$category_list  = $this->Category->find('list', array(
+                                'conditions' => array('Category.parent_id'=>0,'Category.status'=>1),
+                                'fields'     => array('Category.id','Category.category_name')));
 
 		$stores = $this->Store->find('list', array(
                                 'conditions'=>array('Store.status'=>1),
-                              'fields' => array('Store.id', 'Store.store_name')));
+                                'fields' => array('Store.id', 'Store.store_name')));
 		$this->set(compact('brand_list','category_list', 'stores'));   
 	}
 
@@ -182,7 +183,9 @@ class ProductsController extends AppController {
                                       'conditions'=>array(
                                       'Product.product_name'=>trim($this->request->data['Product']['product_name']),
                                       'Product.store_id' => $store_id,
-                                      'NOT' => array('Product.id'=>$this->request->data['Product']['id']))));
+                                      'NOT' => array('Product.id'=>$this->request->data['Product']['id'],
+                                                      'Product.status' => 3))));
+
           if(!empty($product_check)) {
                 $this->Session->setFlash('<p>'.__('Product already exists', true).'</p>', 'default', 
                                                             array('class' => 'alert alert-danger'));
@@ -190,17 +193,19 @@ class ProductsController extends AppController {
 
               $this->request->data['Product']['brand_id'] =  ($this->request->data['Product']['brand_id'] != '') ? 
                                                                 $this->request->data['Product']['brand_id'] : 0;
-              $this->request->data['Product']['sub_category_id'] =  ($this->request->data['Product']['sub_category_id'] != '') ? 
-                                                                $this->request->data['Product']['sub_category_id'] : 0;
+              $this->request->data['Product']['sub_category_id'] =  
+                                                            ($this->request->data['Product']['sub_category_id'] != '') ? 
+                                                            $this->request->data['Product']['sub_category_id'] : 0;
               $this->Product->save($this->request->data['Product'], null, null);
               $this->ProductDetail->deleteAll(array('product_id' => $this->Product->id));
 
               if($this->request->data['Product']['price_option'] == "single") {
 
-                  $this->request->data['ProductDetail']['product_id']    = $this->Product->id;
-                  $this->request->data['ProductDetail']['sub_name']      = (!empty($this->request->data['ProductDetail']['sub_name'])) ?
-                                                                              $this->request->data['ProductDetail']['sub_name'] :
-                                                                              $this->request->data['Product']['product_name'] ;
+                  $this->request->data['ProductDetail']['product_id'] = $this->Product->id;
+                  $this->request->data['ProductDetail']['sub_name']   = 
+                                                        (!empty($this->request->data['ProductDetail']['sub_name'])) ?
+                                                                $this->request->data['ProductDetail']['sub_name'] :
+                                                                $this->request->data['Product']['product_name'] ;
                   $this->ProductDetail->save($this->request->data['ProductDetail'],null,null);
 
               } else {
@@ -214,14 +219,20 @@ class ProductsController extends AppController {
                     }
                   }
               }
-
-              $root      = WWW_ROOT.DS.'stores'.DS.$store_id.DS."products".DS;
+              
+              $root      = WWW_ROOT.DS.'stores'.DS."products".DS;
               $origpath  = $root."original".DS;
               $homepath  = $root."home".DS;
               $cartpath  = $root."carts".DS;
               $scrollimg = $root."scrollimg".DS;
               $prod_det_path = $root."product_details".DS;
-              
+
+              $origpathS3  = 'stores/products/original/';
+              $homepathS3  = 'stores/products/home/';
+              $cartpathS3  = 'stores/products/carts/';
+              $scrollimgS3 = 'stores/products/scrollimg/';
+              $prod_det_pathS3 = 'stores/products/product_details/';
+
               $allowed_ext = array('image/jpg', 'image/jpeg', 'image/png', 'image/gif');
 
               $productimages = $this->request->data['ProductImage'];
@@ -234,16 +245,33 @@ class ProductsController extends AppController {
 
                       $newName    = str_replace(" ","-", uniqid()  . '.' .$value['name']); 
                       $targetdir = $origpath.DS;
+
+
+                      //$this->CakeS3->putObject($cartpath.$newName, $homepath.$newName, S3::ACL_PUBLIC_READ);
+
+                      /*$result = $this->CakeS3->putObject($value['tmp_name'], $cartpath.$newName, S3::ACL_PUBLIC_READ);
+                      $result = $this->CakeS3->putObject($value['tmp_name'], $scrollimg.$newName, S3::ACL_PUBLIC_READ);
+                      $result = $this->CakeS3->putObject($value['tmp_name'], $prod_det_path.$newName, S3::ACL_PUBLIC_READ);*/
                       
                       #Upload
-                      $upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
-                      
+                      //$upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
+
+
+                      $result = $this->CakeS3->putObject($value['tmp_name'], $origpathS3.$newName, S3::ACL_PUBLIC_READ);
+                      $AmazonS3Image = $result['url'];
+
                       #Resize
-                      $this->Img->resampleGD($targetdir.DS.$newName, $homepath, $newName, 265, 265, 1, 0);
-                      $this->Img->resampleGD($targetdir.DS.$newName, $cartpath, $newName, 78, 64, 1, 0);
-                      $this->Img->resampleGD($targetdir.DS.$newName, $scrollimg, $newName, 67, 55, 1, 0);
-                      $this->Img->resampleGD($targetdir.DS.$newName, $prod_det_path, $newName, 1024, 768, 1, 0);
-                      
+                      $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0,$homepathS3);
+                      $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0, $cartpathS3);
+                      $this->Img->resampleGD($AmazonS3Image, $scrollimg, $newName, 67, 55, 1, 0, $scrollimgS3);
+                      $this->Img->resampleGD($AmazonS3Image, $prod_det_path, $newName, 1024, 768, 1, 0, $prod_det_pathS3);
+
+                      //unlink Images
+                      @unlink($homepath.$newName);
+                      @unlink($cartpath.$newName);
+                      @unlink($scrollimg.$newName);
+                      @unlink($prod_det_path.$newName);
+
                       $product_images['product_id']  = $this->Product->id;
                       $product_images['store_id']    = $store_id;
                       $product_images['image']       = $value['name'];
@@ -255,6 +283,9 @@ class ProductsController extends AppController {
                   }
                 }
               }
+
+              //exit();
+
               $this->Session->setFlash('<p>'.__('Your Product has been saved', true).'</p>', 'default', 
                                                               array('class' => 'alert alert-success'));
               $this->redirect(array('controller' => 'Products','action' => 'index'));
@@ -314,10 +345,10 @@ class ProductsController extends AppController {
       if (!empty($this->request->data['Product']['product_name'])) {              
               $Product_check = $this->Product->find('all', array(
                           'conditions'=>array('Product.product_name'=>trim($this->request->data['Product']['product_name']),
-                                                           'Product.store_id' => $store_id)));
-              //echo "<pre>";print_r($Product_check);die();
-              if (!empty($Product_check)) {
+                                              'Product.store_id' => $store_id,
+                                      'NOT' => array('Product.status' => 3))));
 
+              if (!empty($Product_check)) {
                       $this->Session->setFlash('<p>'.__('Product already exists', true).'</p>', 'default', 
                                                                 array('class' => 'alert alert-danger'));
               } else {
@@ -326,7 +357,8 @@ class ProductsController extends AppController {
                   $this->request->data['Product']['brand_id'] =  ($this->request->data['Product']['brand_id'] != '') ? 
                                                                 $this->request->data['Product']['brand_id'] : 0;
                   //$this->request->data['Product']['product_image'] = $this->request->data['product_image'][0];
-                  $this->request->data['Product']['sub_category_id'] =  ($this->request->data['Product']['sub_category_id'] != '') ? 
+                  $this->request->data['Product']['sub_category_id'] =  
+                                                                ($this->request->data['Product']['sub_category_id'] != '') ? 
                                                                 $this->request->data['Product']['sub_category_id'] : 0;
                   $this->Product->save($this->request->data['Product'], null, null);
 
@@ -354,26 +386,18 @@ class ProductsController extends AppController {
                       }
                   }
 
-                  #Product image Upload
-                  if(!file_exists(WWW_ROOT.DS.'stores'.DS.$store_id)) {
-
-                      $this->Img->mkdir(WWW_ROOT.DS.'stores'.DS.$store_id);
-                      $path = WWW_ROOT.DS.'stores'.DS.$store_id;
-                      $this->Img->mkdir($path.DS."products");
-                      $path=$path.DS."products";
-                      $this->Img->mkdir($path.DS."home");
-                      $this->Img->mkdir($path.DS."carts");
-                      $this->Img->mkdir($path.DS."product_details");
-                      $this->Img->mkdir($path.DS."scrollimg");
-                      $this->Img->mkdir($path.DS."original");
-                  }
-
-                  $root      = WWW_ROOT.DS.'stores'.DS.$store_id.DS."products".DS;
+                  $root      = WWW_ROOT.DS.'stores'.DS."products".DS;
                   $origpath  = $root."original".DS;
                   $homepath  = $root."home".DS;
                   $cartpath  = $root."carts".DS;
                   $scrollimg = $root."scrollimg".DS;
                   $prod_det_path = $root."product_details".DS;
+
+                  $origpathS3  = 'stores/products/original/';
+                  $homepathS3  = 'stores/products/home/';
+                  $cartpathS3  = 'stores/products/carts/';
+                  $scrollimgS3 = 'stores/products/scrollimg/';
+                  $prod_det_pathS3 = 'stores/products/product_details/';
                   
                   $allowed_ext = array('image/jpg', 'image/jpeg', 'image/png', 'image/gif');
 
@@ -385,25 +409,34 @@ class ProductsController extends AppController {
 
                       if($value['name'] != "" && in_array($value['type'], $allowed_ext)) {
 
-                          $newName    = str_replace(" ","-", uniqid()  . '.' .$value['name']); 
-                          $targetdir = $origpath.DS;
+                        $newName    = str_replace(" ","-", uniqid()  . '.' .$value['name']); 
+                        $targetdir = $origpath.DS;
                           
-                          #Upload
-                          $upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
-                          
-                          #Resize
-                          $this->Img->resampleGD($targetdir.DS.$newName, $homepath, $newName, 265, 265, 1, 0);
-                          $this->Img->resampleGD($targetdir.DS.$newName, $cartpath, $newName, 78, 64, 1, 0);
-                          $this->Img->resampleGD($targetdir.DS.$newName, $scrollimg, $newName, 67, 55, 1, 0);
-                          $this->Img->resampleGD($targetdir.DS.$newName, $prod_det_path, $newName, 1024, 768, 1, 0);
-                          
-                          $product_images['product_id']  = $this->Product->id;
-                          $product_images['store_id']    = $store_id;
-                          $product_images['image']       = $value['name'];
-                          $product_images['image_alias'] = $newName;
+                        #Upload
+                        //$upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
 
-                          $this->ProductImage->save($product_images);
-                          $this->ProductImage->id = "";
+                        $result = $this->CakeS3->putObject($value['tmp_name'], $origpathS3.$newName, S3::ACL_PUBLIC_READ);
+                        $AmazonS3Image = $result['url'];
+
+                        #Resize
+                        $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0,$homepathS3);
+                        $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0, $cartpathS3);
+                        $this->Img->resampleGD($AmazonS3Image, $scrollimg, $newName, 67, 55, 1, 0, $scrollimgS3);
+                        $this->Img->resampleGD($AmazonS3Image, $prod_det_path, $newName, 1024, 768, 1, 0, $prod_det_pathS3);
+
+                        //unlink Images
+                        @unlink($homepath.$newName);
+                        @unlink($cartpath.$newName);
+                        @unlink($scrollimg.$newName);
+                        @unlink($prod_det_path.$newName);
+
+                        $product_images['product_id']  = $this->Product->id;
+                        $product_images['store_id']    = $store_id;
+                        $product_images['image']       = $value['name'];
+                        $product_images['image_alias'] = $newName;
+
+                        $this->ProductImage->save($product_images);
+                        $this->ProductImage->id = "";
 
                       }
                     }    
@@ -438,7 +471,8 @@ class ProductsController extends AppController {
                                       'conditions'=>array(
                                       'Product.product_name'=>trim($this->request->data['Product']['product_name']),
                                       'Product.store_id' => $store_id,
-                                      'NOT' => array('Product.id'=>$this->request->data['Product']['id']))));
+                                      'NOT' => array('Product.id'=>$this->request->data['Product']['id'],
+                                                      'Product.status' => 3))));
           if(!empty($product_check)) {
                 $this->Session->setFlash('<p>'.__('Product already exists', true).'</p>', 'default', 
                                                             array('class' => 'alert alert-danger'));
@@ -476,6 +510,12 @@ class ProductsController extends AppController {
               $cartpath  = $root."carts".DS;
               $scrollimg = $root."scrollimg".DS;
               $prod_det_path = $root."product_details".DS;
+
+              $origpathS3  = 'stores/products/original/';
+              $homepathS3  = 'stores/products/home/';
+              $cartpathS3  = 'stores/products/carts/';
+              $scrollimgS3 = 'stores/products/scrollimg/';
+              $prod_det_pathS3 = 'stores/products/product_details/';
               
               $allowed_ext = array('image/jpg', 'image/jpeg', 'image/png', 'image/gif');
 
@@ -491,14 +531,23 @@ class ProductsController extends AppController {
                       $targetdir = $origpath.DS;
                       
                       #Upload
-                      $upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
-                      
+                      //$upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
+
+                      $result = $this->CakeS3->putObject($value['tmp_name'], $origpathS3.$newName, S3::ACL_PUBLIC_READ);
+                      $AmazonS3Image = $result['url'];
+
                       #Resize
-                      $this->Img->resampleGD($targetdir.DS.$newName, $homepath, $newName, 265, 265, 1, 0);
-                      $this->Img->resampleGD($targetdir.DS.$newName, $cartpath, $newName, 78, 64, 1, 0);
-                      $this->Img->resampleGD($targetdir.DS.$newName, $scrollimg, $newName, 67, 55, 1, 0);
-                      $this->Img->resampleGD($targetdir.DS.$newName, $prod_det_path, $newName, 1024, 768, 1, 0);
-                      
+                      $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0,$homepathS3);
+                      $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0, $cartpathS3);
+                      $this->Img->resampleGD($AmazonS3Image, $scrollimg, $newName, 67, 55, 1, 0, $scrollimgS3);
+                      $this->Img->resampleGD($AmazonS3Image, $prod_det_path, $newName, 1024, 768, 1, 0, $prod_det_pathS3);
+
+                      //unlink Images
+                      @unlink($homepath.$newName);
+                      @unlink($cartpath.$newName);
+                      @unlink($scrollimg.$newName);
+                      @unlink($prod_det_path.$newName);
+
                       $product_images['product_id']  = $this->Product->id;
                       $product_images['store_id']    = $store_id;
                       $product_images['image']       = $value['name'];
@@ -517,20 +566,21 @@ class ProductsController extends AppController {
         }
 
          $brand_list     = $this->Brand->find('list',array(
-                                                 'conditions'=>array('Brand.status'=>1),
-                                                 'fields'=>array('Brand.id','Brand.brand_name')));
-         $category_list  = $this->Category->find('list',
-                                                 array('conditions' => array('Category.parent_id'=>0,'Category.status'=>1),
-                                                     'fields'     => array('Category.id','Category.category_name')));
+                                  'conditions'=>array('Brand.status'=>1),
+                                  'fields'=>array('Brand.id','Brand.brand_name')));
+         $category_list  = $this->Category->find('list', array(
+                                  'conditions' => array('Category.parent_id'=>0,'Category.status'=>1),
+                                  'fields'     => array('Category.id','Category.category_name')));
         $stores = $this->Store->find('list', array(
                                 'conditions'=>array('Store.status'=>1),
-                              'fields' => array('Store.id', 'Store.store_name')));
+                                'fields' => array('Store.id', 'Store.store_name')));
 
         $getProductData = $this->Product->findById($id);
         $subcatList = $this->Category->find('list', array(
-                                  'conditions' => array('Category.parent_id' => $getProductData['Product']['category_id'],
+                                'conditions' => array(
+                                      'Category.parent_id' => $getProductData['Product']['category_id'],
                                       'Category.status'=>1),
-                                  'fields' => array('Category.id', 'Category.category_name')));
+                                'fields' => array('Category.id', 'Category.category_name')));
 
         $this->request->data = $getProductData;
         $this->set(compact('getProductData', 'subcatList', 'brand_list', 'category_list', 'stores'));
@@ -541,6 +591,32 @@ class ProductsController extends AppController {
         $store_id = ($this->Auth->User('role_id') == 1) ? 
                                 $this->request->data['Product']['store_id'] :
                                 $this->Auth->User('Store.id');
+
+        #Product image Upload
+        if(!file_exists(WWW_ROOT.DS.'stores'.DS.'products')) {
+
+            $this->Img->mkdir(WWW_ROOT.DS.'stores'.DS.'products');
+            $path = WWW_ROOT.DS.'stores'.DS.'products';
+
+            $this->Img->mkdir($path.DS."home");
+            $this->Img->mkdir($path.DS."carts");
+            $this->Img->mkdir($path.DS."product_details");
+            $this->Img->mkdir($path.DS."scrollimg");
+            $this->Img->mkdir($path.DS."original");
+        }
+
+        $root      = WWW_ROOT.DS.'stores'.DS."products".DS;
+        $origpath  = $root."original".DS;
+        $homepath  = $root."home".DS;
+        $cartpath  = $root."carts".DS;
+        $scrollimg = $root."scrollimg".DS;
+        $prod_det_path = $root."product_details".DS;
+
+        $origpathS3  = 'stores/products/original/';
+        $homepathS3  = 'stores/products/home/';
+        $cartpathS3  = 'stores/products/carts/';
+        $scrollimgS3 = 'stores/products/scrollimg/';
+        $prod_det_pathS3 = 'stores/products/product_details/';
 
         $allowed_ext = array('jpg', 'jpeg', 'png', 'gif');
 
@@ -561,7 +637,8 @@ class ProductsController extends AppController {
               $product = $this->ProductDetail->find('first', array(
                             'conditions'=>array('Product.store_id' => $store_id,
                                         'OR' => array('Product.product_name' =>trim($value[1]),
-                                                      'ProductDetail.product_code' => $value[9]))));
+                                                      'ProductDetail.product_code' => $value[9]),
+                                        'NOT' => array('Product.status' => 3))));
               if(empty($product)) {
 
                 $product['id']                  = '';
@@ -592,19 +669,39 @@ class ProductsController extends AppController {
 
                     $imgType = explode('.', $val);
 
-                    if (in_array($imgType[1], $allowed_ext)) {
+                    $imagesizedata = getimagesize($val);
 
-                        //$newName    = str_replace(" ","-", uniqid()  . '.' .$val);
+                    if ($imagesizedata) {
+
+                      if (in_array($imgType[1], $allowed_ext)) {
+
+                        $newName = str_replace(" ","-", uniqid(). '.' .$product['product_name'].'.'.$imgType[1]);
+
+                        $results = $this->CakeS3->putObject($val, $origpathS3.$newName, S3::ACL_PUBLIC_READ);
+                        $AmazonS3Image = $results['url'];
+
+                        #Resize
+                        $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0,$homepathS3);
+                        $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0, $cartpathS3);
+                        $this->Img->resampleGD($AmazonS3Image, $scrollimg, $newName, 67, 55, 1, 0, $scrollimgS3);
+                        $this->Img->resampleGD($AmazonS3Image, $prod_det_path, $newName, 1024, 768, 1, 0, $prod_det_pathS3);
+
+                        //unlink Images
+                        @unlink($homepath.$newName);
+                        @unlink($cartpath.$newName);
+                        @unlink($scrollimg.$newName);
+                        @unlink($prod_det_path.$newName);
+
                         $product_images['product_id']  = $this->Product->id;
                         $product_images['store_id']    = $store_id;
-                        $product_images['image']       = $val;
-                        $product_images['image_alias'] = $val;
+                        $product_images['image']       = $newName ;
+                        $product_images['image_alias'] = $newName;
 
                         $this->ProductImage->save($product_images);
                         $this->ProductImage->id = "";
+                      }
                     }
                   }
-
                   $count += 1;
                 }
               } else {
@@ -613,8 +710,7 @@ class ProductsController extends AppController {
             }
 
             if (!empty($count)) {
-               // $this->Session->setFlash('<p>'.__('Successfully '.$count.' Product Imported and '.$exists.' Product already exists', true).'</p>', 'default', 
-               //                                      array('class' => 'alert alert-success'));
+               // $this->Session->setFlash('<p>'.__('Successfully '.$count.' Product Imported and '.$exists.' Product already exists', true).'</p>', 'default', array('class' => 'alert alert-success'));
 
               $this->Session->setFlash('<p>'.__('Successfully items Imported', true).'</p>', 'default', 
                                                     array('class' => 'alert alert-success'));
@@ -624,8 +720,8 @@ class ProductsController extends AppController {
             }
           } else {
 
-              $this->Session->setFlash('<p>'.__('The file is not readable. Please import Xls format file', true).'</p>', 'default', 
-                                                    array('class' => 'alert alert-danger'));
+              $this->Session->setFlash('<p>'.__('The file is not readable. Please import Xls format file', true).'</p>',
+                                        'default', array('class' => 'alert alert-danger'));
 
           }
         } else {
@@ -646,7 +742,8 @@ class ProductsController extends AppController {
         $productId = $this->request->data['productId'];
         $batchCode = $this->ProductDetail->find('all', array(
                               'conditions' => array('Product.store_id' => $storeId,
-                                      'NOT' => array('Product.id' => $productId)),
+                                      'NOT' => array('Product.id' => $productId,
+                                                      'Product.status' => 3)),
                               'fields' => array('ProductDetail.product_code')));
 
         foreach ($batchCode as $key => $value) {
@@ -668,7 +765,6 @@ class ProductsController extends AppController {
 
     public function importImages() {
 
-     
         $count = 0;
         $store_id = $this->Auth->User('Store.id');
 
@@ -711,19 +807,21 @@ class ProductsController extends AppController {
                 $targetdir = $origpath.DS;
                 
                 #Upload
-                $upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
+                //$upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
+
+                $result = $this->CakeS3->putObject($value['tmp_name'], $origpathS3.$newName, S3::ACL_PUBLIC_READ);
+                $AmazonS3Image = $result['url'];
                 
                 #Resize
-                $this->Img->resampleGD($targetdir.DS.$newName, $homepath, $newName, 265, 265, 1, 0);
-                $this->Img->resampleGD($targetdir.DS.$newName, $cartpath, $newName, 78, 64, 1, 0);
-                $this->Img->resampleGD($targetdir.DS.$newName, $scrollimg, $newName, 67, 55, 1, 0);
-                $this->Img->resampleGD($targetdir.DS.$newName, $prod_det_path, $newName, 1024, 768, 1, 0);
+                $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0);
+                $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0);
+                $this->Img->resampleGD($AmazonS3Image, $scrollimg, $newName, 67, 55, 1, 0);
+                $this->Img->resampleGD($AmazonS3Image, $prod_det_path, $newName, 1024, 768, 1, 0);
 
                 $count++;
             }
           }    
         }
-
 
         if (!empty($count)) {
           $this->Session->setFlash('<p>'.__('Successfully items images uploaded'+$count, true).'</p>', 'default', 
@@ -733,12 +831,10 @@ class ProductsController extends AppController {
                                                 array('class' => 'alert alert-danger'));
         }
 
-        
         if ($this->Auth->User('role_id') == 1) {
             $this->redirect(array('controller' => 'products','action' => 'index','admin' => true));
         } else {
             $this->redirect(array('controller' => 'products','action' => 'index','store' => true));
         }
-
     }
 }

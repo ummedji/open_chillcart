@@ -102,10 +102,10 @@ class DATABASE_CONFIG {
             $this->default['database']   = '';
             $this->default['datasource'] = '';
         else:
-            $this->default['host'] = 'suresh-vagrant';
+            $this->default['host'] = 'localhost';
             $this->default['persistent'] = false;
             $this->default['login'] = 'root';
-            $this->default['password'] = '';
+            $this->default['password'] = 'Passw0rd';
             $this->default['database'] = 'grocery';
             $this->default['datasource'] = 'Database/Mysql';
         endif;

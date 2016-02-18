@@ -8,7 +8,7 @@ App::uses('CakeEmail', 'Network/Email');
 
 class MobileApiController extends AppController
 {
-    public $components = array('AndroidResponse', 'Notification', 'Functions');
+    public $components = array('AndroidResponse', 'Notification', 'Functions', 'Twilio');
     public $uses       = array('User','Order','Driver','DriverTracking','Orderstatus', 'MailContent',
                                 'State','City', 'Location');
     
@@ -388,7 +388,16 @@ class MobileApiController extends AppController
                         }
 
                         $this->Order->save($ordStatus);
+
+
+
+                        $customerMessage = "Dear ".$ordStatus['Customer']['first_name'].",Your order has been ".$status.' by driver, Order id : '.$ordStatus['Order']['ref_number'];
                         
+                        $toCustomerNumber = '+'.$this->siteSetting['Country']['phone_code'].$ordStatus['Customer']['customer_phone'];
+
+                        $customerSms = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
+
+
                         $response['success'] = 1;
                         $response['message'] = 'Order Status Change Successfully';
                         

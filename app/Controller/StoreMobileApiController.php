@@ -4,7 +4,7 @@
 App::uses('AppController', 'Controller');
 App::uses('CakeEmail', 'Network/Email');
 class StoreMobileApiController extends AppController{
-    public $components = array('AndroidResponse', 'Notification', 'Functions','Googlemap');
+    public $components = array('AndroidResponse', 'Notification', 'Functions','Googlemap', 'Twilio');
     public $uses       = array('User','Order','Orderstatus', 'MailContent',
                                 'State','City', 'Location','Store','Driver','DriverTracking'); 
 
@@ -191,7 +191,10 @@ class StoreMobileApiController extends AppController{
                     }
                 break;
 
-                case 'orderStatusChange':           
+                case 'orderStatusChange':
+
+                    $orderDetail = $this->Order->findById($orderId);
+
                     $order_id              = $this->request->data['order_id'];
                     if ($order_id != '') {
                         $this->request->data['Order']['id']      = $order_id;                       
@@ -213,6 +216,14 @@ class StoreMobileApiController extends AppController{
                             $this->request->data['Order']['failed_reason']  = $this->request->data['cancel_reason'] ;
                             $this->Order->save($this->request->data['Order']);
                         }
+
+
+                        $customerMessage = "Dear ".$orderDetail['Customer']['first_name'].",Your order has been ".$this->request->data['status'].' by store, Order id : '.$orderDetail['Order']['ref_number'];
+                        
+                        $toCustomerNumber = '+'.$this->siteSetting['Country']['phone_code'].$orderDetail['Customer']['customer_phone'];
+
+                        $customerSms = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
+
 
                         $response['success'] = '1';
                         $response['message'] = 'Status has been Changed';

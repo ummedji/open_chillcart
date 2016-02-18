@@ -37,9 +37,9 @@
 									<td><?php echo $serialNo +=1; ?></td>
 									<!-- <td class="text-left"><?php echo $value['Store']['store_name']; ?></td> -->
 									<td>
-										<?php $imageSrc = $siteUrl.'/stores/'.$value['ShoppingCart']['store_id'].'/products/carts/'.$value['ProductDetail']['Product']['ProductImage'][0]['image_alias']; ?>
+										<?php $imageSrc = 'https://s3.amazonaws.com/'.$siteBucket.'/stores/products/carts/'.$value['ProductDetail']['Product']['ProductImage'][0]['image_alias']; ?>
 
-										<img class="orderimge img-thumbnail"  title="fruit" alt="fruit" src="<?php echo $imageSrc; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/no-imge.jpg"; ?>'"></td>
+										<img class="orderimge img-thumbnail" src="<?php echo $imageSrc; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/no-imge.jpg"; ?>'"></td>
 									<td class="text-left"><?php echo $value['ShoppingCart']['product_name']; ?></td>
 									<td><?php echo $value['ShoppingCart']['product_quantity']; ?></td>
 									<td><?php echo html_entity_decode($this->Number->currency($value['ShoppingCart']['product_price'], $siteCurrency)); ?></td>

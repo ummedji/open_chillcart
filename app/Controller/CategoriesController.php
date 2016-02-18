@@ -31,7 +31,8 @@ class CategoriesController extends AppController {
           $Category_check = $this->Category->find('first', array(
                             'conditions' => array(
                                   'Category.parent_id' => 0,
-                                  'Category.category_name' => trim($this->request->data['Category']['category_name']))));
+                                  'Category.category_name' => trim($this->request->data['Category']['category_name']),
+                                'NOT' => array('Category.status' => 3))));
 
           if(!empty($Category_check)) {
             $this->Session->setFlash('<p>'.__('Unable to add your Category', true).'</p>', 'default', 
@@ -57,7 +58,8 @@ class CategoriesController extends AppController {
                             'conditions' => array(
                                   'Category.parent_id' => 0,
                                   'Category.category_name' => trim($this->request->data['Category']['category_name']),
-                                  'NOT' => array('Category.id' =>$this->request->data['Category']['id']))));
+                                  'NOT' => array('Category.id' =>$this->request->data['Category']['id'],
+                                                  'Category.status' => 3))));
 
 
         if(!empty($Category)) {
@@ -85,7 +87,8 @@ class CategoriesController extends AppController {
         $Category_check = $this->Category->find('first', array(
                             'conditions' => array(
                                   'Category.parent_id' => $this->request->data['Category']['parent_id'],
-                                  'Category.category_name' => trim($this->request->data['Category']['category_name']))));
+                                  'Category.category_name' => trim($this->request->data['Category']['category_name']),
+                              'NOT' => array('Category.status' => 3))));
 
         if(!empty($Category_check)) {
             $this->Session->setFlash('<p>'.__('Unable to add your Category', true).'</p>', 'default', 
@@ -127,10 +130,11 @@ class CategoriesController extends AppController {
   public function admin_subCatEdit($id=null){   
     if(!empty($this->request->data['Category']['category_name'])) {
         $category    = $this->Category->find('all',array(
-            'conditions'=>array(
-                'Category.category_name'=>$this->request->data['Category']['category_name'],
-                'NOT'=>array('Category.id'=>$this->request->data['Category']['id'],
-                    'Category.parent_id'=>$this->request->data['Category']['parent_id']))
+                                'conditions'=>array(
+                                    'Category.category_name'=>$this->request->data['Category']['category_name'],
+                                    'NOT'=>array('Category.id'=>$this->request->data['Category']['id'],
+                                              'Category.parent_id'=>$this->request->data['Category']['parent_id'],
+                                              'Category.status' => 3))
         ));
           if(!empty($Category)) {
             $this->Session->setFlash('<p>'.__('Unable to add your Category', true).'</p>', 'default', 
@@ -188,9 +192,9 @@ class CategoriesController extends AppController {
    $this->layout  = 'assets'; 
     if($this->request->is('post')) {
           $Category_check = $this->Category->find('all',array(
-                                    'conditions'=>array(
-                                    'Category.category_name'=>
-                                    trim($this->request->data['Category']['category_name']))));
+                              'conditions'=>array('Category.category_name'=>
+                                                    trim($this->request->data['Category']['category_name']),
+                                  'NOT' => array('Category.status' => 3))));
           if(!empty($Category_check)) {
             $this->Session->setFlash('<p>'.__('Unable to add your Category', true).'</p>', 'default', 
                                               array('class' => 'alert alert-danger'));
@@ -217,11 +221,13 @@ class CategoriesController extends AppController {
   public function store_edit($id = null) {
    $this->layout  = 'assets';
     if(!empty($this->request->data['Category']['category_name'])) {
-        $Category = $this->Category->find('all',array(
-                                'conditions'=>array(
-                                'OR'=>array(array(
-                                'Category.category_name'=>
-                            trim($this->request->data['Category']['category_name']))))));
+        $Category = $this->Category->find('first', array(
+                      'conditions' => array(
+                            'Category.parent_id' => 0,
+                            'Category.category_name' => trim($this->request->data['Category']['category_name']),
+                            'NOT' => array('Category.id' =>$this->request->data['Category']['id'],
+                                            'Category.status' => 3))));
+
         if(!empty($Category)) {
             $this->Session->setFlash('<p>'.__('Unable to add your Category', true).'</p>', 'default', 
                                           array('class' => 'alert alert-danger'));
@@ -244,9 +250,10 @@ class CategoriesController extends AppController {
     $this->set('Category_list',$Category_list);
     if($this->request->is('post')) {
         $Category_check = $this->Category->find('first', array(
-                                        'conditions' => array(
+                              'conditions' => array(
                                             'Category.parent_id' => $this->request->data['Category']['parent_id'],
-                                            'Category.category_name' => trim($this->request->data['Category']['category_name']))));
+                                            'Category.category_name' => trim($this->request->data['Category']['category_name']),
+                                'NOT' => array('Category.status' => 3))));
         if(!empty($Category_check)) {
             $this->Session->setFlash('<p>'.__('Unable to add your Category', true).'</p>', 'default', 
                                               array('class' => 'alert alert-danger'));
@@ -275,7 +282,9 @@ class CategoriesController extends AppController {
         $category    = $this->Category->find('all',array(
                             'conditions'=>array(
                                 'Category.category_name'=>$this->request->data['Category']['category_name'],
-                            'NOT'=>array('Category.id'=>$this->request->data['Category']['id'],'Category.parent_id'=>$this->request->data['Category']['parent_id']))
+                            'NOT'=>array('Category.id'=>$this->request->data['Category']['id'],
+                                          'Category.parent_id'=>$this->request->data['Category']['parent_id'],
+                                          'Category.status' => 3))
         ));
           if(!empty($Category)) {
             $this->Session->setFlash('<p>'.__('Unable to add your Category', true).'</p>', 'default', 

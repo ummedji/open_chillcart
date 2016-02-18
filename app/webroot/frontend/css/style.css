@@ -1,0 +1,300 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
+* {
+	margin: 0;
+	padding: 0;
+	font-family: 'Open Sans', sans-serif;
+}
+
+body {
+	background-image: url("../images/banner.jpg");
+	background-attachment: fixed;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: cover; 
+	text-align: center;
+}
+
+
+
+/*#overlay {
+	background-color: rgba(0,0,0,0.6);
+	width: 100%;
+	height: 100vh;
+	text-align: center;
+}*/
+
+.clear { clear: both; }
+
+#logo {
+	float: left;
+	width: 300px;
+	height: 70px;
+	margin-top : 10px;
+	margin-left: 20px;
+	background-position: left-side;
+	background-repeat: no-repeat;
+	background-image: url("../images/chillcart.png");
+	background-size: cover; 
+}
+header ul { 
+	float: right; 
+	margin-top: 30px; 
+}
+
+header  ul li {
+	display: inline-block;
+	float: left; 
+	margin: 0 20px; 
+	list-style: none; 
+
+}
+
+header  ul li a {
+		text-decoration: none; 
+		display: block; 
+		color: #f2f2f2!important;
+}
+
+header  ul li a:after { 
+	content: ''; 
+	display: block; 
+	height: 2.5px; 
+	width: 0; 
+	background: transparent; 
+	transition: width .5s ease;
+	background-color .5s ease; 
+}
+
+header  ul li a:HOVER:after { 
+	width: 100%; 
+	background: #00AEEF; 
+}
+
+#searchBar {
+	display: inline-block;
+	padding: 50px 30px;
+	/*-webkit-border-radius: 1px;*/
+	margin-top: 10%;
+}
+
+#searchBar h3 {
+	font-size: 35px;
+	color: #00AEEF;
+}
+
+#searchBar h3 p {
+	font-size: 16px;
+	color: #ffffff;
+	font-weight:normal;
+}
+
+#searchBar select {
+	line-height: 39px;
+	font-size: 16px;
+	padding: 10px;
+	width: 350px;
+	border-width:thin;
+	border-radius: 1px;
+	/*-webkit-border-radius: 1px;*/
+	margin-top: 40px;
+	float:left;
+	/*-webkit-appearance: none;*/
+	-moz-appearance:none;
+	text-indent:0.01px;
+	text-overflow: ' ';
+/*	background-image:url("../images/down.png");
+	background-repeat:no-repeat;
+	background-position:right center;*/
+}
+
+#searchBar button /*#tryBtn*/ {
+	background-color: #00AEEF;
+	border: none;
+	padding: 11px 20px;
+	font-size: 18px;
+	color: #ffffff;
+	border-radius: 1px;
+   -webkit-border-radius: 1px;
+	cursor: pointer;
+	margin-top: 40px;
+	float:left;
+}
+
+#searchBar button:HOVER {
+	background-color: #0096cc;
+}
+
+#tryBtn {
+	display: inline-block;
+	text-decoration: none;
+	font-size: 14px;
+	margin-top: 20px;
+}
+
+#video {
+	display: inline-block;
+	margin-bottom: 100px;
+}
+
+#video p {  
+	display: inline-block;
+	font-size: 14px;
+	color: #ffffff;
+	font-weight:normal;
+	margin-right:7px;
+}
+#video #vidImg {
+	display: inline-block;
+	vertical-align: middle;
+	width:50px;
+	height:35px; 
+	background-image: url("../images/video2.png");
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: cover; 
+}
+
+#video:HOVER #vidImg { background-image: url("../images/video.png"); }
+
+#close {
+	cursor: pointer;
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	background-image: url("../images/cross.svg");
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	display: inline-block;
+	width: 25px;
+	height: 25px; 
+}
+
+#howItWork {
+	background-color: rgba(255,255,255,1);
+	width: 100%; 
+	padding: 30px 0;
+	position: absolute;
+	left: 0;
+	top: -700px;
+	-webkit-transition-property: 	-webkit-transform opacity;
+	-webkit-animation-timing-function: ease-in;
+	-webkit-transition-duration: 0.6s;
+	-webkit-transition-delay: 0s;
+	-moz-transition-property: -moz-transform opacity;
+	-moz-animation-timing-function: ease-in;
+	-moz-transition-duration: 0.6s;
+	-moz-transition-delay: 0s;
+	-ms-transition-property: -ms-transform opacity;
+	-ms-animation-timing-function: ease-in;
+	-ms-transition-duration: 0.6s;
+	-ms-transition-delay: 0s;
+	-o-transition-property: -o-transform opacity;
+	-o-animation-timing-function: ease-in;
+	-o-transition-duration: 0.6s;
+	-o-transition-delay: 0s;
+}
+
+#howItWork.active { 
+	top: 0;
+	-webkit-transition-property: 	-webkit-transform opacity;
+	-webkit-animation-timing-function: ease-in;
+	-webkit-transition-duration: 0.6s;
+	-webkit-transition-delay: 0s;
+	-moz-transition-property: -moz-transform opacity;
+	-moz-animation-timing-function: ease-in;
+	-moz-transition-duration: 0.6s;
+	-moz-transition-delay: 0s;
+	-ms-transition-property: -ms-transform opacity;
+	-ms-animation-timing-function: ease-in;
+	-ms-transition-duration: 0.6s;
+	-ms-transition-delay: 0s;
+	-o-transition-property: -o-transform opacity;
+	-o-animation-timing-function: ease-in;
+	-o-transition-duration: 0.6s;
+	-o-transition-delay: 0s; 
+}
+
+#howItWork h2 {
+	color: #00AEEF;
+	margin-bottom: 5px;
+}
+
+#howItWork p {
+	margin-bottom: 10px;
+}
+
+#howItWork aside {
+	display: inline-block;
+	vertical-align: top;
+	width: 250px;
+	margin: 30px 20px;
+	background-color: #ffffff;
+	padding-bottom: 10px;
+	border: 5px;
+	border-color: #8dc543;
+}
+
+#howItWork aside img { width: 60%; margin-bottom: 10px; margin-top: 30px; }
+
+#howItWork aside h3 {
+	font-size: 16px;
+	color: #00ADEE;
+}
+
+#howItWork aside p {
+	padding: 5px;
+	font-size: 12px;
+	margin-bottom: 1px;
+}
+
+footer { text-align: center; width: 100%; position: fixed; left: 0; bottom: 0; }
+
+footer ul { display: inline-block;}
+
+footer ul li { float: left; list-style: none; margin: 0 20px; }
+
+footer ul li a { text-decoration: none; color: #ffffff; font-size: 14px; }
+
+#facebook, #twitter, #gplus, #youtube {
+	display: inline-block;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	width: 30px;
+	height: 30px; 
+	margin: 10px;
+}
+
+#facebook { background-image: url("../images/facebook.svg"); }
+
+#twitter { background-image: url("../images/twitter.svg"); }
+
+#gplus { background-image: url("../images/google-plus.svg"); }
+
+#youtube { background-image: url("../images/youtube.svg"); }
+
+#txtAni ul li {
+	display: none;
+	position: relative;
+	list-style: none;
+}
+
+#txtAni ul li:first-child {	display: block; }
+
+#txtAni ul li:first-child img {
+	margin-left: -450px;
+}
+
+#txtAni ul li:nth-child(2) img {
+	margin-left: -200px;
+}
+
+#txtAni ul li:nth-child(3) img {
+	margin-left: 100px;
+}
+
+#txtAni ul li:last-child img {
+	margin-left: 410px;
+}

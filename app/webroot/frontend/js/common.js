@@ -3,7 +3,13 @@ setTimeout(function(){
     $('#flashMessage').fadeOut();
 },3000);
 
+		
+
 $(document).ready(function(){
+						   
+	$(".title-filter").click(function(){
+		$(".searchMenuFormList").toggleClass("in");
+	});
 
 	var extensions = {
 
@@ -177,24 +183,13 @@ $(document).ready(function(){
             return false;
         }
    });
-
-
-
-
-
-
-
-
-
-
-
 	
 });
 
 function locationList() {
 	var id = $('#city').val();
 	$.post(rp+'searches/locations',{'id':id, 'model':'Location'}, function(response) {
-		$("#location").html(response).selectpicker('refresh');
+		$("#location").html(response);
 	});
 }
 

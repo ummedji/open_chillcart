@@ -8,7 +8,7 @@ class CustomersController extends AppController {
   public $uses       = array('Customer','User','CustomerAddressBook','City',
                               'Location','State','Order','ShoppingCart',
                               'StripeCustomer', 'Status','ProductImage', 'Notification','Review');
-  public $components = array('Updown','Functions','Mpdf');
+  public $components = array('Updown','Functions','Mpdf', 'CakeS3');
   /**
    * CustomersController::admin_index()
    * Admin View CustomerManagement
@@ -33,9 +33,8 @@ class CustomersController extends AppController {
     if ($id == null) {
         $this->redirect(array('controller' => 'Customers','action' => 'index'));
     } else {
-        $addressbook_list = $this->CustomerAddressBook->find('all',array(
-                                                            'conditions'=>array(
-                                                            'CustomerAddressBook.customer_id'=>$id)));    
+        $addressbook_list = $this->CustomerAddressBook->find('all', array(
+                                   'conditions'=>array('CustomerAddressBook.customer_id'=>$id)));    
          $this->set("addressbook_list",$addressbook_list);        
     }
   }
@@ -46,7 +45,12 @@ class CustomersController extends AppController {
    */
   public function admin_add(){
     if (!empty($this->request->data['Customer']['customer_email'])) {
-      $user  = $this->User->findByUsernameAndRoleId($this->request->data['Customer']['customer_email'],4); 
+      //$user  = $this->User->findByUsernameAndRoleId($this->request->data['Customer']['customer_email'],4);
+
+      $user = $this->User->find('first', array(
+                      'conditions' => array('User.username' => trim($this->request->data['Customer']['customer_email']),
+                                             'User.role_id' => 4,
+                              'NOT' => array('Customer.status' => 3))));
       if(!empty($user)) {
         $this->Session->setFlash('<p>'.__('Already Exists Users', true).'</p>', 'default', 
                                             array('class' => 'alert alert-danger'));
@@ -109,7 +113,8 @@ class CustomersController extends AppController {
       $customerEmailCheck = $this->User->find('first', array(
                                   'conditions'=>array(
                                   'User.username'=>trim($this->request->data['Customer']['customer_email']),
-                                   'NOT' => array('User.id' => $customer['User']['id']))));
+                                   'NOT' => array('User.id' => $customer['User']['id'],
+                                                  'Customer.status' => 3))));
 
         if(!empty($customerEmailCheck)) {
             $this->Session->setFlash('<p>'.__('User Email Already Exists', true).'</p>', 'default', 
@@ -190,22 +195,24 @@ class CustomersController extends AppController {
    */
   public function customer_myaccount() {   
     $this->layout        = 'frontend';
-    if(!empty($this->request->data['Customer']['first_name'])) {      
-            if (!empty($this->request->data['Customer']['image']['name'])) {
-                 $logoPath = WWW_ROOT."Customers";
-                 $flagname = $this->Updown->uploadFile($this->request->data['Customer']['image'],$logoPath);
-                 //echo "<pre>";print_r($flagname);echo "</pre>";die();
-                 $this->request->data['Customer']['image'] = $flagname['refName'];
-                 $this->Customer->save($this->request->data,null,null);
-            }  else {
-                 $get_data  = $this->Customer->findById($this->request->data['Customer']['id']);
-                 $this->request->data['Customer']['image']    = $get_data['Customer']['image'];
-                 $this->Customer->save($this->request->data['Customer'],null,null);
-            }
-           
-            $this->Session->setFlash('<p>'.__('Your detail has been updated', true).'</p>', 'default', 
-                                              array('class' => 'alert alert-success'));
-            $this->redirect(array('controller' => 'Customers','action' => 'myaccount'));   
+    if(!empty($this->request->data['Customer']['first_name'])) {
+      if (!empty($this->request->data['Customer']['image']['name'])) {
+        $imagesizedata = getimagesize($this->request->data['Customer']['image']['tmp_name']);
+        if ($imagesizedata) {
+          $customerImagePathS3  = 'Customers/';
+          $newName    = str_replace(" ","-", time().'.'.$this->request->data['Customer']['first_name']); 
+          $result = $this->CakeS3->putObject($this->request->data['Customer']['image']['tmp_name'], $customerImagePathS3.$newName, S3::ACL_PUBLIC_READ);
+          $this->request->data['Customer']['image'] = $newName;
+        }
+      }  else {
+         $this->request->data['Customer']['image']    = $this->request->data['Customer']['org_logo'];
+      }
+
+      $this->Customer->save($this->request->data,null,null);
+
+      $this->Session->setFlash('<p>'.__('Your detail has been updated', true).'</p>', 'default', 
+                                        array('class' => 'alert alert-success'));
+      $this->redirect(array('controller' => 'Customers','action' => 'myaccount'));   
     }
     if(!empty($this->request->data['review']['rating'])){      
       $order_info     = $this->Order->findById($this->request->data['review']['id']);
@@ -228,32 +235,28 @@ class CustomersController extends AppController {
                                           array('class' => 'alert alert-danger'));
              $this->redirect(array('controller' => 'Customers','action' => 'myaccount'));
 
-      }   
-
+      }
     }    
-    $ids                 = $this->Auth->User();
-    $getStateData        = $this->User->findById($ids['id']);
-    $order_detail        = $this->Order->find('all', array(
-                                      'conditions'=> array(
-                                                'Order.customer_id'=>$ids['Customer']['id'],
+    $ids           = $this->Auth->User();
+    $getStateData  = $this->User->findById($ids['id']);
+    $order_detail  = $this->Order->find('all', array(
+                                      'conditions'=> array('Order.customer_id'=>$ids['Customer']['id'],
                                             'NOT' => array('Order.status' => 'Deleted')),
                                     'order'=>array('Order.id DESC')));
 
-    $addressBook         = $this->CustomerAddressBook->find('all',array(
+    $addressBook   = $this->CustomerAddressBook->find('all',array(
                                             'conditions'=>array(
                                             'CustomerAddressBook.customer_id'=>$ids['Customer']['id'],
                                             'NOT'=>array('CustomerAddressBook.status'=>3))));
-    $Stripe_detail       = $this->StripeCustomer->find('all',array(
+    $Stripe_detail = $this->StripeCustomer->find('all',array(
                                             'conditions'=>array(
-                                            'StripeCustomer.customer_id'=>$ids['Customer']['id']))
-                                            );
+                                            'StripeCustomer.customer_id'=>$ids['Customer']['id'])));
     $this->request->data = $getStateData;
-    $country             =  $this->siteSetting;
-    $country_id          = $country['Sitesetting']['site_country'];
-    $state_list          =  $this->State->find('list',array(
-                                               'conditions'=>array(
-                                               'State.country_id'=>$country_id),
-                                                'fields'=>array('State.id','State.state_name')));                                                      
+    $country      = $this->siteSetting;
+    $country_id   = $country['Sitesetting']['site_country'];
+    $state_list   = $this->State->find('list',array(
+                        'conditions'=>array('State.country_id'=>$country_id),
+                        'fields'=>array('State.id','State.state_name')));                                                      
     $this->set(compact('state_list','addressBook','order_detail','Stripe_detail'));
   }
 
@@ -536,7 +539,7 @@ class CustomersController extends AppController {
             $output.='<tr style="font:normal 14px Arial">
                     <td style="border-bottom:1px solid #ccc; padding:15px">'. $sNo.'</td>
                     <td style="border-bottom:1px solid #ccc; padding:15px">'.	$value['product_name'] .'</td>
-                    <td><img src=" '.$this->siteUrl.'/stores/'.$value['store_id'].'/products/carts/'.$value['product_image'].' " onerror="this.onerror=null;this.src=" '. $this->siteUrl.' "/images/noimage.jpg" ""/></td>
+                    <td><img src="https://s3.amazonaws.com/'.$this->siteBucket.'/stores/products/carts/'.$value['product_image'].' " onerror="this.onerror=null;this.src="'.$this->siteUrl.'"/images/noimage.jpg" ""/></td>
                     <td style="border-bottom:1px solid #ccc; padding:15px">'.	$value['product_quantity'].' </td>
                     <td align="right" style="border-bottom:1px solid #ccc; padding:15px">'. $this->siteCurrency.' '.$value['product_price'].' </td>
                     <td align="right" style="border-bottom:1px solid #ccc; padding:15px">'.$this->siteCurrency.' '.$value['product_total_price'].' </td>

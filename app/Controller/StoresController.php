@@ -8,7 +8,7 @@ class StoresController extends AppController {
 	public $uses       = array('Store', 'User', 'State', 'City', 'Location',
                                'TimeSlot', 'DeliveryTimeSlot', 'DeliveryLocation',
                                'Notification');
-	public $components = array('Updown', 'Googlemap','Functions');
+	public $components = array('Updown', 'Googlemap','Functions', 'CakeS3');
 
 
 	public function beforeFilter() {
@@ -64,7 +64,6 @@ class StoresController extends AppController {
 
 				$storeArrray = $this->request->data;
 
-
 				if ($this->siteSetting['Sitesetting']['search_by'] == 'zip') {
 
 					$storeAddress = $storeArrray['Store']['street_address'].', '.
@@ -72,7 +71,6 @@ class StoresController extends AppController {
 										$this->storeState[$storeArrray['Store']['store_state']].' '.
 										$this->storeLocation[$storeArrray['Store']['store_zip']].', '.
 										$this->siteSetting['Country']['country_name'];
-
 
 				} else {
 					$storeAddress = $storeArrray['Store']['street_address'].', '.
@@ -83,20 +81,31 @@ class StoresController extends AppController {
 				}
 
 				$latLong = $this->Googlemap->getlatitudeandlongitude($storeAddress);
-
 				$storeArrray['Store']['latitude']  = $latLong['lat'];
 				$storeArrray['Store']['longitude'] = $latLong['long'];
 
 
-				$storeArrray['Store']['seo_url'] = $this->Functions->seoUrl($this->request->data['Store']['store_name']);
+				$storeArrray['Store']['seo_url'] = 
+								$this->Functions->seoUrl($this->request->data['Store']['store_name']);
 				$storeArrray['User']['role_id'] = 3;
 				$storeArrray['User']['password'] = $this->Auth->password($storeArrray['User']['password']);
 				if ($this->User->save($storeArrray, null, null)) {
 					$storeArrray['Store']['user_id'] = $this->User->id;				
 					$destinationPath = WWW_ROOT.'storelogos';
 		            if ($storeArrray['Store']['store_logo']['error'] == 0) {
-		                $refFile = $this->Updown->uploadFile($storeArrray['Store']['store_logo'],$destinationPath);
-		                $storeArrray['Store']['store_logo'] = $refFile['refName'];
+
+		            	$imagesizedata = getimagesize($this->request->data['Store']['store_logo']['tmp_name']);
+						if ($imagesizedata) {
+
+			                /*$refFile = $this->Updown->uploadFile($storeArrray['Store']['store_logo'],$destinationPath);
+			                $storeArrray['Store']['store_logo'] = $refFile['refName'];*/
+
+			                $storelogosPathS3  = 'storelogos/';
+							$newName    = str_replace(" ","-", time().'.'.$storeArrray['Store']['store_logo']['name']); 
+			                $result = $this->CakeS3->putObject($storeArrray['Store']['store_logo']['tmp_name'], $storelogosPathS3.$newName, S3::ACL_PUBLIC_READ);
+			                $storeArrray['Store']['store_logo'] = $newName;
+			            }
+
 		            } else {
 		            	$storeArrray['Store']['store_logo'] = '';
 		            }
@@ -207,8 +216,6 @@ class StoresController extends AppController {
 										$this->storeState[$storeArrray['Store']['store_state']].' '.
 										$this->storeLocation[$storeArrray['Store']['store_zip']].', '.
 										$this->siteSetting['Country']['country_name'];
-
-
 				} else {
 					$storeAddress = $storeArrray['Store']['street_address'].', '.
 										$this->storeLocation[$storeArrray['Store']['store_zip']].', '.
@@ -229,8 +236,12 @@ class StoresController extends AppController {
 
 		            	$imagesizedata = getimagesize($this->request->data['Store']['store_logo']['tmp_name']);
 						if ($imagesizedata) {
-			                $refFile = $this->Updown->uploadFile($storeArrray['Store']['store_logo'],$destinationPath);
-			                $storeArrray['Store']['store_logo'] = $refFile['refName'];
+			                //$refFile = $this->Updown->uploadFile($storeArrray['Store']['store_logo'],$destinationPath);
+
+							$storelogosPathS3  = 'storelogos/';
+							$newName    = str_replace(" ","-", time().'.'.$storeArrray['Store']['store_name']); 
+			                $result = $this->CakeS3->putObject($storeArrray['Store']['store_logo']['tmp_name'], $storelogosPathS3.$newName, S3::ACL_PUBLIC_READ);
+			                $storeArrray['Store']['store_logo'] = $newName;
 			            }
 		            } else {
 		            	$storeArrray['Store']['store_logo'] = $storeArrray['Store']['org_logo'];
@@ -259,8 +270,8 @@ class StoresController extends AppController {
 								$this->DeliveryTimeSlot->id = '';
 							}
 						}
-						$this->Session->setFlash('<p>'.__('Successfully Store has been Updated', true).'</p>', 'default', 
-										                  	array('class' => 'alert alert-success'));
+						$this->Session->setFlash('<p>'.__('Successfully Store has been Updated', true).'</p>',
+													'default', array('class' => 'alert alert-success'));
 						$this->redirect(array('controller' => 'stores', 'action' => 'index', 'admin' => true));
 					}
 				}
@@ -268,30 +279,29 @@ class StoresController extends AppController {
 		}
 		$getStoreData = $this->Store->findById($id);
 		$this->set('states', $this->State->find('list', array(
-												'conditions' => array('State.status' => 1,
-													'State.country_id' => $this->siteSetting['Sitesetting']['site_country']),
-                                                'fields' => array('id', 'state_name'))));
+								'conditions' => array('State.status' => 1,
+											'State.country_id' => $this->siteSetting['Sitesetting']['site_country']),
+                                'fields' => array('id', 'state_name'))));
 		$this->set('cities', $this->City->find('list', array(
-    								             'conditions' => array('City.status' => 1,
-                                                 'City.state_id' => $getStoreData['Store']['store_state']),
-                                                 'fields' => array('id', 'city_name'))));
+    							'conditions' => array('City.status' => 1,
+                                            'City.state_id' => $getStoreData['Store']['store_state']),
+                                'fields' => array('id', 'city_name'))));
 		
 		if ($this->siteSetting['Sitesetting']['search_by'] == 'zip') {
 			$this->set('locations', $this->Location->find('list', array(
-											  'conditions' => array('Location.status' => 1,
-                                              'Location.city_id' => $getStoreData['Store']['store_city']),
-											  'fields' => array('id', 'zip_code'))));
+								'conditions' => array('Location.status' => 1,
+                                            'Location.city_id' => $getStoreData['Store']['store_city']),
+								'fields' => array('id', 'zip_code'))));
 		} else {
 			$this->set('locations', $this->Location->find('list', array(
-								            	'conditions' => array('Location.status' => 1,
-                                                'Location.city_id' => $getStoreData['Store']['store_city']),
-									            'fields' => array('id', 'area_name'))));
+								'conditions' => array('Location.status' => 1,
+											'Location.city_id' => $getStoreData['Store']['store_city']),
+								'fields' => array('id', 'area_name'))));
 		}
 		$this->set('timeslots', $this->TimeSlot->find('all'));
 		$this->set('selected',  $this->DeliveryLocation->find('list', array(
-												                'conditions' => array(
-                                                                'DeliveryLocation.store_id' => $getStoreData['Store']['id']),
-											                 	'fields' => array('id', 'location_id')))
+								'conditions' => array('DeliveryLocation.store_id' => $getStoreData['Store']['id']),
+								'fields' => array('id', 'location_id')))
                     );
 		$this->request->data = $getStoreData;
 	}
@@ -387,8 +397,12 @@ class StoresController extends AppController {
 
 		            	$imagesizedata = getimagesize($this->request->data['Store']['store_logo']['tmp_name']);
 						if ($imagesizedata) {
-			                $refFile = $this->Updown->uploadFile($this->request->data['Store']['store_logo'],$destinationPath);
-			                $this->request->data['Store']['store_logo'] = $refFile['refName'];
+			                /*$refFile = $this->Updown->uploadFile($this->request->data['Store']['store_logo'],$destinationPath);*/
+
+			                $storelogosPathS3  = 'storelogos/';
+							$newName    = str_replace(" ","-", time().'.'.$storeArrray['Store']['store_name']); 
+			                $result = $this->CakeS3->putObject($storeArrray['Store']['store_logo']['tmp_name'], $storelogosPathS3.$newName, S3::ACL_PUBLIC_READ);
+			                $this->request->data['Store']['store_logo'] = $newName;
 			            }
 
 		            } else {

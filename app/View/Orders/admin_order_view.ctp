@@ -194,14 +194,13 @@
 													<td>
 														<span class="col-md-12 no-padding">
 															<div class="pull-left">
-																<img class="tabel_img margin-r-10" alt="<?php echo $value['product_name']; ?>" src="<?php echo $siteUrl.'/stores/'.$value['store_id'].'/products/carts/'.$value['product_image']; ?>" title="<?php echo $value['Store']['store_name']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/noimage.jpg"; ?>'"> 
+																<img class="tabel_img margin-r-10" alt="<?php echo $value['product_name']; ?>" src="https://s3.amazonaws.com/<?php echo $siteBucket; ?>/stores/products/carts/<?php echo $value['product_image']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/noimage.jpg"; ?>'"> 
 															</div><?php
 															echo $value['product_name']; ?>
 															<br><?php
-															//if (!empty($value['product_description'])) { ?>
-
-																	<span class="table-addon colorgray"><?php echo $value['product_description']; ?></span> <?php
-																//} ?> 
+															if (!empty($value['product_description'])) { ?>
+																<span class="table-addon colorgray"><?php echo $value['product_description']; ?></span> <?php
+															} ?> 
 
 														</span> 
 													</td>
