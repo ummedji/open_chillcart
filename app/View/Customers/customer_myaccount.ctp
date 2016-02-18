@@ -91,13 +91,14 @@
 		                			<div class="col-md-12">
 				                		<?php
 					                        if(!empty($this->request->data['Customer']['image'])) { ?>
-					                            <img class="img-responsive customer_image"  src="https://s3.amazonaws.com/s3test56b888c6be37d/Customers/<?php echo $this->request->data['Customer']['image']; ?>" > <?php } else {
+					                            <img class="img-responsive customer_image"  src="https://s3.amazonaws.com/<?php echo $siteBucket.'/Customers/'.$this->request->data['Customer']['image']; ?>" > <?php 
+					                        } else {
 					                                echo "No Image Found";
 					                        }
 					                        echo $this->Form->input("Customer.image",
 					                                 				array("label"=>false,
-							                                                "type"=>"file",
-							                                                "class"=>"form-control textbox margin-t-15",
+							                                              "type"=>"file",
+							                                              "class"=>"form-control textbox margin-t-15",
 							                                               ));
 
 							                echo $this->Form->input('Customer.org_logo',

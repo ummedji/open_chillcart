@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Test App Comment Model
  *
@@ -18,10 +19,11 @@
  * @since         CakePHP v 1.2.0.7726
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Post extends AppModel {
+class Post extends AppModel
+{
 
-	public $useTable = 'posts';
+    public $useTable = 'posts';
 
-	public $name = 'Post';
+    public $name = 'Post';
 
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Testing task in a plugin
  *
@@ -16,6 +17,7 @@
  * @since         CakePHP(tm) v 2.0
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class OtherTaskTask extends Shell {
+class OtherTaskTask extends Shell
+{
 
 }

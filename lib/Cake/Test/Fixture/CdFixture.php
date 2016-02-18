@@ -22,33 +22,34 @@
  *
  * @package       Cake.Test.Fixture
  */
-class CdFixture extends CakeTestFixture {
+class CdFixture extends CakeTestFixture
+{
 
-/**
- * name property
- *
- * @var string 'Cd'
- */
-	public $name = 'Cd';
+    /**
+     * name property
+     *
+     * @var string 'Cd'
+     */
+    public $name = 'Cd';
 
-/**
- * fields property
- *
- * @var array
- */
-	public $fields = array(
-		'id' => array('type' => 'integer', 'key' => 'primary'),
-		'title' => array('type' => 'string', 'length' => 255),
-		'artist' => array('type' => 'string', 'length' => 255, 'null' => true),
-		'genre' => array('type' => 'string', 'length' => 255, 'null' => true)
-	);
+    /**
+     * fields property
+     *
+     * @var array
+     */
+    public $fields = array(
+        'id' => array('type' => 'integer', 'key' => 'primary'),
+        'title' => array('type' => 'string', 'length' => 255),
+        'artist' => array('type' => 'string', 'length' => 255, 'null' => true),
+        'genre' => array('type' => 'string', 'length' => 255, 'null' => true)
+    );
 
-/**
- * records property
- *
- * @var array
- */
-	public $records = array(
-		array('id' => 1, 'title' => 'Grace', 'artist' => 'Jeff Buckley', 'genre' => 'awesome')
-	);
+    /**
+     * records property
+     *
+     * @var array
+     */
+    public $records = array(
+        array('id' => 1, 'title' => 'Grace', 'artist' => 'Jeff Buckley', 'genre' => 'awesome')
+    );
 }

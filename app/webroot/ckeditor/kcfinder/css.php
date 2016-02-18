@@ -1,16 +1,16 @@
 <?php
 
 /** This file is part of KCFinder project
-  *
-  *      @desc Base CSS definitions
-  *   @package KCFinder
-  *   @version 2.51
-  *    @author Pavel Tzonkov <pavelc@users.sourceforge.net>
-  * @copyright 2010, 2011 KCFinder Project
-  *   @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
-  *   @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
-  *      @link http://kcfinder.sunhater.com
-  */
+ *
+ * @desc Base CSS definitions
+ * @package KCFinder
+ * @version 2.51
+ * @author Pavel Tzonkov <pavelc@users.sourceforge.net>
+ * @copyright 2010, 2011 KCFinder Project
+ * @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
+ * @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
+ * @link http://kcfinder.sunhater.com
+ */
 
 require "core/autoload.php";
 $mtime = @filemtime(__FILE__);
@@ -20,167 +20,167 @@ $config = $browser->config;
 ob_start();
 
 ?>
-html, body {
+    html, body {
     overflow: hidden;
-}
+    }
 
-body, form, th, td {
+    body, form, th, td {
     margin: 0;
     padding: 0;
-}
+    }
 
-a {
+    a {
     cursor:pointer;
-}
+    }
 
-* {
+    * {
     font-family: Tahoma, Verdana, Arial, sans-serif;
     font-size: 11px;
-}
+    }
 
-table {
+    table {
     border-collapse: collapse;
-}
+    }
 
-#all {
+    #all {
     vvisibility: hidden;
-}
+    }
 
-#left {
+    #left {
     float: left;
     display: block;
     width: 25%;
-}
+    }
 
-#right {
+    #right {
     float: left;
     display: block;
     width: 75%;
-}
+    }
 
-#settings {
+    #settings {
     display: none;
     padding: 0;
     float: left;
     width: 100%;
-}
+    }
 
-#settings > div {
+    #settings > div {
     float: left;
-}
+    }
 
-#folders {
+    #folders {
     padding: 5px;
     overflow: auto;
-}
+    }
 
-#toolbar {
+    #toolbar {
     padding: 5px;
-}
+    }
 
-#files {
+    #files {
     padding: 5px;
     overflow: auto;
-}
+    }
 
-#status {
+    #status {
     padding: 5px;
     float: left;
     overflow: hidden;
-}
+    }
 
-#fileinfo {
+    #fileinfo {
     float: left;
-}
+    }
 
-#clipboard div {
+    #clipboard div {
     width: 16px;
     height: 16px;
-}
+    }
 
-.folders {
+    .folders {
     margin-left: 16px;
-}
+    }
 
-div.file {
+    div.file {
     overflow-x: hidden;
     width: <?php echo $config['thumbWidth'] ?>px;
     float: left;
     text-align: center;
     cursor: default;
     white-space: nowrap;
-}
+    }
 
-div.file .thumb {
+    div.file .thumb {
     width: <?php echo $config['thumbWidth'] ?>px;
     height: <?php echo $config['thumbHeight'] ?>px;
     background: no-repeat center center;
-}
+    }
 
-#files table {
+    #files table {
     width: 100%;
-}
+    }
 
-tr.file {
+    tr.file {
     cursor: default;
-}
+    }
 
-tr.file > td {
+    tr.file > td {
     white-space: nowrap;
-}
+    }
 
-tr.file > td.name {
+    tr.file > td.name {
     background-repeat: no-repeat;
     background-position: left center;
     padding-left: 20px;
     width: 100%;
-}
+    }
 
-tr.file > td.time,
-tr.file > td.size {
+    tr.file > td.time,
+    tr.file > td.size {
     text-align: right;
-}
+    }
 
-#toolbar {
+    #toolbar {
     cursor: default;
     white-space: nowrap;
-}
+    }
 
-#toolbar a {
+    #toolbar a {
     padding-left: 20px;
     text-decoration: none;
     background: no-repeat left center;
-}
+    }
 
-#toolbar a:hover, a[href="#upload"].uploadHover {
+    #toolbar a:hover, a[href="#upload"].uploadHover {
     color: #000;
-}
+    }
 
-#upload {
+    #upload {
     position: absolute;
     overflow: hidden;
     opacity: 0;
     filter: alpha(opacity:0);
-}
+    }
 
-#upload input {
+    #upload input {
     cursor: pointer;
-}
+    }
 
-#uploadResponse {
+    #uploadResponse {
     display: none;
-}
+    }
 
-span.brace {
+    span.brace {
     padding-left: 11px;
     cursor: default;
-}
+    }
 
-span.brace.opened, span.brace.closed {
+    span.brace.opened, span.brace.closed {
     cursor: pointer;
-}
+    }
 
-#shadow {
+    #shadow {
     position: absolute;
     top: 0;
     left: 0;
@@ -189,69 +189,69 @@ span.brace.opened, span.brace.closed {
     z-index: 100;
     opacity: 0.7;
     filter: alpha(opacity:50);
-}
+    }
 
-#dialog, #clipboard, #alert {
+    #dialog, #clipboard, #alert {
     position: absolute;
     display: none;
     z-index: 101;
     cursor: default;
-}
+    }
 
-#dialog .box, #alert {
+    #dialog .box, #alert {
     max-width: 350px;
-}
+    }
 
-#alert {
+    #alert {
     z-index: 102;
-}
+    }
 
-#alert div.message {
+    #alert div.message {
     overflow-y: auto;
     overflow-x: hidden;
-}
+    }
 
-#clipboard {
+    #clipboard {
     z-index: 99;
-}
+    }
 
-#loading {
+    #loading {
     display: none;
     float: right;
-}
+    }
 
-.menu {
+    .menu {
     background: #888;
     white-space: nowrap;
-}
+    }
 
-.menu a {
+    .menu a {
     display: block;
-}
+    }
 
-.menu .list {
+    .menu .list {
     max-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
     white-space: nowrap;
-}
+    }
 
-.file .access, .file .hasThumb {
+    .file .access, .file .hasThumb {
     display: none;
-}
+    }
 
-#dialog img {
+    #dialog img {
     cursor: pointer;
-}
+    }
 
-#resizer {
+    #resizer {
     position: absolute;
     z-index: 98;
     top: 0;
     background: #000;
     opacity: 0;
     filter: alpha(opacity:0);
-}
+    }
 <?php
 header("Content-Type: text/css");
 echo text::compressCSS(ob_get_clean());

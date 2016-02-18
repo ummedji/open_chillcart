@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Test App Comment Model
  *
@@ -19,10 +20,11 @@
  * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-class TestPluginAuthors extends TestPluginAppModel {
+class TestPluginAuthors extends TestPluginAppModel
+{
 
-	public $useTable = 'authors';
+    public $useTable = 'authors';
 
-	public $name = 'TestPluginAuthors';
+    public $name = 'TestPluginAuthors';
 
 }

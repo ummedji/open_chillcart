@@ -1,25 +1,27 @@
 <?php
 
 /** This file is part of KCFinder project
-  *
-  *      @desc Directory helper class
-  *   @package KCFinder
-  *   @version 2.51
-  *    @author Pavel Tzonkov <pavelc@users.sourceforge.net>
-  * @copyright 2010, 2011 KCFinder Project
-  *   @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
-  *   @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
-  *      @link http://kcfinder.sunhater.com
-  */
+ *
+ * @desc Directory helper class
+ * @package KCFinder
+ * @version 2.51
+ * @author Pavel Tzonkov <pavelc@users.sourceforge.net>
+ * @copyright 2010, 2011 KCFinder Project
+ * @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
+ * @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
+ * @link http://kcfinder.sunhater.com
+ */
+class dir
+{
 
-class dir {
+    /** Checks if the given directory is really writable. The standard PHP
+     * function is_writable() does not work properly on Windows servers
+     * @param string $dir
+     * @return bool
+     */
 
-  /** Checks if the given directory is really writable. The standard PHP
-    * function is_writable() does not work properly on Windows servers
-    * @param string $dir
-    * @return bool */
-
-    static function isWritable($dir) {
+    static function isWritable($dir)
+    {
         $dir = path::normalize($dir);
         if (!is_dir($dir))
             return false;
@@ -33,18 +35,20 @@ class dir {
         return true;
     }
 
-  /** Recursively delete the given directory. Returns TRUE on success.
-    * If $firstFailExit parameter is true (default), the method returns the
-    * path to the first failed file or directory which cannot be deleted.
-    * If $firstFailExit is false, the method returns an array with failed
-    * files and directories which cannot be deleted. The third parameter
-    * $failed is used for internal use only.
-    * @param string $dir
-    * @param bool $firstFailExit
-    * @param array $failed
-    * @return mixed */
+    /** Recursively delete the given directory. Returns TRUE on success.
+     * If $firstFailExit parameter is true (default), the method returns the
+     * path to the first failed file or directory which cannot be deleted.
+     * If $firstFailExit is false, the method returns an array with failed
+     * files and directories which cannot be deleted. The third parameter
+     * $failed is used for internal use only.
+     * @param string $dir
+     * @param bool $firstFailExit
+     * @param array $failed
+     * @return mixed
+     */
 
-    static function prune($dir, $firstFailExit=true, array $failed=null) {
+    static function prune($dir, $firstFailExit = true, array $failed = null)
+    {
         if ($failed === null) $failed = array();
         $files = self::content($dir);
         if ($files === false) {
@@ -81,17 +85,19 @@ class dir {
         return count($failed) ? $failed : true;
     }
 
-  /** Get the content of the given directory. Returns an array with filenames
-    * or FALSE on failure
-    * @param string $dir
-    * @param array $options
-    * @return mixed */
+    /** Get the content of the given directory. Returns an array with filenames
+     * or FALSE on failure
+     * @param string $dir
+     * @param array $options
+     * @return mixed
+     */
 
-    static function content($dir, array $options=null) {
+    static function content($dir, array $options = null)
+    {
 
         $defaultOptions = array(
             'types' => "all",   // Allowed: "all" or possible return values
-                                // of filetype(), or an array with them
+            // of filetype(), or an array with them
             'addPath' => true,  // Whether to add directory path to filenames
             'pattern' => '/./', // Regular expression pattern for filename
             'followLinks' => true
@@ -145,7 +151,8 @@ class dir {
         return $files;
     }
 
-    static function fileSort($a, $b) {
+    static function fileSort($a, $b)
+    {
         if (function_exists("mb_strtolower")) {
             $a = mb_strtolower($a);
             $b = mb_strtolower($b);

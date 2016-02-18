@@ -6,54 +6,59 @@ App::uses('AppController', 'Controller');
 App::uses('Spreadsheet_Excel_Reader', 'Vendor');
 App::uses('File', 'Utility');
 
-class ProductsController extends AppController {
-    
-	var $helpers = array('Html', 'Session', 'Javascript', 'Ajax', 'Common');
-    
-	public $uses = array('Product','Category','Brand','Store','ProductDetail', 
-                      'ProductImage','User','Customer','Store');
+class ProductsController extends AppController
+{
 
-  public $components = array('Img', 'Updown', 'CakeS3');
-	/**
-	 * ProductsController::admin_index()
-	 * 
-	 * @return void
-	 */
-	public function admin_index($storeId = null) {
+    var $helpers = array('Html', 'Session', 'Javascript', 'Ajax', 'Common');
 
-    if ($storeId != '') {
-      $products_detail = $this->Product->find('all',array(
-                                  'conditions' => array('Product.store_id' => $storeId,
-                                          'NOT'=> array('Product.status'=>3)),
-                                  'order'=> array('Product.id DESC')));
-    } else {
-		  $products_detail = $this->Product->find('all',array(
-                                            'conditions'=>array('NOT'=>array('Product.status'=>3)),
-                                            'order'=>array('Product.id DESC')));
+    public $uses = array('Product', 'Category', 'Brand', 'Store', 'ProductDetail',
+        'ProductImage', 'User', 'Customer', 'Store');
+
+    public $components = array('Img', 'Updown', 'CakeS3');
+
+    /**
+     * ProductsController::admin_index()
+     *
+     * @return void
+     */
+    public function admin_index($storeId = null)
+    {
+
+        if ($storeId != '') {
+            $products_detail = $this->Product->find('all', array(
+                'conditions' => array('Product.store_id' => $storeId,
+                    'NOT' => array('Product.status' => 3)),
+                'order' => array('Product.id DESC')));
+        } else {
+            $products_detail = $this->Product->find('all', array(
+                'conditions' => array('NOT' => array('Product.status' => 3)),
+                'order' => array('Product.id DESC')));
+        }
+
+        $stores = $this->Store->find('list', array(
+            'conditions' => array('Store.status' => 1),
+            'fields' => array('Store.id', 'Store.store_name')));
+
+        $this->set(compact('products_detail', 'stores'));
     }
+    /**
+     * ProductsController::admin_add()
+     *
+     * @return void
+     */
+    //super admin add process
+    public function admin_add()
+    {
 
-    $stores = $this->Store->find('list', array(
-                                'conditions'  =>  array('Store.status'=>1),
-                                'fields'      =>  array('Store.id', 'Store.store_name')));
+        if (!empty($this->request->data['Product']['product_name'])) {
 
-		$this->set(compact('products_detail', 'stores'));
-	}
-  	/**
-	 * ProductsController::admin_add()
-	 * 
-	 * @return void
-	 */
-  //super admin add process
-	public function admin_add() {
+            $store_id = $this->request->data['Product']['store_id'];
 
-		if (!empty($this->request->data['Product']['product_name'])) {
-
-       		$store_id = $this->request->data['Product']['store_id'];
-            
             $Product_check = $this->Product->find('all', array(
-                      						'conditions'=>array('Product.product_name'=>
-                                                  trim($this->request->data['Product']['product_name']),
-                                                  'Product.store_id' => $store_id)));
+                'conditions' => array('Product.product_name' =>
+                        trim($this->request->data['Product']['product_name']),
+                                                  'Product.store_id' => $store_id,
+                                        'NOT' => array('Product.status' => 3))));
             if (!empty($Product_check)) {
 
                     $this->Session->setFlash('<p>'.__('Product already exists', true).'</p>', 'default', 
@@ -135,12 +140,10 @@ class ProductsController extends AppController {
                       @unlink($cartpath.$newName);
                       @unlink($$scrollimg.$newName);
                       @unlink($$prod_det_path.$newName);
-
                       $product_images['product_id']  = $this->Product->id;
                       $product_images['store_id']    = $store_id;
                       $product_images['image']       = $value['name'];
                       $product_images['image_alias'] = $newName;
-
                       $this->ProductImage->save($product_images);
                       $this->ProductImage->id = "";
                   	}
@@ -196,7 +199,9 @@ class ProductsController extends AppController {
                                       'conditions'=>array(
                                       'Product.product_name'=>trim($this->request->data['Product']['product_name']),
                                       'Product.store_id' => $store_id,
-                                      'NOT' => array('Product.id'=>$this->request->data['Product']['id']))));
+                                      'NOT' => array('Product.id'=>$this->request->data['Product']['id'],
+                                                      'Product.status' => 3))));
+
           if(!empty($product_check)) {
                 $this->Session->setFlash('<p>'.__('Product already exists', true).'</p>', 'default', 
                                                             array('class' => 'alert alert-danger'));
@@ -356,10 +361,10 @@ class ProductsController extends AppController {
       if (!empty($this->request->data['Product']['product_name'])) {              
               $Product_check = $this->Product->find('all', array(
                           'conditions'=>array('Product.product_name'=>trim($this->request->data['Product']['product_name']),
-                                                           'Product.store_id' => $store_id)));
-              //echo "<pre>";print_r($Product_check);die();
-              if (!empty($Product_check)) {
+                                              'Product.store_id' => $store_id,
+                                      'NOT' => array('Product.status' => 3))));
 
+              if (!empty($Product_check)) {
                       $this->Session->setFlash('<p>'.__('Product already exists', true).'</p>', 'default', 
                                                                 array('class' => 'alert alert-danger'));
               } else {
@@ -482,7 +487,8 @@ class ProductsController extends AppController {
                                       'conditions'=>array(
                                       'Product.product_name'=>trim($this->request->data['Product']['product_name']),
                                       'Product.store_id' => $store_id,
-                                      'NOT' => array('Product.id'=>$this->request->data['Product']['id']))));
+                                      'NOT' => array('Product.id'=>$this->request->data['Product']['id'],
+                                                      'Product.status' => 3))));
           if(!empty($product_check)) {
                 $this->Session->setFlash('<p>'.__('Product already exists', true).'</p>', 'default', 
                                                             array('class' => 'alert alert-danger'));
@@ -647,7 +653,8 @@ class ProductsController extends AppController {
               $product = $this->ProductDetail->find('first', array(
                             'conditions'=>array('Product.store_id' => $store_id,
                                         'OR' => array('Product.product_name' =>trim($value[1]),
-                                                      'ProductDetail.product_code' => $value[9]))));
+                                                      'ProductDetail.product_code' => $value[9]),
+                                        'NOT' => array('Product.status' => 3))));
               if(empty($product)) {
 
                 $product['id']                  = '';
@@ -751,7 +758,8 @@ class ProductsController extends AppController {
         $productId = $this->request->data['productId'];
         $batchCode = $this->ProductDetail->find('all', array(
                               'conditions' => array('Product.store_id' => $storeId,
-                                      'NOT' => array('Product.id' => $productId)),
+                                      'NOT' => array('Product.id' => $productId,
+                                                      'Product.status' => 3)),
                               'fields' => array('ProductDetail.product_code')));
 
         foreach ($batchCode as $key => $value) {

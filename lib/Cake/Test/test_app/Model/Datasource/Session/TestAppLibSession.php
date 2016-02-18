@@ -6,25 +6,32 @@
 
 App::uses('CakeSessionHandlerInterface', 'Model/Datasource/Session');
 
-class TestAppLibSession implements CakeSessionHandlerInterface {
+class TestAppLibSession implements CakeSessionHandlerInterface
+{
 
-	public function open() {
-		return true;
-	}
+    public function open()
+    {
+        return true;
+    }
 
-	public function close() {
-	}
+    public function close()
+    {
+    }
 
-	public function read($id) {
-	}
+    public function read($id)
+    {
+    }
 
-	public function write($id, $data) {
-	}
+    public function write($id, $data)
+    {
+    }
 
-	public function destroy($id) {
-	}
+    public function destroy($id)
+    {
+    }
 
-	public function gc($expires = null) {
-	}
+    public function gc($expires = null)
+    {
+    }
 
 }

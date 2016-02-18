@@ -7,7 +7,7 @@ class SilverStripeInstaller extends BaseInstaller
 {
     protected $locations = array(
         'module' => '{$name}/',
-        'theme'  => 'themes/{$name}/',
+        'theme' => 'themes/{$name}/',
     );
 
     /**
@@ -17,7 +17,7 @@ class SilverStripeInstaller extends BaseInstaller
      * must be installed to 'sapphire' and not 'framework' if the version is <3.0.0
      *
      * @param  PackageInterface $package
-     * @param  string           $frameworkType
+     * @param  string $frameworkType
      * @return string
      */
     public function getInstallPath(PackageInterface $package, $frameworkType = '')

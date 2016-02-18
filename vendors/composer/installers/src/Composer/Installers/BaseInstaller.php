@@ -14,7 +14,7 @@ abstract class BaseInstaller
      * Initializes base installer.
      *
      * @param PackageInterface $package
-     * @param Composer         $composer
+     * @param Composer $composer
      */
     public function __construct(PackageInterface $package = null, Composer $composer = null)
     {
@@ -26,7 +26,7 @@ abstract class BaseInstaller
      * Return the install path based on package type.
      *
      * @param  PackageInterface $package
-     * @param  string           $frameworkType
+     * @param  string $frameworkType
      * @return string
      */
     public function getInstallPath(PackageInterface $package, $frameworkType = '')
@@ -79,20 +79,29 @@ abstract class BaseInstaller
     }
 
     /**
-     * Gets the installer's locations
+     * Search through a passed paths array for a custom install path.
      *
-     * @return array
+     * @param  array $paths
+     * @param  string $name
+     * @param  string $type
+     * @return string
      */
-    public function getLocations()
+    protected function mapCustomInstallPaths(array $paths, $name, $type)
     {
-        return $this->locations;
+        foreach ($paths as $path => $names) {
+            if (in_array($name, $names) || in_array('type:' . $type, $names)) {
+                return $path;
+            }
+        }
+
+        return false;
     }
 
     /**
      * Replace vars in a path
      *
      * @param  string $path
-     * @param  array  $vars
+     * @param  array $vars
      * @return string
      */
     protected function templatePath($path, array $vars = array())
@@ -111,21 +120,12 @@ abstract class BaseInstaller
     }
 
     /**
-     * Search through a passed paths array for a custom install path.
+     * Gets the installer's locations
      *
-     * @param  array  $paths
-     * @param  string $name
-     * @param  string $type
-     * @return string
+     * @return array
      */
-    protected function mapCustomInstallPaths(array $paths, $name, $type)
+    public function getLocations()
     {
-        foreach ($paths as $path => $names) {
-            if (in_array($name, $names) || in_array('type:' . $type, $names)) {
-                return $path;
-            }
-        }
-
-        return false;
+        return $this->locations;
     }
 }

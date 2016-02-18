@@ -63,18 +63,42 @@ class CakeS3Component extends Component
             foreach ($settings as $var => $val) {
                 $this->$var = $val;
             }
-        } else if($config = Configure::read('CakeS3')) {
+        } else if ($config = Configure::read('CakeS3')) {
             foreach ($config as $var => $val) {
                 $this->$var = $val;
             }
         }
-        
+
         if (empty($this->s3Key) || empty($this->s3Secret)) {
             throw new Exception('S3 Keys not set up. Unable to connect');
         }
         S3::setAuth($this->s3Key, $this->s3Secret);
 
         S3::setEndpoint($this->endpoint);
+    }
+
+    public static function createSafeFilename($input)
+    {
+        if ($input) {
+
+            //decode entities and make lowercase
+            $input = strtolower(str_replace(' ', '_', html_entity_decode($input)));
+
+            //remove ™ symbols
+            $input = str_replace(array('™', '"', "'"), '', $input);
+
+            //remove any unwanted chars
+            //$input = preg_replace('/[^a-zA-Z0-9\.]/', '_', $input);
+            $input = preg_replace("'\s+'", '_', $input);
+
+            //remove double _
+            while (strpos($input, '__')) {
+                $input = str_replace('__', '_', $input);
+            }
+            //remove trailing _
+            $input = trim($input, '_');
+        }
+        return $input;
     }
 
     /**
@@ -114,6 +138,42 @@ class CakeS3Component extends Component
     }
 
     /**
+     * create a new "folder" (prefix) - wrapper for putObject function
+     *
+     * @param string $destination - relative path to bucket - where the folder should be created,
+     *                   if the destination is the bucket itself, false should be provided
+     * @param string $folderName - name of the folder, that should be created
+     * @param string $permission - the access permissions the file should have, defaults to Public Read Acess
+     * @return mixed - returns an array with details of the uploaded file on S3 for success, FALSE on failure
+     */
+    public function createFolder($destination = false, $folderName, $permission = self::ACL_PUBLIC_READ)
+    {
+        if (!$folderName) {
+            throw new CakeException('Folder name is required');
+        }
+
+        if ($destination && $destination != '/') {
+            $destination = trim($destination, "/") . '/';
+        } else {
+            $destination = '';
+        }
+
+        $locationOnS3 = $destination . trim($folderName, "/") . '/';
+
+        // create temp file
+        $filePathToUpload = APP . 'tmp/' . md5(microtime(true) . $locationOnS3);
+        $f = fopen($filePathToUpload, 'a+');
+        fclose($f);
+
+        $result = $this->putObject($filePathToUpload, $locationOnS3, $permission);
+
+        // delete tmp file
+        @unlink($filePathToUpload);
+
+        return $result;
+    }
+
+    /**
      * push a file to a location on S3 based on a path from the local server that this plugin
      * is running on.
      * @param string $filePathToUpload - absolute path to local file that needs to be uploaded
@@ -130,48 +190,37 @@ class CakeS3Component extends Component
             S3::putObject(S3::inputFile($filePathToUpload), $this->bucket, $locationOnS3, $permission, array(), $mimeType);
             $info = $this->getObjectInfo($locationOnS3);
             return array(
-                    'name' => basename($locationOnS3),
-                    'url' => $this->buildUrlToFile($locationOnS3),
-                    'size' => $info['size']
+                'name' => basename($locationOnS3),
+                'url' => $this->buildUrlToFile($locationOnS3),
+                'size' => $info['size']
             );
         } catch (Exception $e) {
             return false;
         }
     }
-    
+
     /**
-     * create a new "folder" (prefix) - wrapper for putObject function
-     * 
-     * @param string $destination - relative path to bucket - where the folder should be created, 
-     * 				   if the destination is the bucket itself, false should be provided 
-     * @param string $folderName - name of the folder, that should be created
-     * @param string $permission - the access permissions the file should have, defaults to Public Read Acess
-     * @return mixed - returns an array with details of the uploaded file on S3 for success, FALSE on failure
+     * get information about an object in the current S3 bucket
+     * @param string $locationOnS3 - path the file should have on S3 relative to the current bucket
+     * @return array
      */
-    public function createFolder($destination = false, $folderName, $permission = self::ACL_PUBLIC_READ) {
-    	if (!$folderName) {
-    		throw new CakeException('Folder name is required');
-    	}
-    	
-    	if ($destination && $destination != '/') {
-    		$destination = trim($destination, "/").'/';
-    	} else {
-    		$destination = '';
-    	}
+    public function getObjectInfo($locationOnS3)
+    {
+        return S3::getObjectInfo($this->bucket, $locationOnS3);
+    }
 
-	$locationOnS3 = $destination . trim($folderName, "/") . '/';
-		
-	// create temp file
-	$filePathToUpload = APP.'tmp/'.md5(microtime(true) . $locationOnS3);
-	$f = fopen($filePathToUpload, 'a+');
-	fclose($f);
-
-	$result = $this->putObject($filePathToUpload, $locationOnS3, $permission);
-
-	// delete tmp file
-	@unlink($filePathToUpload);
-		
-	return $result;
+    /**
+     * build a url on S3 for a file based on its location and the bucket
+     * @param string $file
+     * @return string
+     */
+    public function buildUrlToFile($file)
+    {
+        $url = ($this->useSsl) ? 'https://' : 'http://';
+        $url .= $this->endpoint . '/';
+        $url .= $this->bucket . '/';
+        $url .= $file;
+        return $url;
     }
 
     /**
@@ -184,35 +233,26 @@ class CakeS3Component extends Component
      * @param string $mimeType - set the mime type of the object in S3, defaults to autodetect
      * @return mixed - returns an array with details of the uploaded file on S3 for success, FALSE on failure
      */
-	public function copyObject($sourceLocationOnS3, $copyLocationOnS3, $sourceBucket = false, $copyBucket = false, $permission = self::ACL_PUBLIC_READ, $mimeType = array()) {
-
-		try {
-			if ($sourceBucket == false || $sourceBucket == null) {
-				$sourceBucket = $this->bucket;
-			}
-			if ($copyBucket == false || $copyBucket == null) {
-				$copyBucket = $this->bucket;
-			}
-			S3::copyObject($sourceBucket, $sourceLocationOnS3, $copyBucket, $copyLocationOnS3, $permission, array(), $mimeType);
-			$info = S3::getObjectInfo($copyBucket, $copyLocationOnS3);
-			return array(
-					'name' => basename($copyLocationOnS3),
-					'url' => $this->buildUrlToFile($copyLocationOnS3),
-					'size' => $info['size']
-			);
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-
-    /**
-     * get information about an object in the current S3 bucket
-     * @param string $locationOnS3 - path the file should have on S3 relative to the current bucket
-     * @return array
-     */
-    public function getObjectInfo($locationOnS3)
+    public function copyObject($sourceLocationOnS3, $copyLocationOnS3, $sourceBucket = false, $copyBucket = false, $permission = self::ACL_PUBLIC_READ, $mimeType = array())
     {
-        return S3::getObjectInfo($this->bucket, $locationOnS3);
+
+        try {
+            if ($sourceBucket == false || $sourceBucket == null) {
+                $sourceBucket = $this->bucket;
+            }
+            if ($copyBucket == false || $copyBucket == null) {
+                $copyBucket = $this->bucket;
+            }
+            S3::copyObject($sourceBucket, $sourceLocationOnS3, $copyBucket, $copyLocationOnS3, $permission, array(), $mimeType);
+            $info = S3::getObjectInfo($copyBucket, $copyLocationOnS3);
+            return array(
+                'name' => basename($copyLocationOnS3),
+                'url' => $this->buildUrlToFile($copyLocationOnS3),
+                'size' => $info['size']
+            );
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
     /**
@@ -257,20 +297,6 @@ class CakeS3Component extends Component
     }
 
     /**
-     * build a url on S3 for a file based on its location and the bucket
-     * @param string $file
-     * @return string
-     */
-    public function buildUrlToFile($file)
-    {
-        $url = ($this->useSsl) ? 'https://' : 'http://';
-        $url .= $this->endpoint . '/';
-        $url .= $this->bucket . '/';
-        $url .= $file;
-        return $url;
-    }
-
-    /**
      * setter for instance var useSsl
      * @param boolean $flag
      */
@@ -278,53 +304,6 @@ class CakeS3Component extends Component
     {
         $this->useSsl = $flag;
     }
-
-    public static function createSafeFilename($input)
-    {
-        if ($input) {
-
-            //decode entities and make lowercase
-            $input = strtolower(str_replace(' ', '_', html_entity_decode($input)));
-
-            //remove ™ symbols
-            $input = str_replace(array('™', '"', "'"), '', $input);
-
-            //remove any unwanted chars
-            //$input = preg_replace('/[^a-zA-Z0-9\.]/', '_', $input);
-            $input = preg_replace("'\s+'", '_', $input);
-
-            //remove double _
-            while (strpos($input, '__')) {
-                $input = str_replace('__', '_', $input);
-            }
-            //remove trailing _
-            $input = trim($input, '_');
-        }
-        return $input;
-    }
-
-    /**
-     * deconstruct a full S3 resource path to return
-     * the path to the file relative to the bucket
-     * @param string $url
-     * @return string
-     * @access public
-     * @throws Exception
-     */
-    public function relativePath($url)
-    {
-        if(!filter_var($url, FILTER_VALIDATE_URL)) {
-            throw new Exception("Badly formatted URL passed to relativePath");
-        }
-        $remove = array(
-            ($this->useSsl) ? 'https://' : 'http://',
-            $this->endpoint . '/',
-            $this->bucket . '/'
-        );
-        $relativePath = str_replace($remove, '', $url);
-        return $relativePath;
-    }
-
 
     /**
      * wrapper method for accessing the class constants without
@@ -355,6 +334,28 @@ class CakeS3Component extends Component
     {
         $url = S3::getAuthenticatedURL($this->bucket, $this->relativePath($uri), $lifetime, false, $this->useSsl);
         return $url;
+    }
+
+    /**
+     * deconstruct a full S3 resource path to return
+     * the path to the file relative to the bucket
+     * @param string $url
+     * @return string
+     * @access public
+     * @throws Exception
+     */
+    public function relativePath($url)
+    {
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            throw new Exception("Badly formatted URL passed to relativePath");
+        }
+        $remove = array(
+            ($this->useSsl) ? 'https://' : 'http://',
+            $this->endpoint . '/',
+            $this->bucket . '/'
+        );
+        $relativePath = str_replace($remove, '', $url);
+        return $relativePath;
     }
 
 }

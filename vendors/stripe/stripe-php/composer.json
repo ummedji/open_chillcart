@@ -24,6 +24,8 @@
     "simpletest/simpletest": "*"
   },
   "autoload": {
-    "classmap": ["lib/Stripe/"]
+    "classmap": [
+      "lib/Stripe/"
+    ]
   }
 }

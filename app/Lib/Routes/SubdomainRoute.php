@@ -1,11 +1,12 @@
 <?php
 App::uses('User', 'Model');
 
-class SubdomainRoute extends CakeRoute {
+class SubdomainRoute extends CakeRoute
+{
 
     /**
      * Name of the subdomain to use
-     * 
+     *
      * @var
      */
     private $subdomain = NULL;
@@ -13,7 +14,8 @@ class SubdomainRoute extends CakeRoute {
     /**
      * Overrides the routes constructor not to use templates
      */
-    public function __construct() {
+    public function __construct()
+    {
 
         $this->subdomain = Configure::read('SubdomainHTTP.subdomain');
 
@@ -27,9 +29,10 @@ class SubdomainRoute extends CakeRoute {
      *
      * @return null
      */
-    private function setSubdomain() {
+    private function setSubdomain()
+    {
 
-        
+
         /*$Subdomain = new User();
        // $subdomain = $Subdomain->find("first", array('conditions' => array('User.domain_name' => $this->subdomain)));
         
@@ -38,9 +41,9 @@ class SubdomainRoute extends CakeRoute {
         }
         */
         Configure::write('Subdomain', array(
-            'sub_name' =>$subdomain['Subdomain']['sub_name'],
-            'sub_template' => $subdomain['Subdomain']['sub_template']
-                )
+                'sub_name' => $subdomain['Subdomain']['sub_name'],
+                'sub_template' => $subdomain['Subdomain']['sub_template']
+            )
         );
     }
 }

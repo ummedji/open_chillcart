@@ -1,12 +1,12 @@
 <?php
 namespace Composer\Installers\Test;
 
-use Composer\Installers\Installer;
-use Composer\Util\Filesystem;
-use Composer\Package\Package;
-use Composer\Package\RootPackage;
 use Composer\Composer;
 use Composer\Config;
+use Composer\Installers\Installer;
+use Composer\Package\Package;
+use Composer\Package\RootPackage;
+use Composer\Util\Filesystem;
 
 class InstallerTest extends TestCase
 {
@@ -411,7 +411,7 @@ class InstallerTest extends TestCase
         $package = new Package('foo', '1.0.0', '1.0.0');
 
         $installer = $this->getMock('Composer\Installers\Installer', array('getInstallPath'), array($this->io, $this->composer));
-        $installer->expects($this->once())->method('getInstallPath')->with($package)->will($this->returnValue(sys_get_temp_dir().'/foo'));
+        $installer->expects($this->once())->method('getInstallPath')->with($package)->will($this->returnValue(sys_get_temp_dir() . '/foo'));
 
         $repo = $this->getMock('Composer\Repository\InstalledRepositoryInterface');
         $repo->expects($this->once())->method('hasPackage')->with($package)->will($this->returnValue(true));

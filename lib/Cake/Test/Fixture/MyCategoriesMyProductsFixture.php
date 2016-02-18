@@ -22,34 +22,35 @@
  *
  * @package       Cake.Test.Fixture
  */
-class MyCategoriesMyProductsFixture extends CakeTestFixture {
+class MyCategoriesMyProductsFixture extends CakeTestFixture
+{
 
-/**
- * name property
- *
- * @var string 'MyCategoriesMyProducts'
- */
-	public $name = 'MyCategoriesMyProducts';
+    /**
+     * name property
+     *
+     * @var string 'MyCategoriesMyProducts'
+     */
+    public $name = 'MyCategoriesMyProducts';
 
-/**
- * fields property
- *
- * @var array
- */
-	public $fields = array(
-		'my_category_id' => array('type' => 'integer'),
-		'my_product_id' => array('type' => 'integer'),
-	);
+    /**
+     * fields property
+     *
+     * @var array
+     */
+    public $fields = array(
+        'my_category_id' => array('type' => 'integer'),
+        'my_product_id' => array('type' => 'integer'),
+    );
 
-/**
- * records property
- *
- * @var array
- */
-	public $records = array(
-		array('my_category_id' => 1, 'my_product_id' => 1),
-		array('my_category_id' => 2, 'my_product_id' => 1),
-		array('my_category_id' => 2, 'my_product_id' => 2),
-		array('my_category_id' => 3, 'my_product_id' => 2),
-	);
+    /**
+     * records property
+     *
+     * @var array
+     */
+    public $records = array(
+        array('my_category_id' => 1, 'my_product_id' => 1),
+        array('my_category_id' => 2, 'my_product_id' => 1),
+        array('my_category_id' => 2, 'my_product_id' => 2),
+        array('my_category_id' => 3, 'my_product_id' => 2),
+    );
 }

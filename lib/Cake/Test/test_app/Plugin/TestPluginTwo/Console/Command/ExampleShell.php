@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Short description for file.
  *
@@ -16,14 +17,16 @@
  * @since         CakePHP(tm) v 1.2.0.7871
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class ExampleShell extends Shell {
+class ExampleShell extends Shell
+{
 
-/**
- * main method
- *
- * @return void
- */
-	public function main() {
-		$this->out('This is the main method called from TestPluginTwo.ExampleShell');
-	}
+    /**
+     * main method
+     *
+     * @return void
+     */
+    public function main()
+    {
+        $this->out('This is the main method called from TestPluginTwo.ExampleShell');
+    }
 }

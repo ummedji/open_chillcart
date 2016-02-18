@@ -1,15 +1,15 @@
 <?php
 namespace Composer\Installers\Test;
 
-use Composer\Installers\CakePHPInstaller;
-use Composer\Repository\RepositoryManager;
-use Composer\Repository\InstalledArrayRepository;
-use Composer\Package\Package;
-use Composer\Package\RootPackage;
-use Composer\Package\Link;
-use Composer\Package\Version\VersionParser;
 use Composer\Composer;
 use Composer\Config;
+use Composer\Installers\CakePHPInstaller;
+use Composer\Package\Link;
+use Composer\Package\Package;
+use Composer\Package\RootPackage;
+use Composer\Package\Version\VersionParser;
+use Composer\Repository\InstalledArrayRepository;
+use Composer\Repository\RepositoryManager;
 
 class CakePHPInstallerTest extends TestCase
 {
@@ -61,7 +61,8 @@ class CakePHPInstallerTest extends TestCase
      * Test getLocations returning appropriate values based on CakePHP version
      *
      */
-    public function testGetLocations() {
+    public function testGetLocations()
+    {
         $package = new RootPackage('CamelCased', '1.0', '1.0');
         $composer = $this->composer;
         $rm = new RepositoryManager(
@@ -103,7 +104,8 @@ class CakePHPInstallerTest extends TestCase
         $this->assertEquals('vendor/{$vendor}/{$name}/', $result['plugin']);
     }
 
-    protected function setCakephpVersion($rm, $version) {
+    protected function setCakephpVersion($rm, $version)
+    {
         $parser = new VersionParser();
         list(, $version) = explode(' ', $parser->parseConstraints($version));
         $installed = new InstalledArrayRepository();

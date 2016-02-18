@@ -22,32 +22,33 @@
  *
  * @package       Cake.Test.Fixture
  */
-class MyUserFixture extends CakeTestFixture {
+class MyUserFixture extends CakeTestFixture
+{
 
-/**
- * name property
- *
- * @var string 'MyUser'
- */
-	public $name = 'MyUser';
+    /**
+     * name property
+     *
+     * @var string 'MyUser'
+     */
+    public $name = 'MyUser';
 
-/**
- * fields property
- *
- * @var array
- */
-	public $fields = array(
-		'id' => array('type' => 'integer', 'key' => 'primary'),
-		'firstname' => array('type' => 'string', 'null' => false),
-	);
+    /**
+     * fields property
+     *
+     * @var array
+     */
+    public $fields = array(
+        'id' => array('type' => 'integer', 'key' => 'primary'),
+        'firstname' => array('type' => 'string', 'null' => false),
+    );
 
-/**
- * records property
- *
- * @var array
- */
-	public $records = array(
-		array('id' => 1, 'firstname' => 'userA'),
-		array('id' => 2, 'firstname' => 'userB')
-	);
+    /**
+     * records property
+     *
+     * @var array
+     */
+    public $records = array(
+        array('id' => 1, 'firstname' => 'userA'),
+        array('id' => 2, 'firstname' => 'userB')
+    );
 }

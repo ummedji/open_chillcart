@@ -2,9 +2,9 @@
 namespace Composer\Installers;
 
 use Composer\DependencyResolver\Pool;
-use Composer\Package\PackageInterface;
 use Composer\Package\LinkConstraint\MultiConstraint;
 use Composer\Package\LinkConstraint\VersionConstraint;
+use Composer\Package\PackageInterface;
 
 class CakePHPInstaller extends BaseInstaller
 {
@@ -38,7 +38,7 @@ class CakePHPInstaller extends BaseInstaller
     public function getLocations()
     {
         if ($this->matchesCakeVersion('>=', '3.0.0')) {
-            $this->locations['plugin'] =  $this->composer->getConfig()->get('vendor-dir') . '/{$vendor}/{$name}/';
+            $this->locations['plugin'] = $this->composer->getConfig()->get('vendor-dir') . '/{$vendor}/{$name}/';
         }
         return $this->locations;
     }

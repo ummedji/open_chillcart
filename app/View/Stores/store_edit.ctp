@@ -139,7 +139,7 @@
 							                            	  'type' => 'hidden',
 							                                  'label' => false,
 							                                  'value' => $this->request->data['Store']['store_logo'])); ?>
-										        <img class="img-responsive img_fields" src="https://s3.amazonaws.com/s3test56b888c6be37d/storelogos/<?php echo $this->request->data['Store']['store_logo']; ?>" alt="">
+										        <img class="img-responsive img_fields" src="https://s3.amazonaws.com/<?php echo $siteBucket.'/storelogos/'.$this->request->data['Store']['store_logo']; ?>" alt="">
 											</div>
 										</div>
 										<div class="form-group profile-box clearfix">

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Short description for file.
  *
@@ -16,14 +17,16 @@
  * @since         CakePHP(tm) v 1.2.0.7871
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class WelcomeShell extends Shell {
+class WelcomeShell extends Shell
+{
 
-/**
- * say_hello method
- *
- * @return void
- */
-	public function say_hello() {
-		$this->out('This is the say_hello method called from TestPluginTwo.WelcomeShell');
-	}
+    /**
+     * say_hello method
+     *
+     * @return void
+     */
+    public function say_hello()
+    {
+        $this->out('This is the say_hello method called from TestPluginTwo.WelcomeShell');
+    }
 }

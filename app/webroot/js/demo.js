@@ -1,6 +1,6 @@
 /**
-Demo script to handle the theme demo
-**/
+ Demo script to handle the theme demo
+ **/
 var Demo = function () {
 
     // Handle Theme Settings
@@ -55,7 +55,6 @@ var Demo = function () {
             var sidebarPosOption = $('.sidebar-pos-option', panel).val();
             var sidebarStyleOption = $('.sidebar-style-option', panel).val();
             var sidebarMenuOption = $('.sidebar-menu-option', panel).val();
-            
 
 
             if (sidebarOption == "fixed" && headerOption == "default") {
@@ -137,7 +136,7 @@ var Demo = function () {
                     alert("Hover Sidebar Menu is not compatible with Fixed Sidebar Mode. Select Default Sidebar Mode Instead.");
                 } else {
                     $(".page-sidebar-menu").addClass("page-sidebar-menu-hover-submenu");
-                }                
+                }
             } else {
                 $(".page-sidebar-menu").removeClass("page-sidebar-menu-hover-submenu");
             }
@@ -226,14 +225,14 @@ var Demo = function () {
 
         if ($(".page-sidebar-menu").hasClass("page-sidebar-menu-hover-submenu")) {
             $('.sidebar-menu-option', panel).val("hover");
-        }        
+        }
 
         var sidebarOption = $('.sidebar-option', panel).val();
-            var headerOption = $('.page-header-option', panel).val();
-            var footerOption = $('.page-footer-option', panel).val();
-            var sidebarPosOption = $('.sidebar-pos-option', panel).val();
-            var sidebarStyleOption = $('.sidebar-style-option', panel).val();
-            var sidebarMenuOption = $('.sidebar-menu-option', panel).val();
+        var headerOption = $('.page-header-option', panel).val();
+        var footerOption = $('.page-footer-option', panel).val();
+        var sidebarPosOption = $('.sidebar-pos-option', panel).val();
+        var sidebarStyleOption = $('.sidebar-style-option', panel).val();
+        var sidebarMenuOption = $('.sidebar-menu-option', panel).val();
 
         $('.layout-option, .page-header-option, .sidebar-option, .page-footer-option, .sidebar-pos-option, .sidebar-style-option, .sidebar-menu-option', panel).change(setLayout);
     };
@@ -244,7 +243,7 @@ var Demo = function () {
 
         //main function to initiate the theme
         init: function () {
-            
+
             handleTheme(); // handles style customer tool
         }
     };

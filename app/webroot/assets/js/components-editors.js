@@ -1,5 +1,5 @@
 var ComponentsEditors = function () {
-    
+
     var handleWysihtml5 = function () {
         if (!jQuery().wysihtml5) {
             return;
@@ -15,7 +15,7 @@ var ComponentsEditors = function () {
     var handleSummernote = function () {
         $('#NewsletterContent').summernote({
             height: 300,
-            onImageUpload: function(files, editor, welEditable) {
+            onImageUpload: function (files, editor, welEditable) {
                 sendFile(files[0], editor, welEditable);
             }
         });
@@ -43,11 +43,11 @@ function sendFile(file, editor, welEditable) {
     $.ajax({
         data: data,
         type: "POST",
-        url: rp+"/newsletters/uploadImage",
+        url: rp + "/newsletters/uploadImage",
         cache: false,
         contentType: false,
         processData: false,
-        success: function(url) {
+        success: function (url) {
             editor.insertImage(welEditable, url);
         }
     });
@@ -59,11 +59,11 @@ function pageFile(file, editor, welEditable) {
     $.ajax({
         data: data,
         type: "POST",
-        url: rp+"/pages/uploadImage",
+        url: rp + "/pages/uploadImage",
         cache: false,
         contentType: false,
         processData: false,
-        success: function(url) {
+        success: function (url) {
             editor.insertImage(welEditable, url);
         }
     });

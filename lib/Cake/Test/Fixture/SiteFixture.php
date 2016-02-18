@@ -24,38 +24,39 @@
  * @package       cake
  * @subpackage    cake.tests.fixtures
  */
-class SiteFixture extends CakeTestFixture {
+class SiteFixture extends CakeTestFixture
+{
 
-/**
- * name property
- *
- * @var string 'Site'
- * @access public
- */
-	public $name = 'Site';
+    /**
+     * name property
+     *
+     * @var string 'Site'
+     * @access public
+     */
+    public $name = 'Site';
 
-/**
- * fields property
- *
- * @var array
- * @access public
- */
-	public $fields = array(
-		'id' => array('type' => 'integer', 'key' => 'primary'),
-		'name' => array('type' => 'string', 'null' => false),
-		'created' => 'datetime',
-		'updated' => 'datetime'
-	);
+    /**
+     * fields property
+     *
+     * @var array
+     * @access public
+     */
+    public $fields = array(
+        'id' => array('type' => 'integer', 'key' => 'primary'),
+        'name' => array('type' => 'string', 'null' => false),
+        'created' => 'datetime',
+        'updated' => 'datetime'
+    );
 
-/**
- * records property
- *
- * @var array
- * @access public
- */
-	public $records = array(
-		array('name' => 'cakephp', 'created' => '2007-03-17 01:16:23', 'updated' => '2007-03-17 01:18:31'),
-		array('name' => 'Mark Story\'s sites', 'created' => '2007-03-17 01:18:23', 'updated' => '2007-03-17 01:20:31'),
-		array('name' => 'rchavik sites', 'created' => '2001-02-03 00:01:02', 'updated' => '2007-03-17 01:22:31'),
-	);
+    /**
+     * records property
+     *
+     * @var array
+     * @access public
+     */
+    public $records = array(
+        array('name' => 'cakephp', 'created' => '2007-03-17 01:16:23', 'updated' => '2007-03-17 01:18:31'),
+        array('name' => 'Mark Story\'s sites', 'created' => '2007-03-17 01:18:23', 'updated' => '2007-03-17 01:20:31'),
+        array('name' => 'rchavik sites', 'created' => '2001-02-03 00:01:02', 'updated' => '2007-03-17 01:22:31'),
+    );
 }

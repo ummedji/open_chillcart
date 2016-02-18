@@ -22,35 +22,36 @@
  *
  * @package       Cake.Test.Fixture
  */
-class JoinBFixture extends CakeTestFixture {
+class JoinBFixture extends CakeTestFixture
+{
 
-/**
- * name property
- *
- * @var string 'JoinB'
- */
-	public $name = 'JoinB';
+    /**
+     * name property
+     *
+     * @var string 'JoinB'
+     */
+    public $name = 'JoinB';
 
-/**
- * fields property
- *
- * @var array
- */
-	public $fields = array(
-		'id' => array('type' => 'integer', 'key' => 'primary'),
-		'name' => array('type' => 'string', 'default' => ''),
-		'created' => array('type' => 'datetime', 'null' => true),
-		'updated' => array('type' => 'datetime', 'null' => true)
-	);
+    /**
+     * fields property
+     *
+     * @var array
+     */
+    public $fields = array(
+        'id' => array('type' => 'integer', 'key' => 'primary'),
+        'name' => array('type' => 'string', 'default' => ''),
+        'created' => array('type' => 'datetime', 'null' => true),
+        'updated' => array('type' => 'datetime', 'null' => true)
+    );
 
-/**
- * records property
- *
- * @var array
- */
-	public $records = array(
-		array('name' => 'Join B 1', 'created' => '2008-01-03 10:55:01', 'updated' => '2008-01-03 10:55:01'),
-		array('name' => 'Join B 2', 'created' => '2008-01-03 10:55:02', 'updated' => '2008-01-03 10:55:02'),
-		array('name' => 'Join B 3', 'created' => '2008-01-03 10:55:03', 'updated' => '2008-01-03 10:55:03')
-	);
+    /**
+     * records property
+     *
+     * @var array
+     */
+    public $records = array(
+        array('name' => 'Join B 1', 'created' => '2008-01-03 10:55:01', 'updated' => '2008-01-03 10:55:01'),
+        array('name' => 'Join B 2', 'created' => '2008-01-03 10:55:02', 'updated' => '2008-01-03 10:55:02'),
+        array('name' => 'Join B 3', 'created' => '2008-01-03 10:55:03', 'updated' => '2008-01-03 10:55:03')
+    );
 }
