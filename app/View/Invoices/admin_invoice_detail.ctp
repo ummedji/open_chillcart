@@ -70,7 +70,7 @@
 							<h3>About:</h3>
 							<ul class="list-unstyled">
 								<li>
-									 Roamsoft Technology,
+									 ChillCart Ltd.
 								</li>
 								
 							</ul>
