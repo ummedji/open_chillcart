@@ -89,25 +89,24 @@
 			</div>
 			<!-- <div class="socialOr"><span>Or</span></div> -->
 		</div>
-		<!--<div class="col-md-3">
+		<div class="col-md-3">
 			<div class="social-logins">
-
-				<a class="facebook" href="javascript:voic(0);">
+				<a class="facebook" href="<?php echo $siteUrl.'/users/social_login/Facebook'; ?>">
 					<img alt="facebook" title="facebook" src="<?php echo $siteUrl.'/frontend/images/facebook.png'; ?>">
 					<i>Login with Facebook</i>
 					<div class="clr"></div>
 				</a>
-				<a class="twitter" href="javascript:voic(0);">
+				<!--<a class="twitter" href="javascript:voic(0);">
 					<img alt="twitter" title="twitter" src="<?php echo $siteUrl.'/frontend/images/twitter.png'; ?>">
 					<i>Login with Twitter</i>
 					<div class="clr"></div>
-				</a>
-				<a class="googleplus" href="javascript:voic(0);">
-					<img alt="gplus" title="gplus" src="<?php echo $siteUrl.'/frontend/images/gplus.png'; ?>" >
+				</a>-->
+				<!-- <a class="googleplus" href="<?php echo $siteUrl.'/users/social_login/Google'; ?>">
+					<img alt="gplus" title="gplus" src="<?php echo $siteUrl.'/frontend/images/gplus.png'; ?>">
 					<i>Login with Google+</i>
 					<div class="clr"></div>
-				</a>
+				</a> -->
 			</div>
-		</div>-->
+		</div>
 	</div>
 </div>

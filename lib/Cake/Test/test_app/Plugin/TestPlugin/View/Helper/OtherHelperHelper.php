@@ -17,5 +17,7 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 App::uses('AppHelper', 'View/Helper');
-class OtherHelperHelper extends AppHelper {
+
+class OtherHelperHelper extends AppHelper
+{
 }

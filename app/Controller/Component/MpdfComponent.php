@@ -1,9 +1,11 @@
 <?php
+
 /**
  * Component for working with mPDF class.
  * mPDF has to be in the vendors directory.
  */
-class MpdfComponent extends Component {
+class MpdfComponent extends Component
+{
     /**
      * Instance of mPDF class
      *
@@ -19,7 +21,7 @@ class MpdfComponent extends Component {
         'mode' => 'utf8-s',
         // page format: 'A0' - 'A10', if suffixed with '-L', force landscape
         'format' => 'A4',
-         // default font size in points (pt)
+        // default font size in points (pt)
         'font_size' => 0,
         // default font
         'font' => NULL,
@@ -46,11 +48,13 @@ class MpdfComponent extends Component {
      * @var string
      */
     protected $_output = 'I';
+
     /**
      * Initialize
      * Add vendor and define mPDF class.
      */
-    public function init($configuration = array()) {
+    public function init($configuration = array())
+    {
         // mPDF class has many notices - suppress them
         error_reporting(0);
         // import mPDF
@@ -63,66 +67,82 @@ class MpdfComponent extends Component {
         $this->pdf = new mPDF($c['mode'], $c['format'], $c['font_size'], $c['font'], $c['margin_left'], $c['margin_right'], $c['margin_top'], $c['margin_bottom'], $c['margin_header'], $c['margin_footer']);
         $this->_init = true;
     }
+
     /**
      * Set filename of the output file
      */
-    public function setFilename($filename) {
+    public function setFilename($filename)
+    {
         $this->_filename = (string)$filename;
     }
+
     /**
      * Set destination of the output
      */
-    public function setOutput($output) {
+    public function setOutput($output)
+    {
         if (in_array($output, array('I', 'D', 'F', 'S')))
             $this->_output = $output;
 
         $pdf = new HTML2FPDF();
         $pdf->AddPage();
-        $pdf->SetFont('Arial','',5);
-        $pdf->WriteHTML($output); 
+        $pdf->SetFont('Arial', '', 5);
+        $pdf->WriteHTML($output);
         $pdf->Ln(5);
 
         //output the document
-        $filelangName =__d('Report','image_PDF',true);
-        $fileRefName = $filelangName."-".date('Y-m-d');
-        
+        $filelangName = __d('Report', 'image_PDF', true);
+        $fileRefName = $filelangName . "-" . date('Y-m-d');
+
         $fileName = $fileRefName;
-        $pdf->Output("pdf_doc/$fileName.pdf", 'D'); 
+        $pdf->Output("pdf_doc/$fileName.pdf", 'D');
         header("Content-type:application/pdf");
         // It will be called downloaded.pdf
         header("Content-Disposition:attachment;filename=$pdfdoc.pdf");
         // The PDF source is in original.pdf
         readfile("pdf_doc/$fileName.pdf");
         unlink("pdf_doc/$fileName.pdf");
-    
+
         exit ();
     }
+
     /**
      * Shutdown of the component
      * View is rendered but not yet sent to browser.
      */
-    public function shutdown(Controller $controller) {
+    public function shutdown(Controller $controller)
+    {
         if ($this->_init) {
             $this->pdf->WriteHTML((string)$controller->response);
             $this->pdf->Output($this->_filename, $this->_output);
         }
     }
+
+    public function __get($name)
+    {
+        return $this->pdf->$name;
+    }
+
     /**
      * Passing method calls and variable setting to mPDF library.
      */
-    public function __set($name, $value) {
+    public function __set($name, $value)
+    {
         $this->pdf->$name = $value;
     }
-    public function __get($name) {
-        return $this->pdf->$name;
-    }
-    public function __isset($name) {
+
+    public function __isset($name)
+    {
         return isset($this->pdf->$name);
     }
-    public function __unset($name) {
+
+    public function __unset($name)
+    {
         unset($this->pdf->$name);
     }
-    public function __call($name, $arguments) {
+
+    public function __call($name, $arguments)
+    {
         call_user_func_array(array($this->pdf, $name), $arguments);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Short description for file.
  *
@@ -16,8 +17,9 @@
  * @since         CakePHP(tm) v 1.2.0.4206
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TestPluginComponentComponent extends Object {
+class TestPluginComponentComponent extends Object
+{
 
-	public $components = array('TestPlugin.TestPluginOtherComponent');
+    public $components = array('TestPlugin.TestPluginOtherComponent');
 
 }

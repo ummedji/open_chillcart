@@ -22,31 +22,32 @@
  *
  * @package       Cake.Test.Fixture
  */
-class BakeTagFixture extends CakeTestFixture {
+class BakeTagFixture extends CakeTestFixture
+{
 
-/**
- * name property
- *
- * @var string 'Tag'
- */
-	public $name = 'BakeTag';
+    /**
+     * name property
+     *
+     * @var string 'Tag'
+     */
+    public $name = 'BakeTag';
 
-/**
- * fields property
- *
- * @var array
- */
-	public $fields = array(
-		'id' => array('type' => 'integer', 'key' => 'primary'),
-		'tag' => array('type' => 'string', 'null' => false),
-		'created' => 'datetime',
-		'updated' => 'datetime'
-	);
+    /**
+     * fields property
+     *
+     * @var array
+     */
+    public $fields = array(
+        'id' => array('type' => 'integer', 'key' => 'primary'),
+        'tag' => array('type' => 'string', 'null' => false),
+        'created' => 'datetime',
+        'updated' => 'datetime'
+    );
 
-/**
- * records property
- *
- * @var array
- */
-	public $records = array();
+    /**
+     * records property
+     *
+     * @var array
+     */
+    public $records = array();
 }

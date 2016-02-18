@@ -1,36 +1,38 @@
-<?php
+<
+? php
 
 /** This file is part of KCFinder project
-  *
-  *      @desc Folder related functionality
-  *   @package KCFinder
-  *   @version 2.51
-  *    @author Pavel Tzonkov <pavelc@users.sourceforge.net>
-  * @copyright 2010, 2011 KCFinder Project
-  *   @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
-  *   @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
-  *      @link http://kcfinder.sunhater.com
-  */?>
+ *
+ *      @desc Folder related functionality
+ *   @package KCFinder
+ *   @version 2.51
+ *    @author Pavel Tzonkov <pavelc@users.sourceforge.net>
+ * @copyright 2010, 2011 KCFinder Project
+ *   @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
+ *   @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
+ *      @link http://kcfinder.sunhater.com
+ */ ?
+>
 
-browser.initFolders = function() {
-    $('#folders').scroll(function() {
+browser.initFolders = function () {
+    $('#folders').scroll(function () {
         browser.hideDialog();
     });
     $('div.folder > a').unbind();
-    $('div.folder > a').bind('click', function() {
+    $('div.folder > a').bind('click', function () {
         browser.hideDialog();
         return false;
     });
     $('div.folder > a > span.brace').unbind();
-    $('div.folder > a > span.brace').click(function() {
+    $('div.folder > a > span.brace').click(function () {
         if ($(this).hasClass('opened') || $(this).hasClass('closed'))
             browser.expandDir($(this).parent());
     });
     $('div.folder > a > span.folder').unbind();
-    $('div.folder > a > span.folder').click(function() {
+    $('div.folder > a > span.folder').click(function () {
         browser.changeDir($(this).parent());
     });
-    $('div.folder > a > span.folder').rightClick(function(e) {
+    $('div.folder > a > span.folder').rightClick(function (e) {
         _.unselect();
         browser.menuDir($(this).parent(), e);
     });
@@ -41,11 +43,11 @@ browser.initFolders = function() {
         var fls = $('div.folder').get();
         var body = $('body').get(0);
         var div;
-        $.each(fls, function(i, folder) {
+        $.each(fls, function (i, folder) {
             div = document.createElement('div');
             div.style.display = 'inline';
             div.style.margin = div.style.border = div.style.padding = '0';
-            div.innerHTML='<table style="border-collapse:collapse;border:0;margin:0;width:0"><tr><td nowrap="nowrap" style="white-space:nowrap;padding:0;border:0">' + $(folder).html() + "</td></tr></table>";
+            div.innerHTML = '<table style="border-collapse:collapse;border:0;margin:0;width:0"><tr><td nowrap="nowrap" style="white-space:nowrap;padding:0;border:0">' + $(folder).html() + "</td></tr></table>";
             body.appendChild(div);
             $(folder).css('width', $(div).innerWidth() + 'px');
             body.removeChild(div);
@@ -53,7 +55,7 @@ browser.initFolders = function() {
     }
 };
 
-browser.setTreeData = function(data, path) {
+browser.setTreeData = function (data, path) {
     if (!path)
         path = '';
     else if (path.length && (path.substr(path.length - 1, 1) != '/'))
@@ -71,14 +73,14 @@ browser.setTreeData = function(data, path) {
     $(selector + ' span.folder').addClass(data.current ? 'current' : 'regular');
     if (data.dirs && data.dirs.length) {
         $(selector + ' span.brace').addClass('opened');
-        $.each(data.dirs, function(i, cdir) {
+        $.each(data.dirs, function (i, cdir) {
             browser.setTreeData(cdir, path + '/');
         });
     } else if (data.hasDirs)
         $(selector + ' span.brace').addClass('closed');
 };
 
-browser.buildTree = function(root, path) {
+browser.buildTree = function (root, path) {
     if (!path) path = "";
     path += root.name;
     var html = '<div class="folder"><a href="kcdir:/' + _.escapeDirs(path) + '"><span class="brace">&nbsp;</span><span class="folder">' + _.htmlData(root.name) + '</span></a>';
@@ -94,10 +96,10 @@ browser.buildTree = function(root, path) {
     return html;
 };
 
-browser.expandDir = function(dir) {
+browser.expandDir = function (dir) {
     var path = dir.data('path');
     if (dir.children('.brace').hasClass('opened')) {
-        dir.parent().children('.folders').hide(500, function() {
+        dir.parent().children('.folders').hide(500, function () {
             if (path == browser.dir.substr(0, path.length))
                 browser.changeDir(dir);
         });
@@ -111,22 +113,22 @@ browser.expandDir = function(dir) {
         } else if (!$('#loadingDirs').get(0)) {
             dir.parent().append('<div id="loadingDirs">' + this.label("Loading folders...") + '</div>');
             $('#loadingDirs').css('display', 'none');
-            $('#loadingDirs').show(200, function() {
+            $('#loadingDirs').show(200, function () {
                 $.ajax({
                     type: 'POST',
                     dataType: 'json',
                     url: browser.baseGetData('expand'),
-                    data: {dir:path},
+                    data: {dir: path},
                     async: false,
-                    success: function(data) {
-                        $('#loadingDirs').hide(200, function() {
+                    success: function (data) {
+                        $('#loadingDirs').hide(200, function () {
                             $('#loadingDirs').detach();
                         });
                         if (browser.check4errors(data))
                             return;
 
                         var html = '';
-                        $.each(data.dirs, function(i, cdir) {
+                        $.each(data.dirs, function (i, cdir) {
                             html += '<div class="folder"><a href="kcdir:/' + _.escapeDirs(path + '/' + cdir.name) + '"><span class="brace">&nbsp;</span><span class="folder">' + _.htmlData(cdir.name) + '</span></a></div>';
                         });
                         if (html.length) {
@@ -134,7 +136,7 @@ browser.expandDir = function(dir) {
                             var folders = $(dir.parent().children('.folders').first());
                             folders.css('display', 'none');
                             $(folders).show(500);
-                            $.each(data.dirs, function(i, cdir) {
+                            $.each(data.dirs, function (i, cdir) {
                                 browser.setTreeData(cdir, path);
                             });
                         }
@@ -148,7 +150,7 @@ browser.expandDir = function(dir) {
                         browser.initFolders();
                         browser.initDropUpload();
                     },
-                    error: function() {
+                    error: function () {
                         $('#loadingDirs').detach();
                         browser.alert(browser.label("Unknown error."));
                     }
@@ -158,7 +160,7 @@ browser.expandDir = function(dir) {
     }
 };
 
-browser.changeDir = function(dir) {
+browser.changeDir = function (dir) {
     if (dir.children('span.folder').hasClass('regular')) {
         $('div.folder > a > span.folder').removeClass('current');
         $('div.folder > a > span.folder').removeClass('regular');
@@ -170,9 +172,9 @@ browser.changeDir = function(dir) {
             type: 'POST',
             dataType: 'json',
             url: browser.baseGetData('chDir'),
-            data: {dir:dir.data('path')},
+            data: {dir: dir.data('path')},
             async: false,
-            success: function(data) {
+            success: function (data) {
                 if (browser.check4errors(data))
                     return;
                 browser.files = data.files;
@@ -185,21 +187,21 @@ browser.changeDir = function(dir) {
                     tinyMCEPopup.editor.windowManager.setTitle(window, title);
                 browser.statusDir();
             },
-            error: function() {
+            error: function () {
                 $('#files').html(browser.label("Unknown error."));
             }
         });
     }
 };
 
-browser.statusDir = function() {
+browser.statusDir = function () {
     for (var i = 0, size = 0; i < this.files.length; i++)
         size += parseInt(this.files[i].size);
     size = this.humanSize(size);
     $('#fileinfo').html(this.files.length + ' ' + this.label("files") + ' (' + size + ')');
 };
 
-browser.menuDir = function(dir, e) {
+browser.menuDir = function (dir, e) {
     var data = dir.data();
     var html = '<div class="menu">';
     if (this.clipboard && this.clipboard.length) {
@@ -214,7 +216,7 @@ browser.menuDir = function(dir, e) {
     }
     html +=
         '<a href="kcact:refresh">' + this.label("Refresh") + '</a>';
-    if (this.support.zip) html+=
+    if (this.support.zip) html +=
         '<div class="delimiter"></div>' +
         '<a href="kcact:download">' + this.label("Download") + '</a>';
     if (this.access.dirs.create || this.access.dirs.rename || this.access.dirs['delete'])
@@ -238,32 +240,32 @@ browser.menuDir = function(dir, e) {
 
     if (this.clipboard && this.clipboard.length && data.writable) {
 
-        $('.menu a[href="kcact:cpcbd"]').click(function() {
+        $('.menu a[href="kcact:cpcbd"]').click(function () {
             browser.hideDialog();
             browser.copyClipboard(data.path);
             return false;
         });
 
-        $('.menu a[href="kcact:mvcbd"]').click(function() {
+        $('.menu a[href="kcact:mvcbd"]').click(function () {
             browser.hideDialog();
             browser.moveClipboard(data.path);
             return false;
         });
     }
 
-    $('.menu a[href="kcact:refresh"]').click(function() {
+    $('.menu a[href="kcact:refresh"]').click(function () {
         browser.hideDialog();
         browser.refreshDir(dir);
         return false;
     });
 
-    $('.menu a[href="kcact:download"]').click(function() {
+    $('.menu a[href="kcact:download"]').click(function () {
         browser.hideDialog();
-        browser.post(browser.baseGetData('downloadDir'), {dir:data.path});
+        browser.post(browser.baseGetData('downloadDir'), {dir: data.path});
         return false;
     });
 
-    $('.menu a[href="kcact:mkdir"]').click(function(e) {
+    $('.menu a[href="kcact:mkdir"]').click(function (e) {
         if (!data.writable) return false;
         browser.hideDialog();
         browser.fileNameDialog(
@@ -273,7 +275,7 @@ browser.menuDir = function(dir, e) {
                 errEmpty: "Please enter new folder name.",
                 errSlash: "Unallowable characters in folder name.",
                 errDot: "Folder name shouldn't begins with '.'"
-            }, function() {
+            }, function () {
                 browser.refreshDir(dir);
                 browser.initDropUpload();
                 if (!data.hasDirs) {
@@ -285,7 +287,7 @@ browser.menuDir = function(dir, e) {
         return false;
     });
 
-    $('.menu a[href="kcact:mvdir"]').click(function(e) {
+    $('.menu a[href="kcact:mvdir"]').click(function (e) {
         if (!data.removable) return false;
         browser.hideDialog();
         browser.fileNameDialog(
@@ -295,7 +297,7 @@ browser.menuDir = function(dir, e) {
                 errEmpty: "Please enter new folder name.",
                 errSlash: "Unallowable characters in folder name.",
                 errDot: "Folder name shouldn't begins with '.'"
-            }, function(dt) {
+            }, function (dt) {
                 if (!dt.name) {
                     browser.alert(browser.label("Unknown error."));
                     return;
@@ -313,23 +315,23 @@ browser.menuDir = function(dir, e) {
         return false;
     });
 
-    $('.menu a[href="kcact:rmdir"]').click(function() {
+    $('.menu a[href="kcact:rmdir"]').click(function () {
         if (!data.removable) return false;
         browser.hideDialog();
         browser.confirm(
             "Are you sure you want to delete this folder and all its content?",
-            function(callBack) {
-                 $.ajax({
+            function (callBack) {
+                $.ajax({
                     type: 'POST',
                     dataType: 'json',
                     url: browser.baseGetData('deleteDir'),
                     data: {dir: data.path},
                     async: false,
-                    success: function(data) {
+                    success: function (data) {
                         if (callBack) callBack();
                         if (browser.check4errors(data))
                             return;
-                        dir.parent().hide(500, function() {
+                        dir.parent().hide(500, function () {
                             var folders = dir.parent().parent();
                             var pDir = folders.parent().children('a').first();
                             dir.parent().detach();
@@ -344,7 +346,7 @@ browser.menuDir = function(dir, e) {
                             browser.initDropUpload();
                         });
                     },
-                    error: function() {
+                    error: function () {
                         if (callBack) callBack();
                         browser.alert(browser.label("Unknown error."));
                     }
@@ -355,7 +357,7 @@ browser.menuDir = function(dir, e) {
     });
 };
 
-browser.refreshDir = function(dir) {
+browser.refreshDir = function (dir) {
     var path = dir.data('path');
     if (dir.children('.brace').hasClass('opened') || dir.children('.brace').hasClass('closed')) {
         dir.children('.brace').removeClass('opened');

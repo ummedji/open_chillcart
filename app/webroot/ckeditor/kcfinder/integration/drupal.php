@@ -1,19 +1,20 @@
 <?php
 
 /** This file is part of KCFinder project
-  *
-  *      @desc CMS integration code: Drupal
-  *   @package KCFinder
-  *   @version 2.51
-  *    @author Dany Alejandro Cabrera <otello2040@gmail.com>
-  * @copyright 2010, 2011 KCFinder Project
-  *   @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
-  *   @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
-  *      @link http://kcfinder.sunhater.com
-  */
+ *
+ * @desc CMS integration code: Drupal
+ * @package KCFinder
+ * @version 2.51
+ * @author Dany Alejandro Cabrera <otello2040@gmail.com>
+ * @copyright 2010, 2011 KCFinder Project
+ * @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
+ * @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
+ * @link http://kcfinder.sunhater.com
+ */
 
 // gets a valid drupal_path
-function get_drupal_path() {
+function get_drupal_path()
+{
     if (!empty($_SERVER['SCRIPT_FILENAME'])) {
         $drupal_path = dirname(dirname(dirname(dirname($_SERVER['SCRIPT_FILENAME']))));
         if (!file_exists($drupal_path . '/includes/bootstrap.inc')) {
@@ -39,7 +40,8 @@ function get_drupal_path() {
     return $drupal_path;
 }
 
-function CheckAuthentication($drupal_path) {
+function CheckAuthentication($drupal_path)
+{
 
     static $authenticated;
 
@@ -47,7 +49,7 @@ function CheckAuthentication($drupal_path) {
 
         if (!isset($bootstrap_file_found) || $bootstrap_file_found) {
             $current_cwd = getcwd();
-            if (!defined('DRUPAL_ROOT')){
+            if (!defined('DRUPAL_ROOT')) {
                 define('DRUPAL_ROOT', $drupal_path);
             }
 
@@ -56,7 +58,7 @@ function CheckAuthentication($drupal_path) {
 
             global $base_url;
             $base_root = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https' : 'http';
-            $base_url = $base_root .= '://'. preg_replace('/[^a-z0-9-:._]/i', '', $_SERVER['HTTP_HOST']);
+            $base_url = $base_root .= '://' . preg_replace('/[^a-z0-9-:._]/i', '', $_SERVER['HTTP_HOST']);
 
             if ($dir = trim(dirname($_SERVER['SCRIPT_NAME']), '\,/')) {
                 $base_path = "/$dir";
@@ -68,7 +70,7 @@ function CheckAuthentication($drupal_path) {
             $base_url = substr($base_url, 0, $pos); // drupal root absolute url
 
             // If we aren't in a Drupal installation, or if Drupal path hasn't been properly found, die
-            if(!file_exists(DRUPAL_ROOT . '/includes/bootstrap.inc')) {
+            if (!file_exists(DRUPAL_ROOT . '/includes/bootstrap.inc')) {
                 die("The CMS integration service for -drupal- requires KCFinder to be properly placed inside your Drupal installation.");
             }
 
@@ -85,7 +87,7 @@ function CheckAuthentication($drupal_path) {
                 }
 
                 // User has permission, so make sure KCFinder is not disabled!
-                if(!isset($_SESSION['KCFINDER']['disabled'])) {
+                if (!isset($_SESSION['KCFINDER']['disabled'])) {
                     $_SESSION['KCFINDER']['disabled'] = false;
                 }
 

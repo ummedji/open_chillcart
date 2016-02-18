@@ -21,11 +21,13 @@
  * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
+
 /**
  * Behavior to allow for dynamic and atomic manipulation of a Model's associations used for a find call. Most useful for limiting
  * the amount of associations and data returned.
  *
  * @package       Cake.Test.test_app.Plugin.TestPlugin.Model.Behavior
  */
-class TestPluginPersisterTwoBehavior extends ModelBehavior {
+class TestPluginPersisterTwoBehavior extends ModelBehavior
+{
 }

@@ -375,12 +375,13 @@
 								<div class="form-group">
 									<label class="col-md-3 control-label">Image <span class="star"></span></label>
 									<div class="col-md-6 col-lg-4"><?php
+									$images = '';
 									$store_id = $getProductData['Product']['store_id'];
 										foreach ($getProductData['ProductImage'] as $keys => $value) {
 											$images = $images.$value['id'].',';
 										 ?>
 											<div id="image<?php echo $value['id']; ?>">
-											<img  src="https://s3.amazonaws.com/s3test56b888c6be37d/stores/products/carts/<?php echo $value['image_alias']; ?>">
+											<img  src="https://s3.amazonaws.com/<?php echo $siteBucket; ?>/stores/products/carts/<?php echo $value['image_alias']; ?>">
 											<a href="javascript:;" class="ItemRemove" onclick="deleteProductImage('<?php echo $value['id']; ?>');">
 				                            	<i class="fa fa-times"></i>
 				                            </a></div><?php

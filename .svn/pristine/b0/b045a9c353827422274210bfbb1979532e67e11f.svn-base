@@ -1,4 +1,0 @@
-[23-Apr-2015 11:22:12 Europe/London] PHP Fatal error:  Class 'AppHelper' not found in /home/shopnet/public_html/lib/Cake/View/Helper/HtmlHelper.php on line 31
-[23-Apr-2015 11:22:12 Europe/London] PHP Fatal error:  Class 'AppHelper' not found in /home/shopnet/public_html/lib/Cake/View/Helper/FormHelper.php on line 28
-[23-Apr-2015 11:30:52 Europe/London] PHP Fatal error:  Class 'AppHelper' not found in /home/shopnet/public_html/lib/Cake/View/Helper/HtmlHelper.php on line 31
-[23-Apr-2015 11:30:52 Europe/London] PHP Fatal error:  Class 'AppHelper' not found in /home/shopnet/public_html/lib/Cake/View/Helper/FormHelper.php on line 28

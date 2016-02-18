@@ -49,65 +49,68 @@ App::uses('Xml', 'Utility');
  * @package       Cake.View
  * @since         CakePHP(tm) v 2.1.0
  */
-class XmlView extends View {
+class XmlView extends View
+{
 
-/**
- * The subdirectory.  XML views are always in xml.
- *
- * @var string
- */
-	public $subDir = 'xml';
+    /**
+     * The subdirectory.  XML views are always in xml.
+     *
+     * @var string
+     */
+    public $subDir = 'xml';
 
-/**
- * Constructor
- *
- * @param Controller $controller
- */
-	public function __construct(Controller $controller = null) {
-		parent::__construct($controller);
+    /**
+     * Constructor
+     *
+     * @param Controller $controller
+     */
+    public function __construct(Controller $controller = null)
+    {
+        parent::__construct($controller);
 
-		if (isset($controller->response) && $controller->response instanceof CakeResponse) {
-			$controller->response->type('xml');
-		}
-	}
+        if (isset($controller->response) && $controller->response instanceof CakeResponse) {
+            $controller->response->type('xml');
+        }
+    }
 
-/**
- * Render a XML view.
- *
- * Uses the special '_serialize' parameter to convert a set of
- * view variables into a XML response.  Makes generating simple
- * XML responses very easy.  You can omit the '_serialize' parameter,
- * and use a normal view + layout as well.
- *
- * @param string $view The view being rendered.
- * @param string $layout The layout being rendered.
- * @return string The rendered view.
- */
-	public function render($view = null, $layout = null) {
-		if (isset($this->viewVars['_serialize'])) {
-			$serialize = $this->viewVars['_serialize'];
-			if (is_array($serialize)) {
-				$data = array('response' => array());
-				foreach ($serialize as $key) {
-					$data['response'][$key] = $this->viewVars[$key];
-				}
-			} else {
-				$data = isset($this->viewVars[$serialize]) ? $this->viewVars[$serialize] : null;
-				if (is_array($data) && Set::numeric(array_keys($data))) {
-					$data = array('response' => array($serialize => $data));
-				}
-			}
-			$content = Xml::fromArray($data)->asXML();
-			return $content;
-		}
-		if ($view !== false && $viewFileName = $this->_getViewFileName($view)) {
-			if (!$this->_helpersLoaded) {
-				$this->loadHelpers();
-			}
-			$content = $this->_render($viewFileName);
-			$this->Blocks->set('content', (string)$content);
-			return $content;
-		}
-	}
+    /**
+     * Render a XML view.
+     *
+     * Uses the special '_serialize' parameter to convert a set of
+     * view variables into a XML response.  Makes generating simple
+     * XML responses very easy.  You can omit the '_serialize' parameter,
+     * and use a normal view + layout as well.
+     *
+     * @param string $view The view being rendered.
+     * @param string $layout The layout being rendered.
+     * @return string The rendered view.
+     */
+    public function render($view = null, $layout = null)
+    {
+        if (isset($this->viewVars['_serialize'])) {
+            $serialize = $this->viewVars['_serialize'];
+            if (is_array($serialize)) {
+                $data = array('response' => array());
+                foreach ($serialize as $key) {
+                    $data['response'][$key] = $this->viewVars[$key];
+                }
+            } else {
+                $data = isset($this->viewVars[$serialize]) ? $this->viewVars[$serialize] : null;
+                if (is_array($data) && Set::numeric(array_keys($data))) {
+                    $data = array('response' => array($serialize => $data));
+                }
+            }
+            $content = Xml::fromArray($data)->asXML();
+            return $content;
+        }
+        if ($view !== false && $viewFileName = $this->_getViewFileName($view)) {
+            if (!$this->_helpersLoaded) {
+                $this->loadHelpers();
+            }
+            $content = $this->_render($viewFileName);
+            $this->Blocks->set('content', (string)$content);
+            return $content;
+        }
+    }
 
 }

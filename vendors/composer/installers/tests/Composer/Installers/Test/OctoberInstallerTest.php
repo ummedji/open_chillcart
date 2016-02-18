@@ -1,9 +1,9 @@
 <?php
 namespace Composer\Installers\Test;
 
+use Composer\Composer;
 use Composer\Installers\OctoberInstaller;
 use Composer\Package\Package;
-use Composer\Composer;
 
 class OctoberInstallerTest extends \PHPUnit_Framework_TestCase
 {

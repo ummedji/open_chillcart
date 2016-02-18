@@ -21,112 +21,112 @@
 define('TIME_START', microtime(true));
 
 if (!defined('E_DEPRECATED')) {
-	define('E_DEPRECATED', 8192);
+    define('E_DEPRECATED', 8192);
 }
 
 if (!defined('E_USER_DEPRECATED')) {
-	define('E_USER_DEPRECATED', E_USER_NOTICE);
+    define('E_USER_DEPRECATED', E_USER_NOTICE);
 }
 error_reporting(E_ALL & ~E_DEPRECATED);
 
 if (!defined('CAKE_CORE_INCLUDE_PATH')) {
-	define('CAKE_CORE_INCLUDE_PATH', dirname(dirname(__FILE__)));
+    define('CAKE_CORE_INCLUDE_PATH', dirname(dirname(__FILE__)));
 }
 
 if (!defined('CORE_PATH')) {
-	define('CORE_PATH', CAKE_CORE_INCLUDE_PATH . DS);
+    define('CORE_PATH', CAKE_CORE_INCLUDE_PATH . DS);
 }
 
 if (!defined('WEBROOT_DIR')) {
-	define('WEBROOT_DIR', 'webroot');
+    define('WEBROOT_DIR', 'webroot');
 }
 
 /**
  * Path to the cake directory.
  */
-	define('CAKE', CORE_PATH . 'Cake' . DS);
+define('CAKE', CORE_PATH . 'Cake' . DS);
 
 /**
  * Path to the application's directory.
  */
 if (!defined('APP')) {
-	define('APP', ROOT . DS . APP_DIR . DS);
+    define('APP', ROOT . DS . APP_DIR . DS);
 }
 
 /**
  * Path to the application's libs directory.
  */
-	define('APPLIBS', APP . 'Lib' . DS);
+define('APPLIBS', APP . 'Lib' . DS);
 
 /**
  * Path to the public CSS directory.
  */
-	define('CSS', WWW_ROOT . 'css' . DS);
+define('CSS', WWW_ROOT . 'css' . DS);
 
 /**
  * Path to the public JavaScript directory.
  */
-	define('JS', WWW_ROOT . 'js' . DS);
+define('JS', WWW_ROOT . 'js' . DS);
 
 /**
  * Path to the public images directory.
  */
-	define('IMAGES', WWW_ROOT . 'img' . DS);
+define('IMAGES', WWW_ROOT . 'img' . DS);
 
 /**
  * Path to the tests directory.
  */
 if (!defined('TESTS')) {
-	define('TESTS', APP . 'Test' . DS);
+    define('TESTS', APP . 'Test' . DS);
 }
 
 /**
  * Path to the temporary files directory.
  */
 if (!defined('TMP')) {
-	define('TMP', APP . 'tmp' . DS);
+    define('TMP', APP . 'tmp' . DS);
 }
 
 /**
  * Path to the logs directory.
  */
 if (!defined('LOGS')) {
-	define('LOGS', TMP . 'logs' . DS);
+    define('LOGS', TMP . 'logs' . DS);
 }
 
 /**
  * Path to the cache files directory. It can be shared between hosts in a multi-server setup.
  */
 if (!defined('CACHE')) {
-	define('CACHE', TMP . 'cache' . DS);
+    define('CACHE', TMP . 'cache' . DS);
 }
 
 /**
  * Path to the vendors directory.
  */
 if (!defined('VENDORS')) {
-	define('VENDORS', ROOT . DS . 'vendors' . DS);
+    define('VENDORS', ROOT . DS . 'vendors' . DS);
 }
 
 /**
  * Web path to the public images directory.
  */
 if (!defined('IMAGES_URL')) {
-	define('IMAGES_URL', 'img/');
+    define('IMAGES_URL', 'img/');
 }
 
 /**
  * Web path to the CSS files directory.
  */
 if (!defined('CSS_URL')) {
-	define('CSS_URL', 'css/');
+    define('CSS_URL', 'css/');
 }
 
 /**
  * Web path to the js files directory.
  */
 if (!defined('JS_URL')) {
-	define('JS_URL', 'js/');
+    define('JS_URL', 'js/');
 }
 
 
@@ -150,15 +150,15 @@ Configure::bootstrap(isset($boot) ? $boot : true);
  *  Full url prefix
  */
 if (!defined('FULL_BASE_URL')) {
-	$s = null;
-	if (env('HTTPS')) {
-		$s = 's';
-	}
+    $s = null;
+    if (env('HTTPS')) {
+        $s = 's';
+    }
 
-	$httpHost = env('HTTP_HOST');
+    $httpHost = env('HTTP_HOST');
 
-	if (isset($httpHost)) {
-		define('FULL_BASE_URL', 'http' . $s . '://' . $httpHost);
-	}
-	unset($httpHost, $s);
+    if (isset($httpHost)) {
+        define('FULL_BASE_URL', 'http' . $s . '://' . $httpHost);
+    }
+    unset($httpHost, $s);
 }

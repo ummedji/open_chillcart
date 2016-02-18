@@ -27,7 +27,11 @@
 					</div>
 					<div class="portlet-body"> <?php
 
-						echo $this->Form->create('Product', array('enctype' => 'multipart/form-data','url'=>array("controller"=>'products','action'=>'importProduct',$store_id, 'admin' => false),'type'=>'file')); ?>
+						echo $this->Form->create('Product', array(
+													'enctype' => 'multipart/form-data',
+													'url'=>array("controller"=>'products',
+													'action'=>'importProduct',
+													'admin' => false),'type'=>'file')); ?>
 						<div class="row margin-b-10">
 							<span class="col-md-8" id="addnewbutton_toggle">
 								<div class="row">
@@ -111,6 +115,7 @@
 								<tr>
 									<th class="table-checkbox no-sort"><input type="checkbox" class="group-checkable test1" data-set="#sample_1 .checkboxes" /></th>
 									<th>Item Name</th>
+									<th>Store Name</th>
 									<th>Main Category</th>
 									<th>Sub Category</th>
 									<th>Total Stock</th>
@@ -120,7 +125,7 @@
 							</thead>
 							<tbody><?php 
                             
-                                foreach($products_detail as $key => $value){ ?>
+                                foreach($products_detail as $key => $value){  ?>
 									<tr class="odd gradeX" id="record<?php echo $value['Product']['id'];?>">
 										<td> <?php
 											echo $this->Form->checkbox($value['Product']['id'],
@@ -129,6 +134,7 @@
 													'hiddenField'=>false,
 													'value'=> $value['Product']['id'])); ?> </td>
 	                                    <td><?php echo $value['Product']['product_name'];?></td>
+	                                    <td> <?php echo $value['Store']['store_name']; ?> </td>
 										<td><?php echo $value['MainCategory']['category_name'];?></td>
 										<td><?php echo $value['SubCategory']['category_name'];?></td>
 										<td><?php echo $value['ProductDetail'][0]['quantity'];?></td>

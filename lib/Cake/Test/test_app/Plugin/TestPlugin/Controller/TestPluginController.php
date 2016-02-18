@@ -1,4 +1,5 @@
 <?php
+
 /**
  * TestPluginController used by Dispatcher test to test plugin shortcut urls.
  *
@@ -16,16 +17,19 @@
  * @since         CakePHP(tm) v 1.3
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TestPluginController extends TestPluginAppController {
+class TestPluginController extends TestPluginAppController
+{
 
-	public $uses = array();
+    public $uses = array();
 
-	public function index() {
-		$this->autoRender = false;
-	}
+    public function index()
+    {
+        $this->autoRender = false;
+    }
 
-	public function add() {
-		$this->autoRender = false;
-	}
+    public function add()
+    {
+        $this->autoRender = false;
+    }
 
 }

@@ -22,32 +22,33 @@
  *
  * @package       Cake.Test.Fixture
  */
-class FilmFileFixture extends CakeTestFixture {
+class FilmFileFixture extends CakeTestFixture
+{
 
-/**
- * name property
- *
- * @var string 'FilmFile'
- */
-	public $name = 'FilmFile';
+    /**
+     * name property
+     *
+     * @var string 'FilmFile'
+     */
+    public $name = 'FilmFile';
 
-/**
- * fields property
- *
- * @var array
- */
-	public $fields = array(
-		'id' => array('type' => 'integer', 'key' => 'primary'),
-		'name' => array('type' => 'string', 'length' => 255)
-	);
+    /**
+     * fields property
+     *
+     * @var array
+     */
+    public $fields = array(
+        'id' => array('type' => 'integer', 'key' => 'primary'),
+        'name' => array('type' => 'string', 'length' => 255)
+    );
 
-/**
- * records property
- *
- * @var array
- */
-	public $records = array(
-		array('id' => 1, 'name' => 'one'),
-		array('id' => 2, 'name' => 'two')
-	);
+    /**
+     * records property
+     *
+     * @var array
+     */
+    public $records = array(
+        array('id' => 1, 'name' => 'one'),
+        array('id' => 2, 'name' => 'two')
+    );
 }

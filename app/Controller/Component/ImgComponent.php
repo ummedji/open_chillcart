@@ -2,7 +2,8 @@
 
 App::uses('CakeS3Component', 'Controller/Component');
 
-class ImgComponent extends Component {
+class ImgComponent extends Component
+{
 
     public $allowed_ext = array('jpg', 'jpeg', 'png', 'gif');
     public $min_filesize = 5000;
@@ -10,10 +11,11 @@ class ImgComponent extends Component {
 
 ////////////////////////////////////////////////////////////
 
-    public function upload($source, $targetdir, $targetfile) {
+    public function upload($source, $targetdir, $targetfile)
+    {
 
         $filesize = filesize($source);
-        if(($filesize < $this->min_filesize) || ($filesize > $this->max_filesize)) {
+        if (($filesize < $this->min_filesize) || ($filesize > $this->max_filesize)) {
             return 'Image filesize must be between ' . $this->human_filesize($this->min_filesize) . ' and ' . $this->human_filesize($this->max_filesize);
         }
 
@@ -41,7 +43,7 @@ class ImgComponent extends Component {
 
         $this->mkdir($targetdir);
 
-        if(move_uploaded_file($source, $targetdir . '/' . $targetfile)) {
+        if (move_uploaded_file($source, $targetdir . '/' . $targetfile)) {
             return 'Success';
         }
 
@@ -50,7 +52,8 @@ class ImgComponent extends Component {
 
 ////////////////////////////////////////////////////////////
 
-    public function human_filesize($bytes, $decimals = 0) {
+    public function human_filesize($bytes, $decimals = 0)
+    {
         $sz = 'BKMGTP';
         $factor = floor((strlen($bytes) - 1) / 3);
         return sprintf("%.{$decimals}f", $bytes / pow(1000, $factor)) . @$sz[$factor] . 'B';
@@ -58,30 +61,57 @@ class ImgComponent extends Component {
 
 ////////////////////////////////////////////////////////////
 
-    public function ext($file) {
-        return mb_strtolower(trim(mb_strrchr($file, '.'), '.'));
+    private function _image_type_to_extension($imagetype)
+    {
+        if (empty($imagetype)) {
+            return false;
+        }
+        switch ($imagetype) {
+            case IMAGETYPE_GIF      :
+                return 'gif';
+            case IMAGETYPE_JPEG     :
+                return 'jpg';
+            case IMAGETYPE_PNG      :
+                return 'png';
+            case IMAGETYPE_SWF      :
+                return 'swf';
+            case IMAGETYPE_PSD      :
+                return 'psd';
+            case IMAGETYPE_BMP      :
+                return 'bmp';
+            case IMAGETYPE_TIFF_II  :
+                return 'tiff';
+            case IMAGETYPE_TIFF_MM  :
+                return 'tiff';
+            case IMAGETYPE_JPC      :
+                return 'jpc';
+            case IMAGETYPE_JP2      :
+                return 'jp2';
+            case IMAGETYPE_JPX      :
+                return 'jpf';
+            case IMAGETYPE_JB2      :
+                return 'jb2';
+            case IMAGETYPE_SWC      :
+                return 'swc';
+            case IMAGETYPE_IFF      :
+                return 'aiff';
+            case IMAGETYPE_WBMP     :
+                return 'wbmp';
+            case IMAGETYPE_XBM      :
+                return 'xbm';
+            default                 :
+                return false;
+        }
     }
 
 ////////////////////////////////////////////////////////////
 
-    public function cropimage($src, $dst, $width, $height, $start_width, $start_height, $scale) {
-        $newImageWidth = ceil($width * $scale);
-        $newImageHeight = ceil($height * $scale);
-        $newImage = imagecreatetruecolor($newImageWidth, $newImageHeight);
-        $source = imagecreatefromjpeg($src);
-        imagecopyresampled($newImage, $source, 0, 0, $start_width, $start_height, $newImageWidth, $newImageHeight, $width, $height);
-        imagejpeg($newImage,$dst, 100);
-        @chmod($thumb_image_name, 0777);
-        //return $thumb_image_name;
-    }
-
-////////////////////////////////////////////////////////////
-
-    public function mkdir($targetdir) {
-        if(!is_dir($targetdir)) {
+    public function mkdir($targetdir)
+    {
+        if (!is_dir($targetdir)) {
             App::uses('Folder', 'Utility');
             $dir = new Folder($targetdir, true, 0777);
-            if(!$dir) {
+            if (!$dir) {
                 return false;
             }
         }
@@ -90,7 +120,29 @@ class ImgComponent extends Component {
 
 ////////////////////////////////////////////////////////////
 
-    public function resampleIM($srcPath, $targetdir, $image, $dst_w = null, $dst_h = null, $fixedSize = false, $centerCrop = false) {
+    public function ext($file)
+    {
+        return mb_strtolower(trim(mb_strrchr($file, '.'), '.'));
+    }
+
+////////////////////////////////////////////////////////////
+
+    public function cropimage($src, $dst, $width, $height, $start_width, $start_height, $scale)
+    {
+        $newImageWidth = ceil($width * $scale);
+        $newImageHeight = ceil($height * $scale);
+        $newImage = imagecreatetruecolor($newImageWidth, $newImageHeight);
+        $source = imagecreatefromjpeg($src);
+        imagecopyresampled($newImage, $source, 0, 0, $start_width, $start_height, $newImageWidth, $newImageHeight, $width, $height);
+        imagejpeg($newImage, $dst, 100);
+        @chmod($thumb_image_name, 0777);
+        //return $thumb_image_name;
+    }
+
+////////////////////////////////////////////////////////////
+
+    public function resampleIM($srcPath, $targetdir, $image, $dst_w = null, $dst_h = null, $fixedSize = false, $centerCrop = false)
+    {
 
         //$im = '/usr/bin/convert -auto-orient -quality 100 -resample 72x72 -resize 600 "' . WWW_ROOT . 'images/original/' . $origFile . '[0]" ' . WWW_ROOT . 'images/' . $dst;
         //exec($im);
@@ -99,50 +151,51 @@ class ImgComponent extends Component {
 
 ////////////////////////////////////////////////////////////
 
-    public function resampleGD($srcPath, $targetdir, $image, $dst_w = null, $dst_h = null, $fixedSize = false, $centerCrop = false, $destpath) {
+    public function resampleGD($srcPath, $targetdir, $image, $dst_w = null, $dst_h = null, $fixedSize = false, $centerCrop = false, $destpath)
+    {
 
         $this->CakeS3 = new CakeS3Component(new ComponentCollection());
 
         $dstPath = $targetdir . $image;
         $this->mkdir($targetdir);
 
-         list($src_w, $src_h, $type) = getimagesize($srcPath);
+        list($src_w, $src_h, $type) = getimagesize($srcPath);
 
         if (!$fixedSize && !$centerCrop) {
             $new_w = $dst_w;
             $new_h = $dst_h;
         } else {
             $scale = min($dst_w / $src_w, $dst_h / $src_h);
-            $new_w = (int) ($src_w * $scale);
-            $new_h = (int) ($src_h * $scale);
+            $new_w = (int)($src_w * $scale);
+            $new_h = (int)($src_h * $scale);
 
-            if($fixedSize) {
-                $dst_x = (int) (($dst_w - $new_w) / 2);
-                $dst_y = (int) (($dst_h - $new_h) / 2);
+            if ($fixedSize) {
+                $dst_x = (int)(($dst_w - $new_w) / 2);
+                $dst_y = (int)(($dst_h - $new_h) / 2);
             }
         }
 
-        if(!$fixedSize && !$centerCrop) {
+        if (!$fixedSize && !$centerCrop) {
             $dst_w = $new_w;
             $dst_h = $new_h;
             $dst_x = 0;
             $dst_y = 0;
         }
 
-        if($centerCrop) {
+        if ($centerCrop) {
 
             $original_aspect = $src_w / $src_h;
             $thumb_aspect = $dst_w / $dst_h;
 
-            if ( $original_aspect >= $thumb_aspect ) {
+            if ($original_aspect >= $thumb_aspect) {
                 $new_h = $dst_h;
-                $new_w = (int) $src_w / ($src_h / $dst_h);
+                $new_w = (int)$src_w / ($src_h / $dst_h);
             } else {
                 $new_w = $dst_w;
-                $new_h = (int) $src_h / ($src_w / $dst_w);
+                $new_h = (int)$src_h / ($src_w / $dst_w);
             }
-            $dst_x = (int) 0 - ($new_w - $dst_w) / 2;
-            $dst_y = (int) 0 - ($new_h - $dst_h) / 2;
+            $dst_x = (int)0 - ($new_w - $dst_w) / 2;
+            $dst_y = (int)0 - ($new_h - $dst_h) / 2;
 
         }
 
@@ -152,20 +205,20 @@ class ImgComponent extends Component {
 
         $ext = $this->_image_type_to_extension($type);
 
-        switch($ext) {
-        case 'gif' :
-            $src = imagecreatefromgif($srcPath);
-            break;
-        case 'png' :
-            $src = imagecreatefrompng($srcPath);
-            break;
-        case 'jpg' :
-        case 'jpeg' :
-            $src = imagecreatefromjpeg($srcPath);
-            break;
-        default :
-            return false;
-            break;
+        switch ($ext) {
+            case 'gif' :
+                $src = imagecreatefromgif($srcPath);
+                break;
+            case 'png' :
+                $src = imagecreatefrompng($srcPath);
+                break;
+            case 'jpg' :
+            case 'jpeg' :
+                $src = imagecreatefromjpeg($srcPath);
+                break;
+            default :
+                return false;
+                break;
         }
 
         // Local upload
@@ -174,35 +227,8 @@ class ImgComponent extends Component {
         @chmod($dst, 0777);
 
         // Amazon S3 Upload
-        $result = $this->CakeS3->putObject($dstPath, $destpath.$image, S3::ACL_PUBLIC_READ);
+        $result = $this->CakeS3->putObject($dstPath, $destpath . $image, S3::ACL_PUBLIC_READ);
         return true;
-    }
-
-////////////////////////////////////////////////////////////
-
-    private function _image_type_to_extension($imagetype) {
-        if(empty($imagetype)) {
-            return false;
-        }
-        switch($imagetype) {
-            case IMAGETYPE_GIF      : return 'gif';
-            case IMAGETYPE_JPEG     : return 'jpg';
-            case IMAGETYPE_PNG      : return 'png';
-            case IMAGETYPE_SWF      : return 'swf';
-            case IMAGETYPE_PSD      : return 'psd';
-            case IMAGETYPE_BMP      : return 'bmp';
-            case IMAGETYPE_TIFF_II  : return 'tiff';
-            case IMAGETYPE_TIFF_MM  : return 'tiff';
-            case IMAGETYPE_JPC      : return 'jpc';
-            case IMAGETYPE_JP2      : return 'jp2';
-            case IMAGETYPE_JPX      : return 'jpf';
-            case IMAGETYPE_JB2      : return 'jb2';
-            case IMAGETYPE_SWC      : return 'swc';
-            case IMAGETYPE_IFF      : return 'aiff';
-            case IMAGETYPE_WBMP     : return 'wbmp';
-            case IMAGETYPE_XBM      : return 'xbm';
-            default                 : return false;
-        }
     }
 
 

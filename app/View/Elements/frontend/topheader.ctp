@@ -13,6 +13,7 @@
  } else {
  	echo '<div class="header detailheader">';
  } ?>
+ <header>
 <div class="container-fluid">
 	<nav class="navbar navbar-default" role="navigation">
 		<div class="navbar-header">
@@ -49,9 +50,6 @@
 				<div class="title-categories">
 					<img alt="categories" src="<?php echo $siteUrl.'/frontend/images/categories.png'; ?>" title="categories"><br> <span>Categories</span>
 				</div>
-				<div class="title-filter">
-					<img alt="filter" src="<?php echo $siteUrl.'/frontend/images/filter.png'; ?>" title="filter"><br> <span>Filter</span>
-				</div>
 			<?php
 				}
 			?>				
@@ -81,8 +79,7 @@
 											<a href="<?php echo $siteUrl.'/shop/'.$value['Store']['seo_url'].'/'.$value['Store']['id'];  ?>">
 										   <!--  <span class="discount_image"><span>17% OFF</span></span> -->
 
-										   <img alt="<?php echo $value['Store']['store_name']; ?>" src="https://s3.amazonaws.com/s3test56b888c6be37d/storelogos/<?php echo $value['Store']['store_logo']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/frontend/images/no_store.jpg"; ?>'">
-										   
+										   <img alt="<?php echo $value['Store']['store_name']; ?>" src="https://s3.amazonaws.com/<?php echo $siteBucket.'/storelogos/'.$value['Store']['store_logo']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/frontend/images/no_store.jpg"; ?>'">										   
 											<figcaption>
 												<div class="product-addon">
 													<span class="yith-wcqv-button" href="<?php echo $siteUrl.'/shop/'.$value['Store']['seo_url'].'/'.$value['Store']['id'];  ?>"><span></span><i class="fa fa-check"></i></span>
@@ -120,10 +117,11 @@
 				</div>
 			</li>	
 			<li class="searchMenuFormList">
-				<form class="searchMenuForm">
+
+				<div class="searchMenuForm">
 					<input type="search" class="searchInput searchFilterResults" placeholder="<?php echo __("I'm looking for...", true); ?>" >
-					<button class="searchMenuFormClick" type="submit"><?php echo __('Submit', true); ?></button>
-				</form>
+					<i class="searchMenuFormClick"><?php echo __('Submit', true); ?></i>
+				</div>
 			</li>
 		</ul>
 		<?php
@@ -158,12 +156,20 @@
 							<li> <a class="changeLocation pointer" onclick="changeLocation();">
 								<i class="fa fa-map-marker"></i> <?php echo __('Change Location', true); ?></a></li> <?php
 						}
+
+						if ($this->request->params['controller'] == 'searches' &&
+							$this->request->params['action'] == 'index') { ?>
+
+							<li><a href="" id="howWork"><?php echo __('How does it work'); ?></a></li>
+							<li><a href=""><?php echo __('Get your store listed'); ?></a></li> <?php
+						}
 						
 						if(!empty($loggedCheck) && ($loggedCheck['role_id'] == 4)){ ?>
 
 							<li> <a href="<?php echo $siteUrl.'/customer/customers/myaccount'; ?>"> <?php echo __('Myaccount', true); ?></a> </li>
 							<li> <a href="<?php echo $siteUrl.'/customer/users/userLogout'; ?>"> <?php echo __('Logout', true); ?></a> </li> <?php 
 						} else {?>
+
 							<li> <a href="<?php echo $siteUrl.'/signup'; ?>"> <?php echo __('Sign Up', true); ?></a></li>
 							<li> <a href="<?php echo $siteUrl.'/customerlogin'; ?>"> <?php echo __('Login', true); ?></a> </li> <?php 
 						} ?>	
@@ -174,3 +180,4 @@
 		</nav>
 	</div>
 </div>
+</header>

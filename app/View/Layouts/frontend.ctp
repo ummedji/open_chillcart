@@ -31,24 +31,24 @@
 
 		<link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,400italic" rel="stylesheet" type="text/css">
 
-	</head>
-	<body onload="$('#thanksmsg').modal('show');"> <?php
+		 <?php
 	
 	if($this->request->params['controller'] == "searches" &&
 			$this->request->params['action'] == 'index') { ?>
-		<div class="indexBnner" style="height: 673px;"> <?php
+
+		<link rel="stylesheet" type="text/css" media="all" href="<?php echo $this->webroot; ?>frontend/css/style.css" />
+		<link rel="stylesheet" type="text/css" media="all" href="<?php echo $this->webroot; ?>frontend/css/responsive.css" /><?php
 	} ?>
+
+	</head>
+	<body onload="$('#thanksmsg').modal('show');">
+
 	<?php echo $this->element('frontend/topheader'); ?>
 	<?php echo $this->Session->flash(); ?>
 	<div class="middle_height">
 	<?php echo $this->fetch('content'); ?>
 	</div>
-	 <?php
-	if($this->request->params['controller'] == "searches" &&
-			$this->request->params['action'] == 'index') { ?>
-		</div> <?php
-	} ?>
-
+	
 	
 
 
@@ -597,6 +597,50 @@
 		    	return false;
 			}
 		}
+
+		$(document).ready(function(){
+			
+			var speed = 'slow';
+			var slides = $('#txtAni ul li');
+		  	function slider() 
+		  	{
+		   	var now = $("#txtAni ul").children(':visible'),
+		     	first = $("#txtAni ul").children(':first'),
+		     	next = now.next();
+		     	next = next.index() == -1 ? first : next;
+		   	now.fadeOut(speed, function() {next.fadeIn(speed);});
+		   	setTimeout(slider, 4500);
+		  	} 
+			slider();
+			
+			$("#howWork").on("click", function(){
+				$("#howItWork").addClass("active");
+				return false;
+			});
+			
+			$("#close").on("click", function(){
+				$("#howItWork").removeClass("active");
+				return false;
+			});
+			
+			$(document).on("click", function() {
+				  $("#howItWork").removeClass("active");
+				});
+			
+			$("#howItWork").on("click", function(e){
+				  e.stopPropagation();
+				});
+
+
+			$("#menubutton").click(function() {
+				$("header ul").slideToggle(400, function()  {
+				jQuery(this).toggleClass("expanded").css('display',' ');
+				
+				});
+				
+			});
+
+		});
 	</script>
 
 	<?php

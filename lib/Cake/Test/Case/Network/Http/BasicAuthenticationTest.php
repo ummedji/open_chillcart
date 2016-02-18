@@ -25,40 +25,43 @@ App::uses('BasicAuthentication', 'Network/Http');
  *
  * @package       Cake.Test.Case.Network.Http
  */
-class BasicAuthenticationTest extends CakeTestCase {
+class BasicAuthenticationTest extends CakeTestCase
+{
 
-/**
- * testAuthentication method
- *
- * @return void
- */
-	public function testAuthentication() {
-		$http = new HttpSocket();
-		$auth = array(
-			'method' => 'Basic',
-			'user' => 'mark',
-			'pass' => 'secret'
-		);
+    /**
+     * testAuthentication method
+     *
+     * @return void
+     */
+    public function testAuthentication()
+    {
+        $http = new HttpSocket();
+        $auth = array(
+            'method' => 'Basic',
+            'user' => 'mark',
+            'pass' => 'secret'
+        );
 
-		BasicAuthentication::authentication($http, $auth);
-		$this->assertEquals('Basic bWFyazpzZWNyZXQ=', $http->request['header']['Authorization']);
-	}
+        BasicAuthentication::authentication($http, $auth);
+        $this->assertEquals('Basic bWFyazpzZWNyZXQ=', $http->request['header']['Authorization']);
+    }
 
-/**
- * testProxyAuthentication method
- *
- * @return void
- */
-	public function testProxyAuthentication() {
-		$http = new HttpSocket();
-		$proxy = array(
-			'method' => 'Basic',
-			'user' => 'mark',
-			'pass' => 'secret'
-		);
+    /**
+     * testProxyAuthentication method
+     *
+     * @return void
+     */
+    public function testProxyAuthentication()
+    {
+        $http = new HttpSocket();
+        $proxy = array(
+            'method' => 'Basic',
+            'user' => 'mark',
+            'pass' => 'secret'
+        );
 
-		BasicAuthentication::proxyAuthentication($http, $proxy);
-		$this->assertEquals('Basic bWFyazpzZWNyZXQ=', $http->request['header']['Proxy-Authorization']);
-	}
+        BasicAuthentication::proxyAuthentication($http, $proxy);
+        $this->assertEquals('Basic bWFyazpzZWNyZXQ=', $http->request['header']['Proxy-Authorization']);
+    }
 
 }
