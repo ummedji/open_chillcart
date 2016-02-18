@@ -47,7 +47,9 @@
 				</div>
 				<div class="details">
 					<div class="number">
-						 12,5M$
+						<?php 
+						echo "Fixed";
+					?>	 
 					</div>
 					<div class="desc">
 						 Total Commission
@@ -61,8 +63,9 @@
 					<i class="fa fa-shopping-cart"></i>
 				</div>
 				<div class="details">
-					<div class="number">
-						 549
+					<div class="number"><?php 
+					echo $this->Number->currency($dasboard_value['order_price'], $siteCurrency);
+					?>
 					</div>
 					<div class="desc">
 						 Total Turnover
