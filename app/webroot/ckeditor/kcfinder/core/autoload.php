@@ -1,24 +1,24 @@
 <?php
 
 /** This file is part of KCFinder project
-  *
-  *      @desc This file is included first, before each other
-  *   @package KCFinder
-  *   @version 2.51
-  *    @author Pavel Tzonkov <pavelc@users.sourceforge.net>
-  * @copyright 2010, 2011 KCFinder Project
-  *   @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
-  *   @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
-  *      @link http://kcfinder.sunhater.com
-  *
-  * This file is the place you can put any code (at the end of the file),
-  * which will be executed before any other. Suitable for:
-  *     1. Set PHP ini settings using ini_set()
-  *     2. Custom session save handler with session_set_save_handler()
-  *     3. Any custom integration code. If you use any global variables
-  *        here, they can be accessed in config.php via $GLOBALS array.
-  *        It's recommended to use constants instead.
-  */
+ *
+ * @desc This file is included first, before each other
+ * @package KCFinder
+ * @version 2.51
+ * @author Pavel Tzonkov <pavelc@users.sourceforge.net>
+ * @copyright 2010, 2011 KCFinder Project
+ * @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
+ * @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
+ * @link http://kcfinder.sunhater.com
+ *
+ * This file is the place you can put any code (at the end of the file),
+ * which will be executed before any other. Suitable for:
+ *     1. Set PHP ini settings using ini_set()
+ *     2. Custom session save handler with session_set_save_handler()
+ *     3. Any custom integration code. If you use any global variables
+ *        here, they can be accessed in config.php via $GLOBALS array.
+ *        It's recommended to use constants instead.
+ */
 
 
 // PHP VERSION CHECK
@@ -39,13 +39,15 @@ if (ini_get("safe_mode"))
 // CMS INTEGRATION
 if (isset($_GET['cms'])) {
     switch ($_GET['cms']) {
-        case "drupal": require "integration/drupal.php";
+        case "drupal":
+            require "integration/drupal.php";
     }
 }
 
 
 // MAGIC AUTOLOAD CLASSES FUNCTION
-function __autoload($class) {
+function __autoload($class)
+{
     if ($class == "uploader")
         require "core/uploader.php";
     elseif ($class == "browser")
@@ -62,18 +64,20 @@ function __autoload($class) {
 // json_encode() IMPLEMENTATION IF JSON EXTENSION IS MISSING
 if (!function_exists("json_encode")) {
 
-    function kcfinder_json_string_encode($string) {
+    function kcfinder_json_string_encode($string)
+    {
         return '"' .
-            str_replace('/', "\\/",
+        str_replace('/', "\\/",
             str_replace("\t", "\\t",
-            str_replace("\r", "\\r",
-            str_replace("\n", "\\n",
-            str_replace('"', "\\\"",
-            str_replace("\\", "\\\\",
-        $string)))))) . '"';
+                str_replace("\r", "\\r",
+                    str_replace("\n", "\\n",
+                        str_replace('"', "\\\"",
+                            str_replace("\\", "\\\\",
+                                $string)))))) . '"';
     }
 
-    function json_encode($data) {
+    function json_encode($data)
+    {
 
         if (is_array($data)) {
             $ret = array();
@@ -84,14 +88,14 @@ if (!function_exists("json_encode")) {
                     $ret[] = kcfinder_json_string_encode($key) . ':' . json_encode($val);
                 return "{" . implode(",", $ret) . "}";
 
-            // ARRAY
+                // ARRAY
             } else {
                 foreach ($data as $val)
                     $ret[] = json_encode($val);
                 return "[" . implode(",", $ret) . "]";
             }
 
-        // BOOLEAN OR NULL
+            // BOOLEAN OR NULL
         } elseif (is_bool($data) || ($data === null))
             return ($data === null)
                 ? "null"

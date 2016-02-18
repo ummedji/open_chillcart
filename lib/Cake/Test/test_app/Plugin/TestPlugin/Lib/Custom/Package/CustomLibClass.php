@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Test Suite CustomLibClass Library
  *
@@ -16,5 +17,6 @@
  * @since         CakePHP(tm) v 1.2.0.5432
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class CustomLibClass {
+class CustomLibClass
+{
 }

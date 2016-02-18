@@ -22,36 +22,37 @@
  *
  * @package       Cake.Test.Fixture
  */
-class ContentFixture extends CakeTestFixture {
+class ContentFixture extends CakeTestFixture
+{
 
-/**
- * name property
- *
- * @var string 'Aco'
- */
-	public $name = 'Content';
+    /**
+     * name property
+     *
+     * @var string 'Aco'
+     */
+    public $name = 'Content';
 
-	public $table = 'Content';
+    public $table = 'Content';
 
-/**
- * fields property
- *
- * @var array
- */
-	public $fields = array(
-		'iContentId' => array('type' => 'integer', 'key' => 'primary'),
-		'cDescription' => array('type' => 'string', 'length' => 50, 'null' => true)
-	);
+    /**
+     * fields property
+     *
+     * @var array
+     */
+    public $fields = array(
+        'iContentId' => array('type' => 'integer', 'key' => 'primary'),
+        'cDescription' => array('type' => 'string', 'length' => 50, 'null' => true)
+    );
 
-/**
- * records property
- *
- * @var array
- */
-	public $records = array(
-		array('cDescription' => 'Test Content 1'),
-		array('cDescription' => 'Test Content 2'),
-		array('cDescription' => 'Test Content 3'),
-		array('cDescription' => 'Test Content 4')
-	);
+    /**
+     * records property
+     *
+     * @var array
+     */
+    public $records = array(
+        array('cDescription' => 'Test Content 1'),
+        array('cDescription' => 'Test Content 2'),
+        array('cDescription' => 'Test Content 3'),
+        array('cDescription' => 'Test Content 4')
+    );
 }

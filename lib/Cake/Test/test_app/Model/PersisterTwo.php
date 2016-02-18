@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Test App Comment Model
  *
@@ -18,14 +19,15 @@
  * @since         CakePHP v 1.2.0.7726
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class PersisterTwo extends AppModel {
+class PersisterTwo extends AppModel
+{
 
-	public $useTable = 'posts';
+    public $useTable = 'posts';
 
-	public $name = 'PersisterTwo';
+    public $name = 'PersisterTwo';
 
-	public $actsAs = array('PersisterOneBehavior', 'TestPlugin.TestPluginPersisterOne');
+    public $actsAs = array('PersisterOneBehavior', 'TestPlugin.TestPluginPersisterOne');
 
-	public $hasMany = array('Comment', 'TestPlugin.TestPluginComment');
+    public $hasMany = array('Comment', 'TestPlugin.TestPluginComment');
 
 }

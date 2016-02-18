@@ -90,8 +90,7 @@ foreach ($storeCart as $key => $value) {
 
 						</td>
 
-						<?php $imageSrc = $siteUrl.'/stores/'.$value['ShoppingCart']['store_id'].'/products/carts/'.$value['ProductDetail']['Product']['ProductImage'][0]['image_alias']; ?>
-
+						<?php $imageSrc = 'https://s3.amazonaws.com/'.$siteBucket.'/stores/products/carts/'.$value['ProductDetail']['Product']['ProductImage'][0]['image_alias']; ?>
 						<td class="image">
 							<img src="<?php echo $imageSrc; ?>" alt="<?php echo $value['ShoppingCart']['product_name']; ?>" title="<?php echo $value['ShoppingCart']['product_name']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/no-imge.jpg"; ?>'">
 						</td>

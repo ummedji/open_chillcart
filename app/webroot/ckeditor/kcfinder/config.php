@@ -1,16 +1,16 @@
 <?php
 
 /** This file is part of KCFinder project
-  *
-  *      @desc Base configuration file
-  *   @package KCFinder
-  *   @version 2.51
-  *    @author Pavel Tzonkov <pavelc@users.sourceforge.net>
-  * @copyright 2010, 2011 KCFinder Project
-  *   @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
-  *   @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
-  *      @link http://kcfinder.sunhater.com
-  */
+ *
+ * @desc Base configuration file
+ * @package KCFinder
+ * @version 2.51
+ * @author Pavel Tzonkov <pavelc@users.sourceforge.net>
+ * @copyright 2010, 2011 KCFinder Project
+ * @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
+ * @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
+ * @link http://kcfinder.sunhater.com
+ */
 
 // IMPORTANT!!! Do not remove uncommented settings in this file even if
 // you are using session configuration.
@@ -53,14 +53,14 @@ $_CONFIG = array(
     'types' => array(
 
         // CKEditor & FCKEditor types
-        'files'   =>  "",
-        'flash'   =>  "swf",
-        'images'  =>  "*img",
+        'files' => "",
+        'flash' => "swf",
+        'images' => "*img",
 
         // TinyMCE types
-        'file'    =>  "",
-        'media'   =>  "swf flv avi mpg mpeg qt mov wmv asf rm",
-        'image'   =>  "*img",
+        'file' => "",
+        'media' => "swf flv avi mpg mpeg qt mov wmv asf rm",
+        'image' => "*img",
     ),
 
     'filenameChangeChars' => array(/*

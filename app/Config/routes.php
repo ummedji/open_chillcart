@@ -23,35 +23,35 @@
 /**
  * Here, we are connecting '/' (base path) to controller called 'Pages',
  * its action called 'index', and we pass a param to select the view file
- * 
+ *
  */
 
-	Router::connect('/admin', array('controller' => 'users', 'action' => 'login', 'admin' => true));
-    Router::connect('/store', array('controller' => 'users', 'action' => 'storeLogin', 'store' => true));   
-    Router::connect('/customer', array('controller' => 'users', 'action' => 'customerlogin', 'customer' => true));   
-    Router::connect('/', array('controller' => 'searches', 'action' => 'index'));
+Router::connect('/admin', array('controller' => 'users', 'action' => 'login', 'admin' => true));
+Router::connect('/store', array('controller' => 'users', 'action' => 'storeLogin', 'store' => true));
+Router::connect('/customer', array('controller' => 'users', 'action' => 'customerlogin', 'customer' => true));
+Router::connect('/', array('controller' => 'searches', 'action' => 'index'));
 
-    Router::connect('/signup', array('controller' => 'users', 'action' => 'signup'));
-    Router::connect('/customerlogin', array('controller' => 'users', 'action' => 'customerlogin', 'customer' => true));
-    
-    Router::connect('/shop/:storename/:id', array('controller' => 'searches', 'action' => 'storeitems') ,
-    										 array('pass' => array('storename','id')));
+Router::connect('/signup', array('controller' => 'users', 'action' => 'signup'));
+Router::connect('/customerlogin', array('controller' => 'users', 'action' => 'customerlogin', 'customer' => true));
 
-    Router::connect('/city/:cityName/:city', array('controller' => 'searches', 'action' => 'stores') ,
-                                             array('pass' => array('cityName', 'city')));
+Router::connect('/shop/:storename/:id', array('controller' => 'searches', 'action' => 'storeitems'),
+    array('pass' => array('storename', 'id')));
 
-    Router::connect('/city/:cityName/:areaName/:city/:area', array('controller' => 'searches', 'action' => 'stores') ,
-                                             array('pass' => array('cityName', 'city', 'areaName', 'area')));
-    
+Router::connect('/city/:cityName/:city', array('controller' => 'searches', 'action' => 'stores'),
+    array('pass' => array('cityName', 'city')));
+
+Router::connect('/city/:cityName/:areaName/:city/:area', array('controller' => 'searches', 'action' => 'stores'),
+    array('pass' => array('cityName', 'city', 'areaName', 'area')));
+
 /**
- * Load all plugin routes.  See the CakePlugin documentation on 
+ * Load all plugin routes.  See the CakePlugin documentation on
  * how to customize the loading of plugin routes.
  */
-	CakePlugin::routes();
+CakePlugin::routes();
 
 /**
  * Load the CakePHP default routes. Only remove this if you do not want to use
  * the built-in default routes.
  */
-	require CAKE . 'Config' . DS . 'routes.php';
+require CAKE . 'Config' . DS . 'routes.php';
 	

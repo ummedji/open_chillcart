@@ -1,8 +1,8 @@
 <?php
 
 /** vi localization file for KCFinder
-  * Tran Van Quyet - HQV ltd
-  */
+ * Tran Van Quyet - HQV ltd
+ */
 
 $lang = array(
 

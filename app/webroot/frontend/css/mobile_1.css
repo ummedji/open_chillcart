@@ -1,50 +1,53 @@
 /* less than 768px eq 767px*/
 @media (max-width: 767px) {
-	.checkoutbtm a,.checkoutbtm button[type='submit']{display: inline-block; margin-bottom: 10px; width: 100%}
-	.cardDetailHead .addnewAdrr{margin: 15px 0; display: inline-block; float: none;}
+    .checkoutbtm a, .checkoutbtm button[type='submit'] {
+        display: inline-block;
+        margin-bottom: 10px;
+        width: 100%
+    }
+
+    .cardDetailHead .addnewAdrr {
+        margin: 15px 0;
+        display: inline-block;
+        float: none;
+    }
 
 }
 
 /* 768px and up*/
-@media (min-width: 768px)
-{
-	
+@media (min-width: 768px) {
 
 }
 
 /* 992px and up */
-@media (min-width: 992px)
-{
-	
+@media (min-width: 992px) {
+
 }
 
 /* 1200px and up */
-@media (min-width: 1200px) 
-{
-	
+@media (min-width: 1200px) {
+
 }
 
 /*  768px to 991px  */
 @media (min-width: 768px) and (max-width: 991px ) {
-	.checkout-tabs, .myaccount-tabs a{width: 33%; display: inline-block;}
+    .checkout-tabs, .myaccount-tabs a {
+        width: 33%;
+        display: inline-block;
+    }
 }
 
 /*  992px  to 1199px   */
-@media (min-width: 992px ) and (max-width: 1199px) 
-{
-	
+@media (min-width: 992px ) and (max-width: 1199px) {
+
 }
 
-
 /* less than 992px eq 991px*/
-@media (max-width: 992px) 
-{
-		
-	
+@media (max-width: 992px) {
+
 }
 
 /* less than 1200px eq 1199px*/
-@media (max-width: 1199px) 
-{
-	
+@media (max-width: 1199px) {
+
 }

@@ -22,34 +22,35 @@
  *
  * @package       Cake.Test.Fixture
  */
-class BiddingMessageFixture extends CakeTestFixture {
+class BiddingMessageFixture extends CakeTestFixture
+{
 
-/**
- * name property
- *
- * @var string 'BiddingMessage'
- */
-	public $name = 'BiddingMessage';
+    /**
+     * name property
+     *
+     * @var string 'BiddingMessage'
+     */
+    public $name = 'BiddingMessage';
 
-/**
- * fields property
- *
- * @var array
- */
-	public $fields = array(
-		'bidding' => array('type' => 'string', 'null' => false, 'key' => 'primary'),
-		'name' => array('type' => 'string', 'null' => false)
-	);
+    /**
+     * fields property
+     *
+     * @var array
+     */
+    public $fields = array(
+        'bidding' => array('type' => 'string', 'null' => false, 'key' => 'primary'),
+        'name' => array('type' => 'string', 'null' => false)
+    );
 
-/**
- * records property
- *
- * @var array
- */
-	public $records = array(
-		array('bidding' => 'One', 'name' => 'Message 1'),
-		array('bidding' => 'Two', 'name' => 'Message 2'),
-		array('bidding' => 'Three', 'name' => 'Message 3'),
-		array('bidding' => 'Four', 'name' => 'Message 4')
-	);
+    /**
+     * records property
+     *
+     * @var array
+     */
+    public $records = array(
+        array('bidding' => 'One', 'name' => 'Message 1'),
+        array('bidding' => 'Two', 'name' => 'Message 2'),
+        array('bidding' => 'Three', 'name' => 'Message 3'),
+        array('bidding' => 'Four', 'name' => 'Message 4')
+    );
 }

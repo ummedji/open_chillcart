@@ -22,37 +22,38 @@
  *
  * @package       Cake.Test.Fixture
  */
-class SomethingElseFixture extends CakeTestFixture {
+class SomethingElseFixture extends CakeTestFixture
+{
 
-/**
- * name property
- *
- * @var string 'SomethingElse'
- */
-	public $name = 'SomethingElse';
+    /**
+     * name property
+     *
+     * @var string 'SomethingElse'
+     */
+    public $name = 'SomethingElse';
 
-/**
- * fields property
- *
- * @var array
- */
-	public $fields = array(
-		'id' => array('type' => 'integer', 'key' => 'primary'),
-		'title' => array('type' => 'string', 'default' => ''),
-		'body' => array('type' => 'text'),
-		'published' => array('type' => 'string', 'default' => ''),
-		'created' => array('type' => 'datetime', 'null' => true),
-		'updated' => array('type' => 'datetime', 'null' => true)
-	);
+    /**
+     * fields property
+     *
+     * @var array
+     */
+    public $fields = array(
+        'id' => array('type' => 'integer', 'key' => 'primary'),
+        'title' => array('type' => 'string', 'default' => ''),
+        'body' => array('type' => 'text'),
+        'published' => array('type' => 'string', 'default' => ''),
+        'created' => array('type' => 'datetime', 'null' => true),
+        'updated' => array('type' => 'datetime', 'null' => true)
+    );
 
-/**
- * records property
- *
- * @var array
- */
-	public $records = array(
-		array('title' => 'First Post', 'body' => 'First Post Body', 'published' => 'Y', 'created' => '2007-03-18 10:39:23', 'updated' => '2007-03-18 10:41:31'),
-		array('title' => 'Second Post', 'body' => 'Second Post Body', 'published' => 'Y', 'created' => '2007-03-18 10:41:23', 'updated' => '2007-03-18 10:43:31'),
-		array('title' => 'Third Post', 'body' => 'Third Post Body', 'published' => 'Y', 'created' => '2007-03-18 10:43:23', 'updated' => '2007-03-18 10:45:31')
-	);
+    /**
+     * records property
+     *
+     * @var array
+     */
+    public $records = array(
+        array('title' => 'First Post', 'body' => 'First Post Body', 'published' => 'Y', 'created' => '2007-03-18 10:39:23', 'updated' => '2007-03-18 10:41:31'),
+        array('title' => 'Second Post', 'body' => 'Second Post Body', 'published' => 'Y', 'created' => '2007-03-18 10:41:23', 'updated' => '2007-03-18 10:43:31'),
+        array('title' => 'Third Post', 'body' => 'Third Post Body', 'published' => 'Y', 'created' => '2007-03-18 10:43:23', 'updated' => '2007-03-18 10:45:31')
+    );
 }

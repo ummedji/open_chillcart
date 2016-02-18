@@ -1,26 +1,28 @@
-<?php
+<
+? php
 
 /** This file is part of KCFinder project
-  *
-  *      @desc Clipboard functionality
-  *   @package KCFinder
-  *   @version 2.51
-  *    @author Pavel Tzonkov <pavelc@users.sourceforge.net>
-  * @copyright 2010, 2011 KCFinder Project
-  *   @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
-  *   @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
-  *      @link http://kcfinder.sunhater.com
-  */?>
+ *
+ *      @desc Clipboard functionality
+ *   @package KCFinder
+ *   @version 2.51
+ *    @author Pavel Tzonkov <pavelc@users.sourceforge.net>
+ * @copyright 2010, 2011 KCFinder Project
+ *   @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
+ *   @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
+ *      @link http://kcfinder.sunhater.com
+ */ ?
+>
 
-browser.initClipboard = function() {
+browser.initClipboard = function () {
     if (!this.clipboard || !this.clipboard.length) return;
     var size = 0;
-    $.each(this.clipboard, function(i, val) {
+    $.each(this.clipboard, function (i, val) {
         size += parseInt(val.size);
     });
     size = this.humanSize(size);
     $('#clipboard').html('<div title="' + this.label("Clipboard") + ' (' + this.clipboard.length + ' ' + this.label("files") + ', ' + size + ')" onclick="browser.openClipboard()"></div>');
-    var resize = function() {
+    var resize = function () {
         $('#clipboard').css({
             left: $(window).width() - $('#clipboard').outerWidth() + 'px',
             top: $(window).height() - $('#clipboard').outerHeight() + 'px'
@@ -29,13 +31,13 @@ browser.initClipboard = function() {
     resize();
     $('#clipboard').css('display', 'block');
     $(window).unbind();
-    $(window).resize(function() {
+    $(window).resize(function () {
         browser.resize();
         resize();
     });
 };
 
-browser.openClipboard = function() {
+browser.openClipboard = function () {
     if (!this.clipboard || !this.clipboard.length) return;
     if ($('.menu a[href="kcact:cpcbd"]').html()) {
         $('#clipboard').removeClass('selected');
@@ -43,7 +45,7 @@ browser.openClipboard = function() {
         return;
     }
     var html = '<div class="menu"><div class="list">';
-    $.each(this.clipboard, function(i, val) {
+    $.each(this.clipboard, function (i, val) {
         icon = _.getFileExtension(val.name);
         if (val.thumb)
             icon = '.image';
@@ -53,7 +55,7 @@ browser.openClipboard = function() {
         html += '<a style="background-image:url(' + _.escapeDirs(icon) + ')" title="' + browser.label("Click to remove from the Clipboard") + '" onclick="browser.removeFromClipboard(' + i + ')">' + _.htmlData(_.basename(val.name)) + '</a>';
     });
     html += '</div><div class="delimiter"></div>';
-    if (this.support.zip) html+=
+    if (this.support.zip) html +=
         '<a href="kcact:download">' + this.label("Download files") + '</a>';
     if (this.access.files.copy || this.access.files.move || this.access.files['delete'])
         html += '<div class="delimiter"></div>';
@@ -68,38 +70,38 @@ browser.openClipboard = function() {
     html += '<div class="delimiter"></div>' +
         '<a href="kcact:clrcbd">' + this.label("Clear the Clipboard") + '</a>' + '</div>';
 
-    setTimeout(function() {
+    setTimeout(function () {
         $('#clipboard').addClass('selected');
         $('#dialog').html(html);
-        $('.menu a[href="kcact:download"]').click(function() {
+        $('.menu a[href="kcact:download"]').click(function () {
             browser.hideDialog();
             browser.downloadClipboard();
             return false;
         });
-        $('.menu a[href="kcact:cpcbd"]').click(function() {
+        $('.menu a[href="kcact:cpcbd"]').click(function () {
             if (!browser.dirWritable) return false;
             browser.hideDialog();
             browser.copyClipboard(browser.dir);
             return false;
         });
-        $('.menu a[href="kcact:mvcbd"]').click(function() {
+        $('.menu a[href="kcact:mvcbd"]').click(function () {
             if (!browser.dirWritable) return false;
             browser.hideDialog();
             browser.moveClipboard(browser.dir);
             return false;
         });
-        $('.menu a[href="kcact:rmcbd"]').click(function() {
+        $('.menu a[href="kcact:rmcbd"]').click(function () {
             browser.hideDialog();
             browser.confirm(
                 browser.label("Are you sure you want to delete all files in the Clipboard?"),
-                function(callBack) {
+                function (callBack) {
                     if (callBack) callBack();
                     browser.deleteClipboard();
                 }
             );
             return false;
         });
-        $('.menu a[href="kcact:clrcbd"]').click(function() {
+        $('.menu a[href="kcact:clrcbd"]').click(function () {
             browser.hideDialog();
             browser.clearClipboard();
             return false;
@@ -118,7 +120,7 @@ browser.openClipboard = function() {
     }, 1);
 };
 
-browser.removeFromClipboard = function(i) {
+browser.removeFromClipboard = function (i) {
     if (!this.clipboard || !this.clipboard[i]) return false;
     if (this.clipboard.length == 1) {
         this.clearClipboard();
@@ -139,7 +141,7 @@ browser.removeFromClipboard = function(i) {
     return true;
 };
 
-browser.copyClipboard = function(dir) {
+browser.copyClipboard = function (dir) {
     if (!this.clipboard || !this.clipboard.length) return;
     var files = [];
     var failed = 0;
@@ -152,7 +154,7 @@ browser.copyClipboard = function(dir) {
         browser.alert(this.label("The files in the Clipboard are not readable."));
         return;
     }
-    var go = function(callBack) {
+    var go = function (callBack) {
         if (dir == browser.dir)
             browser.fadeFiles();
         $.ajax({
@@ -161,14 +163,14 @@ browser.copyClipboard = function(dir) {
             url: browser.baseGetData('cp_cbd'),
             data: {dir: dir, files: files},
             async: false,
-            success: function(data) {
+            success: function (data) {
                 if (callBack) callBack();
                 browser.check4errors(data);
                 browser.clearClipboard();
                 if (dir == browser.dir)
                     browser.refresh();
             },
-            error: function() {
+            error: function () {
                 if (callBack) callBack();
                 $('#files > div').css({
                     opacity: '',
@@ -181,7 +183,7 @@ browser.copyClipboard = function(dir) {
 
     if (failed)
         browser.confirm(
-            browser.label("{count} files in the Clipboard are not readable. Do you want to copy the rest?", {count:failed}),
+            browser.label("{count} files in the Clipboard are not readable. Do you want to copy the rest?", {count: failed}),
             go
         )
     else
@@ -189,7 +191,7 @@ browser.copyClipboard = function(dir) {
 
 };
 
-browser.moveClipboard = function(dir) {
+browser.moveClipboard = function (dir) {
     if (!this.clipboard || !this.clipboard.length) return;
     var files = [];
     var failed = 0;
@@ -203,7 +205,7 @@ browser.moveClipboard = function(dir) {
         return;
     }
 
-    var go = function(callBack) {
+    var go = function (callBack) {
         browser.fadeFiles();
         $.ajax({
             type: 'POST',
@@ -211,13 +213,13 @@ browser.moveClipboard = function(dir) {
             url: browser.baseGetData('mv_cbd'),
             data: {dir: dir, files: files},
             async: false,
-            success: function(data) {
+            success: function (data) {
                 if (callBack) callBack();
                 browser.check4errors(data);
                 browser.clearClipboard();
                 browser.refresh();
             },
-            error: function() {
+            error: function () {
                 if (callBack) callBack();
                 $('#files > div').css({
                     opacity: '',
@@ -237,7 +239,7 @@ browser.moveClipboard = function(dir) {
         go();
 };
 
-browser.deleteClipboard = function() {
+browser.deleteClipboard = function () {
     if (!this.clipboard || !this.clipboard.length) return;
     var files = [];
     var failed = 0;
@@ -250,25 +252,25 @@ browser.deleteClipboard = function() {
         browser.alert(this.label("The files in the Clipboard are not removable."))
         return;
     }
-    var go = function(callBack) {
+    var go = function (callBack) {
         browser.fadeFiles();
         $.ajax({
             type: 'POST',
             dataType: 'json',
             url: browser.baseGetData('rm_cbd'),
-            data: {files:files},
+            data: {files: files},
             async: false,
-            success: function(data) {
+            success: function (data) {
                 if (callBack) callBack();
                 browser.check4errors(data);
                 browser.clearClipboard();
                 browser.refresh();
             },
-            error: function() {
+            error: function () {
                 if (callBack) callBack();
                 $('#files > div').css({
                     opacity: '',
-                    filter:''
+                    filter: ''
                 });
                 browser.alert(browser.label("Unknown error."));
             }
@@ -283,17 +285,17 @@ browser.deleteClipboard = function() {
         go();
 };
 
-browser.downloadClipboard = function() {
+browser.downloadClipboard = function () {
     if (!this.clipboard || !this.clipboard.length) return;
     var files = [];
     for (i = 0; i < this.clipboard.length; i++)
         if (this.clipboard[i].readable)
             files[i] = this.clipboard[i].dir + '/' + this.clipboard[i].name;
     if (files.length)
-        this.post(this.baseGetData('downloadClipboard'), {files:files});
+        this.post(this.baseGetData('downloadClipboard'), {files: files});
 };
 
-browser.clearClipboard = function() {
+browser.clearClipboard = function () {
     $('#clipboard').html('');
     this.clipboard = [];
 };

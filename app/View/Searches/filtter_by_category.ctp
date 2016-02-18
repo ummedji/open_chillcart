@@ -35,13 +35,7 @@ if ($value['SubCategory']['id'] != $subCat) {
     <ul class="products"> <?php
 }
 
-
-
-
-
-
-    $imageSrc = $siteUrl.'/stores/'.$value['Product']['store_id'].'/products/home/'.$value['ProductImage'][0]['image_alias']; ?>
-
+    $imageSrc = 'https://s3.amazonaws.com/'.$siteBucket.'/stores/products/home/'.$value['ProductImage'][0]['image_alias']; ?>
     <li class="product searchresulttoshow">
         <div class="product__inner">
             <figure class="product__image" onclick="productDetails(<?php echo $value['Product']['id']; ?>);">
@@ -114,20 +108,20 @@ if ($value['SubCategory']['id'] != $subCat) {
                         <a href="javascript:void(0);" rel="nofollow" class="button add_to_cart_button " >
                             <?php if ($value['Product']['price_option'] == 'single') { //echo "<pre>";print_r($value);die();
                                 if($value['ProductDetail'][0]['quantity'] != 0){?>
-                                    <span onclick="addToCart(<?php echo $value['ProductDetail'][0]['id']; ?>);" >
-										<b class="hidden-xs"><?php echo __('Add'); ?></b> <i class="fa fa-plus"></i></span>
+                                    <span class="prodAddprice" onclick="addToCart(<?php echo $value['ProductDetail'][0]['id']; ?>);" >
+										<b class=""><?php echo __('Add'); ?></b> <i class="fa fa-plus plushide"></i></span>
                                 <?php } else {?>
-                                    <span href="javascript:void(0);" >
-									   <b class="hidden-xs"><?php echo __('Out of Stock'); ?></b> <i class=""></i></span>
+                                    <span class="prodAddprice outofstock">
+									   <b class=""><?php echo __('Out of Stock'); ?></b> <i class=""></i></span>
                                 <?php }
 
                             } else { ?>
-                                <span onclick="productDetails(<?php echo $value['Product']['id']; ?>);" ><b class="hidden-xs"><?php echo __('Add'); ?></b> <i class="fa fa-plus"></i></span>
+                                <span class="prodAddprice" onclick="productDetails(<?php echo $value['Product']['id']; ?>);" ><b class=""><?php echo __('Add'); ?></b> <i class="fa fa-plus plushide"></i></span>
                                 <?php
 
                             } ?>
 
-                            <i class="fa fa-plus"></i>
+                            <i class="fa fa-plus plushide"></i>
                         </a>
 
                     </div>

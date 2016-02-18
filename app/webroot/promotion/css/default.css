@@ -17,20 +17,22 @@ a:hover,
 .widget_archive ul li a:hover,
 .widget_archive ul li a:hover:before,
 .widget_categories ul li a:hover,
-.widget_categories>ul li a:hover:before,
+.widget_categories > ul li a:hover:before,
 .widget_pages ul li a:hover,
-.widget_pages>ul li a:hover:before,
+.widget_pages > ul li a:hover:before,
 .widget_nav_menu ul li a:hover,
 .widget_meta ul li a:hover,
-.widget_meta>ul li a:hover:before,
+.widget_meta > ul li a:hover:before,
 .widget_recent_entries ul li a:hover,
-.widget_recent_entries>ul li a:hover:before {
+.widget_recent_entries > ul li a:hover:before {
     color: #ed5153
 }
-.tagcloud>a:hover {
+
+.tagcloud > a:hover {
     color: #fff
 }
-.navbar-default .navbar-nav li.current-menu-parent>a,
+
+.navbar-default .navbar-nav li.current-menu-parent > a,
 .navbar-default .navbar-nav li a:hover,
 .navbar-default .navbar-nav li a.selected,
 .navbar-default .navbar-nav .active a,
@@ -49,15 +51,18 @@ a:hover,
 .tagcloud a:hover {
     border-color: #ed5153
 }
-.tagcloud>a:hover,
+
+.tagcloud > a:hover,
 .wpb_content_element .wpb_accordion_wrapper .wpb_accordion_section .wpb_accordion_header:hover,
 .wpb_accordion_section.group h3:hover {
     text-decoration: none;
     background-color: #ed5153
 }
+
 .wpb_accordion_section.group h3:hover a {
     color: #fff
 }
+
 .color-bg,
 .home-wrapper,
 .btn-primary:focus,
@@ -88,14 +93,17 @@ div.loading-visible,
 .btn-demo:hover {
     background-color: #ed5153
 }
+
 .btn-primary:focus.btn-bavel,
 .btn-primary:active.btn-bavel,
 .btn-primary.btn-bavel {
     border-bottom: 2px solid #c93b3d
 }
+
 .btn-primary:hover {
     background-color: #fa6365
 }
+
 .testimoni-wrapper,
 .pricing-wrapper,
 .da-thumbs li article,
@@ -103,6 +111,7 @@ div.loading-visible,
 .home-centered {
     background-color: rgba(237, 81, 83, .9)
 }
+
 @media (max-width: 767px) {
     .navbar-default .navbar-nav li a:hover,
     .navbar-default .navbar-nav li.active a:hover,

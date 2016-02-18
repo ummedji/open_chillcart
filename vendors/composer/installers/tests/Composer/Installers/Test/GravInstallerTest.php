@@ -16,8 +16,8 @@ class GravInstallerTest extends TestCase
 
     public function testInflectPackageVars()
     {
-        $package     = $this->getPackage('vendor/name', '0.0.0');
-        $installer   = new GravInstaller($package, $this->composer);
+        $package = $this->getPackage('vendor/name', '0.0.0');
+        $installer = new GravInstaller($package, $this->composer);
         $packageVars = $this->getPackageVars($package);
 
         $result = $installer->inflectPackageVars(array_merge($packageVars, array('name' => 'test')));
@@ -55,7 +55,7 @@ class GravInstallerTest extends TestCase
             list($vendor, $name) = explode('/', $prettyName);
         } else {
             $vendor = '';
-            $name   = $prettyName;
+            $name = $prettyName;
         }
 
         return compact('name', 'vendor', 'type');

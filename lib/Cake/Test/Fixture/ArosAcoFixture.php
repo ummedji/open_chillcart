@@ -22,34 +22,35 @@
  *
  * @package       Cake.Test.Fixture
  */
-class ArosAcoFixture extends CakeTestFixture {
+class ArosAcoFixture extends CakeTestFixture
+{
 
-/**
- * name property
- *
- * @var string 'ArosAco'
- */
-	public $name = 'ArosAco';
+    /**
+     * name property
+     *
+     * @var string 'ArosAco'
+     */
+    public $name = 'ArosAco';
 
-/**
- * fields property
- *
- * @var array
- */
-	public $fields = array(
-		'id' => array('type' => 'integer', 'key' => 'primary'),
-		'aro_id' => array('type' => 'integer', 'length' => 10, 'null' => false),
-		'aco_id' => array('type' => 'integer', 'length' => 10, 'null' => false),
-		'_create' => array('type' => 'string', 'length' => 2, 'default' => 0),
-		'_read' => array('type' => 'string', 'length' => 2, 'default' => 0),
-		'_update' => array('type' => 'string', 'length' => 2, 'default' => 0),
-		'_delete' => array('type' => 'string', 'length' => 2, 'default' => 0)
-	);
+    /**
+     * fields property
+     *
+     * @var array
+     */
+    public $fields = array(
+        'id' => array('type' => 'integer', 'key' => 'primary'),
+        'aro_id' => array('type' => 'integer', 'length' => 10, 'null' => false),
+        'aco_id' => array('type' => 'integer', 'length' => 10, 'null' => false),
+        '_create' => array('type' => 'string', 'length' => 2, 'default' => 0),
+        '_read' => array('type' => 'string', 'length' => 2, 'default' => 0),
+        '_update' => array('type' => 'string', 'length' => 2, 'default' => 0),
+        '_delete' => array('type' => 'string', 'length' => 2, 'default' => 0)
+    );
 
-/**
- * records property
- *
- * @var array
- */
-	public $records = array();
+    /**
+     * records property
+     *
+     * @var array
+     */
+    public $records = array();
 }

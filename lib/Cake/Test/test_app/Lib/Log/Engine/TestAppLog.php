@@ -19,9 +19,11 @@
 
 App::uses('BaseLog', 'Log/Engine');
 
-class TestAppLog extends BaseLog {
+class TestAppLog extends BaseLog
+{
 
-	public function write($type, $message) {
-	}
+    public function write($type, $message)
+    {
+    }
 
 }

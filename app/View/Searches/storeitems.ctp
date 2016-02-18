@@ -86,11 +86,11 @@
 
 
 				<ul class="products">
-					<?php foreach ($dealProduct as $key => $value) {//echo "<pre>";print_r($value);die();
-						//echo "<pre>"; print_r($value); 
-						$imageSrc = $siteUrl.'/stores/'.$value['MainProduct']['store_id'].'/products/home/'.$value['MainProduct']['ProductImage'][0]['image_alias'];
+					<?php foreach ($dealProduct as $key => $value) {
 
-						$imageSrcSub = $siteUrl.'/stores/'.$value['SubProduct']['store_id'].'/products/scrollimg/'.$value['SubProduct']['ProductImage'][0]['image_alias']; ?>
+						$imageSrc = 'https://s3.amazonaws.com/'.$siteBucket.'/stores/products/home/'.$value['MainProduct']['ProductImage'][0]['image_alias'];
+
+						$imageSrcSub = 'https://s3.amazonaws.com/'.$siteBucket.'/stores/products/scrollimg/'.$value['SubProduct']['ProductImage'][0]['image_alias']; ?>
 
 					    <li class="product searchresulttoshow">
 
@@ -146,15 +146,11 @@
 													</div>
 													<?php }
 												} ?>
-
-												
 											</div> 
 										<?php } ?>
-
 						                <div class="clear"></div>
-						               
 						            </div>
-						            <div class="bottom-section">
+						            <div class="bottom-section clearfix">
 						                <span class="price product__detail-price">
 						                	<?php
 												if ($value['MainProduct']['ProductDetail'][0]['compare_price'] != 0) {
@@ -163,27 +159,21 @@
 												} else {
 													echo html_entity_decode($this->Number->currency($value['MainProduct']['ProductDetail'][0]['orginal_price'], $siteCurrency));
 												} ?>
-						               		
 				               			</span>
 						                <div class="product__detail-action">
-						                  	<a href="javascript:void(0);" rel="nofollow" class="button add_to_cart_button " > <?php
-						                  	
+						                  	<a href="javascript:void(0);" rel="nofollow" class="button add_to_cart_button"> <?php
 						                  		if ($value['MainProduct']['price_option'] == 'single') {
 							                  		if($value['MainProduct']['ProductDetail'][0]['quantity'] != 0) { ?>
-							                  			<span onclick="addToCart(<?php echo $value['MainProduct']['ProductDetail'][0]['id']; ?>);" ><b class="hidden-xs"><?php echo __('Add'); ?></b> <i class="fa fa-plus"></i></span> <?php
+							                  			<span class="prodAddprice" onclick="addToCart(<?php echo $value['MainProduct']['ProductDetail'][0]['id']; ?>);" ><b class=""><?php echo __('Add'); ?></b> <i class="fa fa-plus plushide"></i></span> <?php
 							                  		} else { ?>
-							                  			<span href="javascript:void(0);" >
-									   						<b class="hidden-xs"><?php echo __('Out of Stock'); ?></b> <i class=""></i></span> <?php
+							                  			<span class="prodAddprice outofstock"><b class=""><?php echo __('Out of Stock'); ?></b> <i class=""></i></span> <?php
 							                  		}
 							                  	} else { ?>
-													<span onclick="productDetails(<?php echo $value['MainProduct']['id']; ?>);" ><b class="hidden-xs"><?php echo __('Add'); ?></b> <i class="fa fa-plus"></i></span>
+													<span class="prodAddprice" onclick="productDetails(<?php echo $value['MainProduct']['id']; ?>);" ><b class=""><?php echo __('Add'); ?></b> <i class="fa fa-plus plushide"></i></span>
 													<?php
-
 												} ?>
-
-							                  	<i class="fa fa-plus"></i>
+							                  	<i class="fa fa-plus plushide"></i>
 						                  	</a>
-						                  
 						                </div>
 						            </div>
 						        </div>
@@ -191,14 +181,9 @@
 					    </li>
 					<?php } ?>
 				</ul>
-				
 			</div> <?php
 		} ?>
-		<div id="filtterByCategory">
-
-		</div>
-
-
+		<div id="filtterByCategory"></div>
 		<div id="cart-sidebar">
 			<a class="mobile_cart_close" href="javascript:void(0);"><i class="fa fa-chevron-left"></i></a>
 			<div class="cart-sidebar-overlay"></div>

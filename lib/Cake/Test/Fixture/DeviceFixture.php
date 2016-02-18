@@ -22,35 +22,36 @@
  *
  * @package       Cake.Test.Fixture
  */
-class DeviceFixture extends CakeTestFixture {
+class DeviceFixture extends CakeTestFixture
+{
 
-/**
- * name property
- *
- * @var string 'Device'
- */
-	public $name = 'Device';
+    /**
+     * name property
+     *
+     * @var string 'Device'
+     */
+    public $name = 'Device';
 
-/**
- * fields property
- *
- * @var array
- */
-	public $fields = array(
-		'id' => array('type' => 'integer', 'key' => 'primary'),
-		'device_type_id' => array('type' => 'integer', 'null' => false),
-		'name' => array('type' => 'string', 'null' => false),
-		'typ' => array('type' => 'integer', 'null' => false),
-	);
+    /**
+     * fields property
+     *
+     * @var array
+     */
+    public $fields = array(
+        'id' => array('type' => 'integer', 'key' => 'primary'),
+        'device_type_id' => array('type' => 'integer', 'null' => false),
+        'name' => array('type' => 'string', 'null' => false),
+        'typ' => array('type' => 'integer', 'null' => false),
+    );
 
-/**
- * records property
- *
- * @var array
- */
-	public $records = array(
-		array('device_type_id' => 1, 'name' => 'Device 1', 'typ' => 1),
-		array('device_type_id' => 1, 'name' => 'Device 2', 'typ' => 1),
-		array('device_type_id' => 1, 'name' => 'Device 3', 'typ' => 2)
-	);
+    /**
+     * records property
+     *
+     * @var array
+     */
+    public $records = array(
+        array('device_type_id' => 1, 'name' => 'Device 1', 'typ' => 1),
+        array('device_type_id' => 1, 'name' => 'Device 2', 'typ' => 1),
+        array('device_type_id' => 1, 'name' => 'Device 3', 'typ' => 2)
+    );
 }

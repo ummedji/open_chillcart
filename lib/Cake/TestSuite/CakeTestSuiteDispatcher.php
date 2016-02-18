@@ -27,250 +27,259 @@ App::uses('CakeTestSuiteCommand', 'TestSuite');
  *
  * @package       Cake.TestSuite
  */
-class CakeTestSuiteDispatcher {
+class CakeTestSuiteDispatcher
+{
 
-/**
- * 'Request' parameters
- *
- * @var array
- */
-	public $params = array(
-		'codeCoverage' => false,
-		'case' => null,
-		'core' => false,
-		'app' => true,
-		'plugin' => null,
-		'output' => 'html',
-		'show' => 'groups',
-		'show_passes' => false,
-		'filter' => false,
-		'fixture' => null
-	);
+    /**
+     * reporter instance used for the request
+     *
+     * @var CakeBaseReporter
+     */
+    protected static $_Reporter = null;
+    /**
+     * 'Request' parameters
+     *
+     * @var array
+     */
+    public $params = array(
+        'codeCoverage' => false,
+        'case' => null,
+        'core' => false,
+        'app' => true,
+        'plugin' => null,
+        'output' => 'html',
+        'show' => 'groups',
+        'show_passes' => false,
+        'filter' => false,
+        'fixture' => null
+    );
+    /**
+     * Baseurl for the request
+     *
+     * @var string
+     */
+    protected $_baseUrl;
+    /**
+     * Base dir of the request.  Used for accessing assets.
+     *
+     * @var string
+     */
+    protected $_baseDir;
+    /**
+     * boolean to set auto parsing of params.
+     *
+     * @var boolean
+     */
+    protected $_paramsParsed = false;
 
-/**
- * Baseurl for the request
- *
- * @var string
- */
-	protected $_baseUrl;
+    /**
+     * constructor
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->_baseUrl = $_SERVER['PHP_SELF'];
+        $dir = rtrim(dirname($this->_baseUrl), '\\');
+        $this->_baseDir = ($dir === '/') ? $dir : $dir . '/';
+    }
 
-/**
- * Base dir of the request.  Used for accessing assets.
- *
- * @var string
- */
-	protected $_baseDir;
+    /**
+     * Static method to initialize the test runner, keeps global space clean
+     *
+     * @return void
+     */
+    public static function run()
+    {
+        $dispatcher = new CakeTestSuiteDispatcher();
+        $dispatcher->dispatch();
+    }
 
-/**
- * boolean to set auto parsing of params.
- *
- * @var boolean
- */
-	protected $_paramsParsed = false;
+    /**
+     * Runs the actions required by the URL parameters.
+     *
+     * @return void
+     */
+    public function dispatch()
+    {
+        $this->_checkPHPUnit();
+        $this->_parseParams();
 
-/**
- * reporter instance used for the request
- *
- * @var CakeBaseReporter
- */
-	protected static $_Reporter = null;
+        if ($this->params['case']) {
+            $value = $this->_runTestCase();
+        } else {
+            $value = $this->_testCaseList();
+        }
 
-/**
- * constructor
- *
- * @return void
- */
-	public function __construct() {
-		$this->_baseUrl = $_SERVER['PHP_SELF'];
-		$dir = rtrim(dirname($this->_baseUrl), '\\');
-		$this->_baseDir = ($dir === '/') ? $dir : $dir . '/';
-	}
+        $output = ob_get_clean();
+        echo $output;
+        return $value;
+    }
 
-/**
- * Runs the actions required by the URL parameters.
- *
- * @return void
- */
-	public function dispatch() {
-		$this->_checkPHPUnit();
-		$this->_parseParams();
+    /**
+     * Checks that PHPUnit is installed.  Will exit if it doesn't
+     *
+     * @return void
+     */
+    protected function _checkPHPUnit()
+    {
+        $found = $this->loadTestFramework();
+        if (!$found) {
+            $baseDir = $this->_baseDir;
+            include CAKE . 'TestSuite' . DS . 'templates' . DS . 'phpunit.php';
+            exit();
+        }
+    }
 
-		if ($this->params['case']) {
-			$value = $this->_runTestCase();
-		} else {
-			$value = $this->_testCaseList();
-		}
+    /**
+     * Checks for the existence of the test framework files
+     *
+     * @return boolean true if found, false otherwise
+     */
+    public function loadTestFramework()
+    {
+        foreach (App::path('vendors') as $vendor) {
+            if (is_dir($vendor . 'PHPUnit')) {
+                ini_set('include_path', $vendor . PATH_SEPARATOR . ini_get('include_path'));
+                break;
+            }
+        }
 
-		$output = ob_get_clean();
-		echo $output;
-		return $value;
-	}
+        return include 'PHPUnit' . DS . 'Autoload.php';
+    }
 
-/**
- * Static method to initialize the test runner, keeps global space clean
- *
- * @return void
- */
-	public static function run() {
-		$dispatcher = new CakeTestSuiteDispatcher();
-		$dispatcher->dispatch();
-	}
+    /**
+     * Parse url params into a 'request'
+     *
+     * @return void
+     */
+    protected function _parseParams()
+    {
+        if (!$this->_paramsParsed) {
+            if (!isset($_SERVER['SERVER_NAME'])) {
+                $_SERVER['SERVER_NAME'] = '';
+            }
+            foreach ($this->params as $key => $value) {
+                if (isset($_GET[$key])) {
+                    $this->params[$key] = $_GET[$key];
+                }
+            }
+            if (isset($_GET['code_coverage'])) {
+                $this->params['codeCoverage'] = true;
+                $this->_checkXdebug();
+            }
+        }
+        if (empty($this->params['plugin']) && empty($this->params['core'])) {
+            $this->params['app'] = true;
+        }
+        $this->params['baseUrl'] = $this->_baseUrl;
+        $this->params['baseDir'] = $this->_baseDir;
+    }
 
-/**
- * Checks that PHPUnit is installed.  Will exit if it doesn't
- *
- * @return void
- */
-	protected function _checkPHPUnit() {
-		$found = $this->loadTestFramework();
-		if (!$found) {
-			$baseDir = $this->_baseDir;
-			include CAKE . 'TestSuite' . DS . 'templates' . DS . 'phpunit.php';
-			exit();
-		}
-	}
+    /**
+     * Checks for the xdebug extension required to do code coverage. Displays an error
+     * if xdebug isn't installed.
+     *
+     * @return void
+     */
+    protected function _checkXdebug()
+    {
+        if (!extension_loaded('xdebug')) {
+            $baseDir = $this->_baseDir;
+            include CAKE . 'TestSuite' . DS . 'templates' . DS . 'xdebug.php';
+            exit();
+        }
+    }
 
-/**
- * Checks for the existence of the test framework files
- *
- * @return boolean true if found, false otherwise
- */
-	public function loadTestFramework() {
-		foreach (App::path('vendors') as $vendor) {
-			if (is_dir($vendor . 'PHPUnit')) {
-				ini_set('include_path', $vendor . PATH_SEPARATOR . ini_get('include_path'));
-				break;
-			}
-		}
+    /**
+     * Runs a test case file.
+     *
+     * @return void
+     */
+    protected function _runTestCase()
+    {
+        $commandArgs = array(
+            'case' => $this->params['case'],
+            'core' => $this->params['core'],
+            'app' => $this->params['app'],
+            'plugin' => $this->params['plugin'],
+            'codeCoverage' => $this->params['codeCoverage'],
+            'showPasses' => !empty($this->params['show_passes']),
+            'baseUrl' => $this->_baseUrl,
+            'baseDir' => $this->_baseDir,
+        );
 
-		return include 'PHPUnit' . DS . 'Autoload.php';
-	}
+        $options = array(
+            '--filter', $this->params['filter'],
+            '--output', $this->params['output'],
+            '--fixture', $this->params['fixture']
+        );
+        restore_error_handler();
 
-/**
- * Checks for the xdebug extension required to do code coverage. Displays an error
- * if xdebug isn't installed.
- *
- * @return void
- */
-	protected function _checkXdebug() {
-		if (!extension_loaded('xdebug')) {
-			$baseDir = $this->_baseDir;
-			include CAKE . 'TestSuite' . DS . 'templates' . DS . 'xdebug.php';
-			exit();
-		}
-	}
+        try {
+            self::time();
+            $command = new CakeTestSuiteCommand('CakeTestLoader', $commandArgs);
+            $result = $command->run($options);
+        } catch (MissingConnectionException $exception) {
+            ob_end_clean();
+            $baseDir = $this->_baseDir;
+            include CAKE . 'TestSuite' . DS . 'templates' . DS . 'missing_connection.php';
+            exit();
+        }
+    }
 
-/**
- * Generates a page containing the a list of test cases that could be run.
- *
- * @return void
- */
-	protected function _testCaseList() {
-		$command = new CakeTestSuiteCommand('', $this->params);
-		$Reporter = $command->handleReporter($this->params['output']);
-		$Reporter->paintDocumentStart();
-		$Reporter->paintTestMenu();
-		$Reporter->testCaseList();
-		$Reporter->paintDocumentEnd();
-	}
+    /**
+     * Sets a static timestamp
+     *
+     * @param boolean $reset to set new static timestamp.
+     * @return integer timestamp
+     */
+    public static function time($reset = false)
+    {
+        static $now;
+        if ($reset || !$now) {
+            $now = time();
+        }
+        return $now;
+    }
 
-/**
- * Sets the params, calling this will bypass the auto parameter parsing.
- *
- * @param array $params Array of parameters for the dispatcher
- * @return void
- */
-	public function setParams($params) {
-		$this->params = $params;
-		$this->_paramsParsed = true;
-	}
+    /**
+     * Generates a page containing the a list of test cases that could be run.
+     *
+     * @return void
+     */
+    protected function _testCaseList()
+    {
+        $command = new CakeTestSuiteCommand('', $this->params);
+        $Reporter = $command->handleReporter($this->params['output']);
+        $Reporter->paintDocumentStart();
+        $Reporter->paintTestMenu();
+        $Reporter->testCaseList();
+        $Reporter->paintDocumentEnd();
+    }
 
-/**
- * Parse url params into a 'request'
- *
- * @return void
- */
-	protected function _parseParams() {
-		if (!$this->_paramsParsed) {
-			if (!isset($_SERVER['SERVER_NAME'])) {
-				$_SERVER['SERVER_NAME'] = '';
-			}
-			foreach ($this->params as $key => $value) {
-				if (isset($_GET[$key])) {
-					$this->params[$key] = $_GET[$key];
-				}
-			}
-			if (isset($_GET['code_coverage'])) {
-				$this->params['codeCoverage'] = true;
-				$this->_checkXdebug();
-			}
-		}
-		if (empty($this->params['plugin']) && empty($this->params['core'])) {
-			$this->params['app'] = true;
-		}
-		$this->params['baseUrl'] = $this->_baseUrl;
-		$this->params['baseDir'] = $this->_baseDir;
-	}
+    /**
+     * Returns formatted date string using static time
+     * This method is being used as formatter for created, modified and updated fields in Model::save()
+     *
+     * @param string $format format to be used.
+     * @return string formatted date
+     */
+    public static function date($format)
+    {
+        return date($format, self::time());
+    }
 
-/**
- * Runs a test case file.
- *
- * @return void
- */
-	protected function _runTestCase() {
-		$commandArgs = array(
-			'case' => $this->params['case'],
-			'core' => $this->params['core'],
-			'app' => $this->params['app'],
-			'plugin' => $this->params['plugin'],
-			'codeCoverage' => $this->params['codeCoverage'],
-			'showPasses' => !empty($this->params['show_passes']),
-			'baseUrl' => $this->_baseUrl,
-			'baseDir' => $this->_baseDir,
-		);
-
-		$options = array(
-			'--filter', $this->params['filter'],
-			'--output', $this->params['output'],
-			'--fixture', $this->params['fixture']
-		);
-		restore_error_handler();
-
-		try {
-			self::time();
-			$command = new CakeTestSuiteCommand('CakeTestLoader', $commandArgs);
-			$result = $command->run($options);
-		} catch (MissingConnectionException $exception) {
-			ob_end_clean();
-			$baseDir = $this->_baseDir;
-			include CAKE . 'TestSuite' . DS . 'templates' . DS . 'missing_connection.php';
-			exit();
-		}
-	}
-
-/**
- * Sets a static timestamp
- *
- * @param boolean $reset to set new static timestamp.
- * @return integer timestamp
- */
-	public static function time($reset = false) {
-		static $now;
-		if ($reset || !$now) {
-			$now = time();
-		}
-		return $now;
-	}
-
-/**
- * Returns formatted date string using static time
- * This method is being used as formatter for created, modified and updated fields in Model::save()
- *
- * @param string $format format to be used.
- * @return string formatted date
- */
-	public static function date($format) {
-		return date($format, self::time());
-	}
+    /**
+     * Sets the params, calling this will bypass the auto parameter parsing.
+     *
+     * @param array $params Array of parameters for the dispatcher
+     * @return void
+     */
+    public function setParams($params)
+    {
+        $this->params = $params;
+        $this->_paramsParsed = true;
+    }
 
 }

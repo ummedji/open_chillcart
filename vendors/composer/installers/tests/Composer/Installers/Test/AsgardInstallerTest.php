@@ -1,9 +1,9 @@
 <?php
 namespace Composer\Installers\Test;
 
+use Composer\Composer;
 use Composer\Installers\AsgardInstaller;
 use Composer\Package\Package;
-use Composer\Composer;
 
 class AsgardInstallerTest extends \PHPUnit_Framework_TestCase
 {

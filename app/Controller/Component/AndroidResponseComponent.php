@@ -5,25 +5,26 @@
  * @copyright 2015
  */
 
-App::uses('Component', 'Controller'); 
+App::uses('Component', 'Controller');
+
 class AndroidResponseComponent extends Component
 {
     public $components = array('Session');
-    public $uses       = array('user','Drivertrackings','Statuses');
-        
+    public $uses = array('user', 'Drivertrackings', 'Statuses');
+
     /**
-     * Store driver's location 
-     * @param driver's id, latitude, longitude, status
+     * Store driver's location
+     * @param driver 's id, latitude, longitude, status
      * @return Boolean (0/1)
      */
-    public function driverLocation($driverId,$latitude, $longitude)
+    public function driverLocation($driverId, $latitude, $longitude)
     {
         if ($latitude != '' && $longitude != '') {
-            $track        = ClassRegistry::init('Drivertrackings')->findByDriverId($driverId);
-            
+            $track = ClassRegistry::init('Drivertrackings')->findByDriverId($driverId);
+
             $track['Drivertrackings']['id'] = ($track['Drivertrackings']['id'] != '') ? $track['Drivertrackings']['id'] : '';
             $track['Drivertrackings']['driver_id'] = $driverId;
-            $track['Drivertrackings']['latitude']  = $latitude;
+            $track['Drivertrackings']['latitude'] = $latitude;
             $track['Drivertrackings']['longitude'] = $longitude;
             ClassRegistry::init('Drivertrackings')->save($track);
             return 1;
@@ -31,17 +32,19 @@ class AndroidResponseComponent extends Component
             return 0;
         }
     }
+
     /**
      * Send New Order By GCM
      * @param GCM Id, Message, Order Details
-     * 
+     *
      */
-    public function sendOrderByGCM($message, $gcmId) {
-        
-        
+    public function sendOrderByGCM($message, $gcmId)
+    {
+
+
         // Set POST variables
         $url = 'https://android.googleapis.com/gcm/send';
-        
+
         $fields = array(
             'registration_ids' => array($gcmId),
             'data' => $message,
@@ -65,7 +68,7 @@ class AndroidResponseComponent extends Component
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
-        
+
         // Execute post
         $result = curl_exec($ch);
         if ($result === FALSE) {
@@ -76,31 +79,33 @@ class AndroidResponseComponent extends Component
         curl_close($ch);
         return $result;
     }
+
     /**
      * AndroidResponseComponent::sendResponseToNativeSite()
-     * 
+     *
      * @param mixed $serviceUrl
      * @param mixed $message
      * @return
      */
-    public function sendResponseToNativeSite($serviceUrl, $message) {
-        
+    public function sendResponseToNativeSite($serviceUrl, $message)
+    {
+
         // Get cURL resource
         $curl = curl_init();
         // Set some options - we are passing in a useragent too here
         curl_setopt_array($curl, array(
-                                    CURLOPT_RETURNTRANSFER => true,
-                                    CURLOPT_URL => $serviceUrl,
-                                    CURLOPT_USERAGENT => 'Dispatch System',
-                                    CURLOPT_POST => true,
-                                    CURLOPT_POSTFIELDS => array('response' => json_encode($message))
-                                )
-                         );
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_URL => $serviceUrl,
+                CURLOPT_USERAGENT => 'Dispatch System',
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => array('response' => json_encode($message))
+            )
+        );
         // Send the request & save response to $resp
         $resp = curl_exec($curl);
-        
+
         $info = curl_getinfo($curl);
-        
+
         // Close request to clear up some resources
         curl_close($curl);
         return $info;

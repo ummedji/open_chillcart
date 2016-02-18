@@ -22,34 +22,35 @@
  *
  * @package       Cake.Test.Fixture
  */
-class BakeCommentFixture extends CakeTestFixture {
+class BakeCommentFixture extends CakeTestFixture
+{
 
-/**
- * name property
- *
- * @var string 'Comment'
- */
-	public $name = 'BakeComment';
+    /**
+     * name property
+     *
+     * @var string 'Comment'
+     */
+    public $name = 'BakeComment';
 
-/**
- * fields property
- *
- * @var array
- */
-	public $fields = array(
-		'otherid' => array('type' => 'integer', 'key' => 'primary'),
-		'bake_article_id' => array('type' => 'integer', 'null' => false),
-		'bake_user_id' => array('type' => 'integer', 'null' => false),
-		'comment' => 'text',
-		'published' => array('type' => 'string', 'length' => 1, 'default' => 'N'),
-		'created' => 'datetime',
-		'updated' => 'datetime'
-	);
+    /**
+     * fields property
+     *
+     * @var array
+     */
+    public $fields = array(
+        'otherid' => array('type' => 'integer', 'key' => 'primary'),
+        'bake_article_id' => array('type' => 'integer', 'null' => false),
+        'bake_user_id' => array('type' => 'integer', 'null' => false),
+        'comment' => 'text',
+        'published' => array('type' => 'string', 'length' => 1, 'default' => 'N'),
+        'created' => 'datetime',
+        'updated' => 'datetime'
+    );
 
-/**
- * records property
- *
- * @var array
- */
-	public $records = array();
+    /**
+     * records property
+     *
+     * @var array
+     */
+    public $records = array();
 }

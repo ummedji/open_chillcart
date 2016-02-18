@@ -1,8 +1,8 @@
 <?php
 
 /** Hungarian localization file for KCFinder
-  * Dubravszky József <joe@chilicreative.hu>
-  */
+ * Dubravszky József <joe@chilicreative.hu>
+ */
 
 $lang = array(
 

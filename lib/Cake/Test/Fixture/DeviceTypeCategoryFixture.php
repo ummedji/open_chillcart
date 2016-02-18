@@ -22,31 +22,32 @@
  *
  * @package       Cake.Test.Fixture
  */
-class DeviceTypeCategoryFixture extends CakeTestFixture {
+class DeviceTypeCategoryFixture extends CakeTestFixture
+{
 
-/**
- * name property
- *
- * @var string 'DeviceTypeCategory'
- */
-	public $name = 'DeviceTypeCategory';
+    /**
+     * name property
+     *
+     * @var string 'DeviceTypeCategory'
+     */
+    public $name = 'DeviceTypeCategory';
 
-/**
- * fields property
- *
- * @var array
- */
-	public $fields = array(
-		'id' => array('type' => 'integer', 'key' => 'primary'),
-		'name' => array('type' => 'string', 'null' => false)
-	);
+    /**
+     * fields property
+     *
+     * @var array
+     */
+    public $fields = array(
+        'id' => array('type' => 'integer', 'key' => 'primary'),
+        'name' => array('type' => 'string', 'null' => false)
+    );
 
-/**
- * records property
- *
- * @var array
- */
-	public $records = array(
-		array('name' => 'DeviceTypeCategory 1')
-	);
+    /**
+     * records property
+     *
+     * @var array
+     */
+    public $records = array(
+        array('name' => 'DeviceTypeCategory 1')
+    );
 }

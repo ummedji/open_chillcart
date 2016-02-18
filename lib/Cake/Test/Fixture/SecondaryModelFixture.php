@@ -22,31 +22,32 @@
  *
  * @package       Cake.Test.Fixture
  */
-class SecondaryModelFixture extends CakeTestFixture {
+class SecondaryModelFixture extends CakeTestFixture
+{
 
-/**
- * name property
- *
- * @var string 'SecondaryModel'
- */
-	public $name = 'SecondaryModel';
+    /**
+     * name property
+     *
+     * @var string 'SecondaryModel'
+     */
+    public $name = 'SecondaryModel';
 
-/**
- * fields property
- *
- * @var array
- */
-	public $fields = array(
-		'id' => array('type' => 'integer', 'key' => 'primary'),
-		'secondary_name' => array('type' => 'string', 'null' => false)
-	);
+    /**
+     * fields property
+     *
+     * @var array
+     */
+    public $fields = array(
+        'id' => array('type' => 'integer', 'key' => 'primary'),
+        'secondary_name' => array('type' => 'string', 'null' => false)
+    );
 
-/**
- * records property
- *
- * @var array
- */
-	public $records = array(
-		array('secondary_name' => 'Secondary Name Existing')
-	);
+    /**
+     * records property
+     *
+     * @var array
+     */
+    public $records = array(
+        array('secondary_name' => 'Secondary Name Existing')
+    );
 }

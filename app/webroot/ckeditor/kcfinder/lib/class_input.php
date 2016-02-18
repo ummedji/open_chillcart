@@ -1,40 +1,46 @@
 <?php
 
 /** This file is part of KCFinder project
-  *
-  *      @desc Input class for GET, POST and COOKIE requests
-  *   @package KCFinder
-  *   @version 2.51
-  *    @author Pavel Tzonkov <pavelc@users.sourceforge.net>
-  * @copyright 2010, 2011 KCFinder Project
-  *   @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
-  *   @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
-  *      @link http://kcfinder.sunhater.com
-  */
+ *
+ * @desc Input class for GET, POST and COOKIE requests
+ * @package KCFinder
+ * @version 2.51
+ * @author Pavel Tzonkov <pavelc@users.sourceforge.net>
+ * @copyright 2010, 2011 KCFinder Project
+ * @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
+ * @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
+ * @link http://kcfinder.sunhater.com
+ */
+class input
+{
 
-class input {
-
-  /** Filtered $_GET array
-    * @var array */
+    /** Filtered $_GET array
+     * @var array
+     */
     public $get;
 
-  /** Filtered $_POST array
-    * @var array */
+    /** Filtered $_POST array
+     * @var array
+     */
     public $post;
 
-  /** Filtered $_COOKIE array
-    * @var array */
+    /** Filtered $_COOKIE array
+     * @var array
+     */
     public $cookie;
 
-  /** magic_quetes_gpc ini setting flag
-    * @var bool */
+    /** magic_quetes_gpc ini setting flag
+     * @var bool
+     */
     protected $magic_quotes_gpc;
 
-  /** magic_quetes_sybase ini setting flag
-    * @var bool */
+    /** magic_quetes_sybase ini setting flag
+     * @var bool
+     */
     protected $magic_quotes_sybase;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->magic_quotes_gpc = function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc();
         $this->magic_quotes_sybase = ini_get('magic_quotes_sybase');
         $this->magic_quotes_sybase = $this->magic_quotes_sybase
@@ -49,22 +55,16 @@ class input {
         $this->cookie = &$_COOKIE;
     }
 
-  /** Magic method to get non-public properties like public.
-    * @param string $property
-    * @return mixed */
+    /** Filter the given subject. If magic_quotes_gpc and/or magic_quotes_sybase
+     * ini settings are turned on, the method will remove backslashes from some
+     * escaped characters. If the subject is an array, elements with non-
+     * alphanumeric keys will be removed
+     * @param mixed $subject
+     * @return mixed
+     */
 
-    public function __get($property) {
-        return property_exists($this, $property) ? $this->$property : null;
-    }
-
-  /** Filter the given subject. If magic_quotes_gpc and/or magic_quotes_sybase
-    * ini settings are turned on, the method will remove backslashes from some
-    * escaped characters. If the subject is an array, elements with non-
-    * alphanumeric keys will be removed
-    * @param mixed $subject
-    * @return mixed */
-
-    public function filter($subject) {
+    public function filter($subject)
+    {
         if ($this->magic_quotes_gpc) {
             if (is_array($subject)) {
                 foreach ($subject as $key => $val)
@@ -80,6 +80,16 @@ class input {
         }
 
         return $subject;
+    }
+
+    /** Magic method to get non-public properties like public.
+     * @param string $property
+     * @return mixed
+     */
+
+    public function __get($property)
+    {
+        return property_exists($this, $property) ? $this->$property : null;
     }
 }
 

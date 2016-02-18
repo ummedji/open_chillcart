@@ -1,9 +1,9 @@
 <?php
 namespace Composer\Installers\Test;
 
+use Composer\Composer;
 use Composer\Installers\PimcoreInstaller;
 use Composer\Package\Package;
-use Composer\Composer;
 
 class PimcoreInstallerTest extends TestCase
 {

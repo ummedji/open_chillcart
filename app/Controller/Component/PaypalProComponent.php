@@ -1,45 +1,42 @@
 <?php
-class PaypalProComponent extends Component {
+
+class PaypalProComponent extends Component
+{
 
 ////////////////////////////////////////////////////////////
 
     public $paypal_username = null;
     public $paypal_password = null;
     public $paypal_signature = null;
-
-    private $paypal_endpoint = 'https://api-3t.paypal.com/nvp';
-    private $paypal_endpoint_test = 'https://api-3t.sandbox.paypal.com/nvp';
-
     public $amount = null;
-
     public $ipAddress = '';
-
     public $creditCardType = '';
     public $creditCardNumber = '';
     public $creditCardExpires = '';
     public $creditCardCvv = '';
-
     public $customerFirstName = '';
     public $customerLastName = '';
     public $customerEmail = '';
-
     public $billingAddress1 = '';
     public $billingAddress2 = '';
     public $billingCity = '';
     public $billingState = '';
     public $billingCountryCode = '';
     public $billingZip = '';
-
     protected $_controller = null;
+    private $paypal_endpoint = 'https://api-3t.paypal.com/nvp';
+    private $paypal_endpoint_test = 'https://api-3t.sandbox.paypal.com/nvp';
 
 ////////////////////////////////////////////////////////////
 
-    public function __construct() {
+    public function __construct()
+    {
     }
 
 ////////////////////////////////////////////////////////////
 
-    public function initialize(Controller $controller) {
+    public function initialize(Controller $controller)
+    {
 
         $this->_controller = $controller;
 
@@ -53,7 +50,7 @@ class PaypalProComponent extends Component {
         $this->paypal_password = Configure::read('Settings.PAYPAL_PASSWORD');
         $this->paypal_signature = Configure::read('Settings.PAYPAL_SIGNATURE');
 
-        if(Configure::read('Settings.PAYPAL_MODE') == 'test') {
+        if (Configure::read('Settings.PAYPAL_MODE') == 'test') {
             $this->paypal_endpoint = $this->paypal_endpoint_test;
         }
 
@@ -61,7 +58,8 @@ class PaypalProComponent extends Component {
 
 ////////////////////////////////////////////////////////////
 
-    public function doDirectPayment() {
+    public function doDirectPayment()
+    {
 
         $doDirectPaymentNvp = array(
             'METHOD' => 'DoDirectPayment',
@@ -99,20 +97,17 @@ class PaypalProComponent extends Component {
 
         $response = $httpSocket->post($this->paypal_endpoint, $doDirectPaymentNvp);
 
-        parse_str($response , $parsed);
+        parse_str($response, $parsed);
 
-        if(array_key_exists('ACK', $parsed) && $parsed['ACK'] == 'Success') {
+        if (array_key_exists('ACK', $parsed) && $parsed['ACK'] == 'Success') {
             return $parsed;
-        }
-        elseif(array_key_exists('ACK', $parsed) && array_key_exists('L_LONGMESSAGE0', $parsed) && $parsed['ACK'] != 'Success') {
+        } elseif (array_key_exists('ACK', $parsed) && array_key_exists('L_LONGMESSAGE0', $parsed) && $parsed['ACK'] != 'Success') {
             $this->log($parsed, 'paypal');
             throw new Exception($parsed['ACK'] . ' : ' . $parsed['L_LONGMESSAGE0']);
-        }
-        elseif(array_key_exists('ACK', $parsed) && array_key_exists('L_ERRORCODE0', $parsed) && $parsed['ACK'] != 'Success') {
+        } elseif (array_key_exists('ACK', $parsed) && array_key_exists('L_ERRORCODE0', $parsed) && $parsed['ACK'] != 'Success') {
             $this->log($parsed, 'paypal');
             throw new Exception($parsed['ACK'] . ' : ' . $parsed['L_ERRORCODE0']);
-        }
-        else {
+        } else {
             $this->log($parsed, 'paypal');
             throw new Exception('There is a problem with the payment gateway. Please try again later.');
         }
