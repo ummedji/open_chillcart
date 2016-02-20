@@ -14,7 +14,7 @@ class OrdersController extends AppController
         'StripeCustomer', 'Storeoffer', 'Status', 'State', 'City', 'Location',
         'Store', 'ProductDetail', 'Orderstatus', 'Notification');
 
-    public $components = array('Stripe', 'Googlemap', 'AndroidResponse');
+    public $components = array('Stripe', 'Googlemap', 'AndroidResponse', 'Twilio');
 
     public function beforeFilter()
     {
@@ -52,7 +52,6 @@ class OrdersController extends AppController
      */
     public function admin_index()
     {
-
         $order_list = $this->Order->find('all', array(
             'conditions' => array('Order.status' => 'Pending'),
             'order' => array('Order.id DESC')));
@@ -291,7 +290,7 @@ class OrdersController extends AppController
             $customerMessage = "Dear " . $this->Auth->User('Customer.first_name') . ",You have placed new order successfully. Store will accept your order soon, Order id :" . $update['ref_number'];
             $toCustomerNumber = '+' . $this->siteSetting['Country']['phone_code'] . $this->Auth->User('Customer.customer_phone');
 
-            //$customerSms = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
+            $customerSms = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
 
             /*$storeMessage   = "Dear Store,You have receive new order from ".$this->Auth->User('Customer.first_name').",Order id :".$update['ref_number'];*/
 

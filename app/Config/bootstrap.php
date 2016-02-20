@@ -44,7 +44,7 @@ Configure::write('CakeS3', array(
     // openid providers
     "Google" => array(
         "enabled" => true,
-        "keys" => array("id" => "489423987165-3ktac9l299kc631k1k5bo9g1khfrluf5.apps.googleusercontent.com","secret" => "qnbsbkpIztSP5lxPaCAphgHL"),
+        "keys" => array("id" => "633345069118-41bhfk6f0onim7haf9koaeibgsdvt0fn.apps.googleusercontent.com","secret" => "4XEpzRATmc44oze9jp1jjrDC"),
     ),
 	"Twitter" => array(
         "enabled" => true,
@@ -52,40 +52,19 @@ Configure::write('CakeS3', array(
     ),
 	"Facebook" => array(
         "enabled" => true,
-        "keys" => array("id" => "105607233151686", "secret" => "cdf9873e2f5a9cfd1f0586628365417d"),
-    ),
-	"OpenID" => array(
-        "enabled" => false
-    ),
-    "Yahoo" => array(
-        "enabled" => false,
-        "keys" => array("id" => "", "secret" => ""),
-    ),
-    "AOL" => array(
-        "enabled" => false
-    ),
-    "Live" => array(
-        "enabled" => false,
-        "keys" => array("id" => "", "secret" => "")
-    ),
-    "MySpace" => array(
-        "enabled" => false,
-        "keys" => array("key" => "", "secret" => "")
-    ),
-    "LinkedIn" => array(
-        "enabled" => false,
-        "keys" => array("key" => "", "secret" => "")
-    ),
-    "Foursquare" => array(
-        "enabled" => false,
-        "keys" => array("id" => "", "secret" => "")
+        "keys" => array("id" => "390488147813330", "secret" => "6938131093089cf147eaf86fdde037a9"),
     ),
 ));
 
 
-Configure::write('Twilio.AccountSid', 'ACabd5c1ab4205beb8f7011d7eaa0c8230');
+/*Configure::write('Twilio.AccountSid', 'ACabd5c1ab4205beb8f7011d7eaa0c8230');
 Configure::write('Twilio.AuthToken', 'bce4b1ff455bd4d479388b6488104529');
-Configure::write('Twilio.from', '+353 899633038');
+Configure::write('Twilio.from', '+353 899633038');*/
+
+Configure::write('Twilio.AccountSid', 'ACa48eb8d38a4224f009a72ac9846a346f');
+Configure::write('Twilio.AuthToken', '61ba8c940ee15d43b618f8bd1cc26308');
+Configure::write('Twilio.from', '+1 315-217-6007');
+
 App::import('Vendor', array('file' => 'autoload'));
 
 CakePlugin::loadAll();

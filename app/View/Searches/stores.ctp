@@ -26,7 +26,7 @@
 		<ul class="products search_stores"> <?php
 			foreach ($storeList as $key => $value) { ?>
 
-				<li class="product">
+				<li class="product col-sm-2">
 				    <div class="product__inner">
 				        <figure class="product__image" >
 				        	<a href="<?php echo $siteUrl.'/shop/'.$value['Store']['seo_url'].'/'.$value['Store']['id']; ?>">

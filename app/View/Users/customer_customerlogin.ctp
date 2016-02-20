@@ -101,11 +101,11 @@
 					<i>Login with Twitter</i>
 					<div class="clr"></div>
 				</a>-->
-				<!-- <a class="googleplus" href="<?php echo $siteUrl.'/users/social_login/Google'; ?>">
+				<a class="googleplus" href="<?php echo $siteUrl.'/users/social_login/Google'; ?>">
 					<img alt="gplus" title="gplus" src="<?php echo $siteUrl.'/frontend/images/gplus.png'; ?>">
 					<i>Login with Google+</i>
 					<div class="clr"></div>
-				</a> -->
+				</a>
 			</div>
 		</div>
 	</div>

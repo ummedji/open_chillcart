@@ -50,6 +50,9 @@
 				<div class="title-categories">
 					<img alt="categories" src="<?php echo $siteUrl.'/frontend/images/categories.png'; ?>" title="categories"><br> <span>Categories</span>
 				</div>
+				<div class="title-filter">
+					<img alt="filter" src="<?php echo $siteUrl.'/frontend/images/filter.png'; ?>" title="filter"><br> <span>Filter</span>
+				</div>
 			<?php
 				}
 			?>				
@@ -73,13 +76,14 @@
 						<ul class="products search_stores">
 						<?php
 						foreach ($storeList as $key => $value) { ?>
-							<li class="product">
+							<li class="product col-sm-2">
 								<div class="product__inner">
 									<figure class="product__image" >
 											<a href="<?php echo $siteUrl.'/shop/'.$value['Store']['seo_url'].'/'.$value['Store']['id'];  ?>">
 										   <!--  <span class="discount_image"><span>17% OFF</span></span> -->
 
-										   <img alt="<?php echo $value['Store']['store_name']; ?>" src="https://s3.amazonaws.com/<?php echo $siteBucket.'/storelogos/'.$value['Store']['store_logo']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/frontend/images/no_store.jpg"; ?>'">										   
+										   <img alt="<?php echo $value['Store']['store_name']; ?>" src="https://s3.amazonaws.com/<?php echo $siteBucket.'/storelogos/'.$value['Store']['store_logo']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/frontend/images/no_store.jpg"; ?>'">
+										   
 											<figcaption>
 												<div class="product-addon">
 													<span class="yith-wcqv-button" href="<?php echo $siteUrl.'/shop/'.$value['Store']['seo_url'].'/'.$value['Store']['id'];  ?>"><span></span><i class="fa fa-check"></i></span>
@@ -117,7 +121,6 @@
 				</div>
 			</li>	
 			<li class="searchMenuFormList">
-
 				<div class="searchMenuForm">
 					<input type="search" class="searchInput searchFilterResults" placeholder="<?php echo __("I'm looking for...", true); ?>" >
 					<i class="searchMenuFormClick"><?php echo __('Submit', true); ?></i>
