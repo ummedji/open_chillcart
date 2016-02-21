@@ -26,7 +26,7 @@
 
 					<?php					
 					foreach ($productDetails['ProductImage'] as $key => $value) { 
-						$imageSrc = 'https://s3.amazonaws.com/'.$siteBucket.'/stores/products/original/'.$value['image_alias']; ?>
+						$imageSrc = 'https://s3-eu-west-1.amazonaws.com/'.$siteBucket.'/stores/products/original/'.$value['image_alias']; ?>
 						<div class="item" >
 							<img src="<?php echo $imageSrc;?>" alt="<?php echo $productDetails['Product']['product_name']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/no-imge.jpg"; ?>'">
 						</div> <?php
@@ -36,7 +36,7 @@
 					<div id="sync2" class="owl-carousel">
 		                <?php
 						foreach ($productDetails['ProductImage'] as $key => $value) { 
-							$imageSrc = 'https://s3.amazonaws.com/'.$siteBucket.'/stores/products/original/'.$value['image_alias']; ?>
+							$imageSrc = 'https://s3-eu-west-1.amazonaws.com/'.$siteBucket.'/stores/products/original/'.$value['image_alias']; ?>
 							<div class="item" >
 								<img src="<?php echo $imageSrc;?>" alt="<?php echo $productDetails['Product']['product_name']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/no-imge.jpg"; ?>'">
 							</div> <?php

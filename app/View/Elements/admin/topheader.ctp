@@ -24,13 +24,13 @@
 							<div class="logoutTxt">Dispatch</div>
 						</a>
 						<ul class="dropdown-menu">
-							<li class="<?php if($controllerName == 'orders' && $actionName == 'admin_order'): ?>active<?php endif; ?>">
+							<li class="<?php if(isset($controllerName) && $controllerName == 'orders' && $actionName == 'admin_order'): ?>active<?php endif; ?>">
 								<a href="<?php echo $siteUrl.'/admin/orders/order'; ?>">
 									
 									Manage Order
 								</a>
 							</li>
-							<li class="<?php if($controllerName == 'drivers' && $actionName == 'admin_index'): ?>active<?php endif; ?>">
+							<li class="<?php if(isset($controllerName) && $controllerName == 'drivers' && $actionName == 'admin_index'): ?>active<?php endif; ?>">
 								<a href="<?php echo $siteUrl.'/admin/drivers/index'; ?>">
 									
 									Manage Drivers
@@ -47,7 +47,7 @@
 							<div class="logoutTxt">Settings</div>
 						</a>
 						<ul class="dropdown-menu">
-							<li class="<?php if($controllerName == 'sitesettings' && $actionName == 'admin_index'): ?>active<?php endif; ?>">
+							<li class="<?php if(isset($controllerName) && $controllerName == 'sitesettings' && $actionName == 'admin_index'): ?>active<?php endif; ?>">
 								<a href="<?php echo $siteUrl.'/admin/sitesettings/index'; ?>">
 									
 									Site Settings
@@ -68,13 +68,13 @@
 							
 						</a>
 						<ul class="dropdown-menu">
-							<li class="<?php if($controllerName == 'stores' && $actionName == 'admin_index'): ?>active<?php endif; ?>">
+							<li class="<?php if(isset($controllerName) && $controllerName == 'stores' && $actionName == 'admin_index'): ?>active<?php endif; ?>">
 								<a href="<?php echo $siteUrl.'/admin/stores/index'; ?>">
 									
 									Manage Store
 								</a>
 							</li>
-							<li class="<?php if($controllerName == 'products' && $actionName == 'admin_index'): ?>active<?php endif; ?>">
+							<li class="<?php if(isset($controllerName) && $controllerName == 'products' && $actionName == 'admin_index'): ?>active<?php endif; ?>">
 								<a href="<?php echo $siteUrl.'/admin/products/index'; ?>">
 									
 									Manage Item

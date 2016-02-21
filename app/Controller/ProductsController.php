@@ -47,9 +47,7 @@ class ProductsController extends AppController {
 	 */
   //super admin add process
 	public function admin_add() {
-
 		if (!empty($this->request->data['Product']['product_name'])) {
-
        		$store_id = $this->request->data['Product']['store_id'];
             
             $Product_check = $this->Product->find('all', array(
@@ -674,18 +672,16 @@ class ProductsController extends AppController {
                   $images = explode(',', $value[11]);
 
                   foreach ($images as $key => $val) {
-
                     $imgType = explode('.', $val);
-
-                    $imagesizedata = getimagesize($val);
+                    $newName = str_replace(" ","-", uniqid(). '.' .$product['product_name'].end($imgType));
+                    $imageString = file_get_contents($val.'?raw=1');
+                    $save = file_put_contents('../tmp/products/original/'.$newName,$imageString);
+                    $imagesizedata = getimagesize('../tmp/products/original/'.$newName);
 
                     if ($imagesizedata) {
 
-                      if (in_array($imgType[1], $allowed_ext)) {
-
-                        $newName = str_replace(" ","-", uniqid(). '.' .$product['product_name'].'.'.$imgType[1]);
-
-                        $results = $this->CakeS3->putObject($val, $origpathS3.$newName, S3::ACL_PUBLIC_READ);
+                      if (in_array(end($imgType), $allowed_ext)) {
+                        $results = $this->CakeS3->putObject('../tmp/products/original/'.$newName, $origpathS3.$newName, S3::ACL_PUBLIC_READ);
                         $AmazonS3Image = $results['url'];
 
                         #Resize
@@ -745,7 +741,7 @@ class ProductsController extends AppController {
     }
 
     public function batchCodeCheck() {
-
+        $batchCodes = 0;
         $storeId   = $this->request->data['storeId'];
         $productId = $this->request->data['productId'];
         $batchCode = $this->ProductDetail->find('all', array(
@@ -758,7 +754,6 @@ class ProductsController extends AppController {
             $batchCodes .= $value['ProductDetail']['product_code'].',';
         }
         echo rtrim($batchCodes, ",");
-        //print_r($batchCodes);
         exit;
 
     }

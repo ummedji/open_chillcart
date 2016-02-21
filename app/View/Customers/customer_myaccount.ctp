@@ -91,7 +91,7 @@
 		                			<div class="col-md-12">
 				                		<?php
 					                        if(!empty($this->request->data['Customer']['image'])) { ?>
-					                            <img class="img-responsive customer_image"  src="https://s3.amazonaws.com/<?php echo $siteBucket.'/Customers/'.$this->request->data['Customer']['image']; ?>" > <?php 
+					                            <img class="img-responsive customer_image"  src="https://s3-eu-west-1.amazonaws.com/<?php echo $siteBucket.'/Customers/'.$this->request->data['Customer']['image']; ?>" > <?php 
 					                        } else {
 					                                echo "No Image Found";
 					                        }

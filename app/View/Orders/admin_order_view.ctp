@@ -194,7 +194,7 @@
 													<td>
 														<span class="col-md-12 no-padding">
 															<div class="pull-left">
-																<img class="tabel_img margin-r-10" alt="<?php echo $value['product_name']; ?>" src="https://s3.amazonaws.com/<?php echo $siteBucket; ?>/stores/products/carts/<?php echo $value['product_image']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/noimage.jpg"; ?>'"> 
+																<img class="tabel_img margin-r-10" alt="<?php echo $value['product_name']; ?>" src="https://s3-eu-west-1.amazonaws.com/<?php echo $siteBucket; ?>/stores/products/carts/<?php echo $value['product_image']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/noimage.jpg"; ?>'"> 
 															</div><?php
 															echo $value['product_name']; ?>
 															<br><?php

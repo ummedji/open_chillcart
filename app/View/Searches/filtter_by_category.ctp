@@ -35,7 +35,7 @@ if ($value['SubCategory']['id'] != $subCat) {
     <ul class="products"> <?php
 }
 
-    $imageSrc = 'https://s3.amazonaws.com/'.$siteBucket.'/stores/products/home/'.$value['ProductImage'][0]['image_alias']; ?>
+    $imageSrc = 'https://s3-eu-west-1.amazonaws.com/'.$siteBucket.'/stores/products/home/'.$value['ProductImage'][0]['image_alias']; ?>
     <li class="product searchresulttoshow">
         <div class="product__inner">
             <figure class="product__image" onclick="productDetails(<?php echo $value['Product']['id']; ?>);">

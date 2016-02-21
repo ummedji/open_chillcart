@@ -42,9 +42,9 @@ class CakeS3Component extends Component
      * Endpoint URL for image access - defaults to the Amazon S3 url,
      * but can be changed in settings if using a cname for your own URL
      * @var string
-     * @default 's3.amazonaws.com'
+     * @default 's3-eu-west-1.amazonaws.com'
      */
-    private $endpoint = 's3.amazonaws.com';
+    private $endpoint = 's3-eu-west-1.amazonaws.com';
 
     /**
      * Flag to use SSL connection with S3

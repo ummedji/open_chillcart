@@ -28,14 +28,40 @@ CakeLog::config('error', array(
     'file' => 'error',
 ));
 
-//Add the CakeS3 plugin
-Configure::write('CakeS3', array(
+if (getenv("APPLICATION_ENV") == "GENERAL_DEVELOPMENT"):
+    Configure::write('CakeS3', array(
         's3Key' => 'AKIAJ7UUZ7Q22HDUQKMA',
         's3Secret' => 'DfYEkDUU17/asCOcDLqZ+T9A/2T8v9ILWIukqqAy',
-        'bucket' => 's3test56b888c6be37d',
-        'endpoint' => 's3.amazonaws.com' // [optional] Only required if your endpoint is not s3.amazonaws.com
+        'bucket' => 'dev.chillcart.images',
+        'endpoint' => 's3-eu-west-1.amazonaws.com' // [optional] Only required if your endpoint is not s3-eu-west-1.amazonaws.com
     )
 );
+elseif (getenv("APPLICATION_ENV") == "DEMO"):
+  Configure::write('CakeS3', array(
+        's3Key' => 'AKIAJ7UUZ7Q22HDUQKMA',
+        's3Secret' => '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',
+        'bucket' => 'demo.chillcart.images',
+        'endpoint' => 's3-eu-west-1.amazonaws.com' // [optional] Only required if your endpoint is not s3-eu-west-1.amazonaws.com
+    )
+);
+elseif (getenv("APPLICATION_ENV") == "TESTING"):
+  Configure::write('CakeS3', array(
+        's3Key' => 'AKIAJ7UUZ7Q22HDUQKMA',
+        's3Secret' => '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',
+        'bucket' => 'testing.chillcart.images',
+        'endpoint' => 's3-eu-west-1.amazonaws.com' // [optional] Only required if your endpoint is not s3-eu-west-1.amazonaws.com
+    )
+);
+else:
+  Configure::write('CakeS3', array(
+        's3Key' => 'AKIAJ7UUZ7Q22HDUQKMA',
+        's3Secret' => 'DfYEkDUU17/asCOcDLqZ+T9A/2T8v9ILWIukqqAy',
+        'bucket' => 'dev.chillcart.images',
+        'endpoint' => 's3-eu-west-1.amazonaws.com' // [optional] Only required if your endpoint is not s3-eu-west-1.amazonaws.com
+    )
+);
+endif;
+
 /** 
  * HybridAuth component
  *
