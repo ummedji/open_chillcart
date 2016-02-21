@@ -394,7 +394,7 @@ class MobileApiController extends AppController
 
                         $toCustomerNumber = '+' . $this->siteSetting['Country']['phone_code'] . $ordStatus['Customer']['customer_phone'];
 
-                        $customerSms = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
+                        //$customerSms = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
 
 
                         $response['success'] = 1;

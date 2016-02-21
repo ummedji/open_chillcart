@@ -56,15 +56,11 @@ Configure::write('CakeS3', array(
     ),
 ));
 
+// ACabd5c1ab4205beb8f7011d7eaa0c8230 bce4b1ff455bd4d479388b6488104529	
 
-/*Configure::write('Twilio.AccountSid', 'ACabd5c1ab4205beb8f7011d7eaa0c8230');
+Configure::write('Twilio.AccountSid', 'ACabd5c1ab4205beb8f7011d7eaa0c8230');
 Configure::write('Twilio.AuthToken', 'bce4b1ff455bd4d479388b6488104529');
-Configure::write('Twilio.from', '+353 899633038');*/
-
-Configure::write('Twilio.AccountSid', 'ACa48eb8d38a4224f009a72ac9846a346f');
-Configure::write('Twilio.AuthToken', '61ba8c940ee15d43b618f8bd1cc26308');
-Configure::write('Twilio.from', '+1 315-217-6007');
-
+Configure::write('Twilio.from', '+16462912224');
 App::import('Vendor', array('file' => 'autoload'));
 
 CakePlugin::loadAll();

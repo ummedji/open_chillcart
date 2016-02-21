@@ -36,7 +36,9 @@ class ProductsController extends AppController {
                                 'conditions'  =>  array('Store.status'=>1),
                                 'fields'      =>  array('Store.id', 'Store.store_name')));
 
-		$this->set(compact('products_detail', 'stores'));
+    $this->request->data['Storeproduct'] = $storeId;
+
+		$this->set(compact('products_detail', 'stores', 'storeId'));
 	}
   	/**
 	 * ProductsController::admin_add()
@@ -589,6 +591,7 @@ class ProductsController extends AppController {
     }
 
     public function importProduct() {
+      
         $store_id = ($this->Auth->User('role_id') == 1) ? 
                                 $this->request->data['Product']['store_id'] :
                                 $this->Auth->User('Store.id');
@@ -761,7 +764,7 @@ class ProductsController extends AppController {
     }
 
 
-    public function download($filename, $refName) {
+    public function download() {
         $path = ROOT.DS.'app'.DS."tmp".DS."Excel".DS."Sample".DS;
         echo $flagname = $this->Updown->downloadFile('groceryExcel.xls', 'groceryExcel.xls', $path);
         exit();

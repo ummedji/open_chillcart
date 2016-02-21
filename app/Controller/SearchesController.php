@@ -250,7 +250,8 @@ class SearchesController extends AppController
                 'conditions' => array('Review.store_id' => $value['Store']['id']),
                 'fields' => array('SUM(Review.rating) AS rating',
                     'Count(Review.rating) AS ratingCount')));
-            $storeList[$key]['Store']['rating'] = $ratingDetail[0]['rating'] / $ratingDetail[0]['ratingCount'];
+            $storeList[$key]['Store']['rating'] = (!empty($ratingDetail[0]['ratingCount'])) ?
+                $ratingDetail[0]['rating'] / $ratingDetail[0]['ratingCount'] : 0;
         }
 
         $storeDetails = $this->Store->find('first', array(

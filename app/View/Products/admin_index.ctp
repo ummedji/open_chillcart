@@ -25,17 +25,15 @@
 							
 						</div>
 					</div>
-					<div class="portlet-body"> <?php
-
-						echo $this->Form->create('Product', array(
+					<div class="portlet-body">
+						<div class="col-sm-9 no-padding">
+							<?php echo $this->Form->create('Product', array(
 													'enctype' => 'multipart/form-data',
 													'url'=>array("controller"=>'products',
 													'action'=>'importProduct',
 													'admin' => false),'type'=>'file')); ?>
-						<div class="row margin-b-10">
-							<span class="col-md-8" id="addnewbutton_toggle">
-								<div class="row">
-									<span class="col-md-5"> 
+								<span class="col-md-12 no-padding" id="addnewbutton_toggle">
+									<span class="col-md-4"> 
 										<?php echo $this->Form->input('Product.store_id',
 												array('type'  => 'select',
 													  'class' => 'form-control',
@@ -45,7 +43,7 @@
 									 				  'div' => false));
 										?>
 									</span>
-			               			<span class="col-md-5">
+			               			<span class="col-md-4 no-padding">
 				               			<?php echo $this->form->input('excel', array('type' => 'file',
 			            														'class' => 'form-control',
 			            														'label' => false,
@@ -53,20 +51,29 @@
 			            				?>
 									</span>
 			               			<span class="col-md-2"> 
-			               				<?php  echo $this->Form->button('Save',array( 'Class' => 'btn btn-primary' ));
+			               				<?php  echo $this->Form->button('Import',array( 'Class' => 'btn btn-primary' ));
 		               					echo $this->Form->end(); ?>
 		               				</span>
-		               			</div>
-							</span>
-	               			<span class="col-md-4 text-right">  <?php
-	               				echo $this->Html->link('<i class="fa fa-download"></i> Download',
+		               			</span>
+		               	</div>
+		               	<div class="col-sm-3">
+		               			<?php
+	               				echo $this->Html->link('<i class="fa fa-download"></i> Sample',
 												array('action' => 'download','admin' => false),
-												array('Class'=>'btn btn-primary',
+												array('Class'=>'btn btn-primary pull-right no-margin',
 													'escape'=>false)
 												);
 	               				 ?>
-							</span> 
-						</div>
+	               		</div>
+	               		<div class="col-sm-12">
+	               		<hr>
+	               		</div>
+
+	               			
+						
+
+
+						
 
 						<?php echo $this->Form->create('Commons', array('class'=>'form-horizontal',
 							'controller'=>'Commons','action'=>'multipleSelect')); ?>
@@ -98,6 +105,7 @@
 										} ?>
 									</div>
 								</div>
+
 								
 									<div class="btn-group pull-right"><?php
 										echo $this->Html->link('Add New <i class="fa fa-plus"></i>',
@@ -108,8 +116,24 @@
 															  );
 										?>
 									</div>
+									<span class="col-md-4 pull-right no-padding"> 
+		               					<label class="control-label col-sm-3">Filter</label>
+										<span class="col-md-9"> 
+											<?php echo $this->Form->input('Storeproduct',
+													array('type'  => 'select',
+														  'class' => 'form-control',
+														  'options'=> array($stores),
+														  'empty' => 'Select Store',
+														  'onchange' => 'storeProducts();',
+										 				  'label'=> false,
+										 				  'div' => false));
+											?>
+										</span>
+									
+								</span> 
 							
 						</div>
+						
 						<table class="table table-striped table-bordered table-hover checktable" id="sample_12">
 							<thead>
 								<tr>
