@@ -17,31 +17,12 @@
 <div class="container-fluid">
 	<nav class="navbar navbar-default" role="navigation">
 		<div class="navbar-header">
-			<button type="button" class="navbar-toggle  hidden-xs" data-toggle="collapse" data-target="#example-navbar-collapse">
-				<img class="img-responsive-sm" style="width: 36px;" src="<?php echo $siteUrl.'/frontend/images/menu.png'; ?>">
+			<button type="button" class="navbar-toggle visible-sm visible-xs" data-toggle="collapse" data-target="#example-navbar-collapse">
+				<img class="img-responsive-sm" src="<?php echo $siteUrl.'/frontend/images/menu.png'; ?>">
 			</button>
 			<a class="navbar-brand" href="<?php echo $siteUrl.'/searches'; ?>">
 				<img src="<?php echo $siteUrl.'/siteicons/logo.png'; ?>">
 			</a>
-			<?php
-			if ($controllerName != 'checkouts') { ?>
-				<ul class="visible-xs visible-sm visible-md topnavRight">
-					<?php
-						if ($this->request->params['controller'] == 'searches' && $this->request->params['action'] == 'storeitems') {
-					?>
-				<?php }
-					if(!empty($loggedCheck) && ($loggedCheck['role_id'] == 4)){ ?>
-						<li> <a href="<?php echo $siteUrl.'/customer/users/userLogout'; ?>"><img alt="Logout" src="<?php echo $siteUrl.'/frontend/images/logout.png'; ?>" title="Logout"><br> <span>Logout</span></a> </li>
-						<li> <a href="<?php echo $siteUrl.'/customer/customers/myaccount'; ?>"><img alt="My Account" src="<?php echo $siteUrl.'/frontend/images/myaccount.png'; ?>" title="My Account"><br> <span>My Account</span></a> </li> <?php 
-					} else {?>
-						<li> <a href="<?php echo $siteUrl.'/customerlogin'; ?>"><img alt="Login" src="<?php echo $siteUrl.'/frontend/images/login.png'; ?>" title="Login"><br> <span>Login</span></a> </li>
-						<li> <a href="<?php echo $siteUrl.'/signup'; ?>"><img alt="Signup" src="<?php echo $siteUrl.'/frontend/images/signup.png'; ?>" title="Signup"><br> <span>Signup</span></a></li> <?php 
-					} 
-					if ($this->request->params['controller'] == 'searches' &&
-						$this->request->params['action'] == 'stores') { ?>
-						<li> <a class="changeLocation pointer" onclick="changeLocation();"><img alt="Marker" src="<?php echo $siteUrl.'/frontend/images/map.png'; ?>" title="Marker"><br> <span>Location</span></a></li> <?php
-					}?>	
-				</ul> <?php	} ?>
 
 			<?php
 				if ($this->request->params['controller'] == 'searches' &&
@@ -82,7 +63,7 @@
 											<a href="<?php echo $siteUrl.'/shop/'.$value['Store']['seo_url'].'/'.$value['Store']['id'];  ?>">
 										   <!--  <span class="discount_image"><span>17% OFF</span></span> -->
 
-										   <img alt="<?php echo $value['Store']['store_name']; ?>" src="https://s3-eu-west-1.amazonaws.com/<?php echo $siteBucket.'/storelogos/'.$value['Store']['store_logo']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/frontend/images/no_store.jpg"; ?>'">
+										   <img alt="<?php echo $value['Store']['store_name']; ?>" src="https://s3.amazonaws.com/<?php echo $siteBucket.'/storelogos/'.$value['Store']['store_logo']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/frontend/images/no_store.jpg"; ?>'">
 										   
 											<figcaption>
 												<div class="product-addon">
@@ -134,7 +115,7 @@
 
 				if ($controllerName != 'checkouts') { ?>
 
-					<ul class="nav navbar-nav navbar-right hidden-sm hidden-md">
+					<ul class="nav navbar-nav navbar-right">
 						<?php
 							if ($this->request->params['controller'] == 'searches' &&
 								$this->request->params['action'] == 'storeitems') {

@@ -197,10 +197,8 @@ class StoreMobileApiController extends AppController
                     break;
 
                 case 'orderStatusChange':
-
-                    $orderDetail = $this->Order->findById($orderId);
-
                     $order_id = $this->request->data['order_id'];
+		    $orderDetail = $this->Order->findById($order_id);
                     if ($order_id != '') {
                         $this->request->data['Order']['id'] = $order_id;
                         if ($this->request->data['status'] == 'Accept') {
@@ -221,15 +219,12 @@ class StoreMobileApiController extends AppController
                             $this->request->data['Order']['failed_reason'] = $this->request->data['cancel_reason'];
                             $this->Order->save($this->request->data['Order']);
                         }
-
-
-                        $customerMessage = "Dear " . $orderDetail['Customer']['first_name'] . ",Your order has been " . $this->request->data['status'] . ' by store, Order id : ' . $orderDetail['Order']['ref_number'];
-
-                        $toCustomerNumber = '+' . $this->siteSetting['Country']['phone_code'] . $orderDetail['Customer']['customer_phone'];
-
-                        //$customerSms = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
-
-
+			//Cuctomer SMS
+                        $customerMessage  = 'Congratulations! Your order '.$orderDetail['Order']['ref_number'].' succesfully accepted by '.
+						$orderDetail['Store']['store_name'].'. Your order will be delivered by '.
+						$orderDetail['Order']['delivery_date']. ' at '.$orderDetail['Order']['delivery_time_slot'].'. Thanks Chillcart';
+                        $toCustomerNumber = '+'.$this->siteSetting['Country']['phone_code'].$orderDetail['Customer']['customer_phone'];
+                        //$customerSms      = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
                         $response['success'] = '1';
                         $response['message'] = 'Status has been Changed';
                     } else {
@@ -321,7 +316,18 @@ class StoreMobileApiController extends AppController
                             $this->Order->save($orderStatus);
 
                             $gcm = json_decode($gcm, true);
-                            //echo $gcm['success'];
+			    // Driver SMS
+                            $driverMessage  = 'Dear '.$driverDetails['Driver']['driver_name'].',pick up ';
+                            $driverMessage .= ($orders['Order']['payment_method'] != 'paid') ? 'COD' : 'PAID';
+                            $driverMessage .= ' order '.$orders['Order']['ref_number'].' from '.$orders['Order']['customer_name'];
+                            $driverMessage .=   ','.$orders['Order']['address'].','.$orders['Order']['landmark'].
+                                                ','.$orders['Order']['location_name'].','.$orders['Order']['city_name'].
+                                                ','.$orders['Order']['city_name'];
+
+                            $driverMessage .= '. '.$orders['Order']['order_type'].' due on '.$orders['Order']['delivery_date'].' at '.
+                                                $orders['Order']['delivery_time_slot'].'. Thanks Chillcart';
+                            $toDriverNumber = '+'.$this->siteSetting['Country']['phone_code'].$driverDetails['Driver']['driver_phone'];
+                            //$driverSms      = $this->Twilio->sendSingleSms($toDriverNumber, $driverMessage);
                         }
 
                         $response['success'] = '1';

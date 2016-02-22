@@ -1,383 +1,90 @@
 @media only screen and (min-width: 1500px) and (max-width: 3000px) {
-    #howItWork aside {
-        width: 200px;
-    }
+	#howItWork aside { width: 200px; }
+	
+
 
 }
-
 @media only screen and (min-width: 1300px) and (max-width: 1500px) {
-    #howItWork aside {
-        width: 200px;
-    }
-
-    footer {
-        position: relative;
-    }
-
+	#howItWork aside { width: 200px; }
+	footer {position: relative;}
+	
 }
 
 @media only screen and (min-width: 1024px) and (max-width: 1300px) {
-    #howItWork aside {
-        width: 150px;
-    }
-
-    footer {
-        position: relative;
-    }
-
-    /*#searchBar select { width: 320px; font-size: 16px; }*/
+	#howItWork aside { width: 150px; }
+	footer {position: relative;}
 }
 
-@media only screen and (min-width: 768px) and (max-width: 1024px) {
-    #logo {
-        width: 250px;
-        height: 60px;
-        position: relative;
-    }
-
-    #menubutton {
-        background-image: url("../images/menu.png");
-        width: 25px;
-        height: 20px;
-        background-repeat: no-repeat;
-        background-size: cover;
-        float: right;
-        margin-right: 10px;
-        margin-top: 30px;
-    }
-
-    header ul {
-        width: 100%;
-        display: none;
-        margin-right: 20px;
-    }
-
-    header ul li {
-        display: block;
-        width: 100%;
-        text-align: centre;
-        outline: 1px solid #121212;
-        background: rgba(0, 0, 0, 0.2);
-        height: 27px;
-    }
-
-    header ul li:HOVER {
-        display: block;
-        width: 100%;
-        text-align: centre;
-        background: rgba(0, 0, 0, 0.5);
-        height: 27px;
-    }
-
-    header ul li a {
-        margin-left: 10px;
-    }
-
-    #howItWork aside {
-        width: 100px;
-    }
-
-    #howItWork aside img {
-        width: 100%;
-    }
-
-    #howItWork aside h3 {
-        font-size: 14px;
-    }
-
-    #howItWork aside p {
-        font-size: 13px;
-    }
-
-    #searchBar {
-        display: block;
-    }
-
-    /*	#searchBar { padding: 40px 30px;margin-top:70px; } */
-    /*	#searchBar select { width: 280px; font-size: 16px; }
-        #searchBar button { font-size: 16px; padding: 12px 16px; } */
-    #searchBar select {
-        margin-left: auto;
-        margin-right: auto;
-        display: block;
-        width: 100%;
-        margin-bottom: -15px;
-    }
-
-    #searchBar button {
-        width: 100%;
-    }
-
-    footer {
-        position: relative;
-    }
-
-    #txtAni ul li:first-child img {
-        margin-left: -260px;
-    }
-
-    #txtAni ul li:nth-child(2) img {
-        margin-left: -90px;
-    }
-
-    #txtAni ul li:nth-child(3) img {
-        margin-left: 60px;
-    }
-
-    #txtAni ul li:last-child img {
-        margin-left: 180px;
-    }
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+	#logo { width: 250px; height: 60px;position: relative; }
+	#menubutton { background-image: url("../images/menu.png"); width:25px; height:20px; background-repeat: no-repeat; background-size: cover;float:right;margin-right:10px; margin-top:30px; }
+	header  ul li { display:block;width: 100%; text-align:centre; outline: 1px solid #121212; background: rgba(0, 0, 0, 0.2);}
+	header ul li a:hover::after { position: relative; top: 9px;}
+	.header .navbar-default .navbar-nav > li > a {margin-top: 0!important; padding: 10px;}
+	header  ul li:hover { display:block;width: 100%; text-align:centre; background: rgba(0, 0, 0, 0.5);}
+	#howItWork aside { width: 100px; }
+	#howItWork aside img { width: 100%; }
+	#howItWork aside h3 { font-size: 14px; }
+	.navbar-right { margin: 30px 0 0!important; width:100%;}
+	#howItWork aside p { font-size: 13px; }
+	#searchBar { display: block;}
+	#searchBar select { margin-left: auto; margin-right: auto; display: block; width: 100%; margin-bottom:-15px;}
+	#searchBar button { width: 100%; }
+	footer {position: relative;}
+	#txtAni ul li:first-child img { margin-left: -260px; }
+	#txtAni ul li:nth-child(2) img {  margin-left: -90px; }
+	#txtAni ul li:nth-child(3) img { margin-left: 60px; }
+	#txtAni ul li:last-child img { margin-left: 180px; }
 }
 
 @media only screen and (min-width: 580px) and (max-width: 768px) {
-    #logo {
-        width: 250px;
-        height: 60px;
-        position: relative;
-    }
-
-    #menubutton {
-        background-image: url("../images/menu.png");
-        width: 25px;
-        height: 20px;
-        background-repeat: no-repeat;
-        background-size: cover;
-        float: right;
-        margin-right: 10px;
-        margin-top: 30px;
-    }
-
-    header ul {
-        width: 100%;
-        display: none;
-        margin-right: 20px;
-    }
-
-    header ul li {
-        display: block;
-        width: 100%;
-        text-align: centre;
-        outline: 1px solid #121212;
-        background: rgba(0, 0, 0, 0.2);
-        height: 27px;
-    }
-
-    header ul li:HOVER {
-        display: block;
-        width: 100%;
-        text-align: centre;
-        background: rgba(0, 0, 0, 0.5);
-        height: 27px;
-    }
-
-    header ul li a {
-        margin-left: 10px;
-    }
-
-    #howItWork aside {
-        width: 80px;
-        margin: 20px 10px;
-    }
-
-    #howItWork aside img {
-        width: 100%;
-    }
-
-    #howItWork aside h3 {
-        font-size: 13px;
-    }
-
-    #howItWork aside p {
-        font-size: 12px;
-    }
-
-    #searchBar {
-        display: block;
-    }
-
-    /*	#searchBar { padding: 35px 28px;margin-top:70px;} */
-    #searchBar h3 {
-        font-size: 30px;
-    }
-
-    #searchBar h3 p {
-        font-size: 14px;
-    }
-
-    /*	#searchBar select { width: 200px; padding: 7px; font-size: 12px; }
-        #searchBar select { line-height: 28px; }
-        #searchBar button { font-size: 13px; padding: 8.5px 16px; } */
-    #searchBar select {
-        margin-left: auto;
-        margin-right: auto;
-        display: block;
-        width: 100%;
-        margin-bottom: -20px;
-    }
-
-    #searchBar button {
-        width: 100%;
-    }
-
-    #video #vidImg {
-        width: 35px;
-        height: 23px;
-    }
-
-    /*footer ul li { float: left; list-style: none; margin: 0 6px; }
-    footer ul li a {font-size: 14px; }*/
-    footer {
-        position: relative;
-    }
-
-    footer ul {
-        width: 100%;
-    }
-
-    #txtAni ul li:first-child img {
-        margin-left: -140px;
-    }
-
-    #txtAni ul li:nth-child(2) img {
-        margin-left: -60px;
-    }
-
-    #txtAni ul li:nth-child(3) img {
-        margin-left: 40px;
-    }
-
-    #txtAni ul li:last-child img {
-        margin-left: 160px;
-    }
+	#logo { width: 250px; height: 60px;position: relative; }
+	#menubutton { background-image: url("../images/menu.png"); width:25px; height:20px; background-repeat: no-repeat; background-size: cover;float:right;margin-right:10px; margin-top:30px; }
+	header  ul li { display:block;width: 100%; text-align:centre; outline: 1px solid #121212; background: rgba(0, 0, 0, 0.2);}
+	header ul li a:hover::after { position: relative; top: 9px;}
+	.header .navbar-default .navbar-nav > li > a {margin-top: 0!important; padding: 10px;}
+	header  ul li:hover { display:block;width: 100%; text-align:centre; background: rgba(0, 0, 0, 0.5);}
+	#howItWork aside { width: 80px; margin: 20px 10px; }
+	#howItWork aside img { width: 100%; }
+	#howItWork aside h3 { font-size: 13px;  margin-top:0;}
+	#howItWork aside p { font-size: 12px; }
+	#searchBar { display: block;}
+	#searchBar h3 { font-size: 30px; }
+	#searchBar h3 p { font-size: 14px; }
+	#searchBar select { margin-left: auto; margin-right: auto; display: block;width: 100%; margin-bottom:-20px;}
+	#searchBar button { width: 100%; }
+	#video #vidImg { width:35px; height:23px; }
+	footer {position: relative;}
+	footer ul  { width: 100%; }
+	#txtAni ul li:first-child img { margin-left: -140px; }
+	#txtAni ul li:nth-child(2) img {  margin-left: -60px; }
+	#txtAni ul li:nth-child(3) img { margin-left: 40px; }
+	#txtAni ul li:last-child img { margin-left: 160px; }
 }
 
 @media only screen and (min-width: 320px) and (max-width: 580px) {
-    #logo {
-        width: 250px;
-        height: 60px;
-        position: relative;
-    }
-
-    #menubutton {
-        background-image: url("../images/menu.png");
-        width: 25px;
-        height: 20px;
-        background-repeat: no-repeat;
-        background-size: cover;
-        float: right;
-        margin-right: 10px;
-        margin-top: 30px;
-    }
-
-    header ul {
-        width: 100%;
-        display: none;
-        margin-right: 20px;
-    }
-
-    header ul li {
-        display: block;
-        width: 100%;
-        text-align: centre;
-        outline: 1px solid #121212;
-        background: rgba(0, 0, 0, 0.2);
-        height: 27px;
-    }
-
-    header ul li:HOVER {
-        display: block;
-        width: 100%;
-        text-align: centre;
-        background: rgba(0, 0, 0, 0.5);
-        height: 27px;
-    }
-
-    header ul li a {
-        margin-left: 10px;
-    }
-
-    #howItWork aside {
-        width: 40px;
-        margin: 20px 10px;
-    }
-
-    #howItWork aside img {
-        width: 100%;
-    }
-
-    #howItWork aside h3 {
-        font-size: 13px;
-    }
-
-    #howItWork aside p {
-        font-size: 12px;
-    }
-
-    #searchBar {
-        display: block;
-        margin: 90 auto;
-    }
-
-    /*	#searchBar { padding: 30px 25px;margin-top:100px} */
-    #searchBar h3 {
-        font-size: 27px;
-    }
-
-    #searchBar h3 p {
-        font-size: 14px;
-    }
-
-    /*	#searchBar select { width: 110px; padding: 5px; font-size: 10px; }
-        #searchBar select { line-height: 21px; }
-        #searchBar button { font-size: 12px; padding: 5.4px 7px; }*/
-    #searchBar select {
-        margin-left: auto;
-        margin-right: auto;
-        display: block;
-        width: 100%;
-        margin-bottom: -25px;
-    }
-
-    #searchBar button {
-        width: 100%;
-    }
-
-    #video #vidImg {
-        width: 30px;
-        height: 20px;
-    }
-
-    /*footer ul li { float: left; list-style: none; margin: 0 3px; }
-    footer ul li a {font-size: 12px; }*/
-    /*footer {margin-top: 5px; }
-    footer ul  { width: 100%; }*/
-    footer {
-        position: relative;
-    }
-
-    footer ul li {
-        float: none;
-        display: inline-block;
-    }
-
-    footer ul li a {
-        text-align: centre;
-    }
-
-    #txtAni ul li:first-child img {
-        margin-left: -35px;
-    }
-
-    #txtAni ul li:nth-child(2) img {
-        margin-left: -5px;
-    }
-
-    #txtAni ul li:nth-child(3) img {
-        margin-left: -3px;
-    }
-
-    #txtAni ul li:last-child img {
-        margin-left: 70px;
-    }
+	#logo { width: 250px; height: 60px;position: relative; }
+	#menubutton { background-image: url("../images/menu.png"); width:25px; height:20px; background-repeat: no-repeat; background-size: cover;float:right;margin-right:10px; margin-top:30px; }
+	header  ul li { display:block;width: 100%; text-align:centre; outline: 1px solid #121212; background: rgba(0, 0, 0, 0.2); }
+	.header .navbar-default .navbar-nav > li > a {margin-top: 0!important; padding: 10px;}
+	header ul li a:hover::after { position: relative; top: 9px;}
+	header  ul li:hover { display:block;width: 100%; text-align:centre; background: rgba(0, 0, 0, 0.5);}
+	#howItWork aside { width: 40px; margin: 20px 10px; }
+	#howItWork aside img { width: 100%; }
+	#howItWork aside h3 { font-size: 13px; }
+	#howItWork aside p { font-size: 12px; }
+	#searchBar { display: block; margin:90 auto;}
+	#searchBar h3 { font-size: 27px; margin-top:0;}
+	#searchBar h3 p { font-size: 14px; }
+	#searchBar select { margin-left: auto; margin-right: auto; display: block; width: 100%;margin-bottom:-25px;}
+	#searchBar button { width: 100%; }
+	#video #vidImg { width:30px; height:20px;}
+	footer {position: relative;}
+	footer ul li  { float:none; display: inline-block;}
+	footer ul li a{text-align: centre;  }
+	#txtAni ul li:first-child img { margin-left: -35px; }
+	#txtAni ul li:nth-child(2) img {  margin-left: -5px; }
+	#txtAni ul li:nth-child(3) img { margin-left: -3px; }
+	#txtAni ul li:last-child img { margin-left: 70px; }
 }
 

@@ -14,7 +14,7 @@
 			<div class="orderTop clearfix">
 				<div class="orderId"><span> <?php echo __('Order ID'); ?> :</span> <?php 
 				echo $order_detail['Order']['ref_number'];?></div>
-				<div class="orderviewDate pull-left-xs margin-t-10-xs"><span> <?php echo __('Order Date', true); ?> :</span><?php 
+				<div class="orderviewDate"><span> <?php echo __('Order Date', true); ?> :</span><?php 
 				echo $order_detail['Order']['created'];?>
 				</div>
 			</div>
@@ -22,37 +22,37 @@
 				<div class="cardDetailHead"> <?php echo __('Order Info', true); ?></div>
 				<ul class="col-md-6">
 					
-					<li><span class="col-md-4 col-xs-12"> <?php echo __('Customer Email', true); ?></span> <span class="col-md-8 col-xs-12 site-color">: <?php 
+					<li><span class="col-md-4 col-sm-4 col-xs-12"> <?php echo __('Customer Email', true); ?></span> <span class="col-md-8 col-sm-8 col-xs-12 site-color"><i>:</i> <?php 
 				echo $order_detail['Order']['customer_email'];?></span></li>
-					<li><span class="col-md-4 col-xs-12"> <?php echo __('Phone Number', true); ?></span> <span class="col-md-8 col-xs-12 site-color">: <?php 
+					<li><span class="col-md-4 col-sm-4 col-xs-12"> <?php echo __('Phone Number', true); ?></span> <span class="col-md-8 col-sm-8 col-xs-12 site-color"><i>:</i> <?php 
 				echo $order_detail['Order']['customer_phone'];?></span></li>
 				    
 					 <?php
 
 					if ($order_detail['Order']['driver_id']) { ?>
 
-						 <li><span class="col-md-4 col-xs-12"> <?php echo __('Driver Name/ Phone', true); ?></span> <span class="col-md-8 col-xs-12 site-color">: <?php 
+						 <li><span class="col-md-4 col-sm-4 col-xs-12"> <?php echo __('Driver Name/ Phone', true); ?></span> <span class="col-md-8 col-sm-8 col-xs-12 site-color"><i>:</i> <?php 
 					  		echo $order_detail['Driver']['driver_name']. ' / '.$order_detail['Driver']['driver_phone'];	?></span></li> <?php 
 					} 
 					if ($order_detail['Order']['order_description']) { ?>
 
-						 <li><span class="col-md-4 col-xs-12"> <?php echo __('Order Description', true); ?> </span> <span class="col-md-8 col-xs-12 site-color">: <?php 
+						 <li><span class="col-md-4 col-sm-4 col-xs-12"> <?php echo __('Order Description', true); ?> </span> <span class="col-md-8 col-sm-8 col-xs-12 site-color"><i>:</i> <?php 
 					  		echo $order_detail['Order']['order_description']; ?></span></li> <?php 
 					} 
 
 					?>
 
-					<li><span class="col-md-4 col-xs-12"><?php echo __($order_detail['Order']['order_type']).' Date'; ?> </span> <span class="col-md-8 col-xs-12 site-color">: <?php
+					<li><span class="col-md-4 col-sm-4 col-xs-12"><?php echo __($order_detail['Order']['order_type']).' Date'; ?> </span> <span class="col-md-8 col-sm-8 col-xs-12 site-color"><i>:</i> <?php
                 echo $order_detail['Order']['delivery_date'];?></span></li>
 
 
-					<li><span class="col-md-4 col-xs-12"><?php echo __($order_detail['Order']['order_type']). ' '. __('Time'); ?> </span> <span class="col-md-8 col-xs-12 site-color">: <?php
+					<li><span class="col-md-4 col-sm-4 col-xs-12"><?php echo __($order_detail['Order']['order_type']). ' '. __('Time'); ?> </span> <span class="col-md-8 col-sm-8 col-xs-12 site-color"><i>:</i> <?php
                 echo $order_detail['Order']['delivery_time_slot'];?></span></li>
 
-					<li><span class="col-md-4 col-xs-12"> <?php echo __('Order Type', true); ?> </span> <span class="col-md-8 col-xs-12 site-color">: <?php
+					<li><span class="col-md-4 col-sm-4 col-xs-12"> <?php echo __('Order Type', true); ?> </span> <span class="col-md-8 col-sm-8 col-xs-12 site-color"><i>:</i> <?php
 							echo __($order_detail['Order']['order_type']); ?></span></li>
 
-	                <li><span class="col-md-4 col-xs-12"> <?php echo __('Address', true); ?></span> <span class="col-md-8 col-xs-12 site-color">: <?php
+	                <li><span class="col-md-4 col-sm-4 col-xs-12"> <?php echo __('Address', true); ?></span> <span class="col-md-8 col-sm-8 col-xs-12 site-color"><i>:</i> <?php
 						$address  = $order_detail['Order']['address'].', ';
 						$address .= ($order_detail['Order']['landmark']) ? $order_detail['Order']['landmark'] : '';
 						$address .= $order_detail['Order']['location_name'].', '.$order_detail['Order']['city_name'].', '.
@@ -67,26 +67,26 @@
 
 					if ($order_detail['Order']['delivered_time']) { ?>
 
-						<li><span class="col-md-4 col-xs-12"> <?php echo __('Delivery Time', true); ?></span> <span class="col-md-8 col-xs-12 site-color">: <?php 
+						<li><span class="col-md-4 col-sm-4 col-xs-12"> <?php echo __('Delivery Time', true); ?></span> <span class="col-md-8 col-sm-8 col-xs-12 site-color"><i>:</i> <?php 
 							echo $order_detail['Order']['delivered_time'];?></span></li> <?php
 					} ?>
 					
-					<li><span class="col-md-4 col-xs-12"> <?php echo __('Payment Method', true); ?></span> <span class="col-md-8 col-xs-12 site-color">: <?php 
+					<li><span class="col-md-4 col-sm-4 col-xs-12"> <?php echo __('Payment Method', true); ?></span> <span class="col-md-8 col-sm-8 col-xs-12 site-color"><i>:</i> <?php 
 				echo __($order_detail['Order']['payment_type']); ?></span></li>
-					<li><span class="col-md-4 col-xs-12"> <?php echo __('Payment Status', true); ?></span> <span class="col-md-8 col-xs-12 site-color">: <?php
+					<li><span class="col-md-4 col-sm-4 col-xs-12"> <?php echo __('Payment Status', true); ?></span> <span class="col-md-8 col-sm-8 col-xs-12 site-color"><i>:</i> <?php
 				if($order_detail['Order']['payment_method'] == "unpaid"){
 					echo __('Not Paid');
 				} else {
 					echo __($order_detail['Order']['payment_method']);
 				} ?></span></li>
 
-				<li><span class="col-md-4 col-xs-12"> <?php echo __('Store', true); ?></span> <span class="col-md-8 col-xs-12 site-color">: <?php
+				<li><span class="col-md-4 col-sm-4 col-xs-12"> <?php echo __('Store', true); ?></span> <span class="col-md-8 col-sm-8 col-xs-12 site-color"><i>:</i> <?php
 				echo $order_detail['ShoppingCart'][0]['Store']['store_name'];?></span></li>
 
-				<li><span class="col-md-4 col-xs-12"> <?php echo __('Order Status', true); ?></span> <span class="col-md-8 col-xs-12 site-color">:  <?php 
+				<li><span class="col-md-4 col-sm-4 col-xs-12"> <?php echo __('Order Status', true); ?></span> <span class="col-md-8 col-sm-8 col-xs-12 site-color"><i>:</i>  <?php 
 				echo __($order_detail['Order']['status']); ?></span></li>
 
-					<li><span class="col-md-4 col-xs-12"> <?php echo __('Customer Name', true); ?></span> <span class="col-md-8 col-xs-12 site-color">: <?php 
+					<li><span class="col-md-4 col-sm-4 col-xs-12"> <?php echo __('Customer Name', true); ?></span> <span class="col-md-8 col-sm-8 col-xs-12 site-color"><i>:</i> <?php 
 				echo $order_detail['Order']['customer_name'];?></span></li>				
 					
 
@@ -111,7 +111,7 @@
 							<tr>
 								<td><?php echo $count;?></td>
 								<td>
-									<img class="img-thumbnail" alt="<?php echo $value['product_name']; ?>" src="https://s3-eu-west-1.amazonaws.com/<?php echo $siteBucket; ?>/stores/products/carts/<?php echo $value['ShoppingCart']['product_image']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/noimage.jpg"; ?>'">
+									<img class="img-thumbnail" alt="<?php echo $value['product_name']; ?>" src="https://s3.amazonaws.com/<?php echo $siteBucket; ?>/stores/products/carts/<?php echo $value['ShoppingCart']['product_image']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/noimage.jpg"; ?>'">
 								</td>
 
 

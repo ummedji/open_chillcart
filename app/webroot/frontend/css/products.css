@@ -2,13 +2,6 @@
 .products:after {content: " ";clear: both;display: block; overflow: hidden; height: 0;}
 .products.products-carousel {  margin: 0;}
 .products .product {  width: 25%; float: left; padding: 0 15px; margin-bottom: 30px; text-align: left;}
-.products .product.col-sm-2{ width: 16.6667%!important; padding: 0 5px!important; }
-.products .product.col-sm-2:nth-child(4n+1) {
-  clear: none;
-}
-.products .product:nth-child(4n+1) {
-  clear: both;
-}
 .products .product .onsale {
   box-shadow: -5px 3px 5px rgba(0, 0, 0, 0.5);
   left: 0;

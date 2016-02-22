@@ -1,6 +1,5 @@
-
 <div class="container searchshopContent">
-	<div class="row">
+	<div class="row customerMyAccount">
 		<div class="myaccount-tabs col-md-2 col-lg-2 col-sm-12 col-xs-12">
 			<a class="active" href="javascript:void(0);" id="orderhistory">
 				<div class="orderHistory"></div>
@@ -34,6 +33,7 @@
 								<th> <?php echo __('Status', true); ?></th>
 								<th class="no-sort"> <?php echo __('Details', true); ?></th>
 								<th class="no-sort"> <?php echo __('Review', true); ?></th>
+								<!-- <th class="no-sort"> <?php echo __('Cancel', true); ?></th> -->
 							</tr>
 						</thead>
 						<tbody>
@@ -70,6 +70,17 @@
 												   data-target="#reviewPopup"><?php echo __('Review', true); ?></a><?php }
 											}	?>
 										</td>
+										<!-- <td> <?php
+											if($value['Order']['status'] == 'Pending') {
+												if (empty($value['Order']['cancel_reason'])) { ?>
+													<a href="javascript:void(0);" onclick = "cancelOrder(<?php echo $value['Order']['id'];?>);" data-toggle="modal"
+													   data-target="#cancelPopup"><?php echo __('Cancel', true); ?>
+													</a> <?php
+												} else {
+													echo 'Request sent';
+												}
+											} ?>
+										</td> -->
 
 									</tr><?php
 								}
@@ -91,7 +102,7 @@
 		                			<div class="col-md-12">
 				                		<?php
 					                        if(!empty($this->request->data['Customer']['image'])) { ?>
-					                            <img class="img-responsive customer_image"  src="https://s3-eu-west-1.amazonaws.com/<?php echo $siteBucket.'/Customers/'.$this->request->data['Customer']['image']; ?>" > <?php 
+					                            <img class="img-responsive customer_image"  src="https://s3.amazonaws.com/<?php echo $siteBucket.'/Customers/'.$this->request->data['Customer']['image']; ?>" > <?php 
 					                        } else {
 					                                echo "No Image Found";
 					                        }
@@ -392,8 +403,41 @@
 			</div>
 		</div>
 	</div>
-</div>			
-		
+</div>
+
+<div class="modal fade" id="cancelPopup">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title"> <?php echo __('Cancel Order', true); ?></h4>
+			</div>
+			<div class="modal-body"> <?php 
+				echo $this->Form->create('Order',array('class'=>"form-horizontal"));?>
+
+					<div class="form-group clearfix">
+						<label class="control-label col-sm-4 text-right"> <?php echo __('Cancel Reason', true); ?></label> 
+						<div class="col-sm-7 margin-t-5"><?php
+						 	echo $this->Form->input('cancel_reason',
+				                          array('class'=>'form-control',
+				                              'label'=>false));
+				        	echo $this->Form->hidden('id'); ?>
+						</div>
+					</div>
+					<div class="form-group clearfix">
+	                    <div class="col-sm-offset-4 col-sm-7">
+	                        <?php echo $this->Form->button(__('<i class="fa fa-check"></i>Submit'),array('class'=>'btn purple'));  ?>
+	                    </div>
+	                </div> <?php 
+				echo $this->Form->end();?>
+
+			</div>
+		</div>
+	</div>
+</div>	
+
 <div class="modal fade" id="addBookAddress">
 	<div class="modal-dialog modal-md">
 		<div class="modal-content">

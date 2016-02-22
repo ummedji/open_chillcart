@@ -388,17 +388,28 @@ class MobileApiController extends AppController
                         }
 
                         $this->Order->save($ordStatus);
-
-
-                        $customerMessage = "Dear " . $ordStatus['Customer']['first_name'] . ",Your order has been " . $status . ' by driver, Order id : ' . $ordStatus['Order']['ref_number'];
-
-                        $toCustomerNumber = '+' . $this->siteSetting['Country']['phone_code'] . $ordStatus['Customer']['customer_phone'];
-
-                        //$customerSms = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
-
-
                         $response['success'] = 1;
                         $response['message'] = 'Order Status Change Successfully';
+
+			// Driver SMS
+                        if ($status == 'Collected') {
+
+                            $driverMessage = "Congratulations ! Your order ".$ordStatus['Order']['ref_number']." is on it's way to you. It wiil be delivered by ".
+						$ordStatus['Driver']['driver_name'].". Thanks for shopping with Chillcart and stay connected.";
+                        }
+
+                        if ($status == 'Delivered') {
+
+                            $driverMessage = "Congratulations ! Your order ".$ordStatus['Order']['ref_number']." successfully delivered by ".$ordStatus['Driver']['driver_name'];
+                        }
+
+                        $statusArray = array('Collected', 'Delivered', 'Accepted');
+
+                        if (in_array($status, $statusArray)) {
+
+                            $toDriverNumber = '+'.$this->siteSetting['Country']['phone_code'].$ordStatus['Driver']['driver_phone'];
+                            //$driverSms      = $this->Twilio->sendSingleSms($toDriverNumber, $driverMessage);
+                        }
 
                         $driverDetail = $this->Driver->findById($driverId);
 

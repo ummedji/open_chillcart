@@ -286,15 +286,6 @@ class OrdersController extends AppController
             $orderId[] = $update['id'] = $this->Order->id;
 
             $this->Order->save($update);
-
-            $customerMessage = "Dear " . $this->Auth->User('Customer.first_name') . ",You have placed new order successfully. Store will accept your order soon, Order id :" . $update['ref_number'];
-            $toCustomerNumber = '+' . $this->siteSetting['Country']['phone_code'] . $this->Auth->User('Customer.customer_phone');
-
-            //$customerSms = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
-
-            /*$storeMessage   = "Dear Store,You have receive new order from ".$this->Auth->User('Customer.first_name').",Order id :".$update['ref_number'];*/
-
-
             $storeDetails = $this->Store->findById($value['store_id']);
 
             // Store Owner Message
@@ -392,6 +383,31 @@ class OrdersController extends AppController
             }
 
         }
+
+	//Order Placed Sms
+	      foreach ($orderId as $key => $value) {
+		$orderDetail = $this->Order->findById($value);
+		$customerMessage = 'Thanks for using chillcart service. Your order '.
+					$orderDetail['Order']['ref_number'].' has been placed . Track your order at '.$this->siteUrl.'.  Regards Chillcart';
+		$toCustomerNumber = '+'.$this->siteSetting['Country']['phone_code'].$this->Auth->User('Customer.customer_phone');
+		//$customerSms      = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
+
+		$storeMessage  = "Dear ".$orderDetail['Store']['store_name']." you've received a ";
+		$storeMessage .= ($orderDetail['Order']['payment_method'] != 'paid') ? 'COD' : 'PAID';
+		$storeMessage .= 'order '.$orderDetail['Order']['ref_number'].' from '.$orderDetail['Order']['customer_name'];
+
+		if ($orderDetail['Order']['order_type'] == 'Delivery') {
+		     $storeMessage .= ','.$orderDetail['Order']['address'].','.$orderDetail['Order']['landmark'].
+				      ','.$orderDetail['Order']['location_name'].','.$orderDetail['Order']['city_name'].
+				      ','.$orderDetail['Order']['city_name'];
+		}
+
+		$storeMessage .= '. '.$orderDetail['Order']['order_type'].' due on '.$orderDetail['Order']['delivery_date'].' at '.
+					$orderDetail['Order']['delivery_time_slot'].'. Thanks Chillcart';
+		$toStoreNumber = '+'.$this->siteSetting['Country']['phone_code'].$orderDetail['Store']['store_phone'];
+		//$customerSms   = $this->Twilio->sendSingleSms($toStoreNumber, $storeMessage);
+
+	      }
 
         $this->Session->write("preSessionid", '');
 
@@ -529,24 +545,21 @@ class OrdersController extends AppController
 
                 $gcm = $this->AndroidResponse->sendOrderByGCM($message, $gcmId);
                 $gcm = json_decode($gcm, true);
+		$customerMessage = 'Congratulations! Your order '.$orderDetail['Order']['ref_number'].'succesfully accepted by '.
+                                $orderDetail['Store']['store_name'].'. Your order will be delivered by '.
+                                $orderDetail['Order']['delivery_date']. ' at '.$orderDetail['Order']['delivery_time_slot'].'. Thanks Chillcart';
+
+            	$toCustomerNumber = '+'.$this->siteSetting['Country']['phone_code'].$orderDetail['Customer']['customer_phone'];
+            	//$customerSms      = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
+
                 echo 'Success';
             }
         }
-
-    if ($orderStatusUpdate['status'] != 'Deleted') {
-
-        $customerMessage = "Dear ".$orderDetail['Customer']['first_name'].",Your order has been ".$orderStatusUpdate['status'].' by store, Order id : '.$update['ref_number'];
-
-        $toCustomerNumber = '+'.$this->siteSetting['Country']['phone_code'].$orderDetail['Customer']['customer_phone'];
-
-        //$customerSms = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
-    }
-
-    if ($orderStatusUpdate['status'] == 'Deleted') {
-        if ($this->Order->save($orderStatusUpdate)) {
-          echo 'Success';
-        }
-    }
+	    if ($orderStatusUpdate['status'] == 'Deleted') {
+		if ($this->Order->save($orderStatusUpdate)) {
+		  echo 'Success';
+		}
+	    }
     
 
     // Store Owner Message
@@ -604,16 +617,14 @@ class OrdersController extends AppController
 
             $gcm = $this->AndroidResponse->sendOrderByGCM($message,$gcmId);
             $gcm = json_decode($gcm, true);
+	    $customerMessage = 'Congratulations! Your order '.$orderDetail['Order']['ref_number'].'succesfully accepted by '.
+                                $orderDetail['Store']['store_name'].'. Your order will be delivered by '.
+                                $orderDetail['Order']['delivery_date']. ' at '.$orderDetail['Order']['delivery_time_slot'].'. Thanks Chillcart';
+
+            $toCustomerNumber = '+'.$this->siteSetting['Country']['phone_code'].$orderDetail['Customer']['customer_phone'];
+            //$customerSms      = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
             echo 'Success';
         }
-    }
-    if ($orderStatusUpdate['status'] != 'Deleted') {
-
-        $customerMessage = "Dear ".$orderDetail['Customer']['first_name'].",Your order has been ".$orderStatusUpdate['status'].' by store, Order id : '.$update['ref_number'];
-        
-        $toCustomerNumber = '+'.$this->siteSetting['Country']['phone_code'].$orderDetail['Customer']['customer_phone'];
-
-        //$customerSms = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
     }
     if ($orderStatusUpdate['status'] == 'Deleted') {
         if ($this->Order->save($orderStatusUpdate)) {

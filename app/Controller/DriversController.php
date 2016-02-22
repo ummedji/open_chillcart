@@ -9,7 +9,7 @@ class DriversController extends AppController
 
     var $helpers = array('Html', 'Session', 'Javascript', 'Ajax', 'Common');
     public $uses = array('Driver', 'User', 'Vehicle', 'Order', 'State', 'City', 'Location', 'Store');
-    public $components = array('Updown', 'Googlemap', 'AndroidResponse');
+    public $components = array('Updown', 'Googlemap', 'AndroidResponse', 'Twilio');
 
 
     public function beforeFilter()
@@ -355,6 +355,19 @@ class DriversController extends AppController
                 $this->Order->save($orderStatus);
 
                 $gcm = json_decode($gcm, true);
+		 // Driver SMS
+                $driverMessage  = 'Dear '.$driverDetails['Driver']['driver_name'].',pick up ';
+                $driverMessage .= ($orders['Order']['payment_method'] != 'paid') ? 'COD' : 'PAID';
+                $driverMessage .= ' order '.$orders['Order']['ref_number'].' from '.$orders['Order']['customer_name'];
+                $driverMessage .=   ','.$orders['Order']['address'].','.$orders['Order']['landmark'].
+                                    ','.$orders['Order']['location_name'].','.$orders['Order']['city_name'].
+                                    ','.$orders['Order']['city_name'];
+                $driverMessage .= '. '.$orders['Order']['order_type'].' due on '.$orders['Order']['delivery_date'].' at '.
+                                    $orders['Order']['delivery_time_slot'].'. Thanks Chillcart';
+                $toDriverNumber = '+'.$this->siteSetting['Country']['phone_code'].$driverDetails['Driver']['driver_phone'];
+                //$driverSms      = $this->Twilio->sendSingleSms($toDriverNumber, $driverMessage);
+
+
                 echo $gcm['success'];
             } else {
                 die('404');
