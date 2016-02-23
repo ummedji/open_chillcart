@@ -108,6 +108,7 @@ class AppController extends Controller
 
         //Bucket
         $this->siteBucket = $siteBucket = Configure::read('CakeS3.bucket');
+        $this->cdn = $cdn = Configure::read('CakeS3.cdn');
 
 
         date_default_timezone_set($this->siteSetting['Sitesetting']['site_timezone']);
@@ -121,7 +122,7 @@ class AppController extends Controller
         $metakeywords = $siteDetails['Sitesetting']['meta_keywords'];
         $metaDescriptions = $siteDetails['Sitesetting']['meta_description'];
 
-        $this->set(compact('siteCurrency', 'metaTitle', 'metakeywords', 'metaDescriptions', 'publishKey', 'siteBucket'));
+        $this->set(compact('siteCurrency', 'metaTitle', 'metakeywords', 'metaDescriptions', 'publishKey', 'siteBucket', 'cdn'));
 
         $this->set('loggedUser', $this->loggedUser);
 

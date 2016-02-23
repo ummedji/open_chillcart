@@ -38,7 +38,7 @@ if ($value['SubCategory']['id'] != $subCat) {
 }
 
     $imageName = (isset($value['ProductImage'][0]['image_alias'])) ? $value['ProductImage'][0]['image_alias'] : '';
-    $imageSrc = 'https://s3.amazonaws.com/'.$siteBucket.'/stores/products/home/'.$imageName; ?>
+    $imageSrc = $cdn.'/stores/products/home/'.$imageName; ?>
 
     <li class="product searchresulttoshow searchresulttoshow<?php echo $count.$subCatCount; ?>">
         <div class="product__inner">

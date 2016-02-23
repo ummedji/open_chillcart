@@ -33,7 +33,8 @@ if (getenv("APPLICATION_ENV") == "GENERAL_DEVELOPMENT"):
         's3Key' => 'AKIAJ7UUZ7Q22HDUQKMA',
         's3Secret' => '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',
         'bucket' => 'dev.chillcart.images',
-        'endpoint' => 's3-eu-west-1.amazonaws.com' // [optional] Only required if your endpoint is not s3-eu-west-1.amazonaws.com
+        'endpoint' => 's3-eu-west-1.amazonaws.com', // [optional] Only required if your endpoint is not s3-eu-west-1.amazonaws.com
+        'cdn' => 'http://dev.chillcart.images.s3-eu-west-1.amazonaws.com'
     )
 );
 elseif (getenv("APPLICATION_ENV") == "DEMO"):
@@ -41,7 +42,8 @@ elseif (getenv("APPLICATION_ENV") == "DEMO"):
         's3Key' => 'AKIAJ7UUZ7Q22HDUQKMA',
         's3Secret' => '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',
         'bucket' => 'demo.chillcart.images',
-        'endpoint' => 's3-eu-west-1.amazonaws.com' // [optional] Only required if your endpoint is not s3-eu-west-1.amazonaws.com
+        'endpoint' => 's3-eu-west-1.amazonaws.com', // [optional] Only required if your endpoint is not s3-eu-west-1.amazonaws.com
+        'cdn' => 'cdn.chillcart.ie'
     )
 );
 elseif (getenv("APPLICATION_ENV") == "TESTING"):
@@ -49,7 +51,8 @@ elseif (getenv("APPLICATION_ENV") == "TESTING"):
         's3Key' => 'AKIAJ7UUZ7Q22HDUQKMA',
         's3Secret' => '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',
         'bucket' => 'testing.chillcart.images',
-        'endpoint' => 's3-eu-west-1.amazonaws.com' // [optional] Only required if your endpoint is not s3-eu-west-1.amazonaws.com
+        'endpoint' => 's3-eu-west-1.amazonaws.com', // [optional] Only required if your endpoint is not s3-eu-west-1.amazonaws.com
+        'cdn' => 'http://testing.chillcart.images.s3-eu-west-1.amazonaws.com'
     )
 );
 else:
@@ -57,7 +60,8 @@ else:
         's3Key' => 'AKIAJ7UUZ7Q22HDUQKMA',
         's3Secret' => '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',
         'bucket' => 'dev.chillcart.images',
-        'endpoint' => 's3-eu-west-1.amazonaws.com' // [optional] Only required if your endpoint is not s3-eu-west-1.amazonaws.com
+        'endpoint' => 's3-eu-west-1.amazonaws.com', // [optional] Only required if your endpoint is not s3-eu-west-1.amazonaws.com
+        'cdn' => 'http://dev.chillcart.images.s3-eu-west-1.amazonaws.com'
     )
 );
 endif;

@@ -567,7 +567,7 @@ class CustomersController extends AppController
             $output .= '<tr style="font:normal 14px Arial">
                     <td style="border-bottom:1px solid #ccc; padding:15px">' . $sNo . '</td>
                     <td style="border-bottom:1px solid #ccc; padding:15px">' . $value['product_name'] . '</td>
-                    <td><img src="https://s3-eu-west-1.amazonaws.com/' . $this->siteBucket . '/stores/products/carts/' . $value['product_image'] . ' " onerror="this.onerror=null;this.src="' . $this->siteUrl . '"/images/noimage.jpg" ""/></td>
+                    <td><img src="'$this->cdn . '/stores/products/carts/' . $value['product_image'] . ' " onerror="this.onerror=null;this.src="' . $this->siteUrl . '"/images/noimage.jpg" ""/></td>
                     <td style="border-bottom:1px solid #ccc; padding:15px">' . $value['product_quantity'] . ' </td>
                     <td align="right" style="border-bottom:1px solid #ccc; padding:15px">' . $this->siteCurrency . ' ' . $value['product_price'] . ' </td>
                     <td align="right" style="border-bottom:1px solid #ccc; padding:15px">' . $this->siteCurrency . ' ' . $value['product_total_price'] . ' </td>

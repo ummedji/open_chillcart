@@ -716,7 +716,7 @@ class OrdersController extends AppController
 
       foreach ($datas['ShoppingCart'] as $key => $data) {
 
-        $productSrc = 'https://s3-eu-west-1.amazonaws.com/'.$this->siteBucket.'/stores/products/carts/'.$data['product_image'];
+        $productSrc = $this->cdn.'/stores/products/carts/'.$data['product_image'];
         $serialNo = $key+1;
 
         $name.='<tr>

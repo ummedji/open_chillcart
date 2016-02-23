@@ -88,9 +88,9 @@
 				<ul class="products">
 					<?php foreach ($dealProduct as $key => $value) {
 
-						$imageSrc = 'https://s3-eu-west-1.amazonaws.com/'.$siteBucket.'/stores/products/home/'.$value['MainProduct']['ProductImage'][0]['image_alias'];
+						$imageSrc = $cdn.'/stores/products/home/'.$value['MainProduct']['ProductImage'][0]['image_alias'];
 
-						$imageSrcSub = 'https://s3-eu-west-1.amazonaws.com/'.$siteBucket.'/stores/products/scrollimg/'.$value['SubProduct']['ProductImage'][0]['image_alias']; ?>
+						$imageSrcSub = $cdn.'/stores/products/scrollimg/'.$value['SubProduct']['ProductImage'][0]['image_alias']; ?>
 
 					    <li class="product searchresulttoshow">
 

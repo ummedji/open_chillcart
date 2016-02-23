@@ -381,7 +381,7 @@
 											$images = $images.$value['id'].',';
 										 ?>
 											<div id="image<?php echo $value['id']; ?>">
-											<img  src="https://s3-eu-west-1.amazonaws.com/<?php echo $siteBucket; ?>/stores/products/carts/<?php echo $value['image_alias']; ?>">
+											<img  src="<?php echo $cdn; ?>/stores/products/carts/<?php echo $value['image_alias']; ?>">
 											<a href="javascript:;" class="ItemRemove" onclick="deleteProductImage('<?php echo $value['id']; ?>');">
 				                            	<i class="fa fa-times"></i>
 				                            </a></div><?php
