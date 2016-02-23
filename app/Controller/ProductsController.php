@@ -36,7 +36,7 @@ class ProductsController extends AppController {
                                 'conditions'  =>  array('Store.status'=>1),
                                 'fields'      =>  array('Store.id', 'Store.store_name')));
 
-    $this->request->data['Storeproduct'] = $storeId;
+    $this->request->data['Commons']['Storeproduct'] = $storeId;
 
 		$this->set(compact('products_detail', 'stores', 'storeId'));
 	}

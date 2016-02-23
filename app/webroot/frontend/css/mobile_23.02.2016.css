@@ -23,7 +23,6 @@
   .header.detailheader .navbar-header{float:left; min-width:inherit; width:100%;}
   .detailheader.header .navbar-default .navbar-nav > li > a{ background:none!important; padding:10px 15px!important; float:none!important; border-radius:0!important; margin-top:10px!important; font:600 15px Lato;}
   .topnavRight{padding:0; margin:13px 0 0;}
-  .search_stores .product.col-sm-2{ width: 50%;}
   .topnavRight li{ margin-left: 10px; margin-top: -3px;}
   .topnavRight li:last-child{margin-left:0;}
   .topnavRight li img,.title-categories img{width:20px;}
@@ -45,7 +44,7 @@
   .header.detailheader .dropdown-toggle.shopMenu .visible-xs{font: 300 14px Lato; margin-bottom: 8px;}
   .header.detailheader .dropdown-toggle.shopMenu .mobileStore{ font:800 15px Lato;}
   .header.detailheader .dropdown-toggle.shopMenu .mobileStore .caret{background: url(../images/right_arrow.png) no-repeat; border: none;  height: 32px; position: absolute; right: 5px; top: 24px; width: 32px;}
-  .products.search_stores .product__image{ height: 120px;}
+  
   .header.detailheader .searchMenuForm{vertical-align:top;}
   .searchMenuFormList{left: 0;  width:96%; margin:0 2%; display:none!important; position: absolute !important; z-index:11;}
   .searchMenuFormList.in{display:block!important;}
@@ -195,8 +194,6 @@
 	.navbar-nav.search_bar { float: none; margin: 0 -15px;}
 	.header.detailheader .searchMenuForm .searchMenuFormClick{width:55px; height:55px; border:none; border-radius:0; background:#e4f1e6 url(../images/icon-search.png) no-repeat center 10px / 60% auto;}
 	#reviewConform .myorderTab{padding:0;}
-  .products .product {width: 33%;}
-
 }
 @media (min-width: 991px) and (max-width: 1199px ) {
 	.leftsideBar{width:230px;}
@@ -245,7 +242,6 @@
 	.mobile_cart{ background: #eafef2;bottom: 0;box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);display: block;font-size: 22px;position:fixed;right: 0;width: 100%;z-index: 100; }
 	.header .navbar-brand img { max-width: 155px; }
 	.rememberpassword{ padding: 0;}
-  .add_to_cart_button{ width: 100%;}
 	.cart_notification ,.cart_failedNotification{ background: rgba(233, 78, 38, 0.85);bottom: auto;color: #fff;font: 15px/23px Lato;left: auto;
 min-width: 270px;padding: 9px 10px;position: absolute;right: 5px;text-align: center;top: -60px;}
 	.cart_notification::before,.cart_failedNotification::before { border-color: rgba(233, 78, 38, 1) transparent transparent;border-style: solid;

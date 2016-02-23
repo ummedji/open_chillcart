@@ -1,11 +1,11 @@
 <?php
-$main = $subCat = $subCatCount = 0;
+$main = $subCat = 0;
 foreach ($productList as $key => $value) {
 
     $nextValue = $key+1;
     if ($value['MainCategory']['id'] != $main) {
         $main = $value['MainCategory']['id']; ?>
-        <div class="products-category mainCatProduct" id="<?php echo $value['MainCategory']['category_name']; ?>">
+        <div class="products-category" id="<?php echo $value['MainCategory']['category_name']; ?>">
         <header class="products-header">
             <h4 class="category-name">
                 <span> <?php echo $value['MainCategory']['category_name']; ?></span>
@@ -24,7 +24,6 @@ foreach ($productList as $key => $value) {
 
 
 if ($value['SubCategory']['id'] != $subCat) {
-
     $subCat = $value['SubCategory']['id']; ?>
 
     <!-- <div class="products-category" id="<?php echo $value['SubCategory']['category_name']; ?>"> -->
@@ -33,19 +32,16 @@ if ($value['SubCategory']['id'] != $subCat) {
         <span><?php echo $value['SubCategory']['category_name']; ?></span>
     </h5>
 
-    <ul class="products productsCat<?php echo $count; ?>"> <?php
-        $subCatCount = $subCatCount+1;
+    <ul class="products"> <?php
 }
 
-    $imageName = (isset($value['ProductImage'][0]['image_alias'])) ? $value['ProductImage'][0]['image_alias'] : '';
-    $imageSrc = 'https://s3.amazonaws.com/'.$siteBucket.'/stores/products/home/'.$imageName; ?>
-
-    <li class="product searchresulttoshow searchresulttoshow<?php echo $count.$subCatCount; ?>">
+    $imageSrc = 'https://s3-eu-west-1.amazonaws.com/'.$siteBucket.'/stores/products/home/'.$value['ProductImage'][0]['image_alias']; ?>
+    <li class="product searchresulttoshow">
         <div class="product__inner">
             <figure class="product__image" onclick="productDetails(<?php echo $value['Product']['id']; ?>);">
                 <!-- <span class="onsale">Sale!</span> -->
                 <img src="<?php echo $imageSrc; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/no-imge.jpg"; ?>'" alt="<?php echo $value['Product']['product_name']; ?>" title="<?php echo $value['Product']['product_name']; ?>">
-                <figcaption hidden>
+                <figcaption>
                     <div class="product-addon">
                         <a href="javascript:void(0);" class="yith-wcqv-button"><span></span><i class="fa fa-plus"></i></a>
                     </div>
@@ -58,7 +54,7 @@ if ($value['SubCategory']['id'] != $subCat) {
                         <a href="javascript:void(0);" rel="tag"><?php echo $value['ProductDetail'][0]['sub_name']; ?></a>
                     </div>
 
-                    <?php if (isset($value['ProductDetail'][1]['sub_name'])) { ?>
+                    <?php if ($value['ProductDetail'][1]['sub_name']) { ?>
                         <div class="show-on-hover">
                             <?php foreach ($value['ProductDetail'] as $keyVal => $val) {
                                 if ($keyVal != 0) { ?>
@@ -112,19 +108,20 @@ if ($value['SubCategory']['id'] != $subCat) {
                         <a href="javascript:void(0);" rel="nofollow" class="button add_to_cart_button " >
                             <?php if ($value['Product']['price_option'] == 'single') { //echo "<pre>";print_r($value);die();
                                 if($value['ProductDetail'][0]['quantity'] != 0){?>
-                                    <div class="add_btn">
-									<i onclick="addToCart(<?php echo $value['ProductDetail'][0]['id']; ?>);" class="fa fa-plus plushide"></i></div>
+                                    <span class="prodAddprice" onclick="addToCart(<?php echo $value['ProductDetail'][0]['id']; ?>);" >
+										<b class=""><?php echo __('Add'); ?></b> <i class="fa fa-plus plushide"></i></span>
                                 <?php } else {?>
-                                    <span class=" outofstock">
+                                    <span class="prodAddprice outofstock">
 									   <b class=""><?php echo __('Out of Stock'); ?></b> <i class=""></i></span>
                                 <?php }
 
                             } else { ?>
-                                <div class="add_btn"><i onclick="productDetails(<?php echo $value['Product']['id']; ?>);" class="fa fa-plus plushide"></i></div>
+                                <span class="prodAddprice" onclick="productDetails(<?php echo $value['Product']['id']; ?>);" ><b class=""><?php echo __('Add'); ?></b> <i class="fa fa-plus plushide"></i></span>
                                 <?php
 
                             } ?>
-                            
+
+                            <i class="fa fa-plus plushide"></i>
                         </a>
 
                     </div>

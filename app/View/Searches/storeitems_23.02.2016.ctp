@@ -77,24 +77,22 @@
 
 		if (!empty($dealProduct)) { ?>
 
-			<div class="products-category mainCatProduct" id="Deal" >
+			<div class="products-category" id="Deal" >
 				<header class="products-header">
 					<h4 class="category-name">
 						<span> <?php echo __('Deal Products', true); ?></span>
 					</h4>					
 				</header>
 
-				<h5> </h5>
 
-
-				<ul class="products productsCat0">
+				<ul class="products">
 					<?php foreach ($dealProduct as $key => $value) {
 
-						$imageSrc = 'https://s3.amazonaws.com/'.$siteBucket.'/stores/products/home/'.$value['MainProduct']['ProductImage'][0]['image_alias'];
+						$imageSrc = 'https://s3-eu-west-1.amazonaws.com/'.$siteBucket.'/stores/products/home/'.$value['MainProduct']['ProductImage'][0]['image_alias'];
 
-						$imageSrcSub = 'https://s3.amazonaws.com/'.$siteBucket.'/stores/products/scrollimg/'.$value['SubProduct']['ProductImage'][0]['image_alias']; ?>
+						$imageSrcSub = 'https://s3-eu-west-1.amazonaws.com/'.$siteBucket.'/stores/products/scrollimg/'.$value['SubProduct']['ProductImage'][0]['image_alias']; ?>
 
-					    <li class="product searchresulttoshow col-sm-2 searchresulttoshow01">
+					    <li class="product searchresulttoshow">
 
 					      	<div class="product__inner">
 						        <figure class="product__image relative" onclick="productDetails(<?php echo $value['MainProduct']['id']; ?>);">
@@ -103,7 +101,7 @@
 									<span class="ribn-red onsale"><span><?php echo $value['Deal']['deal_name']; ?></span></span>
 
 						            <img src="<?php echo $imageSrc; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/no-imge.jpg"; ?>'" alt="<?php echo $value['MainProduct']['product_name']; ?>" title="<?php echo $value['MainProduct']['product_name']; ?>" >
-						            <figcaption hidden>
+						            <figcaption>
 						               <div class="product-addon">
 						                  <a href="javascript:void(0);" class="yith-wcqv-button"><span></span><i class="fa fa-plus"></i></a>
 						               </div>
@@ -120,7 +118,7 @@
 						               		<a href="javascript:void(0);" rel="tag"><?php echo $value['MainProduct']['ProductDetail'][0]['sub_name']; ?></a>
 						               	</div>			               
 
-					                  	<?php if (isset($value['MainProduct']['ProductDetail'][1]['sub_name'])) { ?>
+					                  	<?php if ($value['MainProduct']['ProductDetail'][1]['sub_name']) { ?>
 											<div class="show-on-hover">
 												<?php  foreach ($value['MainProduct']['ProductDetail'] as $keyVal => $val) {
 													if ($keyVal != 0) { ?>
@@ -166,14 +164,15 @@
 						                  	<a href="javascript:void(0);" rel="nofollow" class="button add_to_cart_button"> <?php
 						                  		if ($value['MainProduct']['price_option'] == 'single') {
 							                  		if($value['MainProduct']['ProductDetail'][0]['quantity'] != 0) { ?>
-							                  			<div class="add_btn"><i onclick="addToCart(<?php echo $value['MainProduct']['ProductDetail'][0]['id']; ?>);" class="fa fa-plus plushide"></i></div> <?php
+							                  			<span class="prodAddprice" onclick="addToCart(<?php echo $value['MainProduct']['ProductDetail'][0]['id']; ?>);" ><b class=""><?php echo __('Add'); ?></b> <i class="fa fa-plus plushide"></i></span> <?php
 							                  		} else { ?>
-							                  			<span class=" outofstock"><b class=""><?php echo __('Out of Stock'); ?></b> <i class=""></i></span> <?php
+							                  			<span class="prodAddprice outofstock"><b class=""><?php echo __('Out of Stock'); ?></b> <i class=""></i></span> <?php
 							                  		}
 							                  	} else { ?>
-													<div class="add_btn"><i onclick="productDetails(<?php echo $value['MainProduct']['id']; ?>);" class="fa fa-plus plushide"></i></div>
+													<span class="prodAddprice" onclick="productDetails(<?php echo $value['MainProduct']['id']; ?>);" ><b class=""><?php echo __('Add'); ?></b> <i class="fa fa-plus plushide"></i></span>
 													<?php
-												} ?>							                  	
+												} ?>
+							                  	<i class="fa fa-plus plushide"></i>
 						                  	</a>
 						                </div>
 						            </div>
