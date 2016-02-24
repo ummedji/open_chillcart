@@ -27,16 +27,17 @@ class ProductsController extends AppController {
                                           'NOT'=> array('Product.status'=>3)),
                                   'order'=> array('Product.id DESC')));
     } else {
-		  $products_detail = $this->Product->find('all',array(
+		  /*$products_detail = $this->Product->find('all',array(
                                             'conditions'=>array('NOT'=>array('Product.status'=>3)),
-                                            'order'=>array('Product.id DESC')));
+                                            'order'=>array('Product.id DESC')));*/
+        $products_detail = array();
     }
 
     $stores = $this->Store->find('list', array(
                                 'conditions'  =>  array('Store.status'=>1),
                                 'fields'      =>  array('Store.id', 'Store.store_name')));
 
-    $this->request->data['Commons']['Storeproduct'] = $storeId;
+    $this->request->data['Store']['Storeproduct'] = $storeId;
 
 		$this->set(compact('products_detail', 'stores', 'storeId'));
 	}
@@ -47,7 +48,9 @@ class ProductsController extends AppController {
 	 */
   //super admin add process
 	public function admin_add() {
+
 		if (!empty($this->request->data['Product']['product_name'])) {
+
        		$store_id = $this->request->data['Product']['store_id'];
             
             $Product_check = $this->Product->find('all', array(
@@ -151,7 +154,7 @@ class ProductsController extends AppController {
                 }
                 $this->Session->setFlash('<p>'.__('Your Product has been saved', true).'</p>', 'default', 
                                                   array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'Products','action' => 'index'));
+                $this->redirect(array('controller' => 'Products','action' => 'index', $store_id));
             }
             
        }
@@ -289,7 +292,7 @@ class ProductsController extends AppController {
 
               $this->Session->setFlash('<p>'.__('Your Product has been saved', true).'</p>', 'default', 
                                                               array('class' => 'alert alert-success'));
-              $this->redirect(array('controller' => 'Products','action' => 'index'));
+              $this->redirect(array('controller' => 'Products','action' => 'index', $store_id));
           }
         }
          
@@ -672,16 +675,18 @@ class ProductsController extends AppController {
                   $images = explode(',', $value[11]);
 
                   foreach ($images as $key => $val) {
+
                     $imgType = explode('.', $val);
-                    $newName = str_replace(" ","-", uniqid(). '.' .$product['product_name'].end($imgType));
-                    $imageString = file_get_contents($val.'?raw=1');
-                    $save = file_put_contents('../tmp/products/original/'.$newName,$imageString);
-                    $imagesizedata = getimagesize('../tmp/products/original/'.$newName);
+
+                    $imagesizedata = getimagesize($val);
 
                     if ($imagesizedata) {
 
-                      if (in_array(end($imgType), $allowed_ext)) {
-                        $results = $this->CakeS3->putObject('../tmp/products/original/'.$newName, $origpathS3.$newName, S3::ACL_PUBLIC_READ);
+                      if (in_array($imgType[1], $allowed_ext)) {
+
+                        $newName = str_replace(" ","-", uniqid(). '.' .$product['product_name'].'.'.$imgType[1]);
+
+                        $results = $this->CakeS3->putObject($val, $origpathS3.$newName, S3::ACL_PUBLIC_READ);
                         $AmazonS3Image = $results['url'];
 
                         #Resize
@@ -734,14 +739,14 @@ class ProductsController extends AppController {
         }
 
         if ($this->Auth->User('role_id') == 1) {
-            $this->redirect(array('controller' => 'products','action' => 'index','admin' => true));
+            $this->redirect(array('controller' => 'products','action' => 'index', $store_id, 'admin' => true));
         } else {
-            $this->redirect(array('controller' => 'products','action' => 'index','store' => true));
+            $this->redirect(array('controller' => 'products','action' => 'index', $store_id, 'store' => true));
         }
     }
 
     public function batchCodeCheck() {
-        $batchCodes = 0;
+
         $storeId   = $this->request->data['storeId'];
         $productId = $this->request->data['productId'];
         $batchCode = $this->ProductDetail->find('all', array(
@@ -754,12 +759,13 @@ class ProductsController extends AppController {
             $batchCodes .= $value['ProductDetail']['product_code'].',';
         }
         echo rtrim($batchCodes, ",");
+        //print_r($batchCodes);
         exit;
 
     }
 
 
-    public function download() {
+    public function download($filename, $refName) {
         $path = ROOT.DS.'app'.DS."tmp".DS."Excel".DS."Sample".DS;
         echo $flagname = $this->Updown->downloadFile('groceryExcel.xls', 'groceryExcel.xls', $path);
         exit();

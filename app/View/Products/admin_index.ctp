@@ -42,16 +42,22 @@
 									 				  'label'=> false,
 									 				  'div' => false));
 										?>
+										<label class="error" id="storeError" generated="true" for="ProductStoreId"></label>
 									</span>
+									<span class="error" id="storeError"></span>
 			               			<span class="col-md-4 no-padding">
 				               			<?php echo $this->form->input('excel', array('type' => 'file',
 			            														'class' => 'form-control',
 			            														'label' => false,
 			            														'div' => false)); 
 			            				?>
+			            				<label class="error" id="excelError" generated="true" for="excel"></label>
 									</span>
 			               			<span class="col-md-2"> 
-			               				<?php  echo $this->Form->button('Import',array( 'Class' => 'btn btn-primary' ));
+			               				<?php  echo $this->Form->button('Import',
+			               											array('Class' => 'btn btn-primary',
+			               													'onclick' => 'return importValidate();'
+			               													));
 		               					echo $this->Form->end(); ?>
 		               				</span>
 		               			</span>
@@ -67,10 +73,11 @@
 	               		</div>
 	               		<div class="col-sm-12">
 	               			<hr></div>
+	               		<?php echo $this->Form->create('Commons', array('class'=>'form-horizontal',
+							'controller'=>'Commons','action'=>'multipleSelect')); ?>
 
 						<div class="table-toolbar">
-							<?php echo $this->Form->create('Commons', array('class'=>'form-horizontal',
-							'controller'=>'Commons','action'=>'multipleSelect')); ?>
+							
 							
 							<div id="send" style="display:none" class="pull-left">
 								<div class="pull-right" id="addnewbutton_toggle"> <?php
@@ -112,7 +119,7 @@
 							<span class="col-md-4 pull-right no-padding"> 
                					<label class="control-label col-sm-3">Filter</label>
 								<span class="col-md-9"> 
-									<?php echo $this->Form->input('Storeproduct',
+									<?php echo $this->Form->input('Store.Storeproduct',
 											array('type'  => 'select',
 												  'class' => 'form-control',
 												  'options'=> array($stores),
@@ -122,6 +129,7 @@
 								 				  'label'=> false,
 								 				  'div' => false));
 									?>
+									<label class="error" id="storeProductError" generated="true" for="ProductStoreId"></label>
 								</span>
 							
 							</span> 

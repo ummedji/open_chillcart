@@ -43,7 +43,7 @@ elseif (getenv("APPLICATION_ENV") == "DEMO"):
         's3Secret' => 'DfYEkDUU17/asCOcDLqZ+T9A/2T8v9ILWIukqqAy',
         'bucket' => 'demo.chillcart.images',
         'endpoint' => 's3-eu-west-1.amazonaws.com', // [optional] Only required if your endpoint is not s3-eu-west-1.amazonaws.com
-        'cdn' => 'cdn.chillcart.ie'
+        'cdn' => 'http://cdn.chillcart.ie'
     )
 );
 elseif (getenv("APPLICATION_ENV") == "TESTING"):

@@ -101,25 +101,33 @@ echo $this->element('admin/topheader'); } ?>
 									'jquery-ui-1.10.3.custom.min',
 									'bootstrap.min',
 									'bootstrap-hover-dropdown.min',
-									'jquery.uniform.min',
-									'jquery.validate.min',
-									'bootstrap-switch.min',
+									'jquery.uniform.min'));
+		if ($this->request->params['controller'] == 'products' && 
+				$this->request->params['action'] == 'admin_index') {
+			
+		} else {
+			echo $this->Html->script(array('jquery.validate.min',
+											'adminChangePassword'
+											));
+		}
+
+		echo $this->Html->script(array('bootstrap-switch.min',
 									'moment.min',
 									'jquery.dataTables.min',
 									'dataTables.bootstrap',
 									'metronic',
 									'layout',
 									'demo',
-									'product_mgnt'));		
-		echo $this->Html->script(array('adminChangePassword',
-									'dispatch',
-									
+									'components-editors',
+									'product_mgnt',
 									'location',
-                                    'components-editors',
+									'dispatch',
+									'storeSetting',
                                     'bootstrap-datepicker',
                                     'summernote.min',
-                                    'daterangepicker'));
-		echo $this->Html->script(array('siteSetting','storeSetting')); ?>
+                                    'daterangepicker',
+                                    'siteSetting'
+                                    )); ?>
 	
 	<script>
 		var rp = "<?php echo $siteUrl; ?>";
