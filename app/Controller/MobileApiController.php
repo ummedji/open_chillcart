@@ -408,7 +408,7 @@ class MobileApiController extends AppController
                         if (in_array($status, $statusArray)) {
 
                             $toDriverNumber = '+'.$this->siteSetting['Country']['phone_code'].$ordStatus['Driver']['driver_phone'];
-                            //$driverSms      = $this->Twilio->sendSingleSms($toDriverNumber, $driverMessage);
+                            $driverSms      = $this->Twilio->sendSingleSms($toDriverNumber, $driverMessage);
                         }
 
                         $driverDetail = $this->Driver->findById($driverId);

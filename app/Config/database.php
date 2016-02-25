@@ -33,7 +33,7 @@ class DATABASE_CONFIG
             $this->default['port'] = '';
             $this->default['login'] = 'root';
             $this->default['password'] = 'Passw0rd';
-            $this->default['database'] = 'chillcartTest';
+            $this->default['database'] = 'chillcartDemo';
             $this->default['datasource'] = 'Database/Mysql';
         else:
             $this->default['host'] = 'localhost';

@@ -396,7 +396,7 @@ class SearchesController extends AppController {
         										 'COUNT(ShoppingCart.store_id) AS productCount',
         										 'SUM(ShoppingCart.product_total_price) As productTotal')));
 		
-		$this->ShoppingCart->recursive = 3;
+		//$this->ShoppingCart->recursive = 3;
 		$storeCart = $this->ShoppingCart->find('all', array(
 								'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
 								'order' => array('ShoppingCart.store_id')));
