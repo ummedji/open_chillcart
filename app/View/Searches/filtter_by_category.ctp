@@ -10,15 +10,7 @@ foreach ($productList as $key => $value) {
             <h4 class="category-name">
                 <span> <?php echo $value['MainCategory']['category_name']; ?></span>
             </h4>
-            <!-- <a class="more-product-button" href="#">
-                <span>More in Fresh Produce</span>
-            </a> -->
-
-            <!-- <h5 class="sub_category-name">
-							<span><?php echo $value['MainCategory']['category_name']; ?></span>
-						</h5> -->
-        </header>
-        <!-- <ul class="products"> --> <?php
+        </header><?php
     }
 
 
@@ -26,12 +18,14 @@ foreach ($productList as $key => $value) {
 if ($value['SubCategory']['id'] != $subCat) {
 
     $subCat = $value['SubCategory']['id']; ?>
-
-    <!-- <div class="products-category" id="<?php echo $value['SubCategory']['category_name']; ?>"> -->
-
     <h5 id="<?php echo $value['SubCategory']['category_name']; ?>" class="sub_category-name">
         <span><?php echo $value['SubCategory']['category_name']; ?></span>
-    </h5>
+     <?php 
+
+    if (isset($value['moreProduct'])) { ?>
+        <a title="active" class="buttonStatus" href="javascript:void(0);" onclick="categoriesProduct(<?php echo $value['MainCategory']['id'].','.$value['SubCategory']['id'].','.$value['Store']['id'];?>);">
+        View More </a> <?php
+    } ?> </h5>
 
     <ul class="products productsCat<?php echo $count; ?>"> <?php
         $subCatCount = $subCatCount+1;
@@ -56,19 +50,15 @@ if ($value['SubCategory']['id'] != $subCat) {
                     <h2 class="product__detail-title"><a href="javascript:void(0);"><?php echo $value['Product']['product_name']; ?></a></h2>
                     <div class="product__detail-category">
                         <a href="javascript:void(0);" rel="tag"><?php echo $value['ProductDetail'][0]['sub_name']; ?></a>
-                    </div>
-
-                    <?php if (isset($value['ProductDetail'][1]['sub_name'])) { ?>
+                    </div> <?php 
+                    if (isset($value['ProductDetail'][1]['sub_name'])) { ?>
                         <div class="show-on-hover">
                             <?php foreach ($value['ProductDetail'] as $keyVal => $val) {
                                 if ($keyVal != 0) { ?>
                                     <div class="yith-wcwl-add-to-wishlist">
                                         <div  style="display:block">
                                             <a href="javascript:void(0);" rel="nofollow" class="add_to_wishlist">
-
                                                 <?php
-
-
                                                 echo '<p class="contain"> '.$val['sub_name']. ' : ';
 
                                                 if ($val['compare_price'] != 0) {
@@ -79,23 +69,15 @@ if ($value['SubCategory']['id'] != $subCat) {
                                                 }
 
                                                 echo '</p>';
-
                                                 ?>
                                             </a>
                                         </div>
-
-                                    </div>
-                                    <?php
+                                    </div> <?php
                                 }
                             } ?>
-
-
-                        </div>
-                    <?php } ?>
-
-
+                        </div> <?php 
+                    } ?>
                     <div class="clear"></div>
-
                 </div>
                 <div class="bottom-section">
 	                <span class="price product__detail-price">
@@ -124,9 +106,7 @@ if ($value['SubCategory']['id'] != $subCat) {
                                 <?php
 
                             } ?>
-                            
                         </a>
-
                     </div>
                 </div>
             </div>

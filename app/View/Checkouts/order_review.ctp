@@ -37,7 +37,7 @@
 									<td><?php echo $serialNo +=1; ?></td>
 									<!-- <td class="text-left"><?php echo $value['Store']['store_name']; ?></td> -->
 									<td>
-										<?php $imageSrc = $cdn.'/stores/products/carts/'.$value['ProductDetail']['Product']['ProductImage'][0]['image_alias']; ?>
+										<?php $imageSrc = $cdn.'/stores/products/carts/'.$value['ShoppingCart']['product_image']; ?>
 										<img class="orderimge img-thumbnail" src="<?php echo $imageSrc; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/no-imge.jpg"; ?>'"></td>
 									<td class="text-left"><?php echo $value['ShoppingCart']['product_name']; ?></td>
 									<td><?php echo $value['ShoppingCart']['product_quantity']; ?></td>

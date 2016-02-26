@@ -50,9 +50,12 @@ class CheckoutsController extends AppController
 
         $this->ShoppingCart->recursive = 2;
         $shopCartDetails = $this->ShoppingCart->find('all', array(
-            'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
-            'order' => array('ShoppingCart.store_id'),
-            'group' => 'ShoppingCart.store_id'));
+                                        'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
+                                        'order' => array('ShoppingCart.store_id'),
+                                        'group' => 'ShoppingCart.store_id'));
+        if (empty($shopCartDetails)) {
+            $this->redirect(array('controller' => 'searches', 'action' => 'index'));
+        }
 
         foreach ($shopCartDetails as $keys => $values) {
 
@@ -392,7 +395,7 @@ class CheckoutsController extends AppController
             //echo "<pre>"; print_r($offerDetails);
 
         }
-        $this->ShoppingCart->recursive = 3;
+        //$this->ShoppingCart->recursive = 3;
         $shopCart = $this->ShoppingCart->find('all', array(
             'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
             'order' => array('ShoppingCart.store_id')));

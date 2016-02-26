@@ -257,6 +257,7 @@ class SearchesController extends AppController {
 
 			$mainCategoryList = $this->Category->find('all', array(
 				'conditions' => array('Category.status' => 1,
+									'Category.parent_id' => 0,
 					'OR' => array('Category.id' => $mainCategory))));
 
 			$subCategoryList = $this->Category->find('list', array(
@@ -558,41 +559,74 @@ class SearchesController extends AppController {
 	}
 	public function filtterByCategory(){
 		$id      = $this->request->data['id'];
-		$storeid = $this->request->data['storeid'];
+		$storeId = $this->request->data['storeId'];
 		$count   = $this->request->data['count'];
-		$productList = $this->Product->find('all', array(
-			'conditions' => array('Product.category_id' => $id,
-				'Product.status' => 1,
-				'MainCategory.status' => 1,
-				'SubCategory.status' => 1,
-				'Product.store_id'=>$storeid,
-				'OR' => array('Store.collection' => 'Yes',
-					'Store.delivery'	 => 'Yes')),
-			'order' => array('Product.category_id', 'Product.sub_category_id')));
+		$subId 	 = isset($this->request->data['subId']) ? $this->request->data['subId'] : '';
+		$productList = array();
+		if (!empty($subId)) {
+			$productList = $this->Product->find('all', array(
+									'conditions' => array('Product.category_id' => $id,
+														'Product.status' => 1,
+														'MainCategory.status' => 1,
+														'SubCategory.status' => 1,
+														'Product.store_id'=>$storeId,
+														'Product.sub_category_id' => $subId),
+									'order' => array('Product.category_id', 'Product.sub_category_id')));
+		} else {
+
+			$subcategory = $this->Category->find('list', array(
+					'conditions' =>array('Category.parent_id' => $id)));
+			
+			foreach ($subcategory as $key => $value) {
+				$productLists = $this->Product->find('all', array(
+									'conditions' => array('Product.category_id' => $id,
+														'Product.status' => 1,
+														'MainCategory.status' => 1,
+														'SubCategory.status' => 1,
+														'Product.store_id'=>$storeId,
+														'Product.sub_category_id' => $value),
+									'order' => array('Product.category_id', 'Product.sub_category_id'),
+									'limit' => 6));
+				if(!empty($productLists)) {
+
+					foreach ($productLists as $key => $value) {
+
+						if (isset($productLists[5])) {
+							$value['moreProduct'] = 1;
+						}
+						$productList[] = $value;
+					}
+				}
+			}
+		}
+		$this->set(compact('productList', 'count'));
+	}
+
+	public function dealProducts() {
+
+		$storeId = $this->request->data['storeId'];
+
+		$this->Deal->recursive = 2;
+		$dealProduct = $this->Deal->find('all', array(
+							'conditions' => array('Deal.store_id' => $storeId,
+											'Deal.status' => 1,
+											'MainProduct.status' => 1,
+										),
+							'order' => array('MainProduct.category_id', 'MainProduct.sub_category_id')));
 
 		$mainCategory = array();
 		$subCategory = array();
+		$main = $subCount = 0;
 
-		foreach ($productList as $key => $value) {
-			if (!in_array($value['Product']['category_id'], $mainCategory)) {
-				$mainCategory[] = $value['Product']['category_id'];
-			}
-
-			if (!in_array($value['Product']['sub_category_id'], $subCategory)) {
-				$subCategory[] = $value['Product']['sub_category_id'];
+		foreach ($dealProduct as $key => $value) {
+			if ($value['MainProduct']['MainCategory']['status'] == 1 &&
+				$value['MainProduct']['SubCategory']['status'] == 1
+			) {
+				if ($subCount <= 2) {
+					$dealProducts[] = $value;
+				}
 			}
 		}
-
-		$mainCategoryList = $this->Category->find('all', array(
-			'conditions' => array('Category.status' => 1,
-				'OR' => array('Category.id' => $mainCategory))));
-
-		$subCategoryList = $this->Category->find('list', array(
-			'conditions' => array('Category.status' => 1,
-				'OR' => array('Category.id' => $subCategory))));
-
-		$this->set(compact('productList', 'mainCategoryList',
-			'subCategoryList', 'count'));
+		$this->set(compact('dealProducts', 'mainCategoryList', 'subCategoryList'));
 	}
-
 }
