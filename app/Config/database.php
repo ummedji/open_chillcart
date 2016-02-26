@@ -22,8 +22,8 @@ class DATABASE_CONFIG
             $this->default['database'] = 'grocery';
             $this->default['datasource'] = 'Database/Mysql';
         elseif (getenv("APPLICATION_ENV") == "DEMO"):
-            $this->default['host'] = 'localhost';
-            $this->default['port'] = '';
+            $this->default['host'] = 'chillcartdemo.coqytnrpol4a.eu-west-1.rds.amazonaws.com';
+            $this->default['port'] = '3306';
             $this->default['login'] = 'root';
             $this->default['password'] = 'Passw0rd';
             $this->default['database'] = 'chillcartDemo';

@@ -121,7 +121,7 @@ Configure::write('Routing.prefixes', array('admin', 'store', 'customer'));
  * Turn off all caching application-wide.
  *
  */
-Configure::write('Cache.disable', true);
+//Configure::write('Cache.disable', true);
 
 /**
  * Enable cache checking.
@@ -132,7 +132,7 @@ Configure::write('Cache.disable', true);
  * or in each action using $this->cacheAction = true.
  *
  */
-//Configure::write('Cache.check', true);
+Configure::write('Cache.check', true);
 
 /**
  * Defines the default error type when using the log() function. Used for
