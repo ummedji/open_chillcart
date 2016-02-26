@@ -365,7 +365,7 @@ class DriversController extends AppController
                 $driverMessage .= '. '.$orders['Order']['order_type'].' due on '.$orders['Order']['delivery_date'].' at '.
                                     $orders['Order']['delivery_time_slot'].'. Thanks Chillcart';
                 $toDriverNumber = '+'.$this->siteSetting['Country']['phone_code'].$driverDetails['Driver']['driver_phone'];
-                //$driverSms      = $this->Twilio->sendSingleSms($toDriverNumber, $driverMessage);
+                $driverSms      = $this->Twilio->sendSingleSms($toDriverNumber, $driverMessage);
 
 
                 echo $gcm['success'];

@@ -105,6 +105,9 @@ class AppController extends Controller
             $siteDetails['Sitesetting']['stripe_publishkeyTest'] :
             $siteDetails['Sitesetting']['stripe_publishkey'];
 
+	$this->mailChimpKey 	= 'baa16e465c0ea4716a5138f04e22be4e-us12';
+	$this->mailChimpListId 	= '18cc7648f0';
+
 
         //Bucket
         $this->siteBucket = $siteBucket = Configure::read('CakeS3.bucket');

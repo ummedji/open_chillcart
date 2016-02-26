@@ -224,7 +224,7 @@ class StoreMobileApiController extends AppController
 						$orderDetail['Store']['store_name'].'. Your order will be delivered by '.
 						$orderDetail['Order']['delivery_date']. ' at '.$orderDetail['Order']['delivery_time_slot'].'. Thanks Chillcart';
                         $toCustomerNumber = '+'.$this->siteSetting['Country']['phone_code'].$orderDetail['Customer']['customer_phone'];
-                        //$customerSms      = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
+                        $customerSms      = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
                         $response['success'] = '1';
                         $response['message'] = 'Status has been Changed';
                     } else {
@@ -327,7 +327,7 @@ class StoreMobileApiController extends AppController
                             $driverMessage .= '. '.$orders['Order']['order_type'].' due on '.$orders['Order']['delivery_date'].' at '.
                                                 $orders['Order']['delivery_time_slot'].'. Thanks Chillcart';
                             $toDriverNumber = '+'.$this->siteSetting['Country']['phone_code'].$driverDetails['Driver']['driver_phone'];
-                            //$driverSms      = $this->Twilio->sendSingleSms($toDriverNumber, $driverMessage);
+                            $driverSms      = $this->Twilio->sendSingleSms($toDriverNumber, $driverMessage);
                         }
 
                         $response['success'] = '1';

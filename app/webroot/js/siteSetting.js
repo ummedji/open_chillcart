@@ -1,25 +1,3 @@
-function statesList() {
-	var id = $('#SitesettingSiteCountry').val();
-	$.post('locations',{'id':id, 'model':'State'}, function(response) {
-		$("#SitesettingSiteState").html(response);
-	});
-}
-
-
-function citiesList() {
-	var id = $('#SitesettingSiteState').val();
-	$.post('locations',{'id':id, 'model':'City'}, function(response) {
-		$("#SitesettingSiteCity").html(response);
-	});
-}
-
-function locationList() {
-	var id = $('#SitesettingSiteCity').val();
-	$.post('locations',{'id':id, 'model':'Location'}, function(response) {
-		$("#SitesettingSiteZip").html(response);
-	});
-}
-
 function smtpDetails () {
 	if ($("#SitesettingMailOptionSMTP").is(":checked")) {
 		$("#smtp").show();

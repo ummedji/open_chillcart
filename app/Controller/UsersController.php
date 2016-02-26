@@ -7,7 +7,7 @@ class UsersController extends AppController {
     public $name = 'Users';
 	var $helpers = array('Html', 'Session', 'Javascript', 'Ajax', 'Common');
 	public $uses = array('User', 'Customer','Notification');
-	public $components = array('Functions', 'Hybridauth', 'Twilio');
+	public $components = array('Functions', 'Hybridauth', 'Twilio', 'Mailchimp');
 	public function beforeFilter() {
 		$this->Auth->allow(array('signup', 'customer_customerLogin','storeLogin',
 								'activeLink', 'logout', 'social_login', 'social_endpoint'));
@@ -310,10 +310,20 @@ class UsersController extends AppController {
 		        $email->viewVars(array('mailContent' => $mailContent,'source'=>$source));
 		        $email->send();
              	
-			//Signup Sms
+				//Signup Sms
 		        $customerMessage = 'Thank you for registering with Chillcart.Click on below link to activate your account.'.$activation.'. Thanks Chillcart';
 	          	$toCustomerNumber = '+'.$this->siteSetting['Country']['phone_code'].$this->request->data['Customer']['customer_phone'];
-	          	//$customerSms 	  = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
+	          	$customerSms 	  = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
+
+	          	//Mailchimp Process
+	          	$merge_vars = array(
+					    'EMAIL' => $this->request->data['Customer']['customer_email'],
+					    'FNAME' => $this->request->data['Customer']['first_name'],
+					    'LNAME' => $this->request->data['Customer']['last_name']
+					  );
+	          	
+    			$this->Mailchimp->MCAPI($this->mailChimpKey);
+    			$list = $this->Mailchimp->listSubscribe($this->mailChimpListId, $this->request->data['Customer']['customer_email'], $merge_vars);
 
              	$this->Session->setFlash('<p>'.__('You have successfully registered an account. An email has been sent with further instructions', true).'</p>', 'default', 
                                                   array('class' => 'alert alert-success'));
@@ -382,7 +392,7 @@ class UsersController extends AppController {
 					// Forget Sms
 				   	$customerMessage = "We've received a request to change your password. Use this password ".$tmpPassword." to login to your account and update it ASAP. Thanks Chillcart";
 			          	$toCustomerNumber = '+'.$this->siteSetting['Country']['phone_code'].$userData['Customer']['customer_phone'];
-			          	//$customerSms 	  = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
+			        $customerSms 	  = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
 					$this->Session->setFlash('<p>'.__('Email has been sent successfully', true).'</p>', 'default',
 						   array('class' => 'alert alert-success'));
 					$this->redirect(array('controller' => 'users', 'action' => 'customerlogin', 'customer' => true));
@@ -592,6 +602,15 @@ class UsersController extends AppController {
 	        $email->emailFormat('html');
 	        $email->viewVars(array('mailContent' => $mailContent,'source'=>$source));
 	        $email->send();
+
+	        //Mailchimp Process
+          	$merge_vars = array(
+				    'EMAIL' => $this->request->data['Customer']['customer_email'],
+				    'FNAME' => $this->request->data['Customer']['first_name'],
+				    'LNAME' => $this->request->data['Customer']['last_name']
+				  );
+			$this->Mailchimp->MCAPI($this->mailChimpKey);
+			$list = $this->Mailchimp->listSubscribe($this->mailChimpListId, $this->request->data['Customer']['customer_email'], $merge_vars);
 
 	        $newProfile = $this->User->findById($this->User->id);
 	        $this->_doSocialLogin($newProfile);
