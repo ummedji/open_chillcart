@@ -288,7 +288,8 @@ class UsersController extends AppController {
              	}
 
 	            $adminEmail   = $this->siteSetting['Sitesetting']['admin_email']; 
-
+			$adminDetails = $this->Sitesetting->find('first');
+			$source= $this->siteUrl.'/siteicons/'.$adminDetails['Sitesetting']['site_logo'];
 		        $mailContent  = $regContent;
 		        $userID       = $this->Customer->id;
 		        $siteUrl      = $this->siteUrl;
@@ -578,6 +579,7 @@ class UsersController extends AppController {
          	}
 
             $adminEmail   = $this->siteSetting['Sitesetting']['admin_email']; 
+					$adminDetails = $this->Sitesetting->find('first');
             $source= $this->siteUrl.'/siteicons/'.$adminDetails['Sitesetting']['site_logo'];
 
 	        $mailContent  = $regContent;
