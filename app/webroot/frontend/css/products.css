@@ -222,7 +222,7 @@
 .button, button, input[type="submit"], input[type="reset"], .widget.widget_shopping_cart .buttons .wc-forward, .widget.widget_shopping_cart .buttons .wc-forward.checkout {font-size: 1em;font-weight: 700; text-align: center;}
 .outofstock{background:#ff0000; top: -15px!important; position: static!important;}
 .title-filter{display:none;}
-.product.searchresulttoshow .product__image{ height: 150px; background: transparent;}
+.product.searchresulttoshow .product__image{ cursor: pointer; height: 150px; background: transparent;}
 .product.searchresulttoshow .product__detail-action{ position: absolute; top:-5px; left: 0%; width: 100%; text-align: center;}
 .add_to_cart_button{ padding-left: 0!important}
 .searchresulttoshow .product__detail-price{

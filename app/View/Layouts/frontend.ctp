@@ -268,6 +268,10 @@
 					"data[Customer][first_name]": {
 						required: true,
 					},
+					"data[Customer][customer_email]": {
+						required: true,
+		                email:true,
+					},
 		            "data[Customer][customer_phone]": {
 						required: true,
 		                number:true,
@@ -276,6 +280,10 @@
 				messages: { 
 					"data[Customer][first_name]": {
 						required: "<?php echo __('Please enter firstname'); ?>",
+					},
+		            "data[Customer][customer_email]": {
+						required: "<?php echo __('Please enter the email'); ?>",
+						email : "<?php echo __('Please enter valid email'); ?>",
 					},
 		            "data[Customer][customer_phone]": {
 						required: "<?php echo __('Please enter phone number'); ?>",
@@ -659,6 +667,8 @@
 			</script>
 	<?php
 		}
+	echo $siteSetting['Sitesetting']['google_analytics'];
+	echo $siteSetting['Sitesetting']['woopra_analytics'];
 	?>
 
 

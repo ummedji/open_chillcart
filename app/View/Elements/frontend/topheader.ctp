@@ -150,7 +150,7 @@
 						
 						if(!empty($loggedCheck) && ($loggedCheck['role_id'] == 4)){ ?>
 
-							<li> <a href="<?php echo $siteUrl.'/customer/customers/myaccount'; ?>"> <?php echo __('Myaccount', true); ?></a> </li>
+							<li> <a href="<?php echo $siteUrl.'/customer/customers/myaccount'; ?>"> <?php echo __('My Account', true); ?></a> </li>
 							<li> <a href="<?php echo $siteUrl.'/customer/users/userLogout'; ?>"> <?php echo __('Logout', true); ?></a> </li> <?php 
 						} else {?>
 

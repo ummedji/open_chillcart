@@ -639,82 +639,85 @@ class ProductsController extends AppController {
 
             $result = $data->sheets['0']['cells'];
             array_splice($result,0,1);
-
+            
             foreach($result as $key=>$value) {
 
-              $product = $this->ProductDetail->find('first', array(
-                            'conditions'=>array('Product.store_id' => $store_id,
-                                        'OR' => array('Product.product_name' =>trim($value[1]),
-                                                      'ProductDetail.product_code' => $value[9]),
-                                        'NOT' => array('Product.status' => 3))));
-              if(empty($product)) {
+              if (!empty($value[1])) { 
 
-                $product['id']                  = '';
-                $product['store_id']            = $store_id;
-                $product['product_name']        = $value[1];
-                $product['category_id']         = $value[2];
-                $product['sub_category_id']     = $value[3];
-                $product['price_option']        = $value[4];
-                $product['product_description'] = $value[10];
-                $product['brand_id']            = 0;
-                $product['status']              = 1;
+                $product = $this->ProductDetail->find('first', array(
+                              'conditions'=>array('Product.store_id' => $store_id,
+                                          'OR' => array('Product.product_name' =>trim($value[1]),
+                                                        'ProductDetail.product_code' => $value[9]),
+                                          'NOT' => array('Product.status' => 3))));
+                if(empty($product)) {
 
-                if ($this->Product->save($product, null, null)) {
+                  $product['id']                  = '';
+                  $product['store_id']            = $store_id;
+                  $product['product_name']        = $value[1];
+                  $product['category_id']         = $value[2];
+                  $product['sub_category_id']     = $value[3];
+                  $product['price_option']        = $value[4];
+                  $product['product_description'] = $value[10];
+                  $product['brand_id']            = 0;
+                  $product['status']              = 1;
 
-                  $ProductDetail['id']            = '';
-                  $ProductDetail['product_id']    = $this->Product->id;
-                  $ProductDetail['sub_name']      = $value[5];
-                  $ProductDetail['orginal_price'] = $value[6];
-                  $ProductDetail['compare_price'] = $value[7];
-                  $ProductDetail['quantity']      = $value[8];
-                  $ProductDetail['product_code']  = $value[9];
+                  if ($this->Product->save($product, null, null)) {
 
-                  $this->ProductDetail->save($ProductDetail,null,null);
+                    $ProductDetail['id']            = '';
+                    $ProductDetail['product_id']    = $this->Product->id;
+                    $ProductDetail['sub_name']      = $value[5];
+                    $ProductDetail['orginal_price'] = $value[6];
+                    $ProductDetail['compare_price'] = $value[7];
+                    $ProductDetail['quantity']      = $value[8];
+                    $ProductDetail['product_code']  = $value[9];
 
-                  // Product Image Name onls Save
-                  $images = explode(',', $value[11]);
+                    $this->ProductDetail->save($ProductDetail,null,null);
 
-                  foreach ($images as $key => $val) {
+                    // Product Image Name onls Save
+                    $images = explode(',', $value[11]);
 
-                    $imgType = explode('.', $val);
+                    foreach ($images as $key => $val) {
 
-                    $imagesizedata = getimagesize($val);
+                      $imgType = explode('.', $val);
 
-                    if ($imagesizedata) {
+                      $imagesizedata = getimagesize($val);
 
-                      if (in_array($imgType[1], $allowed_ext)) {
+                      if ($imagesizedata) {
 
-                        $newName = str_replace(" ","-", uniqid(). '.' .$product['product_name'].'.'.$imgType[1]);
+                        if (in_array($imgType[1], $allowed_ext)) {
 
-                        $results = $this->CakeS3->putObject($val, $origpathS3.$newName, S3::ACL_PUBLIC_READ);
-                        $AmazonS3Image = $results['url'];
+                          $newName = str_replace(" ","-", uniqid(). '.' .$product['product_name'].'.'.$imgType[1]);
 
-                        #Resize
-                        $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0,$homepathS3);
-                        $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0, $cartpathS3);
-                        $this->Img->resampleGD($AmazonS3Image, $scrollimg, $newName, 67, 55, 1, 0, $scrollimgS3);
-                        $this->Img->resampleGD($AmazonS3Image, $prod_det_path, $newName, 1024, 768, 1, 0, $prod_det_pathS3);
+                          $results = $this->CakeS3->putObject($val, $origpathS3.$newName, S3::ACL_PUBLIC_READ);
+                          $AmazonS3Image = $results['url'];
 
-                        //unlink Images
-                        @unlink($homepath.$newName);
-                        @unlink($cartpath.$newName);
-                        @unlink($scrollimg.$newName);
-                        @unlink($prod_det_path.$newName);
+                          #Resize
+                          $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0,$homepathS3);
+                          $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0, $cartpathS3);
+                          $this->Img->resampleGD($AmazonS3Image, $scrollimg, $newName, 67, 55, 1, 0, $scrollimgS3);
+                          $this->Img->resampleGD($AmazonS3Image, $prod_det_path, $newName, 1024, 768, 1, 0, $prod_det_pathS3);
 
-                        $product_images['product_id']  = $this->Product->id;
-                        $product_images['store_id']    = $store_id;
-                        $product_images['image']       = $newName ;
-                        $product_images['image_alias'] = $newName;
+                          //unlink Images
+                          @unlink($homepath.$newName);
+                          @unlink($cartpath.$newName);
+                          @unlink($scrollimg.$newName);
+                          @unlink($prod_det_path.$newName);
 
-                        $this->ProductImage->save($product_images);
-                        $this->ProductImage->id = "";
+                          $product_images['product_id']  = $this->Product->id;
+                          $product_images['store_id']    = $store_id;
+                          $product_images['image']       = $newName ;
+                          $product_images['image_alias'] = $newName;
+
+                          $this->ProductImage->save($product_images);
+                          $this->ProductImage->id = "";
+                        }
                       }
                     }
+                    $count += 1;
                   }
-                  $count += 1;
+                } else {
+                    $exists +=1;
                 }
-              } else {
-                  $exists +=1;
               }
             }
 
@@ -747,8 +750,9 @@ class ProductsController extends AppController {
 
     public function batchCodeCheck() {
 
-        $storeId   = $this->request->data['storeId'];
-        $productId = $this->request->data['productId'];
+        $storeId   = (isset($this->request->data['storeId'])) ? $this->request->data['storeId'] : '';;
+        $productId = (isset($this->request->data['productId'])) ? $this->request->data['productId'] : '';
+        $batchCodes = '';
         $batchCode = $this->ProductDetail->find('all', array(
                               'conditions' => array('Product.store_id' => $storeId,
                                       'NOT' => array('Product.id' => $productId,

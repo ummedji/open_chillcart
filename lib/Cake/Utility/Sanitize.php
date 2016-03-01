@@ -176,7 +176,9 @@ class Sanitize
 
         if (is_array($data)) {
             foreach ($data as $key => $val) {
-                $data[$key] = Sanitize::clean($val, $options);
+                if (!isset($val['product_description'])) {
+                    $data[$key] = Sanitize::clean($val, $options);
+                }
             }
             return $data;
         } else {

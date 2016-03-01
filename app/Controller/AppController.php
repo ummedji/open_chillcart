@@ -4,6 +4,7 @@ session_start();
 
 App::uses('Controller', 'Controller');
 App::uses('ExceptionRenderer', 'Error');
+App::uses('Sanitize', 'Utility');
 
 /**
  * Application Controller
@@ -55,10 +56,18 @@ class AppController extends Controller
         }
 
         $this->Auth->authorize = array('Controller');
+	if (strtoupper($this->params['controller']) != 'SITESETTINGS') {
+             $this->beforeSave();
+        }
 
         parent::beforeFilter();
 
     }
+
+	public function beforeSave(array $options = array()) {
+		$this->data = Sanitize::clean($this->data);
+		return true;
+	}
 
 
     ////////////////////////////////////////////////////////////////////

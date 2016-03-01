@@ -308,9 +308,7 @@ class OrdersController extends AppController {
               $this->ProductDetail->save($value['ProductDetail']);
           }
 
-          if ($this->siteUrl == 'testing.chillcart.ie') {
-              $this->ordermail($this->Order->id);
-          }
+          $this->ordermail($this->Order->id);
           $this->Order->id = '';
       }
 
@@ -328,6 +326,7 @@ class OrdersController extends AppController {
       } else {
 
         $id = $this->request->data['Order']['paymentMethod'];
+        $amount = 0;
 
         $stripeCard = $this->StripeCustomer->findById($id);
 

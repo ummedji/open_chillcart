@@ -3,7 +3,6 @@
 App::import('Vendor', 'Mpdf', array('file' => 'mpdf' . DS . 'mpdf.php'));
 App::uses('CakeEmail', 'Network/Email');
 App::uses('AppController', 'Controller');
-
 class CustomersController extends AppController
 {
     public $helpers = array('Html', 'Form', 'Session', 'Javascript');
@@ -210,23 +209,36 @@ class CustomersController extends AppController
     {
         $this->layout = 'frontend';
         if (!empty($this->request->data['Customer']['first_name'])) {
-            if (!empty($this->request->data['Customer']['image']['name'])) {
-                $imagesizedata = getimagesize($this->request->data['Customer']['image']['tmp_name']);
-                if ($imagesizedata) {
-                    $customerImagePathS3 = 'Customers/';
-                    $newName = str_replace(" ", "-", time() . '.' . $this->request->data['Customer']['first_name']);
-                    $result = $this->CakeS3->putObject($this->request->data['Customer']['image']['tmp_name'], $customerImagePathS3 . $newName, S3::ACL_PUBLIC_READ);
-                    $this->request->data['Customer']['image'] = $newName;
-                }
+
+            $CustomerExist = $this->User->find('first', array(
+                                    'conditions' => array('User.username' => $this->request->data['Customer']['customer_email'],
+                                            'NOT' => array('User.id' => $this->request->data['User']['id']))));
+            if (!empty($CustomerExist)) {
+                $this->Session->setFlash('<p>' . __('Email Already Exists', true) . '</p>', 'default',
+                                                            array('class' => 'alert alert-danger'));
+                $this->redirect(array('controller' => 'Customers', 'action' => 'myaccount'));
             } else {
-                $this->request->data['Customer']['image'] = $this->request->data['Customer']['org_logo'];
+                if (!empty($this->request->data['Customer']['image']['name'])) {
+                    $imagesizedata = getimagesize($this->request->data['Customer']['image']['tmp_name']);
+                    if ($imagesizedata) {
+                        $customerImagePathS3 = 'Customers/';
+                        $newName = str_replace(" ", "-", time() . '.' . $this->request->data['Customer']['first_name']);
+                        $result = $this->CakeS3->putObject($this->request->data['Customer']['image']['tmp_name'], $customerImagePathS3 . $newName, S3::ACL_PUBLIC_READ);
+                        $this->request->data['Customer']['image'] = $newName;
+                    }
+                } else {
+                    $this->request->data['Customer']['image'] = $this->request->data['Customer']['org_logo'];
+                }
+
+                $this->request->data['User']['username'] = $this->request->data['Customer']['customer_email'];
+
+                $this->User->save($this->request->data, null, null);
+                $this->Customer->save($this->request->data, null, null);
+                $this->Auth->login();
+                $this->Session->setFlash('<p>' . __('Your detail has been updated', true) . '</p>', 'default',
+                                                                    array('class' => 'alert alert-success'));
+                $this->redirect(array('controller' => 'Customers', 'action' => 'myaccount'));
             }
-
-            $this->Customer->save($this->request->data, null, null);
-
-            $this->Session->setFlash('<p>' . __('Your detail has been updated', true) . '</p>', 'default',
-                array('class' => 'alert alert-success'));
-            $this->redirect(array('controller' => 'Customers', 'action' => 'myaccount'));
         }
         if (!empty($this->request->data['review']['rating'])) {
             $order_info = $this->Order->findById($this->request->data['review']['id']);
@@ -654,9 +666,6 @@ class CustomersController extends AppController
     {
         $id = $this->request->data['id'];
         if (!empty($id)) {
-            /*$this->request->data['CustomerAddressBook']['status'] = 3;
-            $this->request->data['CustomerAddressBook']['id']      = $id;
-            $this->CustomerAddressBook->save($this->request->data['CustomerAddressBook']);*/
             $this->CustomerAddressBook->delete($id);
             echo "sucess";
         }

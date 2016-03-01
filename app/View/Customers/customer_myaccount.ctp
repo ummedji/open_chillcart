@@ -19,6 +19,7 @@
 			</a>
 		</div>
 		<div class="col-md-10">
+			<a href="<?php echo $siteUrl; ?>" class="pull-right btn btn-primary"> Continue Shopping </a>
 			<div class="myorderTab" id="orderhistory_content">
 				<h1> <?php echo __('Order History', true); ?></h1>
 				<div class="table-responsive">
@@ -127,6 +128,7 @@
 			                    					echo $this->Form->input('Customer.first_name',
 			                    										array('class'=>'form-control',
 			                    											  'autocomplete' => 'off',
+			                    											  'readonly' => true,
 			                                                                  'label' => false,
 			                    											  'div' => false)); ?> </div>
 										<span class="edit"><i class="fa fa-edit"></i></span><?php
@@ -138,6 +140,27 @@
 									<span class="lableclose"><i class="fa fa-times-circle"></i></span>
 									</div>
 								</div>
+
+								<div class="form-group profile-box clearfix">
+									<label class="control-label col-md-12 text-left"> <?php echo __('Email', true); ?></label>
+									<div class="col-md-12">
+										<div class="formLabel"><?php
+			                    					echo $this->Form->input('Customer.customer_email',
+			                    										array('class'=>'form-control',
+			                    											  'autocomplete' => 'off',
+			                    											  'readonly' => true,
+			                                                                  'label' => false,
+			                    											  'div' => false)); ?></div>
+										<span class="edit"><i class="fa fa-edit"></i></span> <?php
+			                    					echo $this->Form->input('Customer.customer_email',
+			                    										array('class'=>'form-control textbox',
+			                    											  'autocomplete' => 'off',
+			                                                                  'label' => false,
+			                    											  'div' => false)); ?>
+										<span class="lableclose"><i class="fa fa-times-circle"></i></span>
+									</div>
+								</div>
+
 								<div class="form-group profile-box clearfix">
 									<label class="control-label col-md-12 text-left"> <?php echo __('Phone Number', true); ?></label>
 									<div class="col-md-12">
@@ -145,6 +168,7 @@
 			                    					echo $this->Form->input('Customer.customer_phone',
 			                    										array('class'=>'form-control',
 			                    											  'autocomplete' => 'off',
+			                    											  'readonly' => true,
 			                                                                  'label' => false,
 			                    											  'div' => false)); ?></div>
 										<span class="edit"><i class="fa fa-edit"></i></span> <?php
@@ -216,7 +240,8 @@
 							} ?>
 							
 							
-						</div><?php echo $this->Form->hidden('id');?>
+						</div><?php echo $this->Form->hidden('id');
+									echo $this->Form->hidden('User.id'); ?>
 						
 						
 					</div>
@@ -465,6 +490,7 @@
 						<div class="col-md-7"><?php
 											echo $this->Form->input('address',
 													array('class'=>'form-control',
+															'type' => 'text',
 															'label'=>false)); ?>
 						</div>
 					</div>

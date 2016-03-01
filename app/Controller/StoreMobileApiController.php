@@ -566,7 +566,7 @@ class StoreMobileApiController extends AppController
                                     $value['DriverTracking']['driver_longitude'],
                                     $pickup['Latitude'],
                                     $pickup['Longitude']);
-                                if (!empty($distance)) {
+                                //if (!empty($distance)) {
 
                                     $availDrivers[$key]['id'] = $value['Driver']['id'];
                                     $availDrivers[$key]['status'] = $value['Driver']['driver_status'];
@@ -577,7 +577,7 @@ class StoreMobileApiController extends AppController
                                     $availDrivers[$key]['vehicle_name'] = $value['Vehicle']['vehicle_name'];
                                     $availDrivers[$key]['vehicle_model'] = $value['Vehicle']['vehicle_name'];
 
-                                }
+                                //}
 
                             }
                             $response['driverDetail'] = ($availDrivers) ? $availDrivers : array();

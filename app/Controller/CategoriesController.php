@@ -6,7 +6,6 @@ class CategoriesController extends AppController
 {
     public $helpers = array('Html', 'Form', 'Session', 'Javascript');
     public $uses = array('Category');
-
     /**
      * CategoriesController::admin_index()
      * Categories Management Process

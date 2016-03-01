@@ -73,18 +73,19 @@ class DriversController extends AppController
     }
 
 
-    public function admin_edit($id = null)
-    {
+    public function admin_edit($id = null) {
 
         if (!empty($this->request->data)) {
-            $driver = $this->Driver->findById($this->request->data['Driver']['id']);
-            $driver_checking = $this->User->find('all', array(
-                'conditions' => array('User.username' => $this->request->data['Driver']['driver_phone']),
-                'NOT' => array('User.id' => $driver['User']['id'])));
+
+            $driver_checking = $this->User->find('first', array(
+                            'conditions' => array('User.username' => trim($this->request->data['Driver']['driver_phone']),
+                                                'NOT' => array('User.id' => $this->request->data['User']['id']))));
             if (!empty($driver_checking)) {
                 $this->Session->setFlash('<p>' . __('Driver Already Exists ', true) . '</p>', 'default',
                     array('class' => 'alert alert-danger'));
             } else {
+                $this->request->data['User']['Username'] = trim($this->request->data['Driver']['driver_phone']);
+                $this->User->save($this->request->data['User'], null, null);
                 $this->Driver->save($this->request->data['Driver'], null, null);
                 $this->Session->setFlash('<p>' . __('Driver Successfully Created', true) . '</p>', 'default',
                     array('class' => 'alert alert-success'));
@@ -132,13 +133,9 @@ class DriversController extends AppController
         $this->request->data = $this->Vehicle->findById($vehicleId);
     }
 
-    public function availDrivers($orderId)
-    {
+    public function availDrivers($orderId) {
 
         $orderDetails = $this->Order->findById($orderId);
-        //echo "<pre>"; print_r($orderDetails);
-
-
         if ($orderDetails['Order']['driver_id']) {
             $this->Session->setFlash(__('Order already assigned to driver', true),
                 'default', array('class' => 'alert alert-success'));
@@ -169,22 +166,18 @@ class DriversController extends AppController
 
                     //if (!empty($distance)) {
 
-                    $availDrivers[$key]['Driver']['id'] = $value['Driver']['id'];
-                    $availDrivers[$key]['Driver']['status'] = $value['Driver']['status'];
-                    $availDrivers[$key]['Driver']['distance'] = $distance['distanceText'];
-                    $availDrivers[$key]['Driver']['reachtime'] = $distance['durationText'];
-                    $availDrivers[$key]['Driver']['driver_name'] = $value['Driver']['driver_name'];
-                    $availDrivers[$key]['Driver']['driver_phone'] = $value['Driver']['driver_phone'];
-                    $availDrivers[$key]['Driver']['vehicle_name'] = $value['Vehicle']['vehicle_name'];
-                    $availDrivers[$key]['Driver']['vehicle_model'] = $value['Vehicle']['vehicle_name'];
+                        $availDrivers[$key]['Driver']['id'] = $value['Driver']['id'];
+                        $availDrivers[$key]['Driver']['status'] = $value['Driver']['status'];
+                        $availDrivers[$key]['Driver']['distance'] = $distance['distanceText'];
+                        $availDrivers[$key]['Driver']['reachtime'] = $distance['durationText'];
+                        $availDrivers[$key]['Driver']['driver_name'] = $value['Driver']['driver_name'];
+                        $availDrivers[$key]['Driver']['driver_phone'] = $value['Driver']['driver_phone'];
+                        $availDrivers[$key]['Driver']['vehicle_name'] = $value['Vehicle']['vehicle_name'];
+                        $availDrivers[$key]['Driver']['vehicle_model'] = $value['Vehicle']['vehicle_name'];
                     //}
 
                 }
             }
-
-            /*echo "<pre>"; print_r($availDrivers);
-            exit();*/
-
             $this->set(compact('orderId', 'availDrivers'));
         }
 
@@ -226,8 +219,8 @@ class DriversController extends AppController
             $total_km = $total_km + $value['Order']['distance'];
         }
 
-        $fromDate = ($this->request->data['Drivers']['from_date']) ? $this->request->data['Drivers']['from_date'] : date('m/d/Y', time());
-        $toDate = ($this->request->data['Drivers']['to_date']) ? $this->request->data['Drivers']['to_date'] : date('m/d/Y', time());
+        $fromDate = (isset($this->request->data['Drivers']['from_date'])) ? $this->request->data['Drivers']['from_date'] : date('m/d/Y', time());
+        $toDate = (isset($this->request->data['Drivers']['to_date'])) ? $this->request->data['Drivers']['to_date'] : date('m/d/Y', time());
 
 
         $this->set(compact('order_detail', 'total_km', 'total_orderprice', 'driverId', 'fromDate', 'toDate'));

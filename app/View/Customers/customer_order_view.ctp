@@ -141,7 +141,7 @@
 							<tr class="grandprice">
 								<td class="text-right" colspan="5"> <?php echo __('Offer', true); ?></td>
 								<td class="price"><?php
-									echo html_entity_decode($this->Number->currency($order_detail['Order']['offer_amount'], $siteCurrency)); ?>
+									echo $this->Number->currency($order_detail['Order']['offer_amount'], $siteCurrency, $options = array('after')); ?>
 								</td>
 							</tr> <?php
 						}

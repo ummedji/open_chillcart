@@ -332,7 +332,7 @@ class SearchesController extends AppController {
 				$deal = $this->Deal->findByMainProduct($productDetails['ProductDetail']['product_id']);
 
 				$shoppingCart['product_id'] 		 = $productDetails['ProductDetail']['id'];
-				$shoppingCart['brand_name'] 		 = ($productDetails['Product']['Brand']['brand_name']) ? 
+				$shoppingCart['brand_name'] 		 = (isset($productDetails['Product']['Brand']['brand_name'])) ? 
 														$productDetails['Product']['Brand']['brand_name'] : '';
 				$shoppingCart['session_id'] 		 = $this->SessionId;
 				$shoppingCart['product_image']		 = (isset($productDetails['Product']['ProductImage'][0]['image_alias'])) ?
@@ -459,7 +459,7 @@ class SearchesController extends AppController {
 
 	public function changeLocation() {
 
-		$location 	= $this->request->data['location'];
+		$location 	= (isset($this->request->data['location'])) ? $this->request->data['location'] : '';
 
 		$this->ShoppingCart->deleteAll(array("session_id"=> $this->SessionId,
 											'ShoppingCart.order_id' => 0));

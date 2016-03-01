@@ -41,13 +41,13 @@
 				<ul class="maincategory"> <?php
 					foreach ($mainCategoryList as $key => $value) { ?>
 						<li>
-							<a class="mainMenu"><?php
+							<a href="javascript:void(0);" class="mainMenu"><?php
 								echo $value['Category']['category_name']; ?></a><?php
 							echo $this->Form->hidden('check' ,array('value'=>$value['Category']['id'].'_'.$storeId,
 								'class'=>'remove_'.$value['Category']['id']));?>
 							<ul class="subcategories">
 								<li>
-									<a href="javascript:void(0);" onclick="categoriesProduct(<?php echo $value['Category']['id'].','."''".','.$storeId;?>);"> <span>&rarr;</span> All <?php
+									<a href="javascript:void(0);" onclick="categoriesProduct(<?php echo $value['Category']['id'].',0,'.$storeId;?>);"> <span>&rarr;</span> All <?php
 									echo $value['Category']['category_name']; ?> </a> <?php
 
 								foreach ($value['ChildGroup'] as $keys => $values) {
