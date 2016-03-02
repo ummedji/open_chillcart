@@ -46,7 +46,10 @@ class DriversController extends AppController
 
         if (!empty($this->request->data['User']['username'])) {
 
-            $driver = $this->User->findByUsernameAndRoleId($this->request->data['User']['username'], 5);
+            $driver  = $this->User->find('first', array(
+                                'conditions' => array('User.username' => $this->request->data['User']['username'],
+                                        'NOT' => array('User.id' => $this->request->data['User']['id'],
+                                                        'Driver.status' => 'Delete'))));
 
             if (!empty($driver)) {
                 $this->Session->setFlash('<p>' . __('Driver Already Exists ', true) . '</p>', 'default',
@@ -79,7 +82,8 @@ class DriversController extends AppController
 
             $driver_checking = $this->User->find('first', array(
                             'conditions' => array('User.username' => trim($this->request->data['Driver']['driver_phone']),
-                                                'NOT' => array('User.id' => $this->request->data['User']['id']))));
+                                    'NOT' => array('User.id' => $this->request->data['User']['id'],
+                                                    'Driver.status' => 'Delete'))));
             if (!empty($driver_checking)) {
                 $this->Session->setFlash('<p>' . __('Driver Already Exists ', true) . '</p>', 'default',
                     array('class' => 'alert alert-danger'));
@@ -404,7 +408,10 @@ class DriversController extends AppController
 
         if (!empty($this->request->data['User']['username'])) {
 
-            $driver = $this->User->findByUsernameAndRoleId($this->request->data['User']['username'], 5);
+            $driver  = $this->User->find('first', array(
+                                'conditions' => array('User.username' => $this->request->data['User']['username'],
+                                     'NOT' => array('User.id' => $this->request->data['User']['id'],
+                                                    'Driver.status' => 'Delete'))));
 
             if (!empty($driver)) {
                 $this->Session->setFlash('<p>' . __('Driver Already Exists ', true) . '</p>', 'default',
@@ -451,16 +458,19 @@ class DriversController extends AppController
     {
         $this->layout = 'assets';
         if (!empty($this->request->data)) {
-            $driver = $this->Driver->findById($this->request->data['Driver']['id']);
-            $driver_checking = $this->User->find('all', array(
-                'conditions' => array('User.username' => $this->request->data['Driver']['driver_phone']),
-                'NOT' => array('User.id' => $driver['User']['id'])));
+
+            $driver_checking = $this->User->find('first', array(
+                            'conditions' => array('User.username' => trim($this->request->data['Driver']['driver_phone']),
+                                    'NOT' => array('User.id' => $this->request->data['User']['id'],
+                                                    'Driver.status' => 'Delete'))));
             if (!empty($driver_checking)) {
                 $this->Session->setFlash('<p>' . __('Driver Already Exists ', true) . '</p>', 'default',
                     array('class' => 'alert alert-danger'));
             } else {
+                $this->request->data['User']['Username'] = trim($this->request->data['Driver']['driver_phone']);
+                $this->User->save($this->request->data['User'], null, null);
                 $this->Driver->save($this->request->data['Driver'], null, null);
-                $this->Session->setFlash('<p>' . __('Driver Successfully Created', true) . '</p>', 'default',
+                $this->Session->setFlash('<p>' . __('Driver Successfully updated', true) . '</p>', 'default',
                     array('class' => 'alert alert-success'));
                 $this->redirect(array('controller' => 'drivers', 'action' => 'index', 'store' => true));
             }

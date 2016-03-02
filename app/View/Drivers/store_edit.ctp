@@ -106,7 +106,8 @@
 										echo $this->Form->input('driver_description',
 													array('class' => 'form-control',
 														  'label' => false));
-										echo $this->Form->hidden('id'); ?>
+										echo $this->Form->hidden('id');
+										echo $this->Form->hidden('User.id'); ?>
 									</div>
 								</div>
 							</div>
