@@ -55,9 +55,9 @@ class CustomersController extends AppController
             //$user  = $this->User->findByUsernameAndRoleId($this->request->data['Customer']['customer_email'],4);
 
             $user = $this->User->find('first', array(
-                'conditions' => array('User.username' => trim($this->request->data['Customer']['customer_email']),
-                    'User.role_id' => 4,
-                    'NOT' => array('Customer.status' => 3))));
+                        'conditions' => array('User.username' => trim($this->request->data['Customer']['customer_email']),
+                                    'User.role_id' => 4,
+                                    'NOT' => array('Customer.status' => 3))));
             if (!empty($user)) {
                 $this->Session->setFlash('<p>' . __('Already Exists Users', true) . '</p>', 'default',
                     array('class' => 'alert alert-danger'));
@@ -120,10 +120,9 @@ class CustomersController extends AppController
 
             $customer = $this->Customer->findById($this->request->data['Customer']['id']);
             $customerEmailCheck = $this->User->find('first', array(
-                'conditions' => array(
-                    'User.username' => trim($this->request->data['Customer']['customer_email']),
-                    'NOT' => array('User.id' => $customer['User']['id'],
-                        'Customer.status' => 3))));
+                            'conditions' => array('User.username' => trim($this->request->data['Customer']['customer_email']),
+                                    'NOT' => array('User.id' => $customer['User']['id'],
+                                                    'Customer.status' => 3))));
 
             if (!empty($customerEmailCheck)) {
                 $this->Session->setFlash('<p>' . __('User Email Already Exists', true) . '</p>', 'default',
@@ -212,7 +211,8 @@ class CustomersController extends AppController
 
             $CustomerExist = $this->User->find('first', array(
                                     'conditions' => array('User.username' => $this->request->data['Customer']['customer_email'],
-                                            'NOT' => array('User.id' => $this->request->data['User']['id']))));
+                                            'NOT' => array('User.id' => $this->request->data['User']['id'],
+                                                            'Customer.status' => 3))));
             if (!empty($CustomerExist)) {
                 $this->Session->setFlash('<p>' . __('Email Already Exists', true) . '</p>', 'default',
                                                             array('class' => 'alert alert-danger'));

@@ -64,8 +64,11 @@ class AppController extends Controller
 
     }
 
-	public function beforeSave(array $options = array()) {
-		$this->data = Sanitize::clean($this->data);
+	public function beforeSave($options = array()) {
+		$this->data = Sanitize::clean($this->data,array(
+            'remove_html' => 1
+        ));
+        
 		return true;
 	}
 

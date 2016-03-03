@@ -237,11 +237,9 @@ class OrdersController extends AppController {
 
           $destination_lat  = $order['destination_latitude'];
           $destination_long = $order['destination_longitude'];
-
-          $distance         = $this->Googlemap->getDrivingDistance($source_lat,$source_long,$destination_lat,$destination_long);
+          $distance = $this->Googlemap->getDrivingDistance($source_lat,$source_long,$destination_lat,$destination_long);
           $order['source_latitude']   = $sourceLatLong['lat'];
           $order['source_longitude']  = $sourceLatLong['long'];
-
 
           $storeOffers = $this->Storeoffer->find('first', array(
                                     'conditions' => array('Storeoffer.store_id' => $value['store_id'],
@@ -251,7 +249,6 @@ class OrdersController extends AppController {
                                     'order' => 'Storeoffer.id DESC'));
 
           $deliverDetails = $this->DeliveryTimeSlot->findById($value['time']);
-          
           $total = $this->ShoppingCart->find('all', array(
                   'conditions'=>array('ShoppingCart.session_id' => $SessionId,
                                       'ShoppingCart.store_id' => $value['store_id']),
@@ -262,18 +259,16 @@ class OrdersController extends AppController {
           $order['delivery_charge']     = ($value['orderType'] != 'Collection') ? $deliverDetails['DeliveryTimeSlot']['delivery_charge'] : 0;
           $order['order_sub_total']     = $total[0][0]['cartSubTotal'];
           $order['tax_amount']          = $deliverDetails['Store']['tax'];
-          $order['distance']            = $distance['distanceText'];
+          $order['distance']            = (isset($distance['distanceText'])) ? $distance['distanceText'] : 0 ;
           $order['offer_amount']        = ($storeOffers['Storeoffer']['offer_price'] <= $total[0][0]['cartSubTotal']) ?
                                             $total[0][0]['cartSubTotal'] * $storeOffers['Storeoffer']['offer_percentage']/100 :
                                             0;
                                             
           $order['order_grand_total']   = $order['order_sub_total'] + $order['delivery_charge'] + $order['tax_amount'] - $order['offer_amount'];
 
-          $this->Order->save($order);
-
+          $this->Order->save($order, null, null);
           $update['ref_number'] = '#GNC00'.$this->Order->id;
-          $orderId[]    = $update['id']         = $this->Order->id;
-
+          $orderId[]    = $update['id'] = $this->Order->id;
           $this->Order->save($update);
 
           $storeDetails = $this->Store->findById($value['store_id']);
@@ -308,6 +303,7 @@ class OrdersController extends AppController {
               $this->ProductDetail->save($value['ProductDetail']);
           }
 
+          //OrderMail
           $this->ordermail($this->Order->id);
           $this->Order->id = '';
       }
@@ -320,9 +316,6 @@ class OrdersController extends AppController {
               $orderUpdate['payment_type'] = 'cod';
               $this->Order->save($orderUpdate);
           }
-
-          /*$this->Session->setFlash('<p>'.__('Your Order Placed Successfully', true).'</p>', 'default', 
-                                          array('class' => 'alert alert-success'));*/
       } else {
 
         $id = $this->request->data['Order']['paymentMethod'];
@@ -362,10 +355,6 @@ class OrdersController extends AppController {
               $orderUpdate['payment_method']  = 'paid';
               $this->Order->save($orderUpdate);
             }
-
-            /*$this->Session->setFlash('<p>'.__('Your Order Placed Successfully', true).'</p>', 'default', 
-                                        array('class' => 'alert alert-success'));*/
-
         } else {
 
           foreach ($orderId as $key => $value) {
@@ -407,9 +396,6 @@ class OrdersController extends AppController {
       }
 
       $this->Session->write("preSessionid",'');
-
-      /*$this->Session->setFlash('<p>'.__('Your Order Place Successfull', true).'</p>', 'default', 
-                                          array('class' => 'alert alert-success'));*/
       $this->Session->write('orderplaced', 'success');
       $this->redirect(array('controller' => 'searches', 'action' => 'index', 'Thanks'));
 
@@ -695,7 +681,7 @@ class OrdersController extends AppController {
                   Total Price</th>
           </tr>';
 
-      $source = $this->siteUrl.'/siteicons/logo.png/';
+      $source = $this->siteUrl.'/siteicons/logo.png';
       $title  = $Currency['Store_general']['logo'];
       $Currency   = $this->siteSetting['Country']['currency_symbol'];
 
@@ -897,6 +883,7 @@ class OrdersController extends AppController {
                             'storename' => $storename));
       
       $email->send();
+      return true;
 
     }
 

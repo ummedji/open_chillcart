@@ -173,6 +173,8 @@ class UsersController extends AppController {
 		$this -> Session -> setFlash('<p>'.__('Logout successfully', true).'</p>', 'default', 
 													array('class' => 'alert alert-success'));
 		$this->Auth->logout();
+		$this->Session->write("preSessionid",'');
+		session_regenerate_id();
 		$this->redirect(array('controller' => 'Users', 'action' => 'customerlogin', 'customer'=>true));
 
 	}
