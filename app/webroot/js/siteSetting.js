@@ -62,6 +62,7 @@ function offlineDetails () {
 
 function validate () {
 
+
 	var SitesettingSiteName 		= $.trim($("#SitesettingSiteName").val());
 
 	var SitesettingAdminName 		= $.trim($("#SitesettingAdminName").val());
@@ -92,6 +93,15 @@ function validate () {
 	var SitesettingSmsSourceNumber	= $.trim($("#SitesettingSmsSourceNumber").val());
 
 	var SitesettingOtherLanguage	= $.trim($('#SitesettingOtherLanguage').val());
+
+	var Sitesettingmailchimpkey		= $.trim($("#SitesettingMailchimpKey").val());
+	var Sitesettingmailchimplist	= $.trim($("#SitesettingMailchimpListId").val());
+
+	var Sitesettingfacbookapi		= $.trim($("#SitesettingFacebookApiId").val());
+	var Sitesettingfacbooksecret	= $.trim($("#SitesettingFacebookSecretKey").val());
+
+	var Sitesettinggoogleapi		= $.trim($("#SitesettingGoogleApiId").val());
+	var Sitesettinggooglesecret  	= $.trim($("#SitesettingGoogleSecretKey").val());
 
 	if(SitesettingSiteName == ''){
         $("[href=#site]").trigger('click');
@@ -216,8 +226,36 @@ function validate () {
 		$("#languageError").html("Please enter other language");
 		$("#SitesettingOtherLanguage").focus();
 		return false;
-
-
+	} else if(Sitesettingmailchimpkey == ''){
+		$("[href=#mailchimp]").trigger('click');
+		$("#mailchimpError").html("Please enter mailchimp key");
+		$("#Sitesettingmailchimpkey").focus();
+		return false;
+	} else if(Sitesettingmailchimplist == ''){
+		$("[href=#mailchimp]").trigger('click');
+		$("#mailchimpError").html("Please enter mailchimp list");
+		$("#Sitesettingmailchimplist").focus();
+		return false;
+	} else if(Sitesettingfacbookapi == ''){
+		$("[href=#facebook]").trigger('click');
+		$("#facebookError").html("Please enter facebook api key");
+		$("#Sitesettingfacbookapi").focus();
+		return false;
+	} else if(Sitesettingfacbooksecret == ''){
+		$("[href=#facebook]").trigger('click');
+		$("#facebookError").html("Please enter facebook secret key");
+		$("#Sitesettingfacbooksecret").focus();
+		return false;
+	}else if(Sitesettinggoogleapi == ''){
+		$("[href=#google]").trigger('click');
+		$("#googleError").html("Please enter google api key");
+		$("#Sitesettinggoogleapi").focus();
+		return false;
+	} else if(Sitesettinggooglesecret == ''){
+		$("[href=#google]").trigger('click');
+		$("#googleError").html("Please enter google secret key");
+		$("#Sitesettinggooglesecret").focus();
+		return false;
 	}
 }
 

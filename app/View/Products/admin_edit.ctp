@@ -1,6 +1,6 @@
 <div class="contain">
 	<div class="contain">
-		<h3 class="page-title">Add Item</h3>
+		<h3 class="page-title">Edit Item</h3>
 		<div class="page-bar">
 			<ul class="page-breadcrumb">
 				<li>
@@ -13,7 +13,7 @@
 					<i class="fa fa-angle-right"></i>
 				</li>
 				<li>
-					<a href="javascript:void(0);">Add Item</a>
+					<a href="javascript:void(0);">Edit Item</a>
 				</li>
 			</ul>
 		</div>
@@ -24,7 +24,7 @@
 				<div class="portlet box blue-hoki">
 					<div class="portlet-title">
 						<div class="caption">
-							<i class="fa fa-user"></i> Add Item
+							<i class="fa fa-user"></i> Edit Item
 						</div>
 						<div class="tools">
 							

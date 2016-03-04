@@ -70,7 +70,7 @@
 							<h3>About:</h3>
 							<ul class="list-unstyled">
 								<li>
-									 ChillCart Ltd.
+									 Chillcart
 								</li>
 								
 							</ul>
@@ -159,8 +159,7 @@
 						</div>
 					</div>
 					<div class="row">
-						
-						<div class="col-xs-8 invoice-block">
+						<div class="col-xs-8 invoice-block col-xs-offset-3">
 							<ul class="list-unstyled amounts" >
 								<li>
 									<strong>subtotal :</strong><?php
@@ -170,22 +169,21 @@
 								?>	 
 								</li>
 								<li>
-									<strong>Customers paid VAT (<?php echo $site_detail['Sitesetting']['vat_percent'];?>%):</strong><?php
+									<strong>Total Commission(<?php echo $site_detail['Sitesetting']['vat_percent'];?>%):</strong><?php
 									
-									echo html_entity_decode($this->Number->currency($invoice_detail['Invoice']['tax'], $siteCurrency));
+									echo html_entity_decode($this->Number->currency($invoice_detail['Invoice']['commision'], $siteCurrency));
 								?>	 
 								</li>
 								<li>
-									<strong>Total Commission with Card fee (
+									<strong> Vat for commission (
 										<?php echo $site_detail['Sitesetting']['card_fee'];?>%):</strong> <?php
 									
-									echo html_entity_decode($this->Number->currency($invoice_detail['Invoice']['card_tax'], $siteCurrency));
+									echo html_entity_decode($this->Number->currency($invoice_detail['Invoice']['commision_tax'], $siteCurrency));
 								?>	
 								</li>
 								<li>
 									<strong>Grand Total :</strong><?php
-									
-									echo html_entity_decode($this->Number->currency($invoice_detail['Invoice']['grand_total'], $siteCurrency));
+									echo html_entity_decode($this->Number->currency($invoice_detail['Invoice']['commisionGrand'], $siteCurrency));
 								?>	
 								</li>
 							</ul>
@@ -203,33 +201,29 @@
 						<tr>
 							<th>S_no</th>
 							<th>order  Id</th>
-							<th>Product Name</th>
-							<th>Quantity</th>
-							<th>Unit</th>
-							<th>Total</th>
-							
+							<th>Card/Cash</th>
+							<th>Subtotal</th>
+							<th>Commision</th>
 						</tr>
 					</thead>
 					<tbody><?php 
 					
 					$count = 1;
-					foreach($order_detail as $key=>$value){
-
-						foreach($value['ShoppingCart'] as $key1 => $value1){?>
+					foreach($order_detail as $key=>$value){ ?>
 						<tr class="odd gradeX">
 							<td><?php echo $count;?></td>
 							<td><?php echo $value['Order']['ref_number'];?></td>
-							<td><?php echo $value1['product_name'];?></td>
-							<td><?php echo $value1['product_quantity'];?></td>
+							<td><?php echo $value['Order']['payment_type'];?></td>
 							<td><?php 
-								echo html_entity_decode($this->Number->currency($value1
-								['product_price'], $siteCurrency));?></td>
-							<td><?php 
-								echo html_entity_decode($this->Number->currency($value1['product_total_price'], $siteCurrency));?>
-							</td>	
+								echo html_entity_decode($this->Number->currency($value['Order']['order_sub_total'], $siteCurrency));?>
+							</td>
+							<td><?php
+								$commision = $value['Order']['order_sub_total'] * ($tax/100);
+								echo html_entity_decode($this->Number->currency($commision,$siteCurrency));
+								?>
+							</td>
 						</tr><?php 
 						$count ++;
-					}
 					}?>
 					</tbody>
 				</table>

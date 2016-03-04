@@ -667,9 +667,13 @@
 			</script>
 	<?php
 		}
-	echo $siteSetting['Sitesetting']['google_analytics'];
-	echo $siteSetting['Sitesetting']['woopra_analytics'];
-	?>
+	if (!empty($siteSetting['Sitesetting']['google_analytics'])) {
+		echo '<script>'. $siteSetting['Sitesetting']['google_analytics']. '</script>';
+	}
+
+	if (!empty($siteSetting['Sitesetting']['woopra_analytics'])) {
+		echo '<script>'. $siteSetting['Sitesetting']['woopra_analytics']. '</script>';
+	} ?>
 
 
 	</body>

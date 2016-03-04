@@ -56,10 +56,7 @@ class AppController extends Controller
         }
 
         $this->Auth->authorize = array('Controller');
-	if (strtoupper($this->params['controller']) != 'SITESETTINGS') {
-             $this->beforeSave();
-        }
-
+        $this->beforeSave();
         parent::beforeFilter();
 
     }
@@ -113,25 +110,27 @@ class AppController extends Controller
 	Configure::write('Twilio.AuthToken', $siteDetails['Sitesetting']['sms_token']);
 	Configure::write('Twilio.from', $siteDetails['Sitesetting']['sms_source_number']);
 
+        Configure::write('Hybridauth', array(
+                    "Google" => array("enabled" => true,
+                        "keys" => array("id" => $siteDetails['Sitesetting']['google_api_id'],
+                                        "secret" => $siteDetails['Sitesetting']['google_secret_key'])),
+                    "Facebook" => array("enabled" => true,
+                        "keys" => array("id" => $siteDetails['Sitesetting']['facebook_api_id'],
+                                        "secret" => $siteDetails['Sitesetting']['facebook_secret_key']))));
+
         $publishKey = ($siteDetails['Sitesetting']['stripe_mode'] != 'Live') ?
-            $siteDetails['Sitesetting']['stripe_publishkeyTest'] :
-            $siteDetails['Sitesetting']['stripe_publishkey'];
-
-	$this->mailChimpKey 	= 'baa16e465c0ea4716a5138f04e22be4e-us12';
-	$this->mailChimpListId 	= '18cc7648f0';
-
+                            $siteDetails['Sitesetting']['stripe_publishkeyTest'] :
+                            $siteDetails['Sitesetting']['stripe_publishkey'];
+        $this->mailChimpKey 	= $siteDetails['Sitesetting']['mailchimp_key'];
+        $this->mailChimpListId 	= $siteDetails['Sitesetting']['mailchimp_list_id'];
 
         //Bucket
         $this->siteBucket = $siteBucket = Configure::read('CakeS3.bucket');
         $this->cdn = $cdn = Configure::read('CakeS3.cdn');
 
-
         date_default_timezone_set($this->siteSetting['Sitesetting']['site_timezone']);
-
         $language = ($this->siteSetting['Sitesetting']['default_language'] == 1) ? 'eng' : 'deu';
-
         Configure::write('Config.language', $language);
-
 
         $metaTitle = $siteDetails['Sitesetting']['meta_title'];
         $metakeywords = $siteDetails['Sitesetting']['meta_keywords'];

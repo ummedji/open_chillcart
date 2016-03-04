@@ -152,7 +152,7 @@ jQuery(function() {
 
     }
   });
-
+  
   var BrandAddvalidator = jQuery("#BrandAdminAddForm").validate({
     rules: {
       "data[Brand][brand_name]": {
@@ -182,7 +182,7 @@ jQuery(function() {
     }
   });
 
-  var SubCatAddvalidator = jQuery("#CategoryAdminSubcataddForm").validate({
+  var SubCatAddvalidator = jQuery("#CategoryAdminSubCatAddForm").validate({
     rules: {
       "data[Category][parent_id]": {
         required: true,
@@ -202,7 +202,7 @@ jQuery(function() {
     }
   });
 
-  var SubCatEditvalidator = jQuery("#CategoryAdminSubcateditForm").validate({
+  var SubCatEditvalidator = jQuery("#CategoryAdminSubCatEditForm").validate({
     rules: {
       "data[Category][parent_id]": {
         required: true,
