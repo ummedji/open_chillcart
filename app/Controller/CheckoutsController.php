@@ -165,8 +165,7 @@ class CheckoutsController extends AppController
     {
 
         $data = $this->Functions->parseSerialize($this->params['data']['formData']);
-        $this->request->data = $data['data'];
-
+        $this->request->data = $data['amp;data'];
         if (!empty($this->request->data['StripeCustomer'])) {
             $datas = array("stripeToken" => $this->request->data['StripeCustomer']['stripe_token_id']);
             $this->request->data['StripeCustomer']['customer_id'] = $this->Auth->User('Customer.id');

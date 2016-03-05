@@ -19,14 +19,21 @@ class DashboardsController extends AppController
         $order_detail = $this->Order->find('all',array(
                                     'conditions'=>array(
                                     'Order.status'=>'Delivered')));
+        //New Commision Calculation
+        $subTotal = $this->Order->find('first',array(
+                                    'conditions'=>array('Order.status'=>'Delivered'),
+                                    'fields' => array('SUM(Order.order_sub_total) AS Subtotal')));
+        $commission = $subTotal[0]['Subtotal'] * ($this->siteSetting['Sitesetting']['vat_percent']/100);
+
         $counts        = count($store_detail);
         $invoiceDetail = $this->Invoice->find('all');
         #dashboard commision calculation done here
         $results       = $this->Functions->dashboardCalculation($order_detail,$invoiceDetail);
+
         $dasboard_value['store_count']          = $counts ;
         $dasboard_value['order_count']          = $results['totalorder'];
         $dasboard_value['order_price']          = $results['total'];
-        $dasboard_value['Commision']            = $results['commisionTotal'];
+        $dasboard_value['Commision']            = $commission;    //$results['commisionTotal'];
         $dasboard_value['CommisionTax']         = $results['commision_tax'];
         $dasboard_value['commisionGrandTotal']  = $results['commisionGrandTotal'];
         $this->set(compact('dasboard_value'));

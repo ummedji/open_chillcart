@@ -99,6 +99,7 @@
 															array('type'=>'select',
 															 		'class'=>'form-control',
 															 		'onchange' => 'locationList();',
+															 		'options' => array($storeCity),
 															 		'empty' => 'Select City',
 															 		'label'=> false)); ?>
 											</div>
@@ -110,6 +111,7 @@
 															array('type'=>'select',
 															 		'class'=>'form-control',
 															 		'empty' => 'Select Location',
+															 		'options' => array($storeLocation),
 															 		'label'=> false)); ?>
 											</div>
 										</div>						
@@ -356,6 +358,7 @@
 																array('type'	 => 'select',
 																 	  'class'	 => 'form-control',
 																 	  'multiple' => true,
+																 	  'options' => array($storeLocation),
 																 	  'label'	 => false)); ?>
 												</div>
 											</div>

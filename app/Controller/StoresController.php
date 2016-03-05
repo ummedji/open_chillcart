@@ -54,6 +54,10 @@ class StoresController extends AppController
      */
     public function admin_add()
     {
+
+        $storeCity      = array();
+        $storeLocation  = array();
+
         if (!empty($this->request->data)) {
             $userData = $this->User->find('first', array(
                     'conditions' => array(
@@ -61,6 +65,22 @@ class StoresController extends AppController
                         'User.username' => $this->request->data['User']['username']))
             );
             if (!empty($userData)) {
+
+                $storeCity = $this->City->find('list', array(
+                                'conditions' => array('City.state_id' => $this->request->data['Store']['store_state']),
+                                'fields' => array('City.id', 'City.city_name')));
+
+                
+                if ($this->siteSetting['Sitesetting']['search_by'] == 'zip') {
+                    $storeLocation = $this->Location->find('list', array(
+                                            'conditions' => array('Location.city_id' => $this->request->data['Store']['store_city']),
+                                            'fields' => array('id', 'zip_code')));
+                } else {
+                    $storeLocation = $this->Location->find('list', array(
+                                            'conditions' => array('Location.city_id' => $this->request->data['Store']['store_city']),
+                                            'fields' => array('id', 'area_name')));
+                }
+
                 $this->Session->setFlash('<p>' . __('User Name Already Exists', true) . '</p>', 'default',
                     array('class' => 'alert alert-danger'));
             } else {
@@ -178,11 +198,13 @@ class StoresController extends AppController
                 }
             }
         }
+
         $this->set('timeslots', $this->TimeSlot->find('all'));
         //$this->set('invoiceperiod', $this->Store->find('list'));
         $this->set('states', $this->State->find('list', array(
-            'conditions' => array('State.status' => 1),
-            'fields' => array('id', 'state_name'))));
+                                    'conditions' => array('State.status' => 1),
+                                    'fields' => array('id', 'state_name'))));
+        $this->set(compact('storeCity', 'storeLocation'));
     }
 
     /**

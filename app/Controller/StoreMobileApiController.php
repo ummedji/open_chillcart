@@ -6,9 +6,9 @@ App::uses('CakeEmail', 'Network/Email');
 
 class StoreMobileApiController extends AppController
 {
-    public $components = array('AndroidResponse', 'Notification', 'Functions', 'Googlemap', 'Twilio');
-    public $uses = array('User', 'Order', 'Orderstatus', 'MailContent',
-        'State', 'City', 'Location', 'Store', 'Driver', 'DriverTracking');
+    public $components = array('AndroidResponse', 'Functions', 'Googlemap', 'Twilio');
+    public $uses = array('User', 'Order', 'Notification', 'State', 'City', 'Location', 'Store', 'Driver',
+                        'DriverTracking');
 
     public function beforeFilter()
     {
@@ -78,6 +78,69 @@ class StoreMobileApiController extends AppController
                         $response['message'] = 'Please Check your user name and password';
                     }
                     break;
+
+                case 'forgotmail':
+
+                    $userData = $this->User->find('first', array(
+                                           'conditions' =>array(
+                                               'User.username' => trim($this->request->data['forgetemail']),
+                                               'Store.status' => 1,
+                                               'User.role_id' => 3)));
+
+                    if(!empty($userData)){
+                       $newRegisteration = $this->Notification->find('first', array(
+                                            'conditions'=>array('Notification.title =' => 'Reset password')));
+
+                       $toemail      = $this->request->data['forgetemail'];
+                       $source       = $this->siteUrl.'/siteicons/logo.png';
+                       $storeEmail   = $this->siteSetting['Sitesetting']['admin_email'];
+                       $siteName     = $this->siteSetting['Sitesetting']['site_name'];
+                       $storename    = $userData['Store']['store_name'];
+                       $tmpPassword  = $this->Functions->createTempPassword(7);
+
+                       $datas['User']['password']=$this->Auth->Password($tmpPassword);
+                       $datas['User']['id'] = $userData['User']['id'];
+
+                        if ($this->User->save($datas['User'],null,null)){
+                            if($newRegisteration){
+                                $forgetpasswordContent = $newRegisteration['Notification']['content'];
+                                $forgetpasswordsubject = $newRegisteration['Notification']['subject'];
+                            }
+
+                            $mailContent = $forgetpasswordContent;
+                            $siteUrl = $this->siteUrl.'/store';
+                            $mailContent = str_replace("{Customer name}", $storename, $mailContent);
+                            $mailContent = str_replace("{source}", $source, $mailContent);
+                            $mailContent = str_replace("{title}", $siteName, $mailContent);
+                            $mailContent = str_replace("{SITE_URL}", $siteUrl, $mailContent);
+                            $mailContent = str_replace("{tmpPassword}", $tmpPassword, $mailContent);
+                            $mailContent = str_replace("{Store name}", $siteName, $mailContent);
+
+                            $email = new CakeEmail();
+                            $email->from($storeEmail);
+                            $email->to($toemail);
+                            $email->subject($forgetpasswordsubject);
+                            $email->template('register');
+                            $email->emailFormat('html');
+                            $email->viewVars(array('mailContent' => $mailContent,
+                                                    'source'=>$source,
+                                                    'storename'=>$siteName));
+                            if($email->send()){
+                                // Forget Sms
+                                $storeMessage = "We've received a request to change your password. Use this password ".$tmpPassword." to login to your account and update it ASAP. Thanks Chillcart";
+                                $toStoreNumber = '+'.$this->siteSetting['Country']['phone_code'].$userData['Store']['contact_phone'];
+                                $storeSms     = $this->Twilio->sendSingleSms($toStoreNumber, $storeMessage);
+
+                                $response['success'] = '1';
+                                $response['message'] = 'Email has been sent successfully';
+                            }
+                        }
+                    } else {
+                        $response['success'] = '0';
+                        $response['message'] = 'You are not authorized';
+                    }
+
+                break;
 
                 case 'StoreDetail':
                     $id = $this->request->data['user_id'];

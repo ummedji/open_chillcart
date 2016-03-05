@@ -72,6 +72,68 @@ class UsersController extends AppController {
 
         }
 		if ($this->request->is('post')) {
+
+			if($this->request->data['Users']['email'] != ''){
+			   	$userData = $this->User->find('first', array(
+									   'conditions' =>array(
+										   'User.username' => trim($this->request->data['Users']['email']),
+										   'Store.status' => 1,
+										   'User.role_id' => 3)));
+
+			   	if(!empty($userData)){
+				   $newRegisteration = $this->Notification->find('first', array(
+					   					'conditions'=>array('Notification.title =' => 'Reset password')));
+
+				   $toemail  	 = $this->request->data['Users']['email'];
+				   $source	 	 = $this->siteUrl.'/siteicons/logo.png';
+				   $storeEmail   = $this->siteSetting['Sitesetting']['admin_email'];
+				   $siteName  	 = $this->siteSetting['Sitesetting']['site_name'];
+				   $storename 	 = $userData['Store']['store_name'];
+				   $tmpPassword  = $this->Functions->createTempPassword(7);
+
+				   $datas['User']['password']=$this->Auth->Password($tmpPassword);
+				   $datas['User']['id'] = $userData['User']['id'];
+
+				   	if ($this->User->save($datas['User'],null,null)){
+					   if($newRegisteration){
+						   $forgetpasswordContent = $newRegisteration['Notification']['content'];
+						   $forgetpasswordsubject = $newRegisteration['Notification']['subject'];
+					   }
+
+					   $mailContent = $forgetpasswordContent;
+					   $siteUrl = $this->siteUrl.'/store';
+					   $mailContent = str_replace("{Customer name}", $storename, $mailContent);
+					   $mailContent = str_replace("{source}", $source, $mailContent);
+					   $mailContent = str_replace("{title}", $siteName, $mailContent);
+					   $mailContent = str_replace("{SITE_URL}", $siteUrl, $mailContent);
+					   $mailContent = str_replace("{tmpPassword}", $tmpPassword, $mailContent);
+					   $mailContent = str_replace("{Store name}", $siteName, $mailContent);
+
+					   $email = new CakeEmail();
+					   $email->from($storeEmail);
+					   $email->to($toemail);
+					   $email->subject($forgetpasswordsubject);
+					   $email->template('register');
+					   $email->emailFormat('html');
+					   $email->viewVars(array('mailContent' => $mailContent,'source'=>$source,'storename'=>$siteName));
+
+					   if($email->send()){
+						// Forget Sms
+					   	$storeMessage = "We've received a request to change your password. Use this password ".$tmpPassword." to login to your account and update it ASAP. Thanks Chillcart";
+				          	$toStoreNumber = '+'.$this->siteSetting['Country']['phone_code'].$userData['Store']['contact_phone'];
+				        $storeSms 	  = $this->Twilio->sendSingleSms($toStoreNumber, $storeMessage);
+						$this->Session->setFlash('<p>'.__('Email has been sent successfully', true).'</p>', 'default',
+							   array('class' => 'alert alert-success'));
+						$this->redirect(array('controller' => 'users', 'action' => 'storeLogin', 'store' => true));
+					   }
+				    }
+			   	} else {
+			   		$this->Session->setFlash('<p>'.__('You are not authorized', true).'</p>', 'default',
+							   array('class' => 'alert alert-danger'));
+				   $this->redirect(array('controller' => 'users', 'action' => 'storeLogin', 'store' => true));
+			   	}
+		   	}
+
             $roles      = array(3);  
 			$userData   = $this->User->findByUsername($this->request->data['User']['username']);
 			if(in_array($userData['User']['role_id'],$roles)) {
@@ -340,6 +402,18 @@ class UsersController extends AppController {
     */
    	public function customer_customerlogin() {
     	$this->layout = 'frontend';
+
+    	if (isset($this->request->query['page']) && $this->request->query['page']=='checkout') {
+	    	$this->Session->write("redirectpage",'checkout');
+	    }
+		if ($this->Auth->loggedIn() && $this->Auth->user('role_id') == 4) {
+		        $this->redirect(array("controller"=>"Customers","action"=>"myaccount", 'customer'=>true));
+		} else if ($this->Auth->loggedIn()) {
+			echo '<h3 class="form-title"> You are not authorized to access this Page </h3>
+	    			<a href="'.$this->siteUrl.'/users/logout/customer"> Click here to Logout  </a>';
+			exit();
+	    }
+
     	if($this->request->is('post')) {
 		   	if($this->request->data['Users']['email'] != ''){
 			   $userData = $this->User->find('first', array(
@@ -405,16 +479,9 @@ class UsersController extends AppController {
 				   $this->redirect(array('controller' => 'users', 'action' => 'customerlogin', 'customer' => true));
 			   }
 		   	}
-		    if (isset($this->request->query['page']) && $this->request->query['page']=='checkout') {
-		    	$this->Session->write("redirectpage",'checkout');
-		    }
-			if ($this->Auth->loggedIn() && $this->Auth->user('role_id') == 4) {
-			        $this->redirect(array("controller"=>"Customers","action"=>"myaccount", 'customer'=>true));
-			} else if ($this->Auth->loggedIn()) {
-				echo '<h3 class="form-title"> You are not authorized to access this Page </h3>
-		    			<a href="'.$this->siteUrl.'/users/logout/customer"> Click here to Logout  </a>';
-				exit();
-		    }
+		    
+
+
 			if ($this->request->data['User']['username'] != '' && $this->request->data['User']['password'] != '') {
 		        $role = array(4);
 
@@ -454,7 +521,7 @@ class UsersController extends AppController {
 				}
 			}   
     	}
-   }
+   	}
    	public function store_changePassword(){
 	   	$this->layout = 'assets';
 	   	$ids          = $this->Auth->User();

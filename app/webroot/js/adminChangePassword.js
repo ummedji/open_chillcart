@@ -19,6 +19,20 @@ jQuery(function() {
     }
   });
 
+  var forgetmail = jQuery("#forgetmail").validate({
+    rules: {
+      "data[Users][email]": {
+        required: true,
+        email : true
+      }
+    },
+    messages: {
+      "data[Users][email]": {
+        required: "Please enter the email",
+      },
+    }
+  });
+
   var UserAdminChangepassword = jQuery("#UserAdminChangepasswordForm").validate({
     rules: {     
         "data[User][oldpassword]": {
