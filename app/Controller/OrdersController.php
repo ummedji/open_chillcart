@@ -159,6 +159,11 @@ class OrdersController extends AppController {
 
   //Confirm Order Process
   public function conformOrder() {
+
+      if ($this->Auth->User('role_id') != 4) {
+        $this->redirect(array('controller' => 'searches', 'action' => 'index'));
+      }
+      
       $today= date("m/d/Y");
       $lastsessionid  = $this->Session->read("preSessionid");
       $SessionId = (!empty($lastsessionid)) ? $lastsessionid : $this->Session->id();
