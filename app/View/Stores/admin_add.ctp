@@ -396,7 +396,7 @@
 													
 														<div class="clearfix">
 															<div class="col-md-1 itemCont"> <?php
-																echo $this->Form->checkbox($value['TimeSlot']['slot_id'],
+																echo $this->Form->checkbox('',
 							                                            array('class'=>'group-checkable',
 							                                                  'name'=>'data[TimeSlot]['.$key.'][slot_id]',
 							                                                  'label'=>false,

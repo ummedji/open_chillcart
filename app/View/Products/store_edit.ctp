@@ -361,6 +361,7 @@
 									<label class="col-md-3 control-label">Image <span class="star"></span></label>
 									<div class="col-md-8"><?php
 									$store_id = $getProductData['Product']['store_id'];
+									$images = '';
 										foreach ($getProductData['ProductImage'] as $keys => $value) {
 											$images = $images.$value['id'].',';
 										 ?>

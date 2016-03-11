@@ -36,7 +36,7 @@
 
 <?php } 
 
-if(($loggedUser['role_id']) && ($loggedUser['role_id'] == 1)) {
+if(isset($loggedUser['role_id']) && ($loggedUser['role_id'] == 1)) {
 echo $this->element('admin/topheader'); } ?>
 
 

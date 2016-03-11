@@ -17,11 +17,11 @@
 				</li>
 			</ul>
 			<div class="actions">
-							<a href="<?php echo ($page) ? $siteUrl.'/store/Orders/order' : $siteUrl.'/store/Orders/orderIndex'; ?>" class="btn btn-default btn-circle">
-							<i class="fa fa-angle-left"></i>
-							<span class="hidden-480">
-							Back </span>
-							</a>									
+				<a href="javascript:void(0);" onclick="window.history.go(-1);" class="btn btn-default btn-circle">
+				<i class="fa fa-angle-left"></i>
+				<span class="hidden-480">
+				Back </span>
+				</a>									
 			</div>
 		</div>
 		<div class="row">
@@ -70,7 +70,7 @@
 									</tr>
 									<tr>
 										<td valign="top" align="right"><label> <?php
-												echo $orders_list['Order']['order_type'].' Date'; ?></label></td>
+												echo $order_detail['Order']['order_type'].' Date'; ?></label></td>
 										<td width="60%">
 											<div class="address-detail">
 											<?php echo $order_detail['Order']['delivery_date'];?></div>	

@@ -21,26 +21,6 @@ $(document).ready(function(){
 
 	});
 
-	$(".test").on("click", function(){
-
-		if ($(".checkboxes").is(":checked")) {
-			$("#send").show();
-		} else {
-			$("#send").hide();
-		}
-	});
-
-	var checkbox=1;
-	$(".test1").on("click", function(){
-		if (checkbox==0) {
-			checkbox=1;
-			$("#send").hide();
-		} else {
-			checkbox=0;
-			$("#send").show();
-		}
-	});
-
 	setTimeout(function(){				
 	    $('#flashMessage').fadeOut();
 	},3000);
@@ -62,9 +42,7 @@ function offlineDetails () {
 
 function validate () {
 
-
 	var SitesettingSiteName 		= $.trim($("#SitesettingSiteName").val());
-
 	var SitesettingAdminName 		= $.trim($("#SitesettingAdminName").val());
 	var SitesettingAdminEmail 		= $.trim($("#SitesettingAdminEmail").val());
 	var SitesettingContactUsEmail 	= $.trim($("#SitesettingContactUsEmail").val());

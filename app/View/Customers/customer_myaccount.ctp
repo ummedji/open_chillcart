@@ -529,7 +529,6 @@
 											echo $this->Form->input('city_id',
 												array('type'  => 'select',
 													  'class' => 'form-control',
-													  'options'=> array($city_list),
                                                       'onchange' => 'locationFillters();',
 													  'empty' => __('Select City'),
 									 				  'label'=> false)); ?>
@@ -541,7 +540,6 @@
 										echo $this->Form->input('location_id',
 												array('type'  => 'select',
 													  'class' => 'form-control',
-													  'options'=> array($location_list),
 													  'empty' => __('Select Area/Zip'),
 									 				  'label'=> false));  ?>
 						</div>

@@ -75,10 +75,10 @@ class AppController extends Controller
     public function basicSetup()
     {
 
-        $this->siteUrl = 'http://' . $_SERVER['HTTP_HOST'];
+        $this->siteUrl = 'https://' . $_SERVER['HTTP_HOST'];
         $this->set('siteUrl', $this->siteUrl);
 
-        $this->siteName = 'http://' . $_SERVER['HTTP_HOST'];
+        $this->siteName = 'https://' . $_SERVER['HTTP_HOST'];
         $this->set('siteName', $this->siteName);
 
         $this->siteSetting = $siteDetails = $this->Sitesetting->find('first');

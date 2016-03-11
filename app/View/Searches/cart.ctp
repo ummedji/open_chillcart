@@ -141,7 +141,7 @@ foreach ($storeCart as $key => $value) {
 if (!empty($storeCart)) { ?>
 	<div class="cart-checkout hidden-xs"> <?php
 
-		if ($loggedUser['role_id'] == 4) { ?>
+		if (isset($loggedUser['role_id']) && $loggedUser['role_id'] == 4) { ?>
 			<a class="btn-checkout <?php echo ($enable != 0) ? 'opacity_5' : '';?>" href="<?php echo ($enable == 0) ? $siteUrl.'/checkouts/index' : 'javascript:void(0)';?>"> <span class="hidden-xs"> <?php echo __('Checkout', true); ?></span>  ( <?php echo html_entity_decode($this->Number->currency($cartTotal, $siteCurrency)); ?> ) </a> <?php
 		} else { ?>
 			<a class="btn-checkout <?php echo ($enable != 0) ? 'opacity_5' : '';?>" href="<?php echo ($enable == 0) ? $siteUrl.'/customer/users/customerlogin?page=checkout' : 'javascript:void(0)'; ?>"> <span class="hidden-xs"> <?php echo __('Checkout', true); ?></span> ( <?php echo html_entity_decode($this->Number->currency($cartTotal, $siteCurrency)); ?> ) <span class="visible-xs pull-right"><i class="fa fa-long-arrow-right"></i></span></a> <?php
@@ -160,7 +160,7 @@ if (!empty($storeCart)) { ?>
 			<span class="pull-right mobile_btn-checkout">
 				<?php
 
-				if ($loggedUser['role_id'] == 4) { ?>
+				if (isset($loggedUser['role_id']) && $loggedUser['role_id'] == 4) { ?>
 					<a class="checkout_arrow <?php echo ($enable != 0) ? 'opacity_5' : '';?>" href="<?php echo ($enable == 0) ? $siteUrl.'/checkouts/index' : 'javascript:void(0)';?>"><i class="fa fa-long-arrow-right"></i></a> <?php
 				} else { ?>
 					<a class="checkout_arrow <?php echo ($enable != 0) ? 'opacity_5' : '';?>" href="<?php echo ($enable == 0) ? $siteUrl.'/customer/users/customerlogin?page=checkout' : 'javascript:void(0)'; ?>"><i class="fa fa-long-arrow-right"></i></a> <?php

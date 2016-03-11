@@ -111,7 +111,7 @@
 							<tr>
 								<td><?php echo $count;?></td>
 								<td>
-									<img class="img-thumbnail" alt="<?php echo $value['product_name']; ?>" src="<?php echo $cdn; ?>/stores/products/carts/<?php echo $value['ShoppingCart']['product_image']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/noimage.jpg"; ?>'">
+									<img class="img-thumbnail" src="<?php echo $cdn; ?>/stores/products/carts/<?php echo $value['ShoppingCart']['product_image']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/noimage.jpg"; ?>'">
 								</td>
 
 
@@ -137,7 +137,7 @@
 							</td>
 						</tr> <?php 
 
-						if ($order_detail['Order']['offer_amount'] != 0) {?>
+						if (isset($order_detail['Order']['offer_amount']) && $order_detail['Order']['offer_amount'] != 0) {?>
 							<tr class="grandprice">
 								<td class="text-right" colspan="5"> <?php echo __('Offer', true); ?></td>
 								<td class="price"><?php

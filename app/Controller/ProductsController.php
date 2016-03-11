@@ -482,9 +482,11 @@ class ProductsController extends AppController {
                 $this->Session->setFlash('<p>'.__('Product already exists', true).'</p>', 'default', 
                                                             array('class' => 'alert alert-danger'));
           } else {
-              $this->request->data['Product']['brand_id'] =  ($this->request->data['Product']['brand_id'] != '') ? 
+              $this->request->data['Product']['brand_id'] = (isset($this->request->data['Product']['brand_id']) && 
+                                                              $this->request->data['Product']['brand_id'] != '') ? 
                                                                 $this->request->data['Product']['brand_id'] : 0;
-              $this->request->data['Product']['sub_category_id'] =  ($this->request->data['Product']['sub_category_id'] != '') ? 
+              $this->request->data['Product']['sub_category_id'] =  
+                                                            ($this->request->data['Product']['sub_category_id'] != '') ? 
                                                                 $this->request->data['Product']['sub_category_id'] : 0;
               $this->Product->save($this->request->data['Product'], null, null);
               $this->ProductDetail->deleteAll(array('product_id' => $this->Product->id));

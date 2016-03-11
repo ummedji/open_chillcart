@@ -258,39 +258,33 @@ $(document).ready(function(){
         if($(this).prop("checked") == true){
             $(".checktable td input[type='checkbox']").prop("checked",true);
             $(".checktable td input[type='checkbox']").parent().addClass("checked");
-            
+            $("#send").show();
         }
         else{
             $(".checktable td input[type='checkbox']").prop("checked",false);
             $(".checktable td input[type='checkbox']").parent().removeClass("checked");
+            $("#send").hide();
         }
    }); 
    $(".checktable td input[type='checkbox']").change(function(){
         var length = $(".checktable tbody tr td input[type='checkbox']").length;
         var checklength = $(".checktable tbody tr td input[type='checkbox']:checked").length;
         
-        if (checklength != 0) {
-
-        };
-
         if(length == checklength){
             $(".checktable th input[type='checkbox']").prop("checked",true);
             $(".checktable th input[type='checkbox']").parent().addClass("checked");
-        }
-        else{
+            $("#send").show();
+        } else if(checklength > 0){
+        	$(".checktable th input[type='checkbox']").prop("checked",false);
+            $(".checktable th input[type='checkbox']").parent().removeClass("checked");
+        	$("#send").show();
+        } else{
             $(".checktable th input[type='checkbox']").prop("checked",false);
             $(".checktable th input[type='checkbox']").parent().removeClass("checked");
+            $("#send").hide();
         }
    });
 
-   	$("#test").on("click", function(){
-	   	if ($(".checkboxes").is(":checked")) {
-	   		$("#send").show();
-	   	} else {
-	   		$("#send").hide();
-	   	}
-	});
-	
 	$("#uniform-PaybalPaypal").on("click", function(){
 		$(".paypalDiv").show();
 	   	$(".stipeDiv").hide();
@@ -430,24 +424,6 @@ function Fillter(){
 	return false;
 	
 }
-$(".test").on("click", function(){
-    if ($(".checkboxes").is(":checked")) {
-        $("#send").show();
-    } else {
-        $("#send").hide();
-    }
-});
-
- var checkbox=1;
-   $(".test1").on("click", function(){
-        if (checkbox==0) {
-            checkbox=1;
-            $("#send").hide();
-        } else {
-            checkbox=0;
-            $("#send").show();
-        }
-});
 
    
 $(document).ready(function(){

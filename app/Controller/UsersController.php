@@ -46,7 +46,7 @@ class UsersController extends AppController {
 					} else {
 					     $this->Cookie->delete('rememberMe');
 					}
-					$this->redirect(array('controller' => 'users', 'action' => 'userRedirect','admin'=>false));
+					$this->redirect(array('controller' => 'dashboards', 'action' => 'index', 'admin'=>true));
 				} else { 
 
 					$this ->Session->setFlash('<p>'.__('Login failed your Username or Password Incorrect',true).'</p>', 'default', 
@@ -73,7 +73,7 @@ class UsersController extends AppController {
         }
 		if ($this->request->is('post')) {
 
-			if($this->request->data['Users']['email'] != ''){
+			if(isset($this->request->data['Users']['email']) && $this->request->data['Users']['email'] != ''){
 			   	$userData = $this->User->find('first', array(
 									   'conditions' =>array(
 										   'User.username' => trim($this->request->data['Users']['email']),
@@ -415,7 +415,7 @@ class UsersController extends AppController {
 	    }
 
     	if($this->request->is('post')) {
-		   	if($this->request->data['Users']['email'] != ''){
+		   	if(isset($this->request->data['Users']['email']) && $this->request->data['Users']['email'] != ''){
 			   $userData = $this->User->find('first', array(
 									   'conditions' =>array(
 										   'User.username' => $this->request->data['Users']['email'],
@@ -526,7 +526,6 @@ class UsersController extends AppController {
 	   	$this->layout = 'assets';
 	   	$ids          = $this->Auth->User();
 	   	if($this->request->is('post')) {
-	   		$old_password     =  $this->Auth->password($this->request->data['user']['old_pass']);
 	   		$new_password     =  $this->Auth->password($this->request->data['user']['new_pass']);
 	   		$confirm_password =  $this->Auth->password($this->request->data['user']['confirm_pass']);
 	   		if ($new_password == $confirm_password) {
@@ -692,15 +691,12 @@ class UsersController extends AppController {
 		$userDetails['Customer'] = $user['Customer'];
 
 		if (!empty($user['Customer']['id'])) {
+			$this->Session->write("preSessionid",$this->Session->id());
 			if ($this->Auth->login($userDetails)) {
-				/*if($returning){
-					$this->Session->setFlash(__('Welcome back, '. $this->Auth->user('username')));
-
-				} else {
-					$this->Session->setFlash(__('Welcome to our community, '. $this->Auth->user('username')));
-				}*/
-				//$this->redirect($this->Auth->loginRedirect);
-				
+				if($this->Session->read("redirectpage")=='checkout') {
+		            $this->Session->delete("redirectpage");
+		            $this->redirect(array('controller' => 'checkouts', 'action' => 'index','customer'=>false));
+		        }
 			} else {
 				$this->Session->setFlash(__('Unknown Error could not verify the user: '));
 			}

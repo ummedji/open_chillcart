@@ -135,7 +135,7 @@ class OrdersController extends AppController {
   }
 
   //Admin side Order view Process
-  public function admin_orderView($id = null, $page) {
+  public function admin_orderView($id = null) {
     
     if(!empty($id)){
       $this->Order->recursive =2 ;
@@ -149,7 +149,7 @@ class OrdersController extends AppController {
                       'conditions' => array('Location.city_id' => $order_detail['ShoppingCart'][0]['Store']['store_city']),
                       'fields' => array('id', 'area_name')));
       
-      $this->set(compact('order_detail', 'cities', 'location', 'page'));
+      $this->set(compact('order_detail', 'cities', 'location'));
 
     } else {
        $this->redirect(array('controller' => 'Orders', 'action' => 'index'));
@@ -199,9 +199,9 @@ class OrdersController extends AppController {
           }
           
           $sourceLatLong    = $this->Googlemap->getlatitudeandlongitude($storeAddress);
-          $source_lat       = $sourceLatLong['lat'];
-          $source_long      = $sourceLatLong['long'];
-
+          $source_lat       = (isset($sourceLatLong['lat'])) ? $sourceLatLong['lat'] : 0;
+          $source_long      = (isset($sourceLatLong['lat'])) ? $sourceLatLong['long'] : 0;
+          
           if ($order['order_type'] != 'Collection') {
 
             $order['customer_name']       = $customerDetails['Customer']['first_name']. ' '.
@@ -221,8 +221,8 @@ class OrdersController extends AppController {
                             $this->siteSetting['Country']['country_name'];
 
             $destinationLatLong = $this->Googlemap->getlatitudeandlongitude($deliveryAddress);
-            $order['destination_latitude']    = $destinationLatLong['lat'];
-            $order['destination_longitude']   = $destinationLatLong['long'];
+            $order['destination_latitude']    = (isset($destinationLatLong)) ? $destinationLatLong['lat'] : 0;
+            $order['destination_longitude']   = (isset($destinationLatLong)) ? $destinationLatLong['long'] : 0;
           } else {
 
             $order['customer_name']       = $this->Auth->User('Customer.first_name'). ' '.
@@ -235,16 +235,16 @@ class OrdersController extends AppController {
             $order['city_name']           = $this->storeCity[$storeDetails['Store']['store_city']];
             $order['location_name']       = $this->storeLocation[$storeDetails['Store']['store_zip']];
 
-            $order['destination_latitude']    = $sourceLatLong['lat'];
-            $order['destination_longitude']   = $sourceLatLong['long'];
+            $order['destination_latitude']    = $source_lat;
+            $order['destination_longitude']   = $source_long;
           }
 
 
           $destination_lat  = $order['destination_latitude'];
           $destination_long = $order['destination_longitude'];
           $distance = $this->Googlemap->getDrivingDistance($source_lat,$source_long,$destination_lat,$destination_long);
-          $order['source_latitude']   = $sourceLatLong['lat'];
-          $order['source_longitude']  = $sourceLatLong['long'];
+          $order['source_latitude']   = $source_lat;
+          $order['source_longitude']  = $source_long;
 
           $storeOffers = $this->Storeoffer->find('first', array(
                                     'conditions' => array('Storeoffer.store_id' => $value['store_id'],
@@ -280,14 +280,11 @@ class OrdersController extends AppController {
 
           // Store Owner Message
           if ($storeDetails['Store']['is_logged'] == 1) {
-            
               $deviceId      = $storeDetails['Store']['device_id'];
-              $ordDetails   = json_encode($orderDetails);
               $message      = 'New order came - '.$update['ref_number'];
               
               $gcm = $this->AndroidResponse->sendOrderByGCM(
-                      array('OrderDetails' => $ordDetails,
-                            'message'    => $message),
+                      array('message'    => $message),
                               $deviceId);
 
           }
@@ -687,7 +684,6 @@ class OrdersController extends AppController {
           </tr>';
 
       $source = $this->siteUrl.'/siteicons/logo.png';
-      $title  = $Currency['Store_general']['logo'];
       $Currency   = $this->siteSetting['Country']['currency_symbol'];
 
 
@@ -821,7 +817,7 @@ class OrdersController extends AppController {
                             $datas['Order']['city_name'].'
                           </span> 
                           <span style="width:100%; display:inline-block;font:15px Arial; margin:5px 0;">'.
-                                $state[$datas['Order']['state_name']]." - ".
+                                $datas['Order']['state_name']." - ".
                                 $this->siteSetting['Country']['country_name']. '
                           </span> 
                           <span style="width:100%; display:inline-block;font:bold 15px Arial;margin:5px 0;">'.
@@ -840,7 +836,6 @@ class OrdersController extends AppController {
 
       $mailContent = str_replace("{Customer name}", $customerName, $mailContent);
       $mailContent = str_replace("{source}", $source, $mailContent);
-      $mailContent = str_replace("{title}", $title, $mailContent);
       $mailContent = str_replace("{Store name}", $storename, $mailContent);
       $mailContent = str_replace("{orderid}", $datas['Order']['ref_number'], $mailContent);
       $mailContent = str_replace("{note}", $name, $mailContent);
@@ -859,16 +854,14 @@ class OrdersController extends AppController {
       $email->viewVars(array('mailContent' => $mailContent,
                           'source' => $source,
                           'storename' => $storename));
-
       $email->send();
 
       $mailContent = $sellerContent;
 
       $mailContent = str_replace("{Customer name}", $customerName, $mailContent);
       $mailContent = str_replace("{source}", $source, $mailContent);
-      $mailContent = str_replace("{title}", $title, $mailContent);
       $mailContent = str_replace("{Store name}", $storename, $mailContent);
-      $mailContent = str_replace("{orderid}", $order_id, $mailContent);
+      $mailContent = str_replace("{orderid}", $datas['Order']['ref_number'], $mailContent);
       $mailContent = str_replace("{note}", $name, $mailContent);
       $mailContent = str_replace("{Address}", $Address, $mailContent);
       $mailContent = str_replace("{SITE_URL}", $siteUrl, $mailContent);

@@ -70,7 +70,7 @@
 							<h3>About:</h3>
 							<ul class="list-unstyled">
 								<li>
-									 Chillcart
+									 <?php echo $siteSetting['Sitesetting']['site_name']; ?>
 								</li>
 								
 							</ul>
@@ -183,13 +183,20 @@
 								</li>
 								<li>
 									<strong>Grand Total :</strong><?php
-									echo html_entity_decode($this->Number->currency($invoice_detail['Invoice']['commisionGrand'], $siteCurrency));
+									$total = $invoice_detail['Invoice']['commision_tax'] + $invoice_detail['Invoice']['commision'];
+									echo html_entity_decode($this->Number->currency($total, $siteCurrency));
 								?>	
 								</li>
 							</ul>
 							<br>
-							<a onClick="javascript:window.print();" class="btn btn-lg blue hidden-print margin-bottom-5">
+							<a   onClick="javascript:window.print();" class="btn btn-lg blue hidden-print margin-bottom-5 btn btn-info">
 							Print <i class="fa fa-print"></i>
+							</a>
+
+							<a target="_blank" href="<?php
+								echo $siteUrl.'/admin/Invoices/invoicePdf/'.$invoice_detail['Invoice']['id'];?>"
+								   class="btn btn-lg blue hidden-print margin-bottom-5">
+									DownloadPDF <i class="fa fa-file-pdf-o"></i>
 							</a>
 							
 						</div>
@@ -209,7 +216,7 @@
 					<tbody><?php 
 					
 					$count = 1;
-					foreach($order_detail as $key=>$value){ ?>
+					foreach($order_detail as $key=>$value){ 	//echo "<pre>";print_r($value);die();?>
 						<tr class="odd gradeX">
 							<td><?php echo $count;?></td>
 							<td><?php echo $value['Order']['ref_number'];?></td>

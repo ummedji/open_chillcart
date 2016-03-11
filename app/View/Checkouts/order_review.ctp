@@ -5,7 +5,7 @@
 		</div>
 		 <?php
 
-			$storeCount = 0;
+			$storeCount = $storeMain = $subtotal =0;
 			foreach ($shopCart as $key => $value) {
 
 				$nextValue = $key+1;
@@ -73,7 +73,7 @@
 									</tr> <?php
 								}
 
-								if ($offerDetails[$storeCount]['storeOffer'] != 0) { ?>
+								if (isset($offerDetails[$storeCount]['storeOffer']) && $offerDetails[$storeCount]['storeOffer'] != 0) { ?>
 									<tr class="grandprice">
 										<td colspan="5" class="text-right"><?php //echo $offerDetails[$storeCount]['store_name']; ?> 	<?php echo __('Offer'); ?> (<?php echo $offerDetails[$storeCount]['offerPercentage'].'%'; ?>) </td>
 										

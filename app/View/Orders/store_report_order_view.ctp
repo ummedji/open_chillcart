@@ -30,7 +30,7 @@
 							<?php echo $orders_list['Order']['created'];?></span>
 						</div>
 						<div class="actions">
-							<a href="<?php echo $siteUrl.'/store/Orders/reportIndex'; ?>" class="btn btn-default btn-circle">
+							<a href="javascript:void(0);" onclick="window.history.go(-1);" class="btn btn-default btn-circle">
 							<i class="fa fa-angle-left"></i>
 							<span class="hidden-480">
 							Back </span>

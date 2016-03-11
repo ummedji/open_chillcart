@@ -1,10 +1,11 @@
 <?php
 /* janakiraman */
+App::import('Vendor', 'Mpdf', array('file' => 'mpdf' . DS . 'mpdf.php'));
 App::uses('AppController','Controller');
 class InvoicesController extends AppController {    
   public $helpers = array('Html','Form', 'Session', 'Javascript');  
   public $uses    = array('Invoice','Store','Order','State','City','Location');
-  public  $components = array('Functions');
+  public  $components = array('Functions','Mpdf');
   /**
    * BrandsController::admin_index()
    * Brand Management  Process
@@ -17,23 +18,20 @@ class InvoicesController extends AppController {
   }
 
   public function admin_invoiceDetail() {
-
-    $ids        = $this->params['pass'];
-    $startdate  = explode(' ', $ids[1]);
-    $endDate    = explode(' ', $ids[2]);
-    $site_detail    = $this->siteSetting;
-    $tax            = $site_detail['Sitesetting']['vat_percent'];
+    $site_detail  = $this->siteSetting;
+    $ids  = $this->params['pass'];
+      $site_detail  = $this->siteSetting;
+      $tax          = $site_detail['Sitesetting']['vat_percent'];
     $invoice_detail = $this->Invoice->findById($ids[3]);
-    $order_detail   = $this->Order->find('all',array(
-                        'conditions'=>array('Order.store_id'=>$ids[0],
-                                            'Order.status'=>'Delivered',
-                            'Order.delivery_date between ? and ?' =>
-                                        array($startdate[0], $endDate[0]))));
-
+    $order_detail = $this->Order->find('all',array(
+                                        'conditions'=>array(
+                                        'Order.store_id'=>$ids[0],
+                                        'Order.status'=>'Delivered',
+                                        'Order.delivery_date between ? and ?' =>
+                                        array($ids[1], $ids[2]))));
     $state_list   = $this->State->findById($order_detail[0]['Store']['store_state']);
     $city_list   = $this->City->findById($order_detail[0]['Store']['store_city']);
     $area_list   = $this->Location->findById($order_detail[0]['Store']['store_zip']);
-
     $this->set(compact('order_detail','state_list','city_list','area_list','invoice_detail','site_detail','tax'));
   }
     public function admin_invoiceCalculation() {
@@ -136,7 +134,6 @@ class InvoicesController extends AppController {
                                                         'Order.delivery_date between ? and ?' =>
                                                                 array($startdate, $endeddate),
                                                 'Order.status'=>'Delivered')));
-
                     if(!empty($order_detail)) {
 
                         $results = $this->Functions->sumOfDetail($order_detail,$tax,$cardfess);
@@ -186,7 +183,7 @@ class InvoicesController extends AppController {
       $id            = $this->Auth->User();
       $invoice_list  = $this->Invoice->find('all',array(
                                             'conditions'=>array('Invoice.store_id'=>$id['Store']['id'])));
-      $this->set(compact('invoice_list'));
+      $this->set(compact('invoice_list','tax'));
 
 
   }
@@ -204,7 +201,412 @@ class InvoicesController extends AppController {
     $state_list   = $this->State->findById($order_detail[0]['Store']['store_state']);
     $city_list   = $this->City->findById($order_detail[0]['Store']['store_city']);
     $area_list   = $this->Location->findById($order_detail[0]['Store']['store_zip']);
-    $this->set(compact('order_detail','state_list','city_list','area_list','invoice_detail','site_detail'));
-    //echo "<pre>";print_r($site_detail); die();
+       $tax      = $this->siteSetting['Sitesetting']['vat_percent'];
+    $this->set(compact('order_detail','state_list','city_list','area_list','invoice_detail','site_detail','tax'));
   }
+    /**
+     *Invoice PDF file at admin pannel
+     */
+    public function admin_invoicePdf(){
+        $invoiceId     = $this->params['pass'][0];
+        $invoice_detail = $this->Invoice->find('first',array(
+            'conditions'=>array(
+                'Invoice.id'=>$invoiceId
+            )
+        ));
+        $startDate  = explode(" ",$invoice_detail['Invoice']['start_date']);
+        $endDate    = explode(" ",$invoice_detail['Invoice']['end_date']);
+        $this->Order->recursive = 0;
+        $order_detail = $this->Order->find('all',array(
+            'conditions'=>array(
+                'Order.store_id'=>$invoice_detail['Invoice']['store_id'],
+                'Order.status'=>'Delivered',
+                'Order.delivery_date between ? and ?' =>
+                    array($startDate[0], $endDate[0]))));
+        $state_list   = $this->State->findById($order_detail[0]['Store']['store_state']);
+        $city_list   = $this->City->findById($order_detail[0]['Store']['store_city']);
+        $area_list   = $this->Location->findById($order_detail[0]['Store']['store_zip']);
+        //Invoice PDF template file
+        $output = '
+            <div style="width:960px;margin:0 auto;">
+                <h1 align="center">'.__('Invoice').' ['.$invoice_detail['Invoice']['ref_id'].']</h1>
+                <table width="100%"  align="center">
+                    <tr style="display:block; width:100%;">
+                        <td style="display:inline-block;font:16px/20px Verdana; padding:10px 0px 5px; text-align:left;">
+                           Created: '.$invoice_detail['Invoice']['created'].'
+                        </td>
+                        <td style="display:inline-block;font:16px/20px Verdana; padding:10px 0px 5px; text-align:right;">
+                           Period: '.$invoice_detail['Invoice']['start_date'].' to '.
+                                     $invoice_detail['Invoice']['end_date'].'
+                        </td>
+                    </tr>
+                </table>
+                <hr>
+                <table width="100%"  align="center">
+                     <tr style="display:block; width:100%;">
+                         <td style="display:inline-block;font:14px/20px Verdana; padding:10px 0px 5px; text-align:left;">
+                           <h3 style="font:bold 14px/20px Verdana; padding-bottom:15px;">Client:</h3>
+                        </td>
+                        <td style="display:inline-block;font:16px/20px Verdana; padding:10px 0px 5px; text-align:left;">
+                            <h3 style="font:bold 14px/20px Verdana; padding-bottom:15px;">About:</h3>
+                        </td>
+                        <td style="display:inline-block; padding:10px 0px 5px; text-align:left;">
+                            <h3 style="font:bold 14px/20px Verdana; padding-bottom:15px;">Payment Details:</h3>
+                        </td>
+                     </tr>
+                     <tr style="display:block; width:100%;">
+                         <td style="display:inline-block;font:14px/20px Verdana; padding:10px 0px 5px; text-align:left;">
+                               <span style="font:12px Verdana;">'.$order_detail[0]['Store']['contact_name'].'<br>
+                                '.$order_detail[0]['Store']['store_name'].'<br>
+                                '.$area_list['Location']['area_name'].','.
+                                 $area_list['City']['city_name'].'-'.
+                                 $area_list['Location']['zip_code'].',<br>'.
+                                 $area_list['State']['state_name'].', '.
+                                 $state_list['Country']['country_name'].'</span>
+                        </td>
+                        <td style="display:inline-block;font:16px/20px Verdana; padding:10px 0px 5px; text-align:left; vertical-align:top;">
+                             <span style="font:12px Verdana;">'. $this->siteSetting['Sitesetting']['site_name'].'</span>
+                        </td>
+                        <td style="display:inline-block;font:16px/20px Verdana; padding:10px 0px 5px; text-align:left; vertical-align:top;">
+                           <span style="font:12px Verdana;"> <strong>V.A.T Reg #:</strong>'. $this->siteSetting['Sitesetting']['vat_percent'].'</span>
+                        </td>
+                     </tr>
+                </table>
+            </div>';
+        $output .= '<table width="100%"  align="center" border="1" cellspacing="1" sellpadding="1">
+                        <thead>
+                            <tr>
+                                <th style="padding:10px 0 10px 15px;" >
+                                     Invoice breakdown
+                                </th>
+                                <th style="padding:10px 0 10px 15px;">
+                                     Order Count
+                                </th>
+                                <th style="padding:10px 0 10px 15px;">
+                                     Amount
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>';
+        $output .= '
+                            <tr>
+                                <td style="padding:10px 0 10px 15px;">
+                                    Total value for
+
+                                </td>
+                                <td style="padding:10px 0 10px 15px;">'. $invoice_detail['Invoice']['total_order'].'
+                                </td>
+                                <td style="padding:10px 15px 10px 0;" align="right">'. $this->siteCurrency.' '.$invoice_detail['Invoice']['subtotal'].'
+                                </td>
+
+                            </tr>';
+        $output .= '
+                            <tr>
+                                <td style="padding:10px 0 10px 15px;">
+                                    Customers paid cash for
+
+                                </td>
+                                <td style="padding:10px 0 10px 15px;">'. $invoice_detail['Invoice']['cod_count'].'
+
+                                </td>
+
+                                <td style="padding:10px 15px 10px 0;" align="right" >'.$this->siteCurrency.' '.$invoice_detail['Invoice']['cod_price'].'
+                                </td>
+
+                            </tr>';
+        $output .= '
+                            <tr>
+                                <td style="padding:10px 0 10px 15px;">
+                                    Customers prepaid online with card for
+
+                                </td>
+                                <td style="padding:10px 0 10px 15px;">'.$invoice_detail['Invoice']['card_count'].'</td>
+
+                                <td style="padding:10px 15px 10px 0" align="right">'.$this->siteCurrency.' '.$invoice_detail['Invoice']['card_price'].'
+
+                                </td>
+
+                            </tr>';
+        $output .= '
+                            <tr>
+                                
+                                <td style="padding:10px 15px 10px 0;" colspan="2" align="right">subtotal</td>
+                                <td style="padding:10px 15px 10px 0;" align="right">'.$this->siteCurrency.' '.$invoice_detail['Invoice']['subtotal'].'</td>
+
+                            </tr>
+                            <tr>
+                                
+                                <td style="padding:10px 15px 10px;" colspan="2" align="right">Total Commission('. $this->siteSetting['Sitesetting']['vat_percent'].'%)</td>
+                                <td style="padding:10px 15px 10px 0" align="right">'.$this->siteCurrency.''.$invoice_detail['Invoice']['commision'].'</td>
+
+                            </tr>
+                             <tr>
+                                
+                                <td style="padding:10px 15px 10px 0;" colspan="2" align="right"><strong> Vat for commission ('.$this->siteSetting['Sitesetting']['card_fee'].'%):</strong></td>
+                                <td style="padding:10px 15px 10px 0;" align="right">'.$this->siteCurrency.' '.$invoice_detail['Invoice']['commision_tax'].'</td>
+
+                            </tr>
+                            <tr>
+                                
+                                <td style="padding:10px 15px 10px 0;" colspan="2" align="right"><strong>Grand Total</strong></td>
+                                <td style="padding:10px 15px 10px 0;" align="right">'.$this->siteCurrency.' '.$invoice_detail['Invoice']['commisionGrand'].'</td>
+
+                            </tr>
+                            
+
+                            </tbody>
+                            </table>
+                        </div>
+                    </div>';
+        $output .= ' 
+                    <h1 style="display:inline-block; font:24px Verdana;">Order Information</h1>
+                    <table width="100%" style="margin-top:15px;"  align="center" border="1" cellspacing="1" sellpadding="1">
+                            <thead>
+                                <tr>
+                                    <th style="padding:10px 0 10px 15px;">S_no</th>
+                                    <th style="padding:10px 0 10px 15px;">order  Id</th>
+                                    <th style="padding:10px 0 10px 15px;">Card/Cash</th>
+                                    <th style="padding:10px 0 10px 15px;">Subtotal</th>
+                                    <th style="padding:10px 0 10px 15px;">Commision</th>
+                                </tr>
+                            </thead>
+                            <tbody>';
+                            $count = 1;
+                            foreach($order_detail as $key=>$value){
+                                $commision = $value['Order']['order_sub_total'] * ($this->siteSetting['Sitesetting']['card_fee']/100);
+                                $output .= '<tr class="odd gradeX">
+                                <td style="padding:10px 0 10px 15px;">'.$count.'</td>
+                                <td style="padding:10px 0 10px 15px;">'.$value['Order']['ref_number'].'</td>
+                                    <td style="padding:10px 0 10px 15px;">'. $value['Order']['payment_type'].'</td>
+                                    <td style="padding:10px 0 10px 15px;">'. $this->siteCurrency.' '.$value['Order']['order_sub_total'].'
+                                    </td>
+                                    <td style="padding:10px 0 10px 15px;">'.
+                                    $this->siteCurrency.' '.$commision.'
+                                    </td>
+                                </tr>';
+                                $count ++;
+                            }
+        $output .= '
+                            </tbody>
+                        </table>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>';
+        // initializing mPDF
+        $this->Mpdf->init();
+
+
+        $mpdf=new mPDF();
+        $mpdf->WriteHTML($output);
+        $mpdf->Output();
+        exit();
+
+    }
+
+
+
+    /**
+     *Invoice PDF file at store pannel
+     */
+    public function store_invoicePdf(){
+        $this->layout  = 'assets';
+        $invoiceId     = $this->params['pass'][0];
+        $invoice_detail = $this->Invoice->find('first',array(
+            'conditions'=>array(
+                'Invoice.id'=>$invoiceId
+            )
+        ));
+        $startDate  = explode(" ",$invoice_detail['Invoice']['start_date']);
+        $endDate    = explode(" ",$invoice_detail['Invoice']['end_date']);
+        $this->Order->recursive = 0;
+        $order_detail = $this->Order->find('all',array(
+            'conditions'=>array(
+                'Order.store_id'=>$invoice_detail['Invoice']['store_id'],
+                'Order.status'=>'Delivered',
+                'Order.delivery_date between ? and ?' =>
+                    array($startDate[0], $endDate[0]))));
+        $state_list   = $this->State->findById($order_detail[0]['Store']['store_state']);
+        $city_list   = $this->City->findById($order_detail[0]['Store']['store_city']);
+        $area_list   = $this->Location->findById($order_detail[0]['Store']['store_zip']);
+        //Invoice PDF template file
+
+                 $output = '
+            <div style="width:960px;margin:0 auto;">
+                <h1 align="center">'.__('Invoice').' ['.$invoice_detail['Invoice']['ref_id'].']</h1>
+                <table width="100%"  align="center">
+                    <tr style="display:block; width:100%;">
+                        <td style="display:inline-block;font:16px/20px Verdana; padding:10px 0px 5px; text-align:left;">
+                           Created: '.$invoice_detail['Invoice']['created'].'
+                        </td>
+                        <td style="display:inline-block;font:16px/20px Verdana; padding:10px 0px 5px; text-align:right;">
+                           Period: '.$invoice_detail['Invoice']['start_date'].' to '.
+                                     $invoice_detail['Invoice']['end_date'].'
+                        </td>
+                    </tr>
+                </table>
+                <hr>
+                <table width="100%"  align="center">
+                     <tr style="display:block; width:100%;">
+                         <td style="display:inline-block;font:14px/20px Verdana; padding:10px 0px 5px; text-align:left;">
+                           <h3 style="font:bold 14px/20px Verdana; padding-bottom:15px;">Client:</h3>
+                        </td>
+                        <td style="display:inline-block;font:16px/20px Verdana; padding:10px 0px 5px; text-align:left;">
+                            <h3 style="font:bold 14px/20px Verdana; padding-bottom:15px;">About:</h3>
+                        </td>
+                        <td style="display:inline-block; padding:10px 0px 5px; text-align:left;">
+                            <h3 style="font:bold 14px/20px Verdana; padding-bottom:15px;">Payment Details:</h3>
+                        </td>
+                     </tr>
+                     <tr style="display:block; width:100%;">
+                         <td style="display:inline-block;font:14px/20px Verdana; padding:10px 0px 5px; text-align:left;">
+                               <span style="font:12px Verdana;">'.$order_detail[0]['Store']['contact_name'].'<br>
+                                '.$order_detail[0]['Store']['store_name'].'<br>
+                                '.$area_list['Location']['area_name'].','.
+                                 $area_list['City']['city_name'].'-'.
+                                 $area_list['Location']['zip_code'].',<br>'.
+                                 $area_list['State']['state_name'].', '.
+                                 $state_list['Country']['country_name'].'</span>
+                        </td>
+                        <td style="display:inline-block;font:16px/20px Verdana; padding:10px 0px 5px; text-align:left; vertical-align:top;">
+                             <span style="font:12px Verdana;">'. $this->siteSetting['Sitesetting']['site_name'].'</span>
+                        </td>
+                        <td style="display:inline-block;font:16px/20px Verdana; padding:10px 0px 5px; text-align:left; vertical-align:top;">
+                           <span style="font:12px Verdana;"> <strong>V.A.T Reg #:</strong>'. $this->siteSetting['Sitesetting']['vat_percent'].'</span>
+                        </td>
+                     </tr>
+                </table>
+            </div>';
+        $output .= '<table width="100%"  align="center" border="1" cellspacing="1" sellpadding="1">
+                        <thead>
+                            <tr>
+                                <th style="padding:10px 0 10px 15px;" >
+                                     Invoice breakdown
+                                </th>
+                                <th style="padding:10px 0 10px 15px;">
+                                     Order Count
+                                </th>
+                                <th style="padding:10px 0 10px 15px;">
+                                     Amount
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>';
+        $output .= '
+                            <tr>
+                                <td style="padding:10px 0 10px 15px;">
+                                    Total value for
+
+                                </td>
+                                <td style="padding:10px 0 10px 15px;">'. $invoice_detail['Invoice']['total_order'].'
+                                </td>
+                                <td style="padding:10px 15px 10px 0;" align="right">'. $this->siteCurrency.' '.$invoice_detail['Invoice']['subtotal'].'
+                                </td>
+
+                            </tr>';
+        $output .= '
+                            <tr>
+                                <td style="padding:10px 0 10px 15px;">
+                                    Customers paid cash for
+
+                                </td>
+                                <td style="padding:10px 0 10px 15px;">'. $invoice_detail['Invoice']['cod_count'].'
+
+                                </td>
+
+                                <td style="padding:10px 15px 10px 0;" align="right" >'.$this->siteCurrency.' '.$invoice_detail['Invoice']['cod_price'].'
+                                </td>
+
+                            </tr>';
+        $output .= '
+                            <tr>
+                                <td style="padding:10px 0 10px 15px;">
+                                    Customers prepaid online with card for
+
+                                </td>
+                                <td style="padding:10px 0 10px 15px;">'.$invoice_detail['Invoice']['card_count'].'</td>
+
+                                <td style="padding:10px 15px 10px 0" align="right">'.$this->siteCurrency.' '.$invoice_detail['Invoice']['card_price'].'
+
+                                </td>
+
+                            </tr>';
+        $output .= '
+                            <tr>
+                                
+                                <td style="padding:10px 15px 10px 0;" colspan="2" align="right">subtotal</td>
+                                <td style="padding:10px 15px 10px 0;" align="right">'.$this->siteCurrency.' '.$invoice_detail['Invoice']['subtotal'].'</td>
+
+                            </tr>
+                            <tr>
+                                
+                                <td style="padding:10px 15px 10px;" colspan="2" align="right">Total Commission('. $this->siteSetting['Sitesetting']['vat_percent'].'%)</td>
+                                <td style="padding:10px 15px 10px 0" align="right">'.$this->siteCurrency.''.$invoice_detail['Invoice']['commision'].'</td>
+
+                            </tr>
+                             <tr>
+                                
+                                <td style="padding:10px 15px 10px 0;" colspan="2" align="right"><strong> Vat for commission ('.$this->siteSetting['Sitesetting']['card_fee'].'%):</strong></td>
+                                <td style="padding:10px 15px 10px 0;" align="right">'.$this->siteCurrency.' '.$invoice_detail['Invoice']['commision_tax'].'</td>
+
+                            </tr>
+                            <tr>
+                                
+                                <td style="padding:10px 15px 10px 0;" colspan="2" align="right"><strong>Grand Total</strong></td>
+                                <td style="padding:10px 15px 10px 0;" align="right">'.$this->siteCurrency.' '.$invoice_detail['Invoice']['commisionGrand'].'</td>
+
+                            </tr>
+                            
+
+                            </tbody>
+                            </table>
+                        </div>
+                    </div>';
+        $output .= ' 
+                    <h1 style="display:inline-block; font:24px Verdana;">Order Information</h1>
+                    <table width="100%" style="margin-top:15px;"  align="center" border="1" cellspacing="1" sellpadding="1">
+                            <thead>
+                                <tr>
+                                    <th style="padding:10px 0 10px 15px;">S_no</th>
+                                    <th style="padding:10px 0 10px 15px;">order  Id</th>
+                                    <th style="padding:10px 0 10px 15px;">Card/Cash</th>
+                                    <th style="padding:10px 0 10px 15px;">Subtotal</th>
+                                    <th style="padding:10px 0 10px 15px;">Commision</th>
+                                </tr>
+                            </thead>
+                            <tbody>';
+                            $count = 1;
+                            foreach($order_detail as $key=>$value){
+                                $commision = $value['Order']['order_sub_total'] * ($this->siteSetting['Sitesetting']['card_fee']/100);
+                                $output .= '<tr class="odd gradeX">
+                                <td style="padding:10px 0 10px 15px;">'.$count.'</td>
+                                <td style="padding:10px 0 10px 15px;">'.$value['Order']['ref_number'].'</td>
+                                    <td style="padding:10px 0 10px 15px;">'. $value['Order']['payment_type'].'</td>
+                                    <td style="padding:10px 0 10px 15px;">'. $this->siteCurrency.' '.$value['Order']['order_sub_total'].'
+                                    </td>
+                                    <td style="padding:10px 0 10px 15px;">'.
+                                    $this->siteCurrency.' '.$commision.'
+                                    </td>
+                                </tr>';
+                                $count ++;
+                            }
+        $output .= '
+                            </tbody>
+                        </table>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>';
+        // initializing mPDF
+        $this->Mpdf->init();
+
+
+        $mpdf=new mPDF();
+        $mpdf->WriteHTML($output);
+        $mpdf->Output();
+        exit();
+
+    }
 }
