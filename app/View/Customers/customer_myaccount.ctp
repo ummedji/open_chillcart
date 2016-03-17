@@ -240,10 +240,7 @@
 							} ?>
 							
 							
-						</div><?php echo $this->Form->hidden('id');
-									echo $this->Form->hidden('User.id'); ?>
-						
-						
+						</div>
 					</div>
 					<div class="col-md-12 text-center">
 	                    <?php echo $this->Form->button(__('Submit'),array('class'=>'btn btn-primary'));  ?>
@@ -276,7 +273,6 @@
 							echo $this->Form->input('User.newpassword',
 								array('class'=>'form-control',
 									'autocomplete' => 'off',
-
 									'type'=>'password',
 									'label' => false,
 									'div' => false)); ?>

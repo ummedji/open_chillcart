@@ -81,7 +81,7 @@
 				} ?></span></li>
 
 				<li><span class="col-md-4 col-sm-4 col-xs-12"> <?php echo __('Store', true); ?></span> <span class="col-md-8 col-sm-8 col-xs-12 site-color"><i>:</i> <?php
-				echo $order_detail['ShoppingCart'][0]['Store']['store_name'];?></span></li>
+				echo $order_detail['Store']['store_name'];?></span></li>
 
 				<li><span class="col-md-4 col-sm-4 col-xs-12"> <?php echo __('Order Status', true); ?></span> <span class="col-md-8 col-sm-8 col-xs-12 site-color"><i>:</i>  <?php 
 				echo __($order_detail['Order']['status']); ?></span></li>
@@ -107,24 +107,24 @@
 					<tbody><?php 
 					if (!empty($order_detail)) {
 						$count = 1;
-						foreach ($orderreview_detail as $key => $value) {?>
+						foreach ($order_detail['ShoppingCart'] as $key => $value) {?>
 							<tr>
 								<td><?php echo $count;?></td>
 								<td>
-									<img class="img-thumbnail" src="<?php echo $cdn; ?>/stores/products/carts/<?php echo $value['ShoppingCart']['product_image']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/noimage.jpg"; ?>'">
+									<img class="img-thumbnail" src="<?php echo $cdn; ?>/stores/products/carts/<?php echo $value['product_image']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/noimage.jpg"; ?>'">
 								</td>
 
 
 								<td  class="text-left"> <?php 
-									echo $value['ShoppingCart']['product_name'];
-									if (!empty($value['ShoppingCart']['product_description'])) { ?>
-										<div class="margin-t-5"><?php echo $value['ShoppingCart']['product_description']; ?></div> <?php
+									echo $value['product_name'];
+									if (!empty($value['product_description'])) { ?>
+										<div class="margin-t-5"><?php echo $value['product_description']; ?></div> <?php
 									} ?>
 								</td>
-								<td><?php echo $value['ShoppingCart']['product_quantity'];?></td>
-								<td><?php echo html_entity_decode($this->Number->currency( $value['ShoppingCart']['product_price'], $siteCurrency));?></td>
+								<td><?php echo $value['product_quantity'];?></td>
+								<td><?php echo html_entity_decode($this->Number->currency( $value['product_price'], $siteCurrency));?></td>
 								<td class="price"><?php
-										echo html_entity_decode($this->Number->currency($value['ShoppingCart']['product_total_price'], $siteCurrency)); ?>
+										echo html_entity_decode($this->Number->currency($value['product_total_price'], $siteCurrency)); ?>
 									</td>
 								
 							</tr><?php

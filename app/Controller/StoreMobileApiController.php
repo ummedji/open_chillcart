@@ -150,7 +150,7 @@ class StoreMobileApiController extends AppController
                         $response['id'] = $store['Store']['id'];
                         $response['name'] = $store['Store']['contact_name'];
                         $response['email'] = $store['Store']['contact_email'];
-                        $response['phone'] = $store['Store']['store_phone'];
+                        $response['phone'] = $store['Store']['contact_phone'];
                         $response['success'] = '1';
 
                     } else {

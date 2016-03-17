@@ -46,13 +46,13 @@
 										<td width="60%">
 											<div class="address-detail">
 												<div class="resName"> <?php
-													echo $orders_list['ShoppingCart'][0]['Store']['store_name'];?>
+													echo $orders_list['Store']['store_name'];?>
 												</div> <?php
 
-												echo $orders_list['ShoppingCart'][0]['Store']['street_address'].', '.
-													 	$location[$orders_list['ShoppingCart'][0]['Store']['store_zip']].', '.
-													 	$cities[$orders_list['ShoppingCart'][0]['Store']['store_city']].', '.
-													 	$states[$orders_list['ShoppingCart'][0]['Store']['store_state']].'.'; ?>
+												echo $orders_list['Store']['street_address'].', '.
+													 	$location[$orders_list['Store']['store_zip']].', '.
+													 	$cities[$orders_list['Store']['store_city']].', '.
+													 	$states[$orders_list['Store']['store_state']].'.'; ?>
 											</div>
 										</td>
 									</tr>

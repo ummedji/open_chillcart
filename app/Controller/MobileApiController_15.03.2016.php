@@ -8,7 +8,7 @@ App::uses('CakeEmail', 'Network/Email');
 
 class MobileApiController extends AppController
 {
-    public $components = array('AndroidResponse', 'Notification', 'CakeS3', 'Twilio');
+    public $components = array('AndroidResponse', 'Notification', 'Functions', 'Twilio');
     public $uses = array('User', 'Order', 'Driver', 'DriverTracking', 'Orderstatus', 'MailContent',
         'State', 'City', 'Location');
 
@@ -108,8 +108,8 @@ class MobileApiController extends AppController
                             $response['currency'] = $this->siteSetting['Country']['currency_symbol'];
 
                             $driverImage = (!empty($driver['Driver']['image']))
-                                ? $this->cdn . '/driversImage/' . $driver['Driver']['image']
-                                : $this->siteUrl . '/images/no-photo.png';
+                                ? $this->siteUrl . '/driversImage/' . $driver['Driver']['image']
+                                : $this->siteUrl . '/driversImage/no-photo.png';
 
                             $response['driverImage'] = $driverImage;
                             $response['driverStatus'] = 'Available';
@@ -141,11 +141,7 @@ class MobileApiController extends AppController
 
                         // Get file name posted from Android App
                         $fileId = $driver['Driver']['id'] . time() . '.png';
-                        //$filename = APP . 'webroot/driversImage/' . $fileId;
-
-                        $driverImageS3  = 'driversImage/';
-                        $filename      = ROOT.DS.'app'.DS."tmp".DS."driversImage".DS.$fileId;
-
+                        $filename = APP . 'webroot/driversImage/' . $fileId;
                         // Decode Image
                         $binary = base64_decode($base);
                         header('Content-Type: bitmap; charset=utf-8');
@@ -154,17 +150,15 @@ class MobileApiController extends AppController
                         // Create File
                         fwrite($file, $binary);
                         fclose($file);
-
-                        $result = $this->CakeS3->putObject($filename, $driverImageS3.$fileId, S3::ACL_PUBLIC_READ);
-
                         #Save Driver Image
+
                         $driverImage['Driver']['id'] = $driver['Driver']['id'];
                         $driverImage['Driver']['image'] = $fileId;
                         $this->Driver->save($driverImage);
 
                         $response['success'] = 1;
                         $response['message'] = 'Image uploaded successfully!';
-                        $response['driverImage'] = $this->cdn . '/driversImage/' . $fileId;
+                        $response['driverImage'] = $this->siteUrl . '/driversImage/' . $fileId;
                     } else {
                         $response['success'] = 0;
                         $response['message'] = 'Image not upload!';
@@ -179,8 +173,8 @@ class MobileApiController extends AppController
                     if (is_array($driver) && $driver['User']['role_id'] == 5) {
 
                         $driverImage = (!empty($driver['Driver']['image']))
-                            ? $this->cdn . '/driversImage/' . $driver['Driver']['image']
-                            : $this->siteUrl . '/images/no-photo.png';
+                            ? $this->siteUrl . '/driversImage/' . $driver['Driver']['image']
+                            : $this->siteUrl . '/driversImage/no-photo.png';
 
                         $response['success'] = 1;
                         $response['DriverName'] = $driver['Driver']['driver_name'];

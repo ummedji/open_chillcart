@@ -195,7 +195,8 @@ class ProductsController extends AppController {
                                                             array('class' => 'alert alert-danger'));
           } else {
 
-              $this->request->data['Product']['brand_id'] =  ($this->request->data['Product']['brand_id'] != '') ? 
+              $this->request->data['Product']['brand_id'] =  (isset($this->request->data['Product']['brand_id']) &&
+                                                              $this->request->data['Product']['brand_id'] != '') ? 
                                                                 $this->request->data['Product']['brand_id'] : 0;
               $this->request->data['Product']['sub_category_id'] =  
                                                             ($this->request->data['Product']['sub_category_id'] != '') ? 
@@ -469,9 +470,16 @@ class ProductsController extends AppController {
     }   
      public function store_edit($id = null) {
         $this->layout = 'assets';
-        $stores_id    = $this->Auth->User();
-        $store_id     = $stores_id['Store']['id'];          
+        $store_id     = $this->Auth->User('Store.id');          
         if(!empty($this->request->data['Product']['product_name'])) {
+
+          $getProductEditData = $this->Product->find('first', array(
+                                      'conditions' => array('Product.id' => $this->request->data['Product']['id'],
+                                                        'Product.store_id' => $store_id)));
+          if (empty($getProductEditData)) {
+              $this->render('/Errors/error400');
+          }
+
           $product_check = $this->Product->find('first', array(
                                       'conditions'=>array(
                                       'Product.product_name'=>trim($this->request->data['Product']['product_name']),
@@ -572,17 +580,22 @@ class ProductsController extends AppController {
           }
         }
 
-         $brand_list     = $this->Brand->find('list',array(
+        $brand_list     = $this->Brand->find('list',array(
                                   'conditions'=>array('Brand.status'=>1),
                                   'fields'=>array('Brand.id','Brand.brand_name')));
-         $category_list  = $this->Category->find('list', array(
+        $category_list  = $this->Category->find('list', array(
                                   'conditions' => array('Category.parent_id'=>0,'Category.status'=>1),
                                   'fields'     => array('Category.id','Category.category_name')));
         $stores = $this->Store->find('list', array(
                                 'conditions'=>array('Store.status'=>1),
                                 'fields' => array('Store.id', 'Store.store_name')));
 
-        $getProductData = $this->Product->findById($id);
+        $getProductData = $this->Product->find('first', array(
+                                      'conditions' => array('Product.id' => $id,
+                                                        'Product.store_id' => $store_id)));
+        if (empty($getProductData)) {
+            $this->render('/Errors/error400');
+        }
         $subcatList = $this->Category->find('list', array(
                                 'conditions' => array(
                                       'Category.parent_id' => $getProductData['Product']['category_id'],

@@ -160,8 +160,9 @@ class OrdersController extends AppController {
   //Confirm Order Process
   public function conformOrder() {
 
-      if ($this->Auth->User('role_id') != 4) {
-        $this->redirect(array('controller' => 'searches', 'action' => 'index'));
+      $role = $this->Auth->User('role_id');
+      if (empty($role) || $this->Auth->User('role_id') != 4) {
+          $this->redirect(array('controller' => 'searches', 'action' => 'index'));
       }
       
       $today= date("m/d/Y");
@@ -306,7 +307,7 @@ class OrdersController extends AppController {
           }
 
           //OrderMail
-          $this->ordermail($this->Order->id);
+          //$this->ordermail($this->Order->id);
           $this->Order->id = '';
       }
 
@@ -414,14 +415,18 @@ class OrdersController extends AppController {
   public function store_reportOrderView($id = null) {
     $this->layout = 'assets';
     if (!empty($id)){
-      $this->Order->recursive = 2;
-      $orders_list = $this->Order->findByRefNumber($id);
+      $orders_list = $this->Order->find('first', array(
+                              'conditions' => array('Order.id' => $id,
+                                          'Order.store_id' => $this->Auth->User('Store.id'))));
+      if (empty($orders_list)) {
+          $this->render('/Errors/error400');
+      }
       $cities = $this->City->find('list', array(
-                      'conditions' => array('City.state_id' => $orders_list['ShoppingCart'][0]['Store']['store_state']),
+                      'conditions' => array('City.state_id' => $orders_list['Store']['store_state']),
                       'fields' => array('id', 'city_name')));
 
       $location = $this->Location->find('list', array(
-                      'conditions' => array('Location.city_id' => $orders_list['ShoppingCart'][0]['Store']['store_city']),
+                      'conditions' => array('Location.city_id' => $orders_list['Store']['store_city']),
                       'fields' => array('id', 'area_name')));
 
       $this->set(compact('orders_list', 'cities', 'location'));
@@ -443,21 +448,25 @@ class OrdersController extends AppController {
 
     $this->set(compact('order_list', 'status'));
   }
-   public function store_orderView($id = null, $page) {
+   public function store_orderView($id = null) {
     $this->layout = 'assets';
     if(!empty($id)){
-      $this->Order->recursive =2 ;
-      $order_detail           = $this->Order->findById($id);      
 
+      $order_detail = $this->Order->find('first', array(
+                              'conditions' => array('Order.id' => $id,
+                                          'Order.store_id' => $this->Auth->User('Store.id'))));
+      if (empty($order_detail)) {
+          $this->render('/Errors/error400');
+      }
       $cities = $this->City->find('list', array(
-                      'conditions' => array('City.state_id' => $order_detail['ShoppingCart'][0]['Store']['store_state']),
+                      'conditions' => array('City.state_id' => $order_detail['Store']['store_state']),
                       'fields' => array('id', 'city_name')));
 
       $location = $this->Location->find('list', array(
-                      'conditions' => array('Location.city_id' => $order_detail['ShoppingCart'][0]['Store']['store_city']),
+                      'conditions' => array('Location.city_id' => $order_detail['Store']['store_city']),
                       'fields' => array('id', 'area_name')));
       
-      $this->set(compact('order_detail', 'cities', 'location', 'page'));
+      $this->set(compact('order_detail', 'cities', 'location'));
       
 
     } else {

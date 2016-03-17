@@ -41,7 +41,7 @@
 														array('type'  => 'select',
 															  'class' => 'form-control',
 															  'options'=> array($Store_list),
-															  'empty' => 'SelectCountry',
+															  'empty' => 'SelectStore',
 											 				  'label'=> false)); ?>
 									</div>
 								</div>

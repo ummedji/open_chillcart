@@ -503,7 +503,12 @@ class DriversController extends AppController
 
         $availDrivers = array();
 
-        $orderDetails = $this->Order->findById($orderId);
+        $orderDetails = $this->Order->find('first', array(
+                                'conditions' => array('Order.id' => $orderId,
+                                            'Order.store_id' => $this->Auth->User('Store.id'))));
+        if (empty($orderDetails)) {
+            $this->render('/Errors/error400');
+        }
 
         if ($orderDetails['Order']['driver_id']) {
             $this->Session->setFlash(__('Order already assigned to driver', true),

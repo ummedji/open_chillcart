@@ -61,6 +61,9 @@ class CategoriesController extends AppController
     {
         if (!empty($this->request->data['Category']['category_name'])) {
 
+            /*echo "<pre>"; print_r($this->request->data);
+            exit();*/
+
             $Category = $this->Category->find('first', array(
                 'conditions' => array(
                     'Category.parent_id' => 0,

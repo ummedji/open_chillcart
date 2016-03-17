@@ -410,9 +410,7 @@ class StoresController extends AppController
     public function store_edit()
     {
         $this->layout = 'assets';
-        $stores_id = $this->Auth->User();
-        $id = $stores_id['Store']['id'];
-        if (!empty($this->request->data)) {
+        if (!empty($this->request->data) && $this->Auth->User('role_id') == 3) {
             $userData = $this->User->find('first', array(
                 'conditions' => array(
                     'User.role_id' => 3,
@@ -428,7 +426,6 @@ class StoresController extends AppController
 
                         $imagesizedata = getimagesize($this->request->data['Store']['store_logo']['tmp_name']);
                         if ($imagesizedata) {
-                            /*$refFile = $this->Updown->uploadFile($this->request->data['Store']['store_logo'],$destinationPath);*/
 
                             $storelogosPathS3 = 'storelogos/';
                             $newName = str_replace(" ", "-", time() . '.' . $storeArrray['Store']['store_name']);
@@ -470,31 +467,31 @@ class StoresController extends AppController
                 }
             }
         }
-        $getStoreData = $this->Store->findById($id);
+        $getStoreData = $this->Store->findById($this->Auth->User('Store.id'));
         $this->set('states', $this->State->find('list', array(
-            'fields' => array('id', 'state_name'))));
+                            'fields' => array('id', 'state_name'))));
         $this->set('cities', $this->City->find('list', array(
-            'conditions' => array('City.status' => 1,
-                'City.state_id' => $getStoreData['Store']['store_state']),
-            'fields' => array('id', 'city_name'))));
+                            'conditions' => array('City.status' => 1,
+                                'City.state_id' => $getStoreData['Store']['store_state']),
+                            'fields' => array('id', 'city_name'))));
 
         if ($this->siteSetting['Sitesetting']['search_by'] == 'zip') {
             $this->set('locations', $this->Location->find('list', array(
-                'conditions' => array('Location.status' => 1,
-                    'Location.city_id' => $getStoreData['Store']['store_city']),
-                'fields' => array('id', 'zip_code')))
+                            'conditions' => array('Location.status' => 1,
+                                'Location.city_id' => $getStoreData['Store']['store_city']),
+                            'fields' => array('id', 'zip_code')))
             );
         } else {
             $this->set('locations', $this->Location->find('list', array(
-                'conditions' => array('Location.status' => 1,
-                    'Location.city_id' => $getStoreData['Store']['store_city']),
-                'fields' => array('id', 'area_name'))));
+                            'conditions' => array('Location.status' => 1,
+                                'Location.city_id' => $getStoreData['Store']['store_city']),
+                            'fields' => array('id', 'area_name'))));
         }
         $this->set('timeslots', $this->TimeSlot->find('all'));
         $this->set('selected', $this->DeliveryLocation->find('list', array(
-            'conditions' => array(
-                'DeliveryLocation.store_id' => $getStoreData['Store']['id']),
-            'fields' => array('id', 'location_id')))
+                            'conditions' => array(
+                                'DeliveryLocation.store_id' => $getStoreData['Store']['id']),
+                            'fields' => array('id', 'location_id')))
         );
         $this->request->data = $getStoreData;
     }

@@ -19,7 +19,12 @@ class UsersController extends AppController {
 		$this->set('title_for_layout', 'Admin');
 		
 		}
-	}	
+	}
+
+	public function login() {	
+		$this->redirect(array('controller' => 'searches', 'action' => 'index'));
+	}
+
     /**
      * Displays a view
      * Admin login process
@@ -524,13 +529,12 @@ class UsersController extends AppController {
    	}
    	public function store_changePassword(){
 	   	$this->layout = 'assets';
-	   	$ids          = $this->Auth->User();
-	   	if($this->request->is('post')) {
+	   	if($this->request->is('post') && $this->Auth->User('role_id') == 3) {
 	   		$new_password     =  $this->Auth->password($this->request->data['user']['new_pass']);
 	   		$confirm_password =  $this->Auth->password($this->request->data['user']['confirm_pass']);
 	   		if ($new_password == $confirm_password) {
 	   			$this->request->data['User']['password'] = $new_password;
-	   			$this->request->data['User']['id']		 = $ids['id']; 
+	   			$this->request->data['User']['id']		 = $this->Auth->User('id'); 
 	   			if($this->User->save($this->request->data['User'], null, null)){
 					$this->Session->setFlash('<p>'.__('Password successfully Changed', true).'</p>', 'default', 
 										array('class' => 'alert alert-success'));
@@ -545,14 +549,13 @@ class UsersController extends AppController {
    	} 
 
    	public function admin_changePassword(){
-	   	$ids          = $this->Auth->User();
 	   	if($this->request->is('post')) {
 	   		$old_password     =  $this->Auth->password($this->request->data['user']['old_pass']);
 	   		$new_password     =  $this->Auth->password($this->request->data['user']['new_pass']);
 	   		$confirm_password =  $this->Auth->password($this->request->data['user']['confirm_pass']);
 	   		if ($new_password == $confirm_password) {
 	   			$this->request->data['User']['password'] = $new_password;
-	   			$this->request->data['User']['id']		 = $ids['id']; 
+	   			$this->request->data['User']['id']		 = $this->Auth->User('id'); 
 	   			if($this->User->save($this->request->data['User'], null, null)){
 					$this->Session->setFlash('<p>'.__('Password successfully Changed', true).'</p>', 'default', 
 										array('class' => 'alert alert-success'));

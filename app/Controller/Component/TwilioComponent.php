@@ -33,10 +33,11 @@ class TwilioComponent extends Component{
 		    $to, // To this number
 		    $message
 		);
-		
-		 
-		// Display a confirmation message on the screen
-		//echo "Sent message {$sms->sid}";
+
+		$filePath      = ROOT.DS.'app'.DS."tmp".DS.'twilioSms.txt';
+        $file = fopen($filePath,"a+");
+        fwrite($file, PHP_EOL.'Message---->'.$message.PHP_EOL.'Response---->'.$sms->message.PHP_EOL);
+        fclose($file);
 	}
 	
 	public function sendMultipleSms($to = array(), $message) {
