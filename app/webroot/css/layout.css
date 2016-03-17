@@ -180,7 +180,7 @@ Page Header
     height: 16px;
     background-repeat: no-repeat;
     background-position: center center;
-    background-image: url(../images/sidebar-toggler.png);
+    /*background-image: url(../images/sidebar-toggler.png);*/
 }
 
 .page-header.navbar .menu-toggler:hover {
@@ -807,7 +807,7 @@ Page Header
     }
 
     .page-header.navbar .menu-toggler.responsive-toggler {
-        background-image: url(../images/sidebar-toggler.png);
+        /*background-image: url(../images/sidebar-toggler.png);*/
     }
 
     .page-header.navbar .search-form {

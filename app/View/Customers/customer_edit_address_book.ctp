@@ -23,6 +23,7 @@
 					<div class="col-md-7"><?php
 										echo $this->Form->input('address',
 												array('class'=>'form-control',
+														'type' => 'text',
 														'label'=>false)); ?>
 					</div>
 				</div>

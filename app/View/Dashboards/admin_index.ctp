@@ -48,7 +48,7 @@
 				<div class="details">
 					<div class="number">
 						<?php 
-						echo "Fixed";
+						echo $this->Number->currency($dasboard_value['Commision'], $siteCurrency);
 					?>	 
 					</div>
 					<div class="desc">

@@ -1,7 +1,7 @@
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=falsee&libraries=places"></script>
 <div class="page-content-wrapper">
 	<div class="page-content">
-		<h3 class="page-title">Add Dispatch</h3>
+		<h3 class="page-title">Edit Dispatch</h3>
 		<div class="page-bar">
 			<ul class="page-breadcrumb">
 				<li>
@@ -22,7 +22,7 @@
 				<div class="portlet box blue-hoki">
 					<div class="portlet-title">
 						<div class="caption">
-							<i class="fa fa-user"></i> Add Dispatch
+							<i class="fa fa-user"></i> Edit Dispatch
 						</div>
 						<div class="tools">
 							
@@ -106,7 +106,8 @@
 										echo $this->Form->input('driver_description',
 													array('class' => 'form-control',
 														  'label' => false));
-										echo $this->Form->hidden('id'); ?>
+										echo $this->Form->hidden('id');
+										echo $this->Form->hidden('User.id'); ?>
 									</div>
 								</div>
 							</div>

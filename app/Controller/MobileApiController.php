@@ -8,7 +8,7 @@ App::uses('CakeEmail', 'Network/Email');
 
 class MobileApiController extends AppController
 {
-    public $components = array('AndroidResponse', 'Notification', 'Functions', 'Twilio');
+    public $components = array('AndroidResponse', 'Notification', 'CakeS3', 'Twilio');
     public $uses = array('User', 'Order', 'Driver', 'DriverTracking', 'Orderstatus', 'MailContent',
         'State', 'City', 'Location');
 
@@ -108,8 +108,8 @@ class MobileApiController extends AppController
                             $response['currency'] = $this->siteSetting['Country']['currency_symbol'];
 
                             $driverImage = (!empty($driver['Driver']['image']))
-                                ? $this->siteUrl . '/driversImage/' . $driver['Driver']['image']
-                                : $this->siteUrl . '/driversImage/no-photo.png';
+                                ? $this->cdn . '/driversImage/' . $driver['Driver']['image']
+                                : $this->siteUrl . '/images/no-photo.png';
 
                             $response['driverImage'] = $driverImage;
                             $response['driverStatus'] = 'Available';
@@ -141,7 +141,11 @@ class MobileApiController extends AppController
 
                         // Get file name posted from Android App
                         $fileId = $driver['Driver']['id'] . time() . '.png';
-                        $filename = APP . 'webroot/driversImage/' . $fileId;
+                        //$filename = APP . 'webroot/driversImage/' . $fileId;
+
+                        $driverImageS3  = 'driversImage/';
+                        $filename      = ROOT.DS.'app'.DS."tmp".DS."driversImage".DS.$fileId;
+
                         // Decode Image
                         $binary = base64_decode($base);
                         header('Content-Type: bitmap; charset=utf-8');
@@ -150,15 +154,17 @@ class MobileApiController extends AppController
                         // Create File
                         fwrite($file, $binary);
                         fclose($file);
-                        #Save Driver Image
 
+                        $result = $this->CakeS3->putObject($filename, $driverImageS3.$fileId, S3::ACL_PUBLIC_READ);
+
+                        #Save Driver Image
                         $driverImage['Driver']['id'] = $driver['Driver']['id'];
                         $driverImage['Driver']['image'] = $fileId;
                         $this->Driver->save($driverImage);
 
                         $response['success'] = 1;
                         $response['message'] = 'Image uploaded successfully!';
-                        $response['driverImage'] = $this->siteUrl . '/driversImage/' . $fileId;
+                        $response['driverImage'] = $this->cdn . '/driversImage/' . $fileId;
                     } else {
                         $response['success'] = 0;
                         $response['message'] = 'Image not upload!';
@@ -173,8 +179,8 @@ class MobileApiController extends AppController
                     if (is_array($driver) && $driver['User']['role_id'] == 5) {
 
                         $driverImage = (!empty($driver['Driver']['image']))
-                            ? $this->siteUrl . '/driversImage/' . $driver['Driver']['image']
-                            : $this->siteUrl . '/driversImage/no-photo.png';
+                            ? $this->cdn . '/driversImage/' . $driver['Driver']['image']
+                            : $this->siteUrl . '/images/no-photo.png';
 
                         $response['success'] = 1;
                         $response['DriverName'] = $driver['Driver']['driver_name'];
@@ -388,17 +394,28 @@ class MobileApiController extends AppController
                         }
 
                         $this->Order->save($ordStatus);
-
-
-                        $customerMessage = "Dear " . $ordStatus['Customer']['first_name'] . ",Your order has been " . $status . ' by driver, Order id : ' . $ordStatus['Order']['ref_number'];
-
-                        $toCustomerNumber = '+' . $this->siteSetting['Country']['phone_code'] . $ordStatus['Customer']['customer_phone'];
-
-                        $customerSms = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
-
-
                         $response['success'] = 1;
                         $response['message'] = 'Order Status Change Successfully';
+
+			// Driver SMS
+                        if ($status == 'Collected') {
+
+                            $driverMessage = "Congratulations ! Your order ".$ordStatus['Order']['ref_number']." is on it's way to you. It wiil be delivered by ".
+						$ordStatus['Driver']['driver_name'].". Thanks for shopping with Chillcart and stay connected.";
+                        }
+
+                        if ($status == 'Delivered') {
+
+                            $driverMessage = "Congratulations ! Your order ".$ordStatus['Order']['ref_number']." successfully delivered by ".$ordStatus['Driver']['driver_name'];
+                        }
+
+                        $statusArray = array('Collected', 'Delivered', 'Accepted');
+
+                        if (in_array($status, $statusArray)) {
+
+                            $toDriverNumber = '+'.$this->siteSetting['Country']['phone_code'].$ordStatus['Driver']['driver_phone'];
+                            $driverSms      = $this->Twilio->sendSingleSms($toDriverNumber, $driverMessage);
+                        }
 
                         $driverDetail = $this->Driver->findById($driverId);
 

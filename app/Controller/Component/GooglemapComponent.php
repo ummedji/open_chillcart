@@ -32,25 +32,28 @@ class GooglemapComponent extends Component
         $latitude = $output['results'][0]['geometry']['location']['lat'];
         $longitude = $output['results'][0]['geometry']['location']['lng'];
         $address_comp = $output['results'][0]['address_components'];
+        $state = $country = '';
+
+
 
         if (is_array($address_comp)) {
             foreach ($address_comp as $key => $value) {
-
-                switch ($value->types[0]) {
+                switch ($value['types'][0]) {
                     case 'locality':
-                        $city = $value->long_name;
+                        $city = $value['long_name'];
                         break;
 
                     case 'administrative_area_level_1':
-                        $state = $value->long_name;
+                        $state = $value['long_name'];
                         break;
 
                     case 'country':
-                        $country = $value->long_name;
+                        $country = $value['long_name'];
                         break;
                 }
             }
         }
+
         return array('lat' => $latitude, 'long' => $longitude, 'city' => $city, 'state' => $state, 'country' => $country);
 
     }

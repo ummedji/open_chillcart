@@ -55,8 +55,7 @@
 											<td> <?php    
 												echo $this->Html->link($value['Order']['ref_number'],
 																	array('action' => 'orderView',
-																			$value['Order']['id'],
-																			'dispatch'),
+																			$value['Order']['id']),
 																	array('class' => 'no-padding blue bold'));  ?>
 												<br/> <?php
 

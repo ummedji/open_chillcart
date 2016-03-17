@@ -12,10 +12,7 @@ class LocationsController extends AppController
      * Location Management Proccess
      * @return void
      */
-    public function admin_index()
-    {
-        $key = $this->request->params['pass'][1];
-        $id = $this->request->params['pass'][0];
+    public function admin_index($id) {
         if ($id != '') {
             //switch (trim($key)){
             //case 'locations';

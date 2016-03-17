@@ -1,47 +1,45 @@
 <?php
-$main = $subCat = 0;
+$main = $subCat = $subCatCount = 0;
 foreach ($productList as $key => $value) {
 
     $nextValue = $key+1;
     if ($value['MainCategory']['id'] != $main) {
         $main = $value['MainCategory']['id']; ?>
-        <div class="products-category" id="<?php echo $value['MainCategory']['category_name']; ?>">
+        <div class="products-category mainCatProduct" id="<?php echo $value['MainCategory']['category_name']; ?>">
         <header class="products-header">
             <h4 class="category-name">
                 <span> <?php echo $value['MainCategory']['category_name']; ?></span>
             </h4>
-            <!-- <a class="more-product-button" href="#">
-                <span>More in Fresh Produce</span>
-            </a> -->
-
-            <!-- <h5 class="sub_category-name">
-							<span><?php echo $value['MainCategory']['category_name']; ?></span>
-						</h5> -->
-        </header>
-        <!-- <ul class="products"> --> <?php
+        </header><?php
     }
 
 
 
 if ($value['SubCategory']['id'] != $subCat) {
+
     $subCat = $value['SubCategory']['id']; ?>
-
-    <!-- <div class="products-category" id="<?php echo $value['SubCategory']['category_name']; ?>"> -->
-
     <h5 id="<?php echo $value['SubCategory']['category_name']; ?>" class="sub_category-name">
         <span><?php echo $value['SubCategory']['category_name']; ?></span>
-    </h5>
+     <?php 
 
-    <ul class="products"> <?php
+    if (isset($value['moreProduct'])) { ?>
+        <a title="active" class="buttonStatus" href="javascript:void(0);" onclick="categoriesProduct(<?php echo $value['MainCategory']['id'].','.$value['SubCategory']['id'].','.$value['Store']['id'];?>);">
+        View More </a> <?php
+    } ?> </h5>
+
+    <ul class="products productsCat<?php echo $count; ?>"> <?php
+        $subCatCount = $subCatCount+1;
 }
 
-    $imageSrc = 'https://s3.amazonaws.com/'.$siteBucket.'/stores/products/home/'.$value['ProductImage'][0]['image_alias']; ?>
-    <li class="product searchresulttoshow">
+    $imageName = (isset($value['ProductImage'][0]['image_alias'])) ? $value['ProductImage'][0]['image_alias'] : '';
+    $imageSrc = $cdn.'/stores/products/home/'.$imageName; ?>
+
+    <li class="product searchresulttoshow searchresulttoshow<?php echo $count.$subCatCount; ?>">
         <div class="product__inner">
             <figure class="product__image" onclick="productDetails(<?php echo $value['Product']['id']; ?>);">
                 <!-- <span class="onsale">Sale!</span> -->
                 <img src="<?php echo $imageSrc; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/no-imge.jpg"; ?>'" alt="<?php echo $value['Product']['product_name']; ?>" title="<?php echo $value['Product']['product_name']; ?>">
-                <figcaption>
+                <figcaption hidden>
                     <div class="product-addon">
                         <a href="javascript:void(0);" class="yith-wcqv-button"><span></span><i class="fa fa-plus"></i></a>
                     </div>
@@ -52,19 +50,15 @@ if ($value['SubCategory']['id'] != $subCat) {
                     <h2 class="product__detail-title"><a href="javascript:void(0);"><?php echo $value['Product']['product_name']; ?></a></h2>
                     <div class="product__detail-category">
                         <a href="javascript:void(0);" rel="tag"><?php echo $value['ProductDetail'][0]['sub_name']; ?></a>
-                    </div>
-
-                    <?php if ($value['ProductDetail'][1]['sub_name']) { ?>
+                    </div> <?php 
+                    if (isset($value['ProductDetail'][1]['sub_name'])) { ?>
                         <div class="show-on-hover">
                             <?php foreach ($value['ProductDetail'] as $keyVal => $val) {
                                 if ($keyVal != 0) { ?>
                                     <div class="yith-wcwl-add-to-wishlist">
                                         <div  style="display:block">
                                             <a href="javascript:void(0);" rel="nofollow" class="add_to_wishlist">
-
                                                 <?php
-
-
                                                 echo '<p class="contain"> '.$val['sub_name']. ' : ';
 
                                                 if ($val['compare_price'] != 0) {
@@ -75,23 +69,15 @@ if ($value['SubCategory']['id'] != $subCat) {
                                                 }
 
                                                 echo '</p>';
-
                                                 ?>
                                             </a>
                                         </div>
-
-                                    </div>
-                                    <?php
+                                    </div> <?php
                                 }
                             } ?>
-
-
-                        </div>
-                    <?php } ?>
-
-
+                        </div> <?php 
+                    } ?>
                     <div class="clear"></div>
-
                 </div>
                 <div class="bottom-section">
 	                <span class="price product__detail-price">
@@ -108,22 +94,19 @@ if ($value['SubCategory']['id'] != $subCat) {
                         <a href="javascript:void(0);" rel="nofollow" class="button add_to_cart_button " >
                             <?php if ($value['Product']['price_option'] == 'single') { //echo "<pre>";print_r($value);die();
                                 if($value['ProductDetail'][0]['quantity'] != 0){?>
-                                    <span class="prodAddprice" onclick="addToCart(<?php echo $value['ProductDetail'][0]['id']; ?>);" >
-										<b class=""><?php echo __('Add'); ?></b> <i class="fa fa-plus plushide"></i></span>
+                                    <div class="add_btn">
+									<i onclick="addToCart(<?php echo $value['ProductDetail'][0]['id']; ?>);" class="fa fa-plus plushide"></i></div>
                                 <?php } else {?>
-                                    <span class="prodAddprice outofstock">
+                                    <span class=" outofstock">
 									   <b class=""><?php echo __('Out of Stock'); ?></b> <i class=""></i></span>
                                 <?php }
 
                             } else { ?>
-                                <span class="prodAddprice" onclick="productDetails(<?php echo $value['Product']['id']; ?>);" ><b class=""><?php echo __('Add'); ?></b> <i class="fa fa-plus plushide"></i></span>
+                                <div class="add_btn"><i onclick="productDetails(<?php echo $value['Product']['id']; ?>);" class="fa fa-plus plushide"></i></div>
                                 <?php
 
                             } ?>
-
-                            <i class="fa fa-plus plushide"></i>
                         </a>
-
                     </div>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 <div class="contain">
 	<div class="contain">
-		<h3 class="page-title">Edit Book</h3>
+		<h3 class="page-title">Edit Adress Book</h3>
 		<div class="page-bar">
 			<ul class="page-breadcrumb">
 				<li>

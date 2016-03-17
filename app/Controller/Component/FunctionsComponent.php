@@ -728,4 +728,25 @@ class FunctionsComponent extends Component
         return $data;
     }
 
+    public function dashboardCalculation($information,$invoiceDetail){
+        $total = $commisionTotal = $total_oreder = $commisionTaxTotal = $commisionGrandTotal = 0;
+        foreach($information as $key => $value){
+            $total_oreder++;
+            $total = $total + $value['Order']['order_sub_total'];
+        }
+        $result['totalorder']    = $total_oreder;
+        $result['total']         = $total;
+        foreach($invoiceDetail as $keys => $values){
+            $commisionTotal      = $commisionTotal + $values['Invoice']['commision'];
+            $commisionTaxTotal   = $commisionTaxTotal + $values['Invoice']['commision_tax'];
+            $commisionGrandTotal = $commisionGrandTotal + $values['Invoice']['commisionGrand'];
+        }
+        $result['totalorder']          = $total_oreder;
+        $result['total']               = $total;
+        $result['commisionTotal']      = $commisionTotal;
+        $result['commision_tax']       = $commisionTaxTotal;
+        $result['commisionGrandTotal'] = $commisionGrandTotal;
+        return $result;
+    }
+
 }

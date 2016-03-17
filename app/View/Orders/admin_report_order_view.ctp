@@ -30,7 +30,7 @@
 							<?php echo $orders_list['Order']['created'];?></span>
 						</div>
 						<div class="actions">
-							<a href="<?php echo $siteUrl.'/admin/Orders/reportIndex'; ?>" class="btn btn-default btn-circle">
+							<a href="javascript:void(0);" onclick="window.history.go(-1);" class="btn btn-default btn-circle">
 							<i class="fa fa-angle-left"></i>
 							<span class="hidden-480">
 							Back </span>
@@ -197,7 +197,7 @@
 												<td>
 													<span class="col-md-12 no-padding">
 														<div class="pull-left">
-															<img alt="<?php echo $value['product_name']; ?>" src="https://s3.amazonaws.com/<?php echo $siteBucket; ?>/stores/products/carts/<?php echo $value['product_image']; ?>" title="<?php echo $value['Store']['store_name']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/noimage.jpg"; ?>'">
+															<img alt="<?php echo $value['product_name']; ?>" src="<?php echo $cdn; ?>/stores/products/carts/<?php echo $value['product_image']; ?>" title="<?php echo $value['Store']['store_name']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/noimage.jpg"; ?>'">
 														</div><?php
 														echo $value['product_name']; ?>
 														<br><?php
