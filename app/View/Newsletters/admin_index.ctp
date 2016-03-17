@@ -49,7 +49,7 @@
 							<table class="table table-striped table-bordered table-hover checktable" id="sample_12">
 								<thead>
 									<tr>
-										<th class="table-checkbox no-sort"><input id="test1" type="checkbox" class="group-checkable" data-set="#sample_1 .checkboxes"/></th>
+										<th class="table-checkbox no-sort"><input id="test1" type="checkbox" class="group-checkable test1" data-set="#sample_1 .checkboxes"/></th>
 										<th>User Name</th>
 										<th>Email</th>
 										<th>Contact Number</th>
@@ -61,8 +61,8 @@
 								<tr class="odd gradeX" id="record<?php echo $value['Customer']['id']; ?>">
 
 									<td> <?php
-										echo $this->Form->checkbox($Newsletter['User']['id'],
-											array('class' => 'checkboxes',
+										echo $this->Form->checkbox($value['User']['id'],
+											array('class' => 'checkboxes test',
 												'name' => 'data[Newsletter][email][]',
 												'label' => false,
 												'hiddenField' => false,

@@ -1586,3 +1586,5 @@ textarea.form-control {
 
 }
 
+
+#flashMessage{ position: fixed;right: 10px;top: 125px;z-index: 100000;}

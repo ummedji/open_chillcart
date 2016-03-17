@@ -9,7 +9,7 @@ class DriversController extends AppController
 
     var $helpers = array('Html', 'Session', 'Javascript', 'Ajax', 'Common');
     public $uses = array('Driver', 'User', 'Vehicle', 'Order', 'State', 'City', 'Location', 'Store');
-    public $components = array('Updown', 'Googlemap', 'AndroidResponse');
+    public $components = array('Updown', 'Googlemap', 'AndroidResponse', 'Twilio');
 
 
     public function beforeFilter()
@@ -46,7 +46,10 @@ class DriversController extends AppController
 
         if (!empty($this->request->data['User']['username'])) {
 
-            $driver = $this->User->findByUsernameAndRoleId($this->request->data['User']['username'], 5);
+            $driver  = $this->User->find('first', array(
+                                'conditions' => array('User.username' => $this->request->data['User']['username'],
+                                        'NOT' => array('User.id' => $this->request->data['User']['id'],
+                                                        'Driver.status' => 'Delete'))));
 
             if (!empty($driver)) {
                 $this->Session->setFlash('<p>' . __('Driver Already Exists ', true) . '</p>', 'default',
@@ -73,18 +76,20 @@ class DriversController extends AppController
     }
 
 
-    public function admin_edit($id = null)
-    {
+    public function admin_edit($id = null) {
 
         if (!empty($this->request->data)) {
-            $driver = $this->Driver->findById($this->request->data['Driver']['id']);
-            $driver_checking = $this->User->find('all', array(
-                'conditions' => array('User.username' => $this->request->data['Driver']['driver_phone']),
-                'NOT' => array('User.id' => $driver['User']['id'])));
+
+            $driver_checking = $this->User->find('first', array(
+                            'conditions' => array('User.username' => trim($this->request->data['Driver']['driver_phone']),
+                                    'NOT' => array('User.id' => $this->request->data['User']['id'],
+                                                    'Driver.status' => 'Delete'))));
             if (!empty($driver_checking)) {
                 $this->Session->setFlash('<p>' . __('Driver Already Exists ', true) . '</p>', 'default',
                     array('class' => 'alert alert-danger'));
             } else {
+                $this->request->data['User']['Username'] = trim($this->request->data['Driver']['driver_phone']);
+                $this->User->save($this->request->data['User'], null, null);
                 $this->Driver->save($this->request->data['Driver'], null, null);
                 $this->Session->setFlash('<p>' . __('Driver Successfully Created', true) . '</p>', 'default',
                     array('class' => 'alert alert-success'));
@@ -132,13 +137,10 @@ class DriversController extends AppController
         $this->request->data = $this->Vehicle->findById($vehicleId);
     }
 
-    public function availDrivers($orderId)
-    {
+    public function availDrivers($orderId) {
 
+        $availDrivers = array();
         $orderDetails = $this->Order->findById($orderId);
-        //echo "<pre>"; print_r($orderDetails);
-
-
         if ($orderDetails['Order']['driver_id']) {
             $this->Session->setFlash(__('Order already assigned to driver', true),
                 'default', array('class' => 'alert alert-success'));
@@ -169,22 +171,18 @@ class DriversController extends AppController
 
                     //if (!empty($distance)) {
 
-                    $availDrivers[$key]['Driver']['id'] = $value['Driver']['id'];
-                    $availDrivers[$key]['Driver']['status'] = $value['Driver']['status'];
-                    $availDrivers[$key]['Driver']['distance'] = $distance['distanceText'];
-                    $availDrivers[$key]['Driver']['reachtime'] = $distance['durationText'];
-                    $availDrivers[$key]['Driver']['driver_name'] = $value['Driver']['driver_name'];
-                    $availDrivers[$key]['Driver']['driver_phone'] = $value['Driver']['driver_phone'];
-                    $availDrivers[$key]['Driver']['vehicle_name'] = $value['Vehicle']['vehicle_name'];
-                    $availDrivers[$key]['Driver']['vehicle_model'] = $value['Vehicle']['vehicle_name'];
+                        $availDrivers[$key]['Driver']['id'] = $value['Driver']['id'];
+                        $availDrivers[$key]['Driver']['status'] = $value['Driver']['status'];
+                        $availDrivers[$key]['Driver']['distance'] = $distance['distanceText'];
+                        $availDrivers[$key]['Driver']['reachtime'] = $distance['durationText'];
+                        $availDrivers[$key]['Driver']['driver_name'] = $value['Driver']['driver_name'];
+                        $availDrivers[$key]['Driver']['driver_phone'] = $value['Driver']['driver_phone'];
+                        $availDrivers[$key]['Driver']['vehicle_name'] = $value['Vehicle']['vehicle_name'];
+                        $availDrivers[$key]['Driver']['vehicle_model'] = $value['Vehicle']['vehicle_name'];
                     //}
 
                 }
             }
-
-            /*echo "<pre>"; print_r($availDrivers);
-            exit();*/
-
             $this->set(compact('orderId', 'availDrivers'));
         }
 
@@ -193,7 +191,7 @@ class DriversController extends AppController
     public function admin_billingDetail($driverId = null)
     {
 
-        if ($this->request->data['Drivers']['from_date'] != '' && $this->request->data['Drivers']['to_date'] != '') {
+        if (!empty($this->request->data['Drivers']) && $this->request->data['Drivers']['from_date'] != '' && $this->request->data['Drivers']['to_date'] != '') {
             $from_date = date('Y-m-d', strtotime($this->request->data['Drivers']['from_date']));
             $to_date = date('Y-m-d', strtotime($this->request->data['Drivers']['to_date']));
             $driverId = $this->request->data['Drivers']['id'];
@@ -226,8 +224,8 @@ class DriversController extends AppController
             $total_km = $total_km + $value['Order']['distance'];
         }
 
-        $fromDate = ($this->request->data['Drivers']['from_date']) ? $this->request->data['Drivers']['from_date'] : date('m/d/Y', time());
-        $toDate = ($this->request->data['Drivers']['to_date']) ? $this->request->data['Drivers']['to_date'] : date('m/d/Y', time());
+        $fromDate = (isset($this->request->data['Drivers']['from_date'])) ? $this->request->data['Drivers']['from_date'] : date('m/d/Y', time());
+        $toDate = (isset($this->request->data['Drivers']['to_date'])) ? $this->request->data['Drivers']['to_date'] : date('m/d/Y', time());
 
 
         $this->set(compact('order_detail', 'total_km', 'total_orderprice', 'driverId', 'fromDate', 'toDate'));
@@ -237,7 +235,7 @@ class DriversController extends AppController
     public function store_billingDetail($driverId = null)
     {
         $this->layout = 'assets';
-        if ($this->request->data['Drivers']['from_date'] != '' && $this->request->data['Drivers']['to_date'] != '') {
+        if (!empty($this->request->data['Drivers']) && $this->request->data['Drivers']['from_date'] != '' && $this->request->data['Drivers']['to_date'] != '') {
             $from_date = date('Y-m-d', strtotime($this->request->data['Drivers']['from_date']));
             $to_date = date('Y-m-d', strtotime($this->request->data['Drivers']['to_date']));
             $driverId = $this->request->data['Drivers']['id'];
@@ -355,6 +353,19 @@ class DriversController extends AppController
                 $this->Order->save($orderStatus);
 
                 $gcm = json_decode($gcm, true);
+		 // Driver SMS
+                $driverMessage  = 'Dear '.$driverDetails['Driver']['driver_name'].',pick up ';
+                $driverMessage .= ($orders['Order']['payment_method'] != 'paid') ? 'COD' : 'PAID';
+                $driverMessage .= ' order '.$orders['Order']['ref_number'].' from '.$orders['Order']['customer_name'];
+                $driverMessage .=   ','.$orders['Order']['address'].','.$orders['Order']['landmark'].
+                                    ','.$orders['Order']['location_name'].','.$orders['Order']['city_name'].
+                                    ','.$orders['Order']['city_name'];
+                $driverMessage .= '. '.$orders['Order']['order_type'].' due on '.$orders['Order']['delivery_date'].' at '.
+                                    $orders['Order']['delivery_time_slot'].'. Thanks Chillcart';
+                $toDriverNumber = '+'.$this->siteSetting['Country']['phone_code'].$driverDetails['Driver']['driver_phone'];
+                $driverSms      = $this->Twilio->sendSingleSms($toDriverNumber, $driverMessage);
+
+
                 echo $gcm['success'];
             } else {
                 die('404');
@@ -398,7 +409,10 @@ class DriversController extends AppController
 
         if (!empty($this->request->data['User']['username'])) {
 
-            $driver = $this->User->findByUsernameAndRoleId($this->request->data['User']['username'], 5);
+            $driver  = $this->User->find('first', array(
+                                'conditions' => array('User.username' => $this->request->data['User']['username'],
+                                     'NOT' => array('User.id' => $this->request->data['User']['id'],
+                                                    'Driver.status' => 'Delete'))));
 
             if (!empty($driver)) {
                 $this->Session->setFlash('<p>' . __('Driver Already Exists ', true) . '</p>', 'default',
@@ -445,16 +459,19 @@ class DriversController extends AppController
     {
         $this->layout = 'assets';
         if (!empty($this->request->data)) {
-            $driver = $this->Driver->findById($this->request->data['Driver']['id']);
-            $driver_checking = $this->User->find('all', array(
-                'conditions' => array('User.username' => $this->request->data['Driver']['driver_phone']),
-                'NOT' => array('User.id' => $driver['User']['id'])));
+
+            $driver_checking = $this->User->find('first', array(
+                            'conditions' => array('User.username' => trim($this->request->data['Driver']['driver_phone']),
+                                    'NOT' => array('User.id' => $this->request->data['User']['id'],
+                                                    'Driver.status' => 'Delete'))));
             if (!empty($driver_checking)) {
                 $this->Session->setFlash('<p>' . __('Driver Already Exists ', true) . '</p>', 'default',
                     array('class' => 'alert alert-danger'));
             } else {
+                $this->request->data['User']['Username'] = trim($this->request->data['Driver']['driver_phone']);
+                $this->User->save($this->request->data['User'], null, null);
                 $this->Driver->save($this->request->data['Driver'], null, null);
-                $this->Session->setFlash('<p>' . __('Driver Successfully Created', true) . '</p>', 'default',
+                $this->Session->setFlash('<p>' . __('Driver Successfully updated', true) . '</p>', 'default',
                     array('class' => 'alert alert-success'));
                 $this->redirect(array('controller' => 'drivers', 'action' => 'index', 'store' => true));
             }
@@ -484,7 +501,14 @@ class DriversController extends AppController
     {
         $this->layout = 'assets';
 
-        $orderDetails = $this->Order->findById($orderId);
+        $availDrivers = array();
+
+        $orderDetails = $this->Order->find('first', array(
+                                'conditions' => array('Order.id' => $orderId,
+                                            'Order.store_id' => $this->Auth->User('Store.id'))));
+        if (empty($orderDetails)) {
+            $this->render('/Errors/error400');
+        }
 
         if ($orderDetails['Order']['driver_id']) {
             $this->Session->setFlash(__('Order already assigned to driver', true),
@@ -512,7 +536,7 @@ class DriversController extends AppController
                         $pickup['Latitude'],
                         $pickup['Longitude']);
 
-                    if (!empty($distance)) {
+                    //if (!empty($distance)) {
 
                         $availDrivers[$key]['Driver']['id'] = $value['Driver']['id'];
                         $availDrivers[$key]['Driver']['status'] = $value['Driver']['status'];
@@ -522,13 +546,10 @@ class DriversController extends AppController
                         $availDrivers[$key]['Driver']['driver_phone'] = $value['Driver']['driver_phone'];
                         $availDrivers[$key]['Driver']['vehicle_name'] = $value['Vehicle']['vehicle_name'];
                         $availDrivers[$key]['Driver']['vehicle_model'] = $value['Vehicle']['vehicle_name'];
-                    }
+                    //}
 
                 }
             }
-
-            /*echo "<pre>"; print_r($availDrivers);
-            exit();*/
 
             $this->set(compact('orderId', 'availDrivers'));
         }

@@ -29,7 +29,7 @@
 		<link rel="stylesheet" href="<?php echo $this->webroot; ?>frontend/css/mobile.css" type="text/css" media="all">
 		<link rel="stylesheet" href="<?php echo $this->webroot; ?>frontend/css/mobile_1.css" type="text/css" media="all">		
 
-		<link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,400italic" rel="stylesheet" type="text/css">
+		<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,400italic" rel="stylesheet" type="text/css">
 
 		 <?php
 	
@@ -268,6 +268,10 @@
 					"data[Customer][first_name]": {
 						required: true,
 					},
+					"data[Customer][customer_email]": {
+						required: true,
+		                email:true,
+					},
 		            "data[Customer][customer_phone]": {
 						required: true,
 		                number:true,
@@ -276,6 +280,10 @@
 				messages: { 
 					"data[Customer][first_name]": {
 						required: "<?php echo __('Please enter firstname'); ?>",
+					},
+		            "data[Customer][customer_email]": {
+						required: "<?php echo __('Please enter the email'); ?>",
+						email : "<?php echo __('Please enter valid email'); ?>",
 					},
 		            "data[Customer][customer_phone]": {
 						required: "<?php echo __('Please enter phone number'); ?>",
@@ -659,7 +667,13 @@
 			</script>
 	<?php
 		}
-	?>
+	if (!empty($siteSetting['Sitesetting']['google_analytics'])) {
+		echo '<script>'. $siteSetting['Sitesetting']['google_analytics']. '</script>';
+	}
+
+	if (!empty($siteSetting['Sitesetting']['woopra_analytics'])) {
+		echo '<script>'. $siteSetting['Sitesetting']['woopra_analytics']. '</script>';
+	} ?>
 
 
 	</body>

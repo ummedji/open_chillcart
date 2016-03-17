@@ -157,7 +157,7 @@
 							                                  'label' => false,
 							                                  'value' => $this->request->data['Store']['store_logo'])); ?>
 							                   
-											        <img class="img-responsive img_fields" src="https://s3.amazonaws.com/<?php echo $siteBucket.'/storelogos/'.$this->request->data['Store']['store_logo']; ?>">
+											        <img class="img-responsive img_fields" src="<?php echo $cdn.'/storelogos/'.$this->request->data['Store']['store_logo']; ?>">
 											        
 										    </div>
 										</div>
@@ -412,8 +412,7 @@
 
 															<div class="clearfix">
 																<div class="col-md-1 itemCont"> <?php
-																	echo $this->Form->checkbox(
-																					$value['DeliveryTimeSlot']['slot_id'],
+																	echo $this->Form->checkbox('',
 								                                            array('class'=>'group-checkable',
 								                                                  'name'=>'data[DeliveryTimeSlot]['.$key.'][slot_id]',
 								                                                  'label'=>false,
@@ -439,7 +438,7 @@
 													
 															<div class="clearfix">
 																<div class="col-md-1 itemCont"> <?php
-																	echo $this->Form->checkbox($value['DeliveryTimeSlot']['slot_id'],
+																	echo $this->Form->checkbox('',
 								                                            array('class'=>'group-checkable',
 								                                                  'name'=>'data[DeliveryTimeSlot]['.$key.'][slot_id]',
 								                                                  'label'=>false,

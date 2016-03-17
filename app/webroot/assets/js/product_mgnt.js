@@ -1,5 +1,9 @@
 jQuery().ready(function () {
 
+    setTimeout(function(){
+        $("#flashMessage").hide();
+    }, 3000);
+
     var ProductStoreIndexForm = jQuery("#ProductStoreIndexForm").validate({
         rules: {
             "data[excel]": {

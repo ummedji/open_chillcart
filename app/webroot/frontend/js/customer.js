@@ -41,22 +41,25 @@ function locationFillter() {
 
 
 //customer delete action
-function customerdelete(ids, models) {
-    var id = ids;
-    var model = models;
-    $.post(rp + 'admin/Commons/deleteProcess', {'id': id, 'model': model}, function (response) {
+function customerdelete(id, model) {
+    $.post(rp+'customer/Customers/deleteaddress',{'id':id,'model':model}, function(response) {
+        $("#record"+id).remove();
     });
-    $("#record" + id).remove();
-
 }
+
 //Status Change
-function statusChange(ids, models) {
-    var id = ids;
-    var model = models;
-    $.post(rp + 'admin/Commons/statusChanges', {'id': id, 'model': model}, function (response) {
-
-    });
+function statusChange(id, model) {
+    $.post(rp+'customer/Customers/addressbookStatus',{'id':id,'model':model},function(response) {
+    })
 }
+
+// delete card
+function deletecard(id) {
+    $.post(rp + 'customer/Customers/deletecard', {'id': id}, function (response) {
+        $("#card" + id).remove();
+    })
+}
+
 //OrderInvoice Details Print Format 
 function documentPrints() {
     var win = window.open('', 'printwindow');
@@ -70,14 +73,12 @@ function documentPrints() {
     win.close();
 }
 
-function pdfdownload(ids) {
-    var id = ids;
+function pdfdownload(id) {
     $.post(rp + 'customer/Customers/downloadiInvoice', {'id': id}, function (response) {
         // alert(response) ;
     });
 }
-function orderid(ids) {
-    var id = ids;
+function orderid(id) {
     $('#reviewId').val(id);
 
 }
@@ -112,26 +113,3 @@ $(document).ready(function () {
     })
 
 });
-
-function deletecard(ids) {
-    var id = ids;
-    $.post(rp + 'customer/Customers/deletecard', {'id': id}, function (response) {
-
-    })
-    $("#card" + id).remove();
-}
-function statusChange(ids, models) {
-    var id = ids;
-    var model = models;
-    $.post(rp + 'customer/Customers/addressbookStatus', {'id': id, 'model': model}, function (response) {
-
-    })
-}
-function customerdelete(ids, models) {
-    var id = ids;
-    var model = models;
-    $.post(rp + 'customer/Customers/deleteaddress', {'id': id, 'model': model}, function (response) {
-    });
-    $("#record" + id).remove();
-
-}

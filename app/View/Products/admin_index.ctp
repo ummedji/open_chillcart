@@ -25,17 +25,15 @@
 							
 						</div>
 					</div>
-					<div class="portlet-body"> <?php
-
-						echo $this->Form->create('Product', array(
+					<div class="portlet-body">
+						<div class="col-sm-9 no-padding">
+							<?php echo $this->Form->create('Product', array(
 													'enctype' => 'multipart/form-data',
 													'url'=>array("controller"=>'products',
 													'action'=>'importProduct',
 													'admin' => false),'type'=>'file')); ?>
-						<div class="row margin-b-10">
-							<span class="col-md-8" id="addnewbutton_toggle">
-								<div class="row">
-									<span class="col-md-5"> 
+								<span class="col-md-12 no-padding" id="addnewbutton_toggle">
+									<span class="col-md-4"> 
 										<?php echo $this->Form->input('Product.store_id',
 												array('type'  => 'select',
 													  'class' => 'form-control',
@@ -44,72 +42,100 @@
 									 				  'label'=> false,
 									 				  'div' => false));
 										?>
+										<label class="error" id="storeError" generated="true" for="ProductStoreId"></label>
 									</span>
-			               			<span class="col-md-5">
+									<span class="error" id="storeError"></span>
+			               			<span class="col-md-4 no-padding">
 				               			<?php echo $this->form->input('excel', array('type' => 'file',
 			            														'class' => 'form-control',
 			            														'label' => false,
 			            														'div' => false)); 
 			            				?>
+			            				<label class="error" id="excelError" generated="true" for="excel"></label>
 									</span>
 			               			<span class="col-md-2"> 
-			               				<?php  echo $this->Form->button('Save',array( 'Class' => 'btn btn-primary' ));
+			               				<?php  echo $this->Form->button('Import',
+			               											array('Class' => 'btn btn-primary',
+			               													'onclick' => 'return importValidate();'
+			               													));
 		               					echo $this->Form->end(); ?>
 		               				</span>
-		               			</div>
-							</span>
-	               			<span class="col-md-4 text-right">  <?php
-	               				echo $this->Html->link('<i class="fa fa-download"></i> Download',
+		               			</span>
+		               	</div>
+		               	<div class="col-sm-3">
+		               			<?php
+	               				echo $this->Html->link('<i class="fa fa-download"></i> Sample',
 												array('action' => 'download','admin' => false),
-												array('Class'=>'btn btn-primary',
+												array('Class'=>'btn btn-primary pull-right no-margin',
 													'escape'=>false)
 												);
 	               				 ?>
-							</span> 
-						</div>
-
-						<?php echo $this->Form->create('Commons', array('class'=>'form-horizontal',
+	               		</div>
+	               		<div class="col-sm-12">
+	               			<hr></div>
+	               		<?php echo $this->Form->create('Commons', array('class'=>'form-horizontal',
 							'controller'=>'Commons','action'=>'multipleSelect')); ?>
+
 						<div class="table-toolbar">
 							
-								<div id="send" style="display:none" class="pull-left">
-									<div class="pull-right" id="addnewbutton_toggle"> <?php
-										echo $this->Form->hidden("Model",array('value'=>'Product',
-											'name'=>'data[name]'));
-										if (!empty($products_detail)) {
-											echo $this->Form->submit(__('Active'),
-												array('class'=>'btn btn-success btn-sm',
-													'name'=> 'actions',
-													'div'=>false,
-													'onclick'=>'return recorddelete(this);'
-												)); ?> <?php
-											echo $this->Form->submit(__('Deactive'),
-												array('class'=>'btn btn-warning btn-sm',
-													'name'=> 'actions',
-													'div'=>false,
-													'onclick'=>'return recorddelete(this);'
-												)); ?> <?php
-											echo $this->Form->submit(__('Delete'),
-												array('Class'=>'btn btn-danger btn-sm',
-													'name'=> 'actions',
-													'div'=>false,
-													'onclick'=>'return recorddelete(this);'
-												));
-										} ?>
-									</div>
-								</div>
-								
-									<div class="btn-group pull-right"><?php
-										echo $this->Html->link('Add New <i class="fa fa-plus"></i>',
-																array('controller'=>'Products',
-																	   'action'=>'add'),
-																array('class'=>'btn green',
-																		'escape'=>false)
-															  );
-										?>
-									</div>
 							
+							<div id="send" style="display:none" class="pull-left">
+								<div class="pull-right" id="addnewbutton_toggle"> <?php
+									echo $this->Form->hidden("Model",array('value'=>'Product',
+										'name'=>'data[name]'));
+									if (!empty($products_detail)) {
+										echo $this->Form->submit(__('Active'),
+											array('class'=>'btn btn-success btn-sm',
+												'name'=> 'actions',
+												'div'=>false,
+												'onclick'=>'return recorddelete(this);'
+											)); ?> <?php
+										echo $this->Form->submit(__('Deactive'),
+											array('class'=>'btn btn-warning btn-sm',
+												'name'=> 'actions',
+												'div'=>false,
+												'onclick'=>'return recorddelete(this);'
+											)); ?> <?php
+										echo $this->Form->submit(__('Delete'),
+											array('Class'=>'btn btn-danger btn-sm',
+												'name'=> 'actions',
+												'div'=>false,
+												'onclick'=>'return recorddelete(this);'
+											));
+									} ?>
+								</div>
+							</div>
+
+							
+							<div class="btn-group pull-right"><?php
+								echo $this->Html->link('Add New <i class="fa fa-plus"></i>',
+														array('controller'=>'Products',
+															   'action'=>'add'),
+														array('class'=>'btn green',
+																'escape'=>false)
+													  );
+								?>
+							</div>
+							<span class="col-md-4 pull-right no-padding"> 
+               					<label class="control-label col-sm-3">Filter</label>
+								<span class="col-md-9"> 
+									<?php echo $this->Form->input('Store.Storeproduct',
+											array('type'  => 'select',
+												  'class' => 'form-control',
+												  'options'=> array($stores),
+												  'empty' => 'Select Store',
+												  'id' 		=> 'Storeproduct', 
+												  'onchange' => 'storeProducts();',
+								 				  'label'=> false,
+								 				  'div' => false));
+									?>
+									<label class="error" id="storeProductError" generated="true" for="ProductStoreId"></label>
+								</span>
+							
+							</span> 
+						
 						</div>
+						
 						<table class="table table-striped table-bordered table-hover checktable" id="sample_12">
 							<thead>
 								<tr>

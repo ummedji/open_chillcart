@@ -87,14 +87,15 @@
 						</div>
 					</div>
 
-					<div class="signup-footer">
-						<div class="col-md-6"> <?php 
+					<div class="signup-footer clearfix">
+							<div class="col-md-6 col-xs-5"> <?php 
 							echo $this->Form->submit(__('Register')); ?>
 						</div>
-						<div class="col-md-6">
-							<div class="margin-t-5 text-right">
-								<a class="linkRight" href="<?php echo $siteUrl.'/customerlogin'; ?>"> <?php echo __('Already User', true); ?> ?</a>
-
+						<div class="col-md-6 col-xs-7">
+							<div class="row">
+								<div class="text-right col-md-11">
+									<a class="linkRight" href="<?php echo $siteUrl.'/customerlogin'; ?>"> <?php echo __('Already User', true); ?> ?</a>
+								</div>
 							</div>
 						</div>
 					</div> <?php

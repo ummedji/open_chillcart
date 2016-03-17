@@ -361,11 +361,12 @@
 									<label class="col-md-3 control-label">Image <span class="star"></span></label>
 									<div class="col-md-8"><?php
 									$store_id = $getProductData['Product']['store_id'];
+									$images = '';
 										foreach ($getProductData['ProductImage'] as $keys => $value) {
 											$images = $images.$value['id'].',';
 										 ?>
 											<div class="uploading_items" id="image<?php echo $value['id']; ?>">
-											<img  src="https://s3.amazonaws.com/<?php echo $siteBucket; ?>/stores/products/carts/<?php echo $value['image_alias']; ?>" >
+											<img  src="<?php echo $cdn; ?>/stores/products/carts/<?php echo $value['image_alias']; ?>" >
 											<a href="javascript:;" class="ItemRemove" onclick="deleteProductImage('<?php echo $value['id']; ?>');">
 				                            	<i class="fa fa-times"></i>
 				                            </a></div><?php

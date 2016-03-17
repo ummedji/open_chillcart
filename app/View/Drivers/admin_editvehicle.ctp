@@ -1,6 +1,6 @@
 <div class="contain">
 	<div class="contain">
-		<h3 class="page-title">vihicle Info</h3>
+		<h3 class="page-title">vehicle Info</h3>
 		<div class="page-bar">
 			<ul class="page-breadcrumb">
 				<li>
@@ -12,7 +12,7 @@
 					<a href="<?php echo $siteUrl.'/admin/drivers/index'; ?>">Dispatch</a>					<i class="fa fa-angle-right"></i>
 				</li>
 				<li>
-					<a href="#">vihicle Info</a>
+					<a href="#">vehicle Info</a>
 				</li>
 			</ul>
 		</div>
@@ -23,7 +23,7 @@
 				<div class="portlet box blue-hoki">
 					<div class="portlet-title">
 						<div class="caption">
-							<i class="fa fa-user"></i> vihicle Info
+							<i class="fa fa-user"></i> vehicle Info
 						</div>
 						<div class="tools">
 							

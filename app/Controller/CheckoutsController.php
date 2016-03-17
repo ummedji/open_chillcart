@@ -50,9 +50,12 @@ class CheckoutsController extends AppController
 
         $this->ShoppingCart->recursive = 2;
         $shopCartDetails = $this->ShoppingCart->find('all', array(
-            'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
-            'order' => array('ShoppingCart.store_id'),
-            'group' => 'ShoppingCart.store_id'));
+                                        'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
+                                        'order' => array('ShoppingCart.store_id'),
+                                        'group' => 'ShoppingCart.store_id'));
+        if (empty($shopCartDetails)) {
+            $this->redirect(array('controller' => 'searches', 'action' => 'index'));
+        }
 
         foreach ($shopCartDetails as $keys => $values) {
 
@@ -162,8 +165,7 @@ class CheckoutsController extends AppController
     {
 
         $data = $this->Functions->parseSerialize($this->params['data']['formData']);
-        $this->request->data = $data['data'];
-
+        $this->request->data = $data['amp;data'];
         if (!empty($this->request->data['StripeCustomer'])) {
             $datas = array("stripeToken" => $this->request->data['StripeCustomer']['stripe_token_id']);
             $this->request->data['StripeCustomer']['customer_id'] = $this->Auth->User('Customer.id');
@@ -392,7 +394,7 @@ class CheckoutsController extends AppController
             //echo "<pre>"; print_r($offerDetails);
 
         }
-        $this->ShoppingCart->recursive = 3;
+        //$this->ShoppingCart->recursive = 3;
         $shopCart = $this->ShoppingCart->find('all', array(
             'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
             'order' => array('ShoppingCart.store_id')));

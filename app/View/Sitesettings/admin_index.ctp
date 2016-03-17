@@ -37,6 +37,9 @@
 								<li><a href="#sms" data-toggle="tab">SMS</a></li>
 								<li><a href="#MetaTags" data-toggle="tab">Meta Tags</a></li>
 								<li><a href="#Language" data-toggle="tab">Language</a></li>
+								<li><a href="#mailchimp" data-toggle="tab">MailChimp</a></li>
+								<li><a href="#facebook" data-toggle="tab">Facebook</a></li>
+								<li><a href="#google" data-toggle="tab">Google+</a></li>
 							</ul>
 						</div>
 						<?php
@@ -65,7 +68,7 @@
                                 								array('label' => false,
                                 									  'class' => 'required',
                                 									  'type'  => 'file')); ?>
-                                				<div class="col-sm-4 backlogocol"><img src="<?php echo $siteUrl?>/siteicons/logo.png" alt=""></div>
+                                				<div class="col-sm-4 backlogocol"><img src="<?php echo $siteUrl?>/siteicons/logo.png" height="70" width="288"></div>
 											</div>
 										</div>
 										<div class="form-group">
@@ -75,7 +78,7 @@
                                 								array('label' => false,
                                 									  'class' => 'required',
                                 									  'type'  => 'file')); ?>
-                                				<div class="col-sm-4 backlogocol"><img src="<?php echo $siteUrl?>/siteicons/fav.ico" alt=""></div>
+                                				<div class="col-sm-4 backlogocol"><img src="<?php echo $siteUrl?>/siteicons/fav.ico" height="60" width="60"></div>
 											</div>
 										</div>
 										<div class="form-group">
@@ -259,7 +262,7 @@
 								</div>
 								<div class="tab-pane fade" id="mail">
 									<div class="form-body">	
-										<div id="mailError"></div>
+										<label id="mailError" class="error"></label>
 										<div class="form-group">
 											<label class="col-md-3 control-label">Mail Option <span class="star">*</span></label>
 											<div class="col-md-6 col-lg-4">
@@ -330,7 +333,7 @@
 								</div>
 								<div class="tab-pane fade" id="invoice">
 									<div class="form-body">
-										<div id="invoiceError"></div>
+										<label id="invoiceError" class="error"></label>
 										<div class="form-group">
 											<label class="col-md-3 control-label">VAT No</label>
 											<div class="col-md-6 col-lg-4"> <?php
@@ -417,7 +420,7 @@
 								</div>
 								<div class="tab-pane fade" id="sms">
 									<div class="form-body">
-										<div id="smsError"></div>
+										<label id="smsError" class="error"></label>
 										<div class="form-group">
 											<label class="col-md-3 control-label">SMS Token id</label>
 											<div class="col-md-6 col-lg-4"> <?php
@@ -484,7 +487,7 @@
 
 								<div class="tab-pane fade" id="Language">
 									<div class="form-body">
-										<div id="languageError"></div>
+										<label id="languageError" class="error"></label>
 										<div class="form-group">
 											<label class="col-md-3 control-label">Default language <span class="star">*</span></label>
 											<div class="col-md-6 col-lg-4">
@@ -532,12 +535,95 @@
 										</div>
 									</div>
 								</div>
+								<div class="tab-pane fade" id="mailchimp">
+									<div class="form-body">
+										<label id="mailchimpError" class="error"></label>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Key</label>
+											<div class="col-md-6 col-lg-4"> <?php
+												echo $this->Form->input('mailchimp_key',
+													array('class' => 'form-control',
+														'type'  => 'text',
+														'label' => false)); ?>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">List id</label>
+											<div class="col-md-6 col-lg-4"> <?php
+												echo $this->Form->input('mailchimp_list_id',
+													array('class' => 'form-control',
+														'type'  => 'text',
+														'label' => false)); ?>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="tab-pane fade" id="facebook">
+									<div class="form-body">
+										<label id="facebookError" class="error"></label>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Api id</label>
+											<div class="col-md-6 col-lg-4"> <?php
+												echo $this->Form->input('facebook_api_id',
+													array('class' => 'form-control',
+														'type'  => 'text',
+														'label' => false)); ?>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Secret key</label>
+											<div class="col-md-6 col-lg-4"> <?php
+												echo $this->Form->input('facebook_secret_key',
+													array('class' => 'form-control',
+														'type'  => 'text',
+														'label' => false)); ?>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="tab-pane fade" id="google">
+									<div class="form-body">
+										<label id="googleError" class="error"></label>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Api id</label>
+											<div class="col-md-6 col-lg-4"> <?php
+												echo $this->Form->input('google_api_id',
+													array('class' => 'form-control',
+														'type'  => 'text',
+														'label' => false)); ?>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Secret key</label>
+											<div class="col-md-6 col-lg-4"> <?php
+												echo $this->Form->input('google_secret_key',
+													array('class' => 'form-control',
+														'type'  => 'text',
+														'label' => false)); ?>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div id="others" class="form-body" style="display:none">
+									<div class="form-group">
+										<label class="col-md-3 control-label"> Other Language<span class="star">*</span></label>
+										<div class="col-md-6 col-lg-4">
+											<div class="radio-list"> <?php
+												echo $this->Form->input('other_language',
+													array('class' => 'form-control',
+														'label' => false)); ?>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
 							<div class="form-actions">
 								<div class="row">
 									<div class="col-md-offset-3 col-md-9">
 							  			<?php
-					                  		echo $this->Form->button('<i class="fa fa-check"></i> Submit',						                              array('class'=>'btn purple',						                              		'onclick' => 'return validate();')); 
+					                  		echo $this->Form->button('<i class="fa fa-check"></i> Submit',						           array('class'=>'btn purple',	
+					                  										'onclick' => 'return validate();')); 
 						                ?>
 									</div>
 								</div>

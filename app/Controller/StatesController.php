@@ -14,7 +14,7 @@ class StatesController extends AppController
      */
     public function admin_index()
     {
-        if ($this->request->params['pass'][0]) {
+        if (isset($this->request->params['pass'][0])) {
             $state_list = $this->State->find('all', array(
                 'conditions' => array('State.country_id' => $this->request->params['pass'][0],
                     'NOT' => array('State.status' => 3))));

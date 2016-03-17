@@ -6,7 +6,6 @@ class CategoriesController extends AppController
 {
     public $helpers = array('Html', 'Form', 'Session', 'Javascript');
     public $uses = array('Category');
-
     /**
      * CategoriesController::admin_index()
      * Categories Management Process
@@ -61,6 +60,9 @@ class CategoriesController extends AppController
     public function admin_edit($id = null)
     {
         if (!empty($this->request->data['Category']['category_name'])) {
+
+            /*echo "<pre>"; print_r($this->request->data);
+            exit();*/
 
             $Category = $this->Category->find('first', array(
                 'conditions' => array(

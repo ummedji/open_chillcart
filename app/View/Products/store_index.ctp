@@ -32,7 +32,7 @@
 						<div class="row margin-b-10">
 							<span class="col-md-8" id="addnewbutton_toggle"> 
 								<div class="row">
-									<?php echo $this->Form->create('Product', array('enctype' => 'multipart/form-data','url'=>array("controller"=>'products','action'=>'importProduct',$store_id, 'admin' => false),'type'=>'file')); ?>
+									<?php echo $this->Form->create('Product', array('enctype' => 'multipart/form-data','url'=>array("controller"=>'products','action'=>'importProduct', 'admin' => false),'type'=>'file')); ?>
 									
 				               		<span class="col-md-5">
 										<?php echo $this->form->input('excel', array('type' => 'file',
