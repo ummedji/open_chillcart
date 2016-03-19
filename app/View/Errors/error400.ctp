@@ -17,7 +17,7 @@
  */
 ?>
 
-<CENTER><img title="404" alt="404" src="<?php echo $siteUrl; ?>/img/404.jpg"></CENTER>
+<CENTER><img title="404" alt="404" src="<?php echo $siteUrl; ?>/img/404_line.gif"></CENTER>
 
 <?php
 if (Configure::read('debug') > 0 ):

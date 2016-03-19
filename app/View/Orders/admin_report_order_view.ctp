@@ -48,13 +48,13 @@
 											<td width="60%">
 												<div class="address-detail">
 													<div class="resName"> <?php
-														echo $orders_list['ShoppingCart'][0]['Store']['store_name'];?>
+														echo $orders_list['Store']['store_name'];?>
 													</div> <?php
 
-													echo $orders_list['ShoppingCart'][0]['Store']['street_address'].', '.
-														 	$location[$orders_list['ShoppingCart'][0]['Store']['store_zip']].', '.
-														 	$cities[$orders_list['ShoppingCart'][0]['Store']['store_city']].', '.
-														 	$states[$orders_list['ShoppingCart'][0]['Store']['store_state']].'.'; ?>
+													echo $orders_list['Store']['street_address'].', '.
+														 	$location[$orders_list['Store']['store_zip']].', '.
+														 	$cities[$orders_list['Store']['store_city']].', '.
+														 	$states[$orders_list['Store']['store_state']].'.'; ?>
 												</div>
 											</td>
 										</tr>
@@ -197,7 +197,7 @@
 												<td>
 													<span class="col-md-12 no-padding">
 														<div class="pull-left">
-															<img alt="<?php echo $value['product_name']; ?>" src="<?php echo $cdn; ?>/stores/products/carts/<?php echo $value['product_image']; ?>" title="<?php echo $value['Store']['store_name']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/noimage.jpg"; ?>'">
+															<img alt="<?php echo $value['product_name']; ?>" src="<?php echo $cdn; ?>/stores/products/carts/<?php echo $value['product_image']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/noimage.jpg"; ?>'">
 														</div><?php
 														echo $value['product_name']; ?>
 														<br><?php

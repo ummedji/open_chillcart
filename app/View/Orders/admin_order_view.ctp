@@ -47,12 +47,12 @@
 											<td width="60%">
 												<div class="address-detail">
 													<div class="resName"> <?php
-														echo $order_detail['ShoppingCart'][0]['Store']['store_name'];?>
+														echo $order_detail['Store']['store_name'];?>
 													</div> <?php
-													echo $order_detail['ShoppingCart'][0]['Store']['street_address'].', '.
-														 	$location[$order_detail['ShoppingCart'][0]['Store']['store_zip']].', '.
-														 	$cities[$order_detail['ShoppingCart'][0]['Store']['store_city']].', '.
-														 	$states[$order_detail['ShoppingCart'][0]['Store']['store_state']].'.'; ?>
+													echo $order_detail['Store']['street_address'].', '.
+														 	$location[$order_detail['Store']['store_zip']].', '.
+														 	$cities[$order_detail['Store']['store_city']].', '.
+														 	$states[$order_detail['Store']['store_state']].'.'; ?>
 												</div>
 											</td>
 										</tr>

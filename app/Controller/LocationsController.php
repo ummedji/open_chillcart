@@ -13,7 +13,7 @@ class LocationsController extends AppController
      * @return void
      */
     public function admin_index($id) {
-        if ($id != '') {
+        if (isset($id) && $id != '') {
             //switch (trim($key)){
             //case 'locations';
             $location_list = $this->Location->find('all', array(

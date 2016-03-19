@@ -317,7 +317,7 @@ class MobileApiController extends AppController
                             /*if ($this->siteSetting['Setting']['isSms'] == 1) {
 
                                 $receiver  = '+91'.$ordStatus['Order']['customer_phone'];
-                                $message   = "Dear ".$ordStatus['Order']['customer_name'].", your Order ".$ordStatus['Order']['custom_order_id']."  has been ".$status.".";
+                                $message   = "Dear ".$ordStatus['Order']['customer_name'].", your Order ".$ordStatus['Order']['ref_number']."  has been ".$status.".";
                                 $this->Functions->sendSms($receiver, $message);
                             }*/
 
@@ -326,8 +326,8 @@ class MobileApiController extends AppController
 
                             /*if ($status == 'On the way') {
                                 $trackContent   = 'http://dispatchsystem.net/trackings/index.php?r='
-                                                .base64_encode($ordStatus['Order']['custom_order_id']);
-                                $trackSubject   = 'Track your order('.$ordStatus['Order']['custom_order_id'].')';
+                                                .base64_encode($ordStatus['Order']['ref_number']);
+                                $trackSubject   = 'Track your order('.$ordStatus['Order']['ref_number'].')';
                                 $adminMail      = $this->siteSetting['Setting']['siteemail'];
                                 $customerMail   = $ordStatus['Order']['customer_email'];
 
@@ -358,7 +358,7 @@ class MobileApiController extends AppController
                             $siteUrl = $this->siteUrl;
 
                             $mailContent = str_replace("{customerName}", $ordStatus['Order']['customer_name'], $mailContent);
-                            $mailContent = str_replace("{orderId}", $ordStatus['Order']['custom_order_id'], $mailContent);
+                            $mailContent = str_replace("{orderId}", $ordStatus['Order']['ref_number'], $mailContent);
                             $mailContent = str_replace("{status}", $status, $mailContent);
 
                             $email = new CakeEmail();
@@ -420,7 +420,7 @@ class MobileApiController extends AppController
                         $driverDetail = $this->Driver->findById($driverId);
 
                         //Push Notification
-                        $message = ($status == 'Accepted') ? $ordStatus['Order']['ref_number'] . ' - Order is not picked up by ' . $driverDetail['User']['firstname'] . ' ' . $driverDetail['User']['name'] : $ordStatus['Order']['custom_order_id'] . " - Order status changed to " . $status;
+                        $message = ($status == 'Accepted') ? $ordStatus['Order']['ref_number'] . ' - Order is not picked up by ' . $driverDetail['User']['firstname'] . ' ' . $driverDetail['User']['name'] : $ordStatus['Order']['ref_number'] . " - Order status changed to " . $status;
                         //$this->Notification->pushNotification($message);
                         //Send Order Status To Native Site
                         if (!empty($this->siteSetting['Setting']['url'])) {
@@ -506,23 +506,6 @@ class MobileApiController extends AppController
                             $orderDetails[$key]['CustomerName'] = $value['Order']['customer_name'];
                             $orderDetails[$key]['PaymentType'] = $value['Order']['payment_type'];
 
-
-                            /* $orderDetails[$key]['RestaurantName']         = stripslashes($value['Restaurant']['restaurant_name']);
-                             $orderDetails[$key]['CustomerName']           = stripslashes($value['Order']['customer_name']);
-                             $orderDetails[$key]['SourceAddress']          = stripslashes($value['Restaurant']['restaurant_address']);
-                             $orderDetails[$key]['SourceLatitude']         = $value['Restaurant']['latitude'];
-                             $orderDetails[$key]['SourceLongitude']        = $value['Restaurant']['longitude'];
-                             $orderDetails[$key]['DestinationAddress']     = stripslashes($value['Order']['delivery_address']);
-                             $orderDetails[$key]['DestinationLatitude']    = $value['Order']['delivery_latitude'];
-                             $orderDetails[$key]['DestinationLongitude']   = $value['Order']['delivery_longitude'];
-                             $orderDetails[$key]['OrderDate']              = $value['Order']['order_date'];
-                             $orderDetails[$key]['OrderTime']              = $value['Order']['order_time'];
-                             $orderDetails[$key]['OrderPrice']             = $value['Order']['total'];
-                             $orderDetails[$key]['OrderId']                = $value['Order']['id'];
-                             $orderDetails[$key]['OrderGenerateId']        = $value['Order']['custom_order_id'];
-                             $orderDetails[$key]['PaymentType']            = ($value['Order']['payment_type'] == null) ? '' : $value['Order']['payment_type'];
-                             $orderDetails[$key]['OrderStatus']            = $value['Statuses']['status'];*/
-
                         }
 
                         $response['success'] = 1;
@@ -587,20 +570,6 @@ class MobileApiController extends AppController
                             $orderDetails[$key]['CustomerName'] = $value['Order']['customer_name'];
                             $orderDetails[$key]['PaymentType'] = $value['Order']['payment_type'];
 
-
-                            /*$orderDetails[$key]['RestaurantName']         = stripslashes($value['Restaurant']['restaurant_name']);
-                            $orderDetails[$key]['SourceAddress']          = stripslashes($value['Restaurant']['restaurant_address']);
-                            $orderDetails[$key]['SourceLatitude']         = $value['Restaurant']['latitude'];
-                            $orderDetails[$key]['SourceLongitude']        = $value['Restaurant']['longitude'];
-                            $orderDetails[$key]['DestinationAddress']     = stripslashes($value['Order']['delivery_address']);
-                            $orderDetails[$key]['DestinationLatitude']    = $value['Order']['delivery_latitude'];
-                            $orderDetails[$key]['DestinationLongitude']   = $value['Order']['delivery_longitude'];
-                            $orderDetails[$key]['OrderDate']              = $value['Order']['order_date'];
-                            $orderDetails[$key]['OrderTime']              = $value['Order']['order_time'];
-                            $orderDetails[$key]['OrderPrice']             = $value['Order']['total'];
-                            $orderDetails[$key]['OrderId']                = $value['Order']['id'];
-                            $orderDetails[$key]['OrderGenerateId']        = $value['Order']['custom_order_id'];
-                            $orderDetails[$key]['OrderStatus']            = $value['Statuses']['status'];*/
                         }
                         $response['success'] = 1;
                         $response['orders'] = $orderDetails;
@@ -694,35 +663,6 @@ class MobileApiController extends AppController
                             $orderDetails[$key]['Hour'] = $hour;
                             $orderDetails[$key]['Min'] = $min;
                             $orderDetails[$key]['Sec'] = $sec;
-
-
-                            /*$datetime1 = new DateTime(date('Y-m-d G:i:s'));
-                            $datetime2 = new DateTime($value['Order']['updated']);
-                            $interval  = $datetime1->diff($datetime2);
-                            $hour      = $interval->format('%H');
-                            $min       = $interval->format('%I');
-                            $sec       = $interval->format('%S');
-                            $day       = $interval->format('%D');
-                            
-                            $orderDetails[$key]['StoreName']            = stripslashes($value['Restaurant']['restaurant_name']);
-                            $orderDetails[$key]['CustomerName']           = stripslashes($value['Order']['customer_name']);
-                            $orderDetails[$key]['SourceAddress']          = stripslashes($value['Restaurant']['restaurant_address']);
-                            $orderDetails[$key]['SourceLatitude']         = $value['Restaurant']['latitude'];
-                            $orderDetails[$key]['SourceLongitude']        = $value['Restaurant']['longitude'];
-                            $orderDetails[$key]['DestinationAddress']     = stripslashes($value['Order']['delivery_address']);
-                            $orderDetails[$key]['DestinationLatitude']    = $value['Order']['delivery_latitude'];
-                            $orderDetails[$key]['DestinationLongitude']   = $value['Order']['delivery_longitude'];
-                            $orderDetails[$key]['OrderDate']              = $value['Order']['order_date'];
-                            $orderDetails[$key]['OrderTime']              = $value['Order']['order_time'];
-                            $orderDetails[$key]['OrderPrice']             = $value['Order']['total'];
-                            $orderDetails[$key]['OrderId']                = $value['Order']['id'];
-                            $orderDetails[$key]['OrderGenerateId']        = $value['Order']['custom_order_id'];
-                            $orderDetails[$key]['PaymentType']            = ($value['Order']['payment_type'] == null) ? '' : $value['Order']['payment_type'];
-                            $orderDetails[$key]['OrderStatus']            = $value['Statuses']['status'];
-                            $orderDetails[$key]['Day']                    = $day;
-                            $orderDetails[$key]['Hour']                   = $hour;
-                            $orderDetails[$key]['Min']                    = $min;
-                            $orderDetails[$key]['Sec']                    = $sec;*/
                         }
                         $response['success'] = 1;
                         $response['orders'] = $orderDetails;
@@ -784,27 +724,6 @@ class MobileApiController extends AppController
                         $orderDet['status'] = $orderDetails['Order']['status'];
 
                         $orderDet['orderMenu'] = stripslashes_deep($orderDetails['ShoppingCart']);
-
-
-                        /*$orderDet['orderId']            = $orderDetails['Order']['custom_order_id'];
-                        $orderDet['customerName']       = stripslashes($orderDetails['Order']['customer_name']);
-                        $orderDet['customerAddress']    = stripslashes($orderDetails['Order']['delivery_address']);
-                        $orderDet['customerEmail']      = $orderDetails['Order']['customer_email'];
-                        $orderDet['customerPhone']      = $orderDetails['Order']['customer_phone'];
-                        $orderDet['restaurantName']     = stripslashes($orderDetails['Restaurant']['restaurant_name']);
-                        $orderDet['restaurantAddress']  = stripslashes($orderDetails['Restaurant']['restaurant_address']);
-                        $orderDet['offer']              = $orderDetails['Order']['offer'];
-                        $orderDet['tax']                = $orderDetails['Order']['tax'];
-                        $orderDet['deliveryCharge']     = $orderDetails['Order']['delivery_charge'];
-                        $orderDet['subTotal']           = $orderDetails['Order']['subtotal'];
-                        $orderDet['total']              = $orderDetails['Order']['total'];
-                        $orderDet['paymentType']        = $orderDetails['Order']['payment_type'];
-                        $orderDet['deliveryDate']       = $orderDetails['Order']['order_date'];
-                        $orderDet['deliveryTime']       = $orderDetails['Order']['order_time'];
-                        $orderDet['orderDate']          = $orderDetails['Order']['created'];
-                        $orderDet['status']             = $orderDetails['Statuses']['status'];
-                        $orderDet['Description']        = stripslashes($orderDetails['Order']['description']);
-                        $orderDet['orderMenu']          = stripslashes_deep($orderDetails['OrderItem']);*/
 
                         $response = $orderDet;
                     } else {

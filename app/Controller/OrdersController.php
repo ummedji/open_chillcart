@@ -116,15 +116,20 @@ class OrdersController extends AppController {
   //Admin side ReportManagement Based Order View
   public function admin_reportOrderView($id = null) {
     if (!empty($id)){
-      $this->Order->recursive = 2;
-      $orders_list = $this->Order->findByRefNumber($id);
+
+      $orders_list = $this->Order->find('first', array(
+                              'conditions' => array('Order.id' => $id,
+                                                    'Order.status' => 'Delivered')));
+      if (empty($orders_list)) {
+          $this->render('/Errors/error400');
+      }
 
       $cities = $this->City->find('list', array(
-                      'conditions' => array('City.state_id' => $orders_list['ShoppingCart'][0]['Store']['store_state']),
+                      'conditions' => array('City.state_id' => $orders_list['Store']['store_state']),
                       'fields' => array('id', 'city_name')));
 
       $location = $this->Location->find('list', array(
-                      'conditions' => array('Location.city_id' => $orders_list['ShoppingCart'][0]['Store']['store_city']),
+                      'conditions' => array('Location.city_id' => $orders_list['Store']['store_city']),
                       'fields' => array('id', 'area_name')));
 
       $this->set(compact('orders_list', 'cities', 'location'));
@@ -138,15 +143,18 @@ class OrdersController extends AppController {
   public function admin_orderView($id = null) {
     
     if(!empty($id)){
-      $this->Order->recursive =2 ;
-      $order_detail           = $this->Order->findById($id);
+      $order_detail = $this->Order->find('first', array(
+                              'conditions' => array('Order.id' => $id)));
+      if (empty($order_detail)) {
+          $this->render('/Errors/error400');
+      }
 
       $cities = $this->City->find('list', array(
-                      'conditions' => array('City.state_id' => $order_detail['ShoppingCart'][0]['Store']['store_state']),
+                      'conditions' => array('City.state_id' => $order_detail['Store']['store_state']),
                       'fields' => array('id', 'city_name')));
 
       $location = $this->Location->find('list', array(
-                      'conditions' => array('Location.city_id' => $order_detail['ShoppingCart'][0]['Store']['store_city']),
+                      'conditions' => array('Location.city_id' => $order_detail['Store']['store_city']),
                       'fields' => array('id', 'area_name')));
       
       $this->set(compact('order_detail', 'cities', 'location'));
@@ -307,7 +315,7 @@ class OrdersController extends AppController {
           }
 
           //OrderMail
-          //$this->ordermail($this->Order->id);
+          $this->ordermail($this->Order->id);
           $this->Order->id = '';
       }
 
@@ -417,6 +425,7 @@ class OrdersController extends AppController {
     if (!empty($id)){
       $orders_list = $this->Order->find('first', array(
                               'conditions' => array('Order.id' => $id,
+                                          'Order.status' => 'Delivered',
                                           'Order.store_id' => $this->Auth->User('Store.id'))));
       if (empty($orders_list)) {
           $this->render('/Errors/error400');
@@ -438,7 +447,6 @@ class OrdersController extends AppController {
    public function store_orderIndex() {
     $this->layout = 'assets';
     $id           = $this->Auth->User();
-    $this->Order->recursive =2 ;
     $order_list = $this->Order->find('all', array(
                           'conditions'=>array('Order.store_id'=>$id['Store']['id'],
                                             'Order.status' => 'Pending'),

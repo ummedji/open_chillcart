@@ -66,7 +66,7 @@ class ProductsController extends AppController {
             } else {
 
                 $this->request->data['Product']['store_id'] = $store_id;
-                $this->request->data['Product']['brand_id'] =  ($this->request->data['Product']['brand_id'] != '') ? 
+                $this->request->data['Product']['brand_id'] =  (isset($this->request->data['Product']['brand_id']) &&                                               $this->request->data['Product']['brand_id'] != '') ? 
                                                                 $this->request->data['Product']['brand_id'] : 0;
                 $this->request->data['Product']['sub_category_id'] =
                                                       ($this->request->data['Product']['sub_category_id'] != '') ? 
@@ -359,7 +359,7 @@ class ProductsController extends AppController {
               } else {
 
                   $this->request->data['Product']['store_id']        = $store_id;
-                  $this->request->data['Product']['brand_id'] =  ($this->request->data['Product']['brand_id'] != '') ? 
+                  $this->request->data['Product']['brand_id'] =  (isset($this->request->data['Product']['brand_id']) &&                                               $this->request->data['Product']['brand_id'] != '') ? 
                                                                 $this->request->data['Product']['brand_id'] : 0;
                   //$this->request->data['Product']['product_image'] = $this->request->data['product_image'][0];
                   $this->request->data['Product']['sub_category_id'] =  

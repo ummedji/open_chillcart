@@ -50,7 +50,7 @@ elseif (getenv("APPLICATION_ENV") == "TESTING"):
   Configure::write('CakeS3', array(
         's3Key' => 'AKIAJ7UUZ7Q22HDUQKMA',
         's3Secret' => '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',
-        'bucket' => 'testing.chillcart.images',
+        'bucket' => 'demo.chillcart.images',
         'endpoint' => 's3-eu-west-1.amazonaws.com', // [optional] Only required if your endpoint is not s3-eu-west-1.amazonaws.com
         'cdn' => 'https://dnrskjoxjtgst.cloudfront.net'
     )
