@@ -105,9 +105,6 @@ class SitesettingsController extends AppController
         $user_id = $this->Auth->User();
         $site_id = $this->Sitesetting->findByUserId($user_id['id']);
         if (!empty($this->request->data)) {
-            $this->request->data['Sitesetting']['stripe_mode'] = $this->request->data['Sitesetting']['stripe_mode'];
-            $this->request->data['Sitesetting']['stripe_url'] = $this->request->data['Sitesetting']['stripe_url'];
-            $this->request->data['Sitesetting']['stripe_ac'] = $this->request->data['Sitesetting']['stripe_ac'];
             $this->request->data['Sitesetting']['id'] = $site_id['Sitesetting']['id'];
             $this->Sitesetting->save($this->request->data['Sitesetting'], null, null);
             $this->Session->setFlash('<p>' . __('Your Account Detail has been saved', true) . '</p>', 'default',

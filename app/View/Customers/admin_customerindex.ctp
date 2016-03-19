@@ -49,7 +49,7 @@
 									<td><?php echo $value['Location']['zip_code']; ?></td>
 									<td align="center">
                                         <a class="buttonStatus" href="javascript:void(0);" 
-                                        onclick="statusChange(<?php echo $value['CustomerAddressBook']['id'];?>,'customeraddress');">
+                                        onclick="statusChange(<?php echo $value['CustomerAddressBook']['id'];?>,'CustomerAddressBook');">
                                     <i class="fa fa-check"></i></a></td>
 									<td align="center">
 										<?php
@@ -60,7 +60,7 @@
 																array('class'=>'buttonEdit',
 																		'escape'=>false));?>
 										<a class="buttonAction" href="javascript:void(0);"
-                                        onclick="deleteprocess(<?php echo $value['CustomerAddressBook']['id'];?>,'customeraddress');" ><i class="fa fa-trash-o"></i></a>
+                                        onclick="deleteprocess(<?php echo $value['CustomerAddressBook']['id'];?>,'CustomerAddressBook');" ><i class="fa fa-trash-o"></i></a>
 		        						
 									</td>
 								</tr> <?php 
