@@ -1,9 +1,9 @@
 <?php
 /**
-* HybridAuth
-* http://hybridauth.sourceforge.net | http://github.com/hybridauth/hybridauth
-* (c) 2009-2014, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html
-*/
+ * HybridAuth
+ * http://hybridauth.sourceforge.net | http://github.com/hybridauth/hybridauth
+ * (c) 2009-2014, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html
+ */
 
 /**
  * HybridAuth storage manager interface
@@ -14,7 +14,7 @@ interface Hybrid_Storage_Interface
 
     public function get($key);
 
-    public function set( $key, $value );
+    public function set($key, $value);
 
     function clear();
 
@@ -24,5 +24,5 @@ interface Hybrid_Storage_Interface
 
     function getSessionData();
 
-    function restoreSessionData( $sessiondata);
+    function restoreSessionData($sessiondata);
 }

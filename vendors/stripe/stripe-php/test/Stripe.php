@@ -1,27 +1,28 @@
 <?php
 
-echo "Running the Stripe PHP bindings test suite.\n".
-     "If you're trying to use the Stripe PHP bindings you'll probably want ".
-     "to require('lib/Stripe.php'); instead of this file\n";
+echo "Running the Stripe PHP bindings test suite.\n" .
+    "If you're trying to use the Stripe PHP bindings you'll probably want " .
+    "to require('lib/Stripe.php'); instead of this file\n";
 
 $testURI = '/simpletest/autorun.php';
-$ok = @include_once(dirname(__FILE__).$testURI);
+$ok = @include_once(dirname(__FILE__) . $testURI);
 if (!$ok) {
-  $ok = @include_once(dirname(__FILE__).'/../vendor/simpletest'.$testURI);
+    $ok = @include_once(dirname(__FILE__) . '/../vendor/simpletest' . $testURI);
 }
 if (!$ok) {
-  echo "MISSING DEPENDENCY: The Stripe API test cases depend on SimpleTest. ".
-       "Download it at <http://www.simpletest.org/>, and either install it ".
-       "in your PHP include_path or put it in the test/ directory.\n";
-  exit(1);
+    echo "MISSING DEPENDENCY: The Stripe API test cases depend on SimpleTest. " .
+        "Download it at <http://www.simpletest.org/>, and either install it " .
+        "in your PHP include_path or put it in the test/ directory.\n";
+    exit(1);
 }
 
 // Throw an exception on any error
 // @codingStandardsIgnoreStart
 function exception_error_handler($errno, $errstr, $errfile, $errline)
 {
-  throw new ErrorException($errstr, $errno, 0, $errfile, $errline);
+    throw new ErrorException($errstr, $errno, 0, $errfile, $errline);
 }
+
 // @codingStandardsIgnoreEnd
 set_error_handler('exception_error_handler');
 error_reporting(E_ALL | E_STRICT);

@@ -24,14 +24,15 @@
  * @package       Cake.Test.Fixture
  * @subpackage    cake.tests.fixtures
  */
-class PrefixTestFixture extends CakeTestFixture {
+class PrefixTestFixture extends CakeTestFixture
+{
 
-	public $name = 'PrefixTest';
+    public $name = 'PrefixTest';
 
-	public $table = 'prefix_prefix_tests';
+    public $table = 'prefix_prefix_tests';
 
-	public $fields = array(
-		'id' => array('type' => 'integer', 'key' => 'primary'),
-	);
+    public $fields = array(
+        'id' => array('type' => 'integer', 'key' => 'primary'),
+    );
 
 }

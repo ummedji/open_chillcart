@@ -1,18 +1,20 @@
-<?php
+<
+? php
 
 /** This file is part of KCFinder project
-  *
-  *      @desc Miscellaneous functionality
-  *   @package KCFinder
-  *   @version 2.51
-  *    @author Pavel Tzonkov <pavelc@users.sourceforge.net>
-  * @copyright 2010, 2011 KCFinder Project
-  *   @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
-  *   @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
-  *      @link http://kcfinder.sunhater.com
-  */?>
+ *
+ *      @desc Miscellaneous functionality
+ *   @package KCFinder
+ *   @version 2.51
+ *    @author Pavel Tzonkov <pavelc@users.sourceforge.net>
+ * @copyright 2010, 2011 KCFinder Project
+ *   @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
+ *   @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
+ *      @link http://kcfinder.sunhater.com
+ */ ?
+>
 
-browser.drag = function(ev, dd) {
+browser.drag = function (ev, dd) {
     var top = dd.offsetY,
         left = dd.offsetX;
     if (top < 0) top = 0;
@@ -27,7 +29,7 @@ browser.drag = function(ev, dd) {
     });
 };
 
-browser.showDialog = function(e) {
+browser.showDialog = function (e) {
     $('#dialog').css({left: 0, top: 0});
     this.shadow();
     if ($('#dialog div.box') && !$('#dialog div.title').get(0)) {
@@ -35,13 +37,13 @@ browser.showDialog = function(e) {
         var title = $('#dialog').data('title') ? $('#dialog').data('title') : "";
         html = '<div class="title"><span class="close"></span>' + title + '</div>' + html;
         $('#dialog div.box').html(html);
-        $('#dialog div.title span.close').mousedown(function() {
+        $('#dialog div.title span.close').mousedown(function () {
             $(this).addClass('clicked');
         });
-        $('#dialog div.title span.close').mouseup(function() {
+        $('#dialog div.title span.close').mouseup(function () {
             $(this).removeClass('clicked');
         });
-        $('#dialog div.title span.close').click(function() {
+        $('#dialog div.title span.close').click(function () {
             browser.hideDialog();
             browser.hideAlert();
         });
@@ -68,13 +70,13 @@ browser.showDialog = function(e) {
             top: parseInt(($(window).height() - $('#dialog').outerHeight()) / 2) + 'px'
         });
     $(document).unbind('keydown');
-    $(document).keydown(function(e) {
+    $(document).keydown(function (e) {
         if (e.keyCode == 27)
             browser.hideDialog();
     });
 };
 
-browser.hideDialog = function() {
+browser.hideDialog = function () {
     this.unshadow();
     if ($('#clipboard').hasClass('selected'))
         $('#clipboard').removeClass('selected');
@@ -83,17 +85,17 @@ browser.hideDialog = function() {
     $('#dialog').html('');
     $('#dialog').data('title', null);
     $('#dialog').unbind();
-    $('#dialog').click(function() {
+    $('#dialog').click(function () {
         return false;
     });
     $(document).unbind('keydown');
-    $(document).keydown(function(e) {
+    $(document).keydown(function (e) {
         return !browser.selectAll(e);
     });
     browser.hideAlert();
 };
 
-browser.showAlert = function(shadow) {
+browser.showAlert = function (shadow) {
     $('#alert').css({left: 0, top: 0});
     if (typeof shadow == 'undefined')
         shadow = true;
@@ -115,19 +117,19 @@ browser.showAlert = function(shadow) {
         });
     }
     $(document).unbind('keydown');
-    $(document).keydown(function(e) {
+    $(document).keydown(function (e) {
         if (e.keyCode == 27) {
             browser.hideDialog();
             browser.hideAlert();
             $(document).unbind('keydown');
-            $(document).keydown(function(e) {
+            $(document).keydown(function (e) {
                 return !browser.selectAll(e);
             });
         }
     });
 };
 
-browser.hideAlert = function(shadow) {
+browser.hideAlert = function (shadow) {
     if (typeof shadow == 'undefined')
         shadow = true;
     if (shadow)
@@ -137,36 +139,36 @@ browser.hideAlert = function(shadow) {
     $('#alert').data('title', null);
 };
 
-browser.alert = function(msg, shadow) {
+browser.alert = function (msg, shadow) {
     msg = msg.replace(/\r?\n/g, "<br />");
     var title = $('#alert').data('title') ? $('#alert').data('title') : browser.label("Attention");
     $('#alert').html('<div class="title"><span class="close"></span>' + title + '</div><div class="message">' + msg + '</div><div class="ok"><button>' + browser.label("OK") + '</button></div>');
-    $('#alert div.ok button').click(function() {
+    $('#alert div.ok button').click(function () {
         browser.hideAlert(shadow);
     });
-    $('#alert div.title span.close').mousedown(function() {
+    $('#alert div.title span.close').mousedown(function () {
         $(this).addClass('clicked');
     });
-    $('#alert div.title span.close').mouseup(function() {
+    $('#alert div.title span.close').mouseup(function () {
         $(this).removeClass('clicked');
     });
-    $('#alert div.title span.close').click(function() {
+    $('#alert div.title span.close').click(function () {
         browser.hideAlert(shadow);
     });
     $('#alert').drag(browser.drag, {handle: "#alert div.title"});
     browser.showAlert(shadow);
 };
 
-browser.confirm = function(question, callBack) {
+browser.confirm = function (question, callBack) {
     $('#dialog').data('title', browser.label("Question"));
     $('#dialog').html('<div class="box"><div class="question">' + browser.label(question) + '<div class="buttons"><button>' + browser.label("No") + '</button> <button>' + browser.label("Yes") + '</button></div></div></div>');
     browser.showDialog();
-    $('#dialog div.buttons button').first().click(function() {
+    $('#dialog div.buttons button').first().click(function () {
         browser.hideDialog();
     });
-    $('#dialog div.buttons button').last().click(function() {
+    $('#dialog div.buttons button').last().click(function () {
         if (callBack)
-            callBack(function() {
+            callBack(function () {
                 browser.hideDialog();
             });
         else
@@ -175,15 +177,15 @@ browser.confirm = function(question, callBack) {
     $('#dialog div.buttons button').get(1).focus();
 };
 
-browser.shadow = function() {
+browser.shadow = function () {
     $('#shadow').css('display', 'block');
 };
 
-browser.unshadow = function() {
+browser.unshadow = function () {
     $('#shadow').css('display', 'none');
 };
 
-browser.showMenu = function(e) {
+browser.showMenu = function (e) {
     var left = e.pageX;
     var top = e.pageY;
     if (($('#dialog').outerWidth() + left) > $(window).width())
@@ -198,22 +200,22 @@ browser.showMenu = function(e) {
     $('#dialog').fadeIn();
 };
 
-browser.fileNameDialog = function(e, post, inputName, inputValue, url, labels, callBack, selectAll) {
+browser.fileNameDialog = function (e, post, inputName, inputValue, url, labels, callBack, selectAll) {
     var html = '<form method="post" action="javascript:;">' +
         '<div class="box">' +
         '<input name="' + inputName + '" type="text" /><br />' +
         '<div style="text-align:right">' +
         '<input type="submit" value="' + _.htmlValue(this.label("OK")) + '" /> ' +
         '<input type="button" value="' + _.htmlValue(this.label("Cancel")) + '" onclick="browser.hideDialog(); browser.hideAlert(); return false" />' +
-    '</div></div></form>';
+        '</div></div></form>';
     $('#dialog').html(html);
     $('#dialog').data('title', this.label(labels.title));
     $('#dialog input[name="' + inputName + '"]').attr('value', inputValue);
     $('#dialog').unbind();
-    $('#dialog').click(function() {
+    $('#dialog').click(function () {
         return false;
     });
-    $('#dialog form').submit(function() {
+    $('#dialog form').submit(function () {
         var name = this.elements[0];
         name.value = $.trim(name.value);
         if (name.value == '') {
@@ -236,13 +238,13 @@ browser.fileNameDialog = function(e, post, inputName, inputValue, url, labels, c
             url: url,
             data: post,
             async: false,
-            success: function(data) {
+            success: function (data) {
                 if (browser.check4errors(data, false))
                     return;
                 if (callBack) callBack(data);
                 browser.hideDialog();
             },
-            error: function() {
+            error: function () {
                 browser.alert(browser.label("Unknown error."), false);
             }
         });
@@ -250,12 +252,12 @@ browser.fileNameDialog = function(e, post, inputName, inputValue, url, labels, c
     });
     browser.showDialog(e);
     $('#dialog').css('display', 'block');
-    $('#dialog input[type="submit"]').click(function() {
+    $('#dialog input[type="submit"]').click(function () {
         return $('#dialog form').submit();
     });
     var field = $('#dialog input[type="text"]');
     var value = field.attr('value');
-    if (!selectAll && /^(.+)\.[^\.]+$/ .test(value)) {
+    if (!selectAll && /^(.+)\.[^\.]+$/.test(value)) {
         value = value.replace(/^(.+)\.[^\.]+$/, "$1");
         _.selection(field.get(0), 0, value.length);
     } else {
@@ -264,14 +266,14 @@ browser.fileNameDialog = function(e, post, inputName, inputValue, url, labels, c
     }
 };
 
-browser.orderFiles = function(callBack, selected) {
+browser.orderFiles = function (callBack, selected) {
     var order = _.kuki.get('order');
     var desc = (_.kuki.get('orderDesc') == 'on');
 
     if (!browser.files || !browser.files.sort)
         browser.files = [];
 
-    browser.files = browser.files.sort(function(a, b) {
+    browser.files = browser.files.sort(function (a, b) {
         var a1, b1, arr;
         if (!order) order = 'name';
 
@@ -310,7 +312,7 @@ browser.orderFiles = function(callBack, selected) {
     browser.initFiles();
 };
 
-browser.humanSize = function(size) {
+browser.humanSize = function (size) {
     if (size < 1024) {
         size = size.toString() + ' B';
     } else if (size < 1048576) {
@@ -329,7 +331,7 @@ browser.humanSize = function(size) {
     return size;
 };
 
-browser.baseGetData = function(act) {
+browser.baseGetData = function (act) {
     var data = 'browse.php?type=' + encodeURIComponent(this.type) + '&lng=' + this.lang;
     if (act)
         data += "&act=" + act;
@@ -338,16 +340,16 @@ browser.baseGetData = function(act) {
     return data;
 };
 
-browser.label = function(index, data) {
+browser.label = function (index, data) {
     var label = this.labels[index] ? this.labels[index] : index;
     if (data)
-        $.each(data, function(key, val) {
+        $.each(data, function (key, val) {
             label = label.replace('{' + key + '}', val);
         });
     return label;
 };
 
-browser.check4errors = function(data, shadow) {
+browser.check4errors = function (data, shadow) {
     if (!data.error)
         return false;
     var msg;
@@ -359,11 +361,11 @@ browser.check4errors = function(data, shadow) {
     return true;
 };
 
-browser.post = function(url, data) {
+browser.post = function (url, data) {
     var html = '<form id="postForm" method="POST" action="' + url + '">';
-    $.each(data, function(key, val) {
+    $.each(data, function (key, val) {
         if ($.isArray(val))
-            $.each(val, function(i, aval) {
+            $.each(val, function (i, aval) {
                 html += '<input type="hidden" name="' + _.htmlValue(key) + '[]" value="' + _.htmlValue(aval) + '" />';
             });
         else
@@ -375,7 +377,7 @@ browser.post = function(url, data) {
     $('#postForm').get(0).submit();
 };
 
-browser.fadeFiles = function() {
+browser.fadeFiles = function () {
     $('#files > div').css({
         opacity: '0.4',
         filter: 'alpha(opacity:40)'

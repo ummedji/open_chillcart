@@ -26,26 +26,27 @@
  *
  * @package       Cake.Test.Fixture
  */
-class NumberTreeTwoFixture extends CakeTestFixture {
+class NumberTreeTwoFixture extends CakeTestFixture
+{
 
-/**
- * name property
- *
- * @var string 'NumberTree'
- */
-	public $name = 'NumberTreeTwo';
+    /**
+     * name property
+     *
+     * @var string 'NumberTree'
+     */
+    public $name = 'NumberTreeTwo';
 
-/**
- * fields property
- *
- * @var array
- */
-	public $fields = array(
-		'id'	=> array('type' => 'integer','key' => 'primary'),
-		'name'	=> array('type' => 'string','null' => false),
-		'number_tree_id' => array('type' => 'integer', 'null' => false),
-		'parent_id' => 'integer',
-		'lft'	=> array('type' => 'integer','null' => false),
-		'rght'	=> array('type' => 'integer','null' => false)
-	);
+    /**
+     * fields property
+     *
+     * @var array
+     */
+    public $fields = array(
+        'id' => array('type' => 'integer', 'key' => 'primary'),
+        'name' => array('type' => 'string', 'null' => false),
+        'number_tree_id' => array('type' => 'integer', 'null' => false),
+        'parent_id' => 'integer',
+        'lft' => array('type' => 'integer', 'null' => false),
+        'rght' => array('type' => 'integer', 'null' => false)
+    );
 }

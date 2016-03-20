@@ -22,34 +22,35 @@
  *
  * @package       Cake.Test.Fixture
  */
-class AcoActionFixture extends CakeTestFixture {
+class AcoActionFixture extends CakeTestFixture
+{
 
-/**
- * name property
- *
- * @var string 'AcoAction'
- */
-	public $name = 'AcoAction';
+    /**
+     * name property
+     *
+     * @var string 'AcoAction'
+     */
+    public $name = 'AcoAction';
 
-/**
- * fields property
- *
- * @var array
- */
-	public $fields = array(
-		'id' => array('type' => 'integer', 'key' => 'primary'),
-		'parent_id' => array('type' => 'integer', 'length' => 10, 'null' => true),
-		'model' => array('type' => 'string', 'default' => ''),
-		'foreign_key' => array('type' => 'integer', 'length' => 10, 'null' => true),
-		'alias' => array('type' => 'string', 'default' => ''),
-		'lft' => array('type' => 'integer', 'length' => 10, 'null' => true),
-		'rght' => array('type' => 'integer', 'length' => 10, 'null' => true)
-	);
+    /**
+     * fields property
+     *
+     * @var array
+     */
+    public $fields = array(
+        'id' => array('type' => 'integer', 'key' => 'primary'),
+        'parent_id' => array('type' => 'integer', 'length' => 10, 'null' => true),
+        'model' => array('type' => 'string', 'default' => ''),
+        'foreign_key' => array('type' => 'integer', 'length' => 10, 'null' => true),
+        'alias' => array('type' => 'string', 'default' => ''),
+        'lft' => array('type' => 'integer', 'length' => 10, 'null' => true),
+        'rght' => array('type' => 'integer', 'length' => 10, 'null' => true)
+    );
 
-/**
- * records property
- *
- * @var array
- */
-	public $records = array();
+    /**
+     * records property
+     *
+     * @var array
+     */
+    public $records = array();
 }

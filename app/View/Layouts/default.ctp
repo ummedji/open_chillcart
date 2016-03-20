@@ -36,7 +36,7 @@
 
 <?php } 
 
-if(($loggedUser['role_id']) && ($loggedUser['role_id'] == 1)) {
+if(isset($loggedUser['role_id']) && ($loggedUser['role_id'] == 1)) {
 echo $this->element('admin/topheader'); } ?>
 
 
@@ -84,7 +84,7 @@ echo $this->element('admin/topheader'); } ?>
 	</div>
 	<!-- BEGIN FOOTER -->
 	<div class="page-footer">
-		<div class="page-footer-inner">2016 &copy; Roamsoft by Grocery.</div>
+		<div class="page-footer-inner">2016 &copy; ChillCart Ltd.</div>
 		<div class="scroll-to-top"><i class="icon-arrow-up"></i></div>
 	</div>
 
@@ -98,28 +98,36 @@ echo $this->element('admin/topheader'); } ?>
 	<?php
 		echo $this->Html->script(array('jquery-1.11.0.min',
 									'jquery-migrate-1.2.1.min',
-									'jquery-ui-1.10.3.custom.min',
 									'bootstrap.min',
 									'bootstrap-hover-dropdown.min',
-									'jquery.uniform.min',
-									'jquery.validate.min',
-									'bootstrap-switch.min',
+									'jquery.uniform.min'));
+		if ($this->request->params['controller'] == 'products' && 
+				$this->request->params['action'] == 'admin_index') {
+			
+		} else {
+			echo $this->Html->script(array('jquery.validate.min',
+											'adminChangePassword'
+											));
+		}
+
+		echo $this->Html->script(array('bootstrap-switch.min',
 									'moment.min',
 									'jquery.dataTables.min',
 									'dataTables.bootstrap',
 									'metronic',
 									'layout',
 									'demo',
-									'product_mgnt'));		
-		echo $this->Html->script(array('adminChangePassword',
-									'dispatch',
-									
+									'components-editors',
+									'product_mgnt',
 									'location',
-                                    'components-editors',
+									'dispatch',
+									'storeSetting',
                                     'bootstrap-datepicker',
                                     'summernote.min',
-                                    'daterangepicker'));
-		echo $this->Html->script(array('siteSetting','storeSetting')); ?>
+                                    'daterangepicker',
+                                    'jquery-ui-1.10.3.custom.min',
+                                    'siteSetting'
+                                    )); ?>
 	
 	<script>
 		var rp = "<?php echo $siteUrl; ?>";

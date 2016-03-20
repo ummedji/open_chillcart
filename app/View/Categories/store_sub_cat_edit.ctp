@@ -1,7 +1,7 @@
 
 <div class="page-content-wrapper">
 	<div class="page-content">
-		<h3 class="page-title">Add Sub Category</h3>
+		<h3 class="page-title">Edit Sub Category</h3>
 		<div class="page-bar">
 			<ul class="page-breadcrumb">
 				<li>
@@ -25,7 +25,7 @@
 					<div class="portlet box blue-hoki">
 						<div class="portlet-title">
 							<div class="caption">
-								<i class="fa fa-user"></i> Add Sub Category
+								<i class="fa fa-user"></i> Edit Sub Category
 							</div>
 							<div class="tools">
 								

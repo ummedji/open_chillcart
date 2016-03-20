@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Short description for file.
  *
@@ -16,22 +17,25 @@
  * @since         CakePHP(tm) v 1.2.0.4206
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TestsController extends TestPluginAppController {
+class TestsController extends TestPluginAppController
+{
 
-	public $name = 'Tests';
+    public $name = 'Tests';
 
-	public $uses = array();
+    public $uses = array();
 
-	public $helpers = array('TestPlugin.OtherHelper', 'Html');
+    public $helpers = array('TestPlugin.OtherHelper', 'Html');
 
-	public $components = array('TestPlugin.Plugins');
+    public $components = array('TestPlugin.Plugins');
 
-	public function index() {
-		$this->set('test_value', 'It is a variable');
-	}
+    public function index()
+    {
+        $this->set('test_value', 'It is a variable');
+    }
 
-	public function some_method() {
-		return 25;
-	}
+    public function some_method()
+    {
+        return 25;
+    }
 
 }

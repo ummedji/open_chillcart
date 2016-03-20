@@ -1,6 +1,6 @@
 <div class="contain">
 	<div class="contain">
-		<h3 class="page-title">Add Item</h3>
+		<h3 class="page-title">Edit Item</h3>
 		<div class="page-bar">
 			<ul class="page-breadcrumb">
 				<li>
@@ -13,7 +13,7 @@
 					<i class="fa fa-angle-right"></i>
 				</li>
 				<li>
-					<a href="javascript:void(0);">Add Item</a>
+					<a href="javascript:void(0);">Edit Item</a>
 				</li>
 			</ul>
 		</div>
@@ -24,7 +24,7 @@
 				<div class="portlet box blue-hoki">
 					<div class="portlet-title">
 						<div class="caption">
-							<i class="fa fa-user"></i> Add Item
+							<i class="fa fa-user"></i> Edit Item
 						</div>
 						<div class="tools">
 							
@@ -375,12 +375,13 @@
 								<div class="form-group">
 									<label class="col-md-3 control-label">Image <span class="star"></span></label>
 									<div class="col-md-6 col-lg-4"><?php
+									$images = '';
 									$store_id = $getProductData['Product']['store_id'];
 										foreach ($getProductData['ProductImage'] as $keys => $value) {
 											$images = $images.$value['id'].',';
 										 ?>
 											<div id="image<?php echo $value['id']; ?>">
-											<img  src="<?php echo $this->webroot.'stores/'.$store_id."/products/carts/".$value['image_alias']; ?>" >
+											<img  src="<?php echo $cdn; ?>/stores/products/carts/<?php echo $value['image_alias']; ?>">
 											<a href="javascript:;" class="ItemRemove" onclick="deleteProductImage('<?php echo $value['id']; ?>');">
 				                            	<i class="fa fa-times"></i>
 				                            </a></div><?php

@@ -30,7 +30,7 @@
 							<?php echo $order_detail['Order']['created'];?></span>
 						</div>
 						<div class="actions">
-							<a href="<?php echo ($page) ? $siteUrl.'/admin/Orders/order' : $siteUrl.'/admin/Orders/index'; ?>" class="btn btn-default btn-circle">
+							<a href="javascript:void(0);" onclick="window.history.go(-1);" class="btn btn-default btn-circle">
 							<i class="fa fa-angle-left"></i>
 							<span class="hidden-480">
 							Back </span>
@@ -47,12 +47,12 @@
 											<td width="60%">
 												<div class="address-detail">
 													<div class="resName"> <?php
-														echo $order_detail['ShoppingCart'][0]['Store']['store_name'];?>
+														echo $order_detail['Store']['store_name'];?>
 													</div> <?php
-													echo $order_detail['ShoppingCart'][0]['Store']['street_address'].', '.
-														 	$location[$order_detail['ShoppingCart'][0]['Store']['store_zip']].', '.
-														 	$cities[$order_detail['ShoppingCart'][0]['Store']['store_city']].', '.
-														 	$states[$order_detail['ShoppingCart'][0]['Store']['store_state']].'.'; ?>
+													echo $order_detail['Store']['street_address'].', '.
+														 	$location[$order_detail['Store']['store_zip']].', '.
+														 	$cities[$order_detail['Store']['store_city']].', '.
+														 	$states[$order_detail['Store']['store_state']].'.'; ?>
 												</div>
 											</td>
 										</tr>
@@ -71,7 +71,7 @@
 										</tr>
 										<tr>
 											<td valign="top" align="right"><label><?php
-													echo $orders_list['Order']['order_type'].' Date'; ?></label></td>
+													echo $order_detail['Order']['order_type'].' Date'; ?></label></td>
 											<td width="60%">
 												<div class="address-detail">
 												<?php echo $order_detail['Order']['delivery_date'];?></div>	
@@ -194,14 +194,13 @@
 													<td>
 														<span class="col-md-12 no-padding">
 															<div class="pull-left">
-																<img class="tabel_img margin-r-10" alt="<?php echo $value['product_name']; ?>" src="<?php echo $siteUrl.'/stores/'.$value['store_id'].'/products/carts/'.$value['product_image']; ?>" title="<?php echo $value['Store']['store_name']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/noimage.jpg"; ?>'"> 
+																<img class="tabel_img margin-r-10" alt="<?php echo $value['product_name']; ?>" src="<?php echo $cdn; ?>/stores/products/carts/<?php echo $value['product_image']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/noimage.jpg"; ?>'"> 
 															</div><?php
 															echo $value['product_name']; ?>
 															<br><?php
-															//if (!empty($value['product_description'])) { ?>
-
-																	<span class="table-addon colorgray"><?php echo $value['product_description']; ?></span> <?php
-																//} ?> 
+															if (!empty($value['product_description'])) { ?>
+																<span class="table-addon colorgray"><?php echo $value['product_description']; ?></span> <?php
+															} ?> 
 
 														</span> 
 													</td>

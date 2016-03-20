@@ -6,18 +6,18 @@ var TableManaged = function () {
 
         // begin first table
         table.dataTable({
-           
+
             "lengthMenu": [
                 [5, 15, 20, -1],
                 [5, 15, 20, "All"] // change per page values here
             ],
             // set the initial value
-            "pageLength": 5,            
+            "pageLength": 5,
             "pagingType": "bootstrap_full_number",
             "language": {
                 "lengthMenu": "  _MENU_ records",
                 "paginate": {
-                    "previous":"Prev",
+                    "previous": "Prev",
                     "next": "Next",
                     "last": "Last",
                     "first": "First"
@@ -58,7 +58,7 @@ var TableManaged = function () {
 
         tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
     }
-    
+
     var initTable2 = function () {
 
         var table = $('#sample_2');
@@ -104,7 +104,7 @@ var TableManaged = function () {
             jQuery.uniform.update(set);
         });
 
-       // tableWrapper.find('.dataTables_length select').select2(); // initialize select2 dropdown
+        // tableWrapper.find('.dataTables_length select').select2(); // initialize select2 dropdown
     }
 
     var initTable3 = function () {
@@ -154,7 +154,7 @@ var TableManaged = function () {
     var initTable4 = function () {
 
         var table = $('#category_datatable');
-        
+
         table.dataTable({
             "lengthMenu": [
                 [5, 15, 20, -1],
@@ -196,7 +196,7 @@ var TableManaged = function () {
             jQuery.uniform.update(set);
         });
 
-       // tableWrapper.find('.dataTables_length select').select2(); // initialize select2 dropdown
+        // tableWrapper.find('.dataTables_length select').select2(); // initialize select2 dropdown
         tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
     }
 

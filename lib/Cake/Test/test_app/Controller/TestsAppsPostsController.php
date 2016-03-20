@@ -1,4 +1,5 @@
 <?php
+
 /**
  * TestsAppsPostsController file
  *
@@ -16,58 +17,64 @@
  * @since         CakePHP(tm) v 1.2.0.4206
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TestsAppsPostsController extends AppController {
+class TestsAppsPostsController extends AppController
+{
 
-	public $name = 'TestsAppsPosts';
+    public $name = 'TestsAppsPosts';
 
-	public $uses = array('Post');
+    public $uses = array('Post');
 
-	public $viewPath = 'TestsApps';
+    public $viewPath = 'TestsApps';
 
-	public function add() {
-		$data = array(
-			'Post' => array(
-				'title' => 'Test article',
-				'body' => 'Body of article.',
-				'author_id' => 1
-			)
-		);
-		$this->Post->save($data);
+    public function add()
+    {
+        $data = array(
+            'Post' => array(
+                'title' => 'Test article',
+                'body' => 'Body of article.',
+                'author_id' => 1
+            )
+        );
+        $this->Post->save($data);
 
-		$this->set('posts', $this->Post->find('all'));
-		$this->render('index');
-	}
+        $this->set('posts', $this->Post->find('all'));
+        $this->render('index');
+    }
 
-/**
- * check url params
- *
- */
-	public function url_var() {
-		$this->set('params', $this->request->params);
-		$this->render('index');
-	}
+    /**
+     * check url params
+     *
+     */
+    public function url_var()
+    {
+        $this->set('params', $this->request->params);
+        $this->render('index');
+    }
 
-/**
- * post var testing
- *
- */
-	public function post_var() {
-		$this->set('data', $this->request->data);
-		$this->render('index');
-	}
+    /**
+     * post var testing
+     *
+     */
+    public function post_var()
+    {
+        $this->set('data', $this->request->data);
+        $this->render('index');
+    }
 
-	public function input_data() {
-		$this->set('data', $this->request->input('json_decode', true));
-		$this->render('index');
-	}
+    public function input_data()
+    {
+        $this->set('data', $this->request->input('json_decode', true));
+        $this->render('index');
+    }
 
-/**
- * Fixturized action for testAction()
- *
- */
-	public function fixtured() {
-		$this->set('posts', $this->Post->find('all'));
-		$this->render('index');
-	}
+    /**
+     * Fixturized action for testAction()
+     *
+     */
+    public function fixtured()
+    {
+        $this->set('posts', $this->Post->find('all'));
+        $this->render('index');
+    }
 
 }

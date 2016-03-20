@@ -3,7 +3,13 @@ setTimeout(function(){
     $('#flashMessage').fadeOut();
 },3000);
 
+		
+
 $(document).ready(function(){
+						   
+	$(".title-filter").click(function(){
+		$(".searchMenuFormList").toggleClass("in");
+	});
 
 	var extensions = {
 
@@ -177,24 +183,13 @@ $(document).ready(function(){
             return false;
         }
    });
-
-
-
-
-
-
-
-
-
-
-
 	
 });
 
 function locationList() {
 	var id = $('#city').val();
 	$.post(rp+'searches/locations',{'id':id, 'model':'Location'}, function(response) {
-		$("#location").html(response).selectpicker('refresh');
+		$("#location").html(response);
 	});
 }
 
@@ -470,28 +465,51 @@ function minOrderStore () {
 	return false;
 }
 
+function cancelOrder(id) {
+	$('#OrderId').val(id);
+}
+
+
 
 
 $(document).ready(function(){
 
     $(".searchFilterResults").keyup(function(){
- 
         // Retrieve the input field text and reset the count to zero
         var filter = $(this).val(), count = 0;
- 
-        // Loop through the comment list
-        $(".searchresulttoshow").each(function(){
-
-            // If the list item does not contain the text phrase fade it out
-            if ($(this).text().search(new RegExp(filter, "i")) < 0) {
-                $(this).fadeOut();
- 
-            // Show the list item if the phrase matches and increase the count by 1
-            } else {
-                $(this).show();
-                count++;
-            }
-        });
+        var mainCatProduct = $('.mainCatProduct').length;
+        for (var x = 0; x <= mainCatProduct; x++) {
+        	mainCat = 0;
+        	var productsCat = $('.mainCatProduct').children('.productsCat'+x).length;
+	        for (var y = 1; y <= productsCat; y++) {
+	        	var showProduct = 0;
+		        // Loop through the comment list
+		        $(".searchresulttoshow"+x+y).each(function(){
+		            // If the list item does not contain the text phrase fade it out
+		            if ($(this).text().search(new RegExp(filter, "i")) < 0) {
+		                $(this).fadeOut();
+		 
+		            // Show the list item if the phrase matches and increase the count by 1
+		            } else {
+		            	showProduct = 1;
+		                $(this).show();
+		                count++;
+		            }
+		        });
+		        if (showProduct == 1) {
+		        	mainCat = 1;
+		        	$(".searchresulttoshow"+x+y).parent('ul').prev('h5').show();
+		        } else {
+		        	$(".searchresulttoshow"+x+y).parent('ul').prev('h5').fadeOut();
+		        }
+			}
+			if (mainCat == 1) {
+	        	$(".productsCat"+x).prev('h5').prev('header').show();
+	        	console.log('Success');
+	        } else {
+	        	$(".productsCat"+x).prev('h5').prev('header').fadeOut();
+	        }
+		}
  
         // Update the count
         //var numberItems = count;
@@ -499,25 +517,44 @@ $(document).ready(function(){
     });
 });
 $(window).load(function(){
+	var count = 0;
 	fillter();
+
 	function fillter(){
+		count++;
 		var getvalue = $('#check').val();
 		if($.trim(getvalue) == ''){
 			return false;
 
 		} else {
 			var splits   = getvalue.split('_');
+
 			var id		 = splits[0];
-			var storeid  = splits[1];
-			$.post(rp+'searches/filtterByCategory', {'id': id,'storeid':storeid}, function (response) {
+			var storeId  = splits[1];
+			$.post(rp+'searches/filtterByCategory', {'id': id,'storeId':storeId, 'count': count}, function (response) {
 				$("#filtterByCategory").append(response);
 				$('.remove_'+id).remove();
 				fillter();
-
 			});
 		}
 
 	}
-
-
 });
+
+function categoriesProduct(id, subId, storeId) {
+	$.post(rp+'searches/filtterByCategory', {'id': id,'storeId':storeId, 'subId' : subId, 'count': 1}, 
+		function (response) {
+			$("#filtterByCategory").html('');
+			$("#filtterByCategory").append(response);
+		}
+	);
+}
+
+function dealsProduct(storeId) {
+	$.post(rp+'searches/dealProducts', {'storeId':storeId}, 
+		function (response) {
+			$("#filtterByCategory").html('');
+			$("#filtterByCategory").append(response);
+		}
+	);
+}

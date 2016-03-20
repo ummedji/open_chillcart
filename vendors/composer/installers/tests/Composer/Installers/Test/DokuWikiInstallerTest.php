@@ -1,9 +1,9 @@
 <?php
 namespace Composer\Installers\Test;
 
+use Composer\Composer;
 use Composer\Installers\DokuWikiInstaller;
 use Composer\Package\Package;
-use Composer\Composer;
 
 class DokuWikiInstallerTest extends \PHPUnit_Framework_TestCase
 {
@@ -26,8 +26,8 @@ class DokuWikiInstallerTest extends \PHPUnit_Framework_TestCase
     public function testInflectPackageVars($type, $name, $expected)
     {
         $this->assertEquals(
-            $this->installer->inflectPackageVars(array('name' => $name, 'type'=>$type)),
-            array('name' => $expected, 'type'=>$type)
+            $this->installer->inflectPackageVars(array('name' => $name, 'type' => $type)),
+            array('name' => $expected, 'type' => $type)
         );
     }
 

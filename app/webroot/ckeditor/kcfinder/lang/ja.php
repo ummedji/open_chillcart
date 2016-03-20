@@ -1,14 +1,14 @@
 <?php
 
 /** This file is part of KCFinder project
-  *
-  * @desc Japanese localization
-  * @package KCFinder
-  * @version 2.2
-  * @author yama yamamoto@kyms.ne.jp
-  * @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
-  * @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
-  */
+ *
+ * @desc Japanese localization
+ * @package KCFinder
+ * @version 2.2
+ * @author yama yamamoto@kyms.ne.jp
+ * @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
+ * @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
+ */
 
 $lang = array(
     '_locale' => "ja_JP.UTF-8",
@@ -20,148 +20,148 @@ $lang = array(
     '_dateTimeSmall' => "%Y/%m/%d %H:%M",
 
     "You don't have permissions to upload files." =>
-    "アップロード権限がありません。",
+        "アップロード権限がありません。",
 
     "You don't have permissions to browse server." =>
-    "サーバーを閲覧する権限がありません",
+        "サーバーを閲覧する権限がありません",
 
     "Cannot move uploaded file to target folder." =>
-    "ファイルを移動できません。",
+        "ファイルを移動できません。",
 
     "Unknown error." =>
-    "原因不明のエラーです。",
+        "原因不明のエラーです。",
 
     "The uploaded file exceeds {size} bytes." =>
-    "アップロードしたファイルは {size} バイトを越えました。",
+        "アップロードしたファイルは {size} バイトを越えました。",
 
     "The uploaded file was only partially uploaded." =>
-    "アップロードしたファイルは、一部のみ処理されました。",
+        "アップロードしたファイルは、一部のみ処理されました。",
 
     "No file was uploaded." =>
-    "ファイルはありません。",
+        "ファイルはありません。",
 
     "Missing a temporary folder." =>
-    "一時フォルダが見付かりません。",
+        "一時フォルダが見付かりません。",
 
     "Failed to write file." =>
-    "ファイルの書き込みに失敗しました。",
+        "ファイルの書き込みに失敗しました。",
 
     "Denied file extension." =>
-    "このファイルは扱えません。",
+        "このファイルは扱えません。",
 
     "Unknown image format/encoding." =>
-    "この画像ファイルの種別を判定できません。",
+        "この画像ファイルの種別を判定できません。",
 
     "The image is too big and/or cannot be resized." =>
-    "画像ファイルのサイズが大き過ぎます。",
+        "画像ファイルのサイズが大き過ぎます。",
 
     "Cannot create {dir} folder." =>
-    "「{dir}」フォルダを作成できません。",
+        "「{dir}」フォルダを作成できません。",
 
     "Cannot write to upload folder." =>
-    "アップロードフォルダに書き込みできません。",
+        "アップロードフォルダに書き込みできません。",
 
     "Cannot read .htaccess" =>
-    ".htaccessが読み込めません。",
+        ".htaccessが読み込めません。",
 
     "Incorrect .htaccess file. Cannot rewrite it!" =>
-    "不正な .htaccess ファイルです。再編集できません!",
+        "不正な .htaccess ファイルです。再編集できません!",
 
     "Cannot fetch content of {dir} folder." =>
-    "{dir} フォルダのコンテンツを読み込めません。",
+        "{dir} フォルダのコンテンツを読み込めません。",
 
     "Cannot read upload folder." =>
-    "アップロードフォルダを読み取れません。",
+        "アップロードフォルダを読み取れません。",
 
     "Cannot access or create thumbnails folder." =>
-    "サムネイルフォルダにアクセス、又はサムネイルフォルダを作成できません。",
+        "サムネイルフォルダにアクセス、又はサムネイルフォルダを作成できません。",
 
     "Cannot access or write to upload folder." =>
-    "アップロードフォルダにアクセス、又は書き込みできません。",
+        "アップロードフォルダにアクセス、又は書き込みできません。",
 
     "Please enter new folder name." =>
-    "新しいフォルダ名を入力して下さい。",
+        "新しいフォルダ名を入力して下さい。",
 
     "Unallowed characters in folder name." =>
-    "フォルダ名には利用できない文字です。",
+        "フォルダ名には利用できない文字です。",
 
     "Folder name shouldn't begins with '.'" =>
-    "フォルダ名は、'.'で開始しないで下さい。",
+        "フォルダ名は、'.'で開始しないで下さい。",
 
     "Please enter new file name." =>
-    "新しいファイル名を入力して下さい。",
+        "新しいファイル名を入力して下さい。",
 
     "Unallowed characters in file name." =>
-    "ファイル名には利用できない文字です。",
+        "ファイル名には利用できない文字です。",
 
     "File name shouldn't begins with '.'" =>
-    "ファイル名は、'.'で開始しないで下さい。",
+        "ファイル名は、'.'で開始しないで下さい。",
 
     "Are you sure you want to delete this file?" =>
-    "このファイルを本当に削除してもよろしいですか?",
+        "このファイルを本当に削除してもよろしいですか?",
 
     "Are you sure you want to delete this folder and all its content?" =>
-    "このフォルダとフォルダ内の全てのコンテンツを本当に削除してもよろしいですか?",
+        "このフォルダとフォルダ内の全てのコンテンツを本当に削除してもよろしいですか?",
 
     "Unexisting directory type." =>
-    "存在しないディレクトリの種類です。",
+        "存在しないディレクトリの種類です。",
 
     "Undefined MIME types." =>
-    "定義されていないMIMEタイプです。",
+        "定義されていないMIMEタイプです。",
 
     "Fileinfo PECL extension is missing." =>
-    "Fileinfo PECL 拡張モジュールが見付かりません。",
+        "Fileinfo PECL 拡張モジュールが見付かりません。",
 
     "Opening fileinfo database failed." =>
-    "fileinfo データベースを開くのに失敗しました。",
+        "fileinfo データベースを開くのに失敗しました。",
 
     "You can't upload such files." =>
-    "このようなファイルをアップロードできません。",
+        "このようなファイルをアップロードできません。",
 
     "The file '{file}' does not exist." =>
-    "ファイル「'{file}'」は存在しません。",
+        "ファイル「'{file}'」は存在しません。",
 
     "Cannot read '{file}'." =>
-    "「'{file}'」を読み取れません。",
+        "「'{file}'」を読み取れません。",
 
     "Cannot copy '{file}'." =>
-    "「{file}」をコピーできません。",
+        "「{file}」をコピーできません。",
 
     "Cannot move '{file}'." =>
-    "「{file}」を移動できません。",
+        "「{file}」を移動できません。",
 
     "Cannot delete '{file}'." =>
-    "「'{file}'」を削除できません。",
+        "「'{file}'」を削除できません。",
 
     "Click to remove from the Clipboard" =>
-    "クリップボードから削除する",
+        "クリップボードから削除する",
 
     "This file is already added to the Clipboard." =>
-    "このファイルは既にクリップボードに追加されています。",
+        "このファイルは既にクリップボードに追加されています。",
 
     "Copy files here" =>
-    "ここにコピー",
+        "ここにコピー",
 
     "Move files here" =>
-    "ここに移動",
+        "ここに移動",
 
     "Delete files" =>
-    "これらを全て削除",
+        "これらを全て削除",
 
     "Clear the Clipboard" => //
-    "クリップボードを初期化",
+        "クリップボードを初期化",
 
     "Are you sure you want to delete all files in the Clipboard?" =>
-    "クリップボードに記憶した全てのファイルを実際に削除します。",
+        "クリップボードに記憶した全てのファイルを実際に削除します。",
 
     "Copy {count} files" =>
-    "ファイル({count}個)をここに複写",
+        "ファイル({count}個)をここに複写",
 
     "Move {count} files" =>
-    "ファイル({count}個)をここに移動",
+        "ファイル({count}個)をここに移動",
 
     "Add to Clipboard" =>
-    "クリップボードに記憶",
+        "クリップボードに記憶",
     "New folder name:" => "フォルダ名(半角英数):",
     "New file name:" => "ファイル名(半角英数):",
     "Folders" => "フォルダ",
@@ -199,49 +199,49 @@ $lang = array(
     // VERSION 2 NEW LABELS
 
     "Cannot rename the folder." =>
-    "ディレクトリを名前を変更できません",
+        "ディレクトリを名前を変更できません",
 
     "Non-existing directory type." =>
-    "存在しないディレクトリの種類です。",
+        "存在しないディレクトリの種類です。",
 
     "Cannot delete the folder." =>
-    "ディレクトリを削除できません",
+        "ディレクトリを削除できません",
 
     "The files in the Clipboard are not readable." =>
-    "クリップボードからファイルを読み取れません",
+        "クリップボードからファイルを読み取れません",
 
     "{count} files in the Clipboard are not readable. Do you want to copy the rest?" =>
-    "クリップボード内の {count} 個のファイルが読み取れません。残りをコピーしてもよろしいですか?",
+        "クリップボード内の {count} 個のファイルが読み取れません。残りをコピーしてもよろしいですか?",
 
     "The files in the Clipboard are not movable." =>
-    "クリップボードからファイルを移動できません",
+        "クリップボードからファイルを移動できません",
 
     "{count} files in the Clipboard are not movable. Do you want to move the rest?" =>
-    "クリップボード内の {count} 個のファイルが移動できません。残りを移動してもよろしいですか?",
+        "クリップボード内の {count} 個のファイルが移動できません。残りを移動してもよろしいですか?",
 
     "The files in the Clipboard are not removable." =>
-    "クリップボードを初期化できません",
+        "クリップボードを初期化できません",
 
     "{count} files in the Clipboard are not removable. Do you want to delete the rest?" =>
-    "クリップボード内の {count} 個のファイルが削除出来ません。残りを削除してもよろしいですか?",
+        "クリップボード内の {count} 個のファイルが削除出来ません。残りを削除してもよろしいですか?",
 
     "The selected files are not removable." =>
-    "選択したファイルは削除できません。",
+        "選択したファイルは削除できません。",
 
     "{count} selected files are not removable. Do you want to delete the rest?" =>
-    "選択された {count} 個のファイルは削除できません。残りを削除してもよろしいですか?",
+        "選択された {count} 個のファイルは削除できません。残りを削除してもよろしいですか?",
 
     "Are you sure you want to delete all selected files?" =>
-    "選択された全てのファイルを本当に削除してもよろしいですか?",
+        "選択された全てのファイルを本当に削除してもよろしいですか?",
 
     "Failed to delete {count} files/folders." =>
-    "{count} 個のファイル / フォルダの削除に失敗しました。",
+        "{count} 個のファイル / フォルダの削除に失敗しました。",
 
     "A file or folder with that name already exists." =>
-    "その名前のファイル、又はフォルダは既に存在します。",
+        "その名前のファイル、又はフォルダは既に存在します。",
 
     "Inexistant or inaccessible folder." =>
-    "存在しない、又はアクセスできないフォルダです。",
+        "存在しない、又はアクセスできないフォルダです。",
 
     "selected files" => "選択したファイル",
     "Type" => "タイプ",

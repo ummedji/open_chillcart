@@ -2,13 +2,13 @@
 
 App::uses('Model', 'Model');
 
-class Invoice extends Model {    
-    public $name   = "Invoice"; 
+class Invoice extends Model
+{
+    public $name = "Invoice";
     public $belongsTo = array(
-		'Store' => array('className'  => 'Store',
-						'foreignKey' => 'store_id',
-						'dependent'  => true));
+        'Store' => array('className' => 'Store',
+            'foreignKey' => 'store_id',
+            'dependent' => true));
 
-    
-   
+
 }

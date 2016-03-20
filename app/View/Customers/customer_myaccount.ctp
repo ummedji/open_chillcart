@@ -1,6 +1,5 @@
-
 <div class="container searchshopContent">
-	<div class="row">
+	<div class="row customerMyAccount">
 		<div class="myaccount-tabs col-md-2 col-lg-2 col-sm-12 col-xs-12">
 			<a class="active" href="javascript:void(0);" id="orderhistory">
 				<div class="orderHistory"></div>
@@ -20,6 +19,7 @@
 			</a>
 		</div>
 		<div class="col-md-10">
+			<a href="<?php echo $siteUrl; ?>" class="pull-right btn btn-primary"> Continue Shopping </a>
 			<div class="myorderTab" id="orderhistory_content">
 				<h1> <?php echo __('Order History', true); ?></h1>
 				<div class="table-responsive">
@@ -34,6 +34,7 @@
 								<th> <?php echo __('Status', true); ?></th>
 								<th class="no-sort"> <?php echo __('Details', true); ?></th>
 								<th class="no-sort"> <?php echo __('Review', true); ?></th>
+								<!-- <th class="no-sort"> <?php echo __('Cancel', true); ?></th> -->
 							</tr>
 						</thead>
 						<tbody>
@@ -70,6 +71,17 @@
 												   data-target="#reviewPopup"><?php echo __('Review', true); ?></a><?php }
 											}	?>
 										</td>
+										<!-- <td> <?php
+											if($value['Order']['status'] == 'Pending') {
+												if (empty($value['Order']['cancel_reason'])) { ?>
+													<a href="javascript:void(0);" onclick = "cancelOrder(<?php echo $value['Order']['id'];?>);" data-toggle="modal"
+													   data-target="#cancelPopup"><?php echo __('Cancel', true); ?>
+													</a> <?php
+												} else {
+													echo 'Request sent';
+												}
+											} ?>
+										</td> -->
 
 									</tr><?php
 								}
@@ -90,16 +102,22 @@
 		                		<div class="form-group clearfix">
 		                			<div class="col-md-12">
 				                		<?php
-					                        if(!empty($this->request->data['Customer']['image'])) {?>
-					                            <img class="img-responsive customer_image"  src="<?php echo $this->webroot.'Customers/'.$this->request->data['Customer']['image']; ?>" >
-					                       <?php } else {
+					                        if(!empty($this->request->data['Customer']['image'])) { ?>
+					                            <img class="img-responsive customer_image"  src="<?php echo $cdn.'/Customers/'.$this->request->data['Customer']['image']; ?>" > <?php 
+					                        } else {
 					                                echo "No Image Found";
 					                        }
-					                                 echo $this->Form->input("Customer.image",
+					                        echo $this->Form->input("Customer.image",
 					                                 				array("label"=>false,
-							                                                "type"=>"file",
-							                                                "class"=>"form-control textbox margin-t-15",
+							                                              "type"=>"file",
+							                                              "class"=>"form-control textbox margin-t-15",
 							                                               ));
+
+							                echo $this->Form->input('Customer.org_logo',
+							                            array('class' => 'form-control',
+							                            	  'type' => 'hidden',
+							                                  'label' => false,
+							                                  'value' => $this->request->data['Customer']['image']));
 						                ?>
 						            </div>
 					            </div>
@@ -110,6 +128,7 @@
 			                    					echo $this->Form->input('Customer.first_name',
 			                    										array('class'=>'form-control',
 			                    											  'autocomplete' => 'off',
+			                    											  'readonly' => true,
 			                                                                  'label' => false,
 			                    											  'div' => false)); ?> </div>
 										<span class="edit"><i class="fa fa-edit"></i></span><?php
@@ -121,6 +140,27 @@
 									<span class="lableclose"><i class="fa fa-times-circle"></i></span>
 									</div>
 								</div>
+
+								<div class="form-group profile-box clearfix">
+									<label class="control-label col-md-12 text-left"> <?php echo __('Email', true); ?></label>
+									<div class="col-md-12">
+										<div class="formLabel"><?php
+			                    					echo $this->Form->input('Customer.customer_email',
+			                    										array('class'=>'form-control',
+			                    											  'autocomplete' => 'off',
+			                    											  'readonly' => true,
+			                                                                  'label' => false,
+			                    											  'div' => false)); ?></div>
+										<span class="edit"><i class="fa fa-edit"></i></span> <?php
+			                    					echo $this->Form->input('Customer.customer_email',
+			                    										array('class'=>'form-control textbox',
+			                    											  'autocomplete' => 'off',
+			                                                                  'label' => false,
+			                    											  'div' => false)); ?>
+										<span class="lableclose"><i class="fa fa-times-circle"></i></span>
+									</div>
+								</div>
+
 								<div class="form-group profile-box clearfix">
 									<label class="control-label col-md-12 text-left"> <?php echo __('Phone Number', true); ?></label>
 									<div class="col-md-12">
@@ -128,6 +168,7 @@
 			                    					echo $this->Form->input('Customer.customer_phone',
 			                    										array('class'=>'form-control',
 			                    											  'autocomplete' => 'off',
+			                    											  'readonly' => true,
 			                                                                  'label' => false,
 			                    											  'div' => false)); ?></div>
 										<span class="edit"><i class="fa fa-edit"></i></span> <?php
@@ -199,9 +240,7 @@
 							} ?>
 							
 							
-						</div><?php echo $this->Form->hidden('id');?>
-						
-						
+						</div>
 					</div>
 					<div class="col-md-12 text-center">
 	                    <?php echo $this->Form->button(__('Submit'),array('class'=>'btn btn-primary'));  ?>
@@ -234,7 +273,6 @@
 							echo $this->Form->input('User.newpassword',
 								array('class'=>'form-control',
 									'autocomplete' => 'off',
-
 									'type'=>'password',
 									'label' => false,
 									'div' => false)); ?>
@@ -386,8 +424,41 @@
 			</div>
 		</div>
 	</div>
-</div>			
-		
+</div>
+
+<div class="modal fade" id="cancelPopup">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title"> <?php echo __('Cancel Order', true); ?></h4>
+			</div>
+			<div class="modal-body"> <?php 
+				echo $this->Form->create('Order',array('class'=>"form-horizontal"));?>
+
+					<div class="form-group clearfix">
+						<label class="control-label col-sm-4 text-right"> <?php echo __('Cancel Reason', true); ?></label> 
+						<div class="col-sm-7 margin-t-5"><?php
+						 	echo $this->Form->input('cancel_reason',
+				                          array('class'=>'form-control',
+				                              'label'=>false));
+				        	echo $this->Form->hidden('id'); ?>
+						</div>
+					</div>
+					<div class="form-group clearfix">
+	                    <div class="col-sm-offset-4 col-sm-7">
+	                        <?php echo $this->Form->button(__('<i class="fa fa-check"></i>Submit'),array('class'=>'btn purple'));  ?>
+	                    </div>
+	                </div> <?php 
+				echo $this->Form->end();?>
+
+			</div>
+		</div>
+	</div>
+</div>	
+
 <div class="modal fade" id="addBookAddress">
 	<div class="modal-dialog modal-md">
 		<div class="modal-content">
@@ -415,6 +486,7 @@
 						<div class="col-md-7"><?php
 											echo $this->Form->input('address',
 													array('class'=>'form-control',
+															'type' => 'text',
 															'label'=>false)); ?>
 						</div>
 					</div>
@@ -453,7 +525,6 @@
 											echo $this->Form->input('city_id',
 												array('type'  => 'select',
 													  'class' => 'form-control',
-													  'options'=> array($city_list),
                                                       'onchange' => 'locationFillters();',
 													  'empty' => __('Select City'),
 									 				  'label'=> false)); ?>
@@ -465,7 +536,6 @@
 										echo $this->Form->input('location_id',
 												array('type'  => 'select',
 													  'class' => 'form-control',
-													  'options'=> array($location_list),
 													  'empty' => __('Select Area/Zip'),
 									 				  'label'=> false));  ?>
 						</div>

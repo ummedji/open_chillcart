@@ -1,19 +1,21 @@
-<?php
+<
+? php
 
 /** This file is part of KCFinder project
-  *
-  *      @desc Toolbar functionality
-  *   @package KCFinder
-  *   @version 2.51
-  *    @author Pavel Tzonkov <pavelc@users.sourceforge.net>
-  * @copyright 2010, 2011 KCFinder Project
-  *   @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
-  *   @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
-  *      @link http://kcfinder.sunhater.com
-  */?>
+ *
+ *      @desc Toolbar functionality
+ *   @package KCFinder
+ *   @version 2.51
+ *    @author Pavel Tzonkov <pavelc@users.sourceforge.net>
+ * @copyright 2010, 2011 KCFinder Project
+ *   @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
+ *   @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
+ *      @link http://kcfinder.sunhater.com
+ */ ?
+>
 
-browser.initToolbar = function() {
-    $('#toolbar a').click(function() {
+browser.initToolbar = function () {
+    $('#toolbar a').click(function () {
         browser.hideDialog();
     });
 
@@ -41,20 +43,20 @@ browser.initToolbar = function() {
         return false;
     });
 
-    $('#toolbar a[href="kcact:refresh"]').click(function() {
+    $('#toolbar a[href="kcact:refresh"]').click(function () {
         browser.refresh();
         return false;
     });
 
     if (window.opener || this.opener.TinyMCE || $('iframe', window.parent.document).get(0))
-        $('#toolbar a[href="kcact:maximize"]').click(function() {
+        $('#toolbar a[href="kcact:maximize"]').click(function () {
             browser.maximize(this);
             return false;
         });
     else
         $('#toolbar a[href="kcact:maximize"]').css('display', 'none');
 
-    $('#toolbar a[href="kcact:about"]').click(function() {
+    $('#toolbar a[href="kcact:about"]').click(function () {
         var html = '<div class="box about">' +
             '<div class="head"><a href="http://kcfinder.sunhater.com" target="_blank">KCFinder</a> ' + browser.version + '</div>';
         if (browser.support.check4Update)
@@ -63,22 +65,22 @@ browser.initToolbar = function() {
             '<div>' + browser.label("Licenses:") + ' GPLv2 & LGPLv2</div>' +
             '<div>Copyright &copy;2010, 2011 Pavel Tzonkov</div>' +
             '<button>' + browser.label("OK") + '</button>' +
-        '</div>';
+            '</div>';
         $('#dialog').html(html);
         $('#dialog').data('title', browser.label("About"));
         browser.showDialog();
-        var close = function() {
+        var close = function () {
             browser.hideDialog();
             browser.unshadow();
         }
         $('#dialog button').click(close);
         var span = $('#checkver > span');
-        setTimeout(function() {
+        setTimeout(function () {
             $.ajax({
                 dataType: 'json',
                 url: browser.baseGetData('check4Update'),
                 async: true,
-                success: function(data) {
+                success: function (data) {
                     if (!$('#dialog').html().length)
                         return;
                     span.removeClass('loading');
@@ -93,7 +95,7 @@ browser.initToolbar = function() {
                         span.html(browser.label("KCFinder is up to date!"));
                     browser.showDialog();
                 },
-                error: function() {
+                error: function () {
                     if (!$('#dialog').html().length)
                         return;
                     span.removeClass('loading');
@@ -110,7 +112,7 @@ browser.initToolbar = function() {
     this.initUploadButton();
 };
 
-browser.initUploadButton = function() {
+browser.initUploadButton = function () {
     var btn = $('#toolbar a[href="kcact:upload"]');
     if (!this.access.files.upload) {
         btn.css('display', 'none');
@@ -121,20 +123,20 @@ browser.initUploadButton = function() {
     var height = btn.outerHeight();
     $('#toolbar').prepend('<div id="upload" style="top:' + top + 'px;width:' + width + 'px;height:' + height + 'px">' +
         '<form enctype="multipart/form-data" method="post" target="uploadResponse" action="' + browser.baseGetData('upload') + '">' +
-            '<input type="file" name="upload[]" onchange="browser.uploadFile(this.form)" style="height:' + height + 'px" multiple="multiple" />' +
-            '<input type="hidden" name="dir" value="" />' +
+        '<input type="file" name="upload[]" onchange="browser.uploadFile(this.form)" style="height:' + height + 'px" multiple="multiple" />' +
+        '<input type="hidden" name="dir" value="" />' +
         '</form>' +
-    '</div>');
+        '</div>');
     $('#upload input').css('margin-left', "-" + ($('#upload input').outerWidth() - width) + 'px');
-    $('#upload').mouseover(function() {
+    $('#upload').mouseover(function () {
         $('#toolbar a[href="kcact:upload"]').addClass('hover');
     });
-    $('#upload').mouseout(function() {
+    $('#upload').mouseout(function () {
         $('#toolbar a[href="kcact:upload"]').removeClass('hover');
     });
 };
 
-browser.uploadFile = function(form) {
+browser.uploadFile = function (form) {
     if (!this.dirWritable) {
         browser.alert(this.label("Cannot write to upload folder."));
         $('#upload').detach();
@@ -146,12 +148,12 @@ browser.uploadFile = function(form) {
     $('#loading').html(this.label("Uploading file..."));
     $('#loading').css('display', 'inline');
     form.submit();
-    $('#uploadResponse').load(function() {
+    $('#uploadResponse').load(function () {
         var response = $(this).contents().find('body').html();
         $('#loading').css('display', 'none');
         response = response.split("\n");
         var selected = [], errors = [];
-        $.each(response, function(i, row) {
+        $.each(response, function (i, row) {
             if (row.substr(0, 1) == '/')
                 selected[selected.length] = row.substr(1, row.length - 1)
             else
@@ -163,14 +165,14 @@ browser.uploadFile = function(form) {
             selected = null
         browser.refresh(selected);
         $('#upload').detach();
-        setTimeout(function() {
+        setTimeout(function () {
             $('#uploadResponse').detach();
         }, 1);
         browser.initUploadButton();
     });
 };
 
-browser.maximize = function(button) {
+browser.maximize = function (button) {
     if (window.opener) {
         window.moveTo(0, 0);
         width = screen.availWidth;
@@ -182,7 +184,7 @@ browser.maximize = function(button) {
     } else if (browser.opener.TinyMCE) {
         var win, ifr, id;
 
-        $('iframe', window.parent.document).each(function() {
+        $('iframe', window.parent.document).each(function () {
             if (/^mce_\d+_ifr$/.test($(this).attr('id'))) {
                 id = parseInt($(this).attr('id').replace(/^mce_(\d+)_ifr$/, "$1"));
                 win = $('#mce_' + id, window.parent.document);
@@ -239,7 +241,7 @@ browser.maximize = function(button) {
             }
             if (browser.maximizeW) browser.maximizeW = null;
             if (browser.maximizeH) browser.maximizeH = null;
-            $.each($('*', window.parent.document).get(), function(i, e) {
+            $.each($('*', window.parent.document).get(), function (i, e) {
                 e.style.display = browser.maximizeDisplay[i];
             });
             ifrm.css({
@@ -266,18 +268,17 @@ browser.maximize = function(button) {
             browser.maximizeTop = $(window.parent).scrollTop();
             browser.maximizeLeft = $(window.parent).scrollLeft();
             browser.maximizeDisplay = [];
-            $.each($('*', window.parent.document).get(), function(i, e) {
+            $.each($('*', window.parent.document).get(), function (i, e) {
                 browser.maximizeDisplay[i] = $(e).css('display');
                 $(e).css('display', 'none');
             });
 
             ifrm.css('display', 'block');
             ifrm.parents().css('display', 'block');
-            var resize = function() {
+            var resize = function () {
                 width = $(window.parent).width();
                 height = $(window.parent).height();
-                if (!browser.maximizeW || (browser.maximizeW != width) ||
-                    !browser.maximizeH || (browser.maximizeH != height)
+                if (!browser.maximizeW || (browser.maximizeW != width) || !browser.maximizeH || (browser.maximizeH != height)
                 ) {
                     browser.maximizeW = width;
                     browser.maximizeH = height;
@@ -295,8 +296,8 @@ browser.maximize = function(button) {
                 ifrm.css({left: '0', top: '0'});
             else
                 ifrm.css({
-                    left: - ifrm.offset().left + 'px',
-                    top: - ifrm.offset().top + 'px'
+                    left: -ifrm.offset().left + 'px',
+                    top: -ifrm.offset().top + 'px'
                 });
 
             resize();
@@ -305,15 +306,15 @@ browser.maximize = function(button) {
     }
 };
 
-browser.refresh = function(selected) {
+browser.refresh = function (selected) {
     this.fadeFiles();
     $.ajax({
         type: 'POST',
         dataType: 'json',
         url: browser.baseGetData('chDir'),
-        data: {dir:browser.dir},
+        data: {dir: browser.dir},
         async: false,
-        success: function(data) {
+        success: function (data) {
             if (browser.check4errors(data))
                 return;
             browser.dirWritable = data.dirWritable;
@@ -321,8 +322,8 @@ browser.refresh = function(selected) {
             browser.orderFiles(null, selected);
             browser.statusDir();
         },
-        error: function() {
-            $('#files > div').css({opacity:'', filter:''});
+        error: function () {
+            $('#files > div').css({opacity: '', filter: ''});
             $('#files').html(browser.label("Unknown error."));
         }
     });

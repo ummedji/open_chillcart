@@ -1,8 +1,8 @@
 <?php
 
 /** Turkish localization file for KCFinder
-* translation by: Kursad Olmez <kursad.olmez@gmail.com>
-**/
+ * translation by: Kursad Olmez <kursad.olmez@gmail.com>
+ **/
 
 $lang = array(
 
@@ -15,145 +15,145 @@ $lang = array(
     '_dateTimeSmall' => "%d/%m/%Y %H:%M",
 
     "You don't have permissions to upload files." =>
-    "Dosya yüklemek için yetkiniz yok.",
+        "Dosya yüklemek için yetkiniz yok.",
 
     "You don't have permissions to browse server." =>
-    "Sunucuyu gezmek için yetkiniz yok.",
+        "Sunucuyu gezmek için yetkiniz yok.",
 
     "Cannot move uploaded file to target folder." =>
-    "Yüklenilen dosyalar hedef klasöre taşınamıyor.",
+        "Yüklenilen dosyalar hedef klasöre taşınamıyor.",
 
     "Unknown error." =>
-    "Bilinmeyen hata.",
+        "Bilinmeyen hata.",
 
     "The uploaded file exceeds {size} bytes." =>
-    "Gönderilen dosya boyutu, maksimum dosya boyutu limitini ({size} byte) aşıyor.",
+        "Gönderilen dosya boyutu, maksimum dosya boyutu limitini ({size} byte) aşıyor.",
 
     "The uploaded file was only partially uploaded." =>
-    "Dosyanın sadece bir kısmı yüklendi. Yüklemeyi tekrar deneyin.",
+        "Dosyanın sadece bir kısmı yüklendi. Yüklemeyi tekrar deneyin.",
 
     "No file was uploaded." =>
-    "Dosya yüklenmedi.",
+        "Dosya yüklenmedi.",
 
     "Missing a temporary folder." =>
-    "Geçici dosya klasörü bulunamıyor. Klasörü kontrol edin.",
+        "Geçici dosya klasörü bulunamıyor. Klasörü kontrol edin.",
 
     "Failed to write file." =>
-    "Dosya yazılamıyor. Klasör yetkilerini kontrol edin.",
+        "Dosya yazılamıyor. Klasör yetkilerini kontrol edin.",
 
     "Denied file extension." =>
-    "Yasaklanmış dosya türü.",
+        "Yasaklanmış dosya türü.",
 
     "Unknown image format/encoding." =>
-    "Bilinmeyen resim formatı.",
+        "Bilinmeyen resim formatı.",
 
     "The image is too big and/or cannot be resized." =>
-    "Resim çok büyük ve/veya yeniden boyutlandırılamıyor.",
+        "Resim çok büyük ve/veya yeniden boyutlandırılamıyor.",
 
     "Cannot create {dir} folder." =>
-    "{dir} klasörü oluşturulamıyor.",
+        "{dir} klasörü oluşturulamıyor.",
 
     "Cannot write to upload folder." =>
-    "Dosya yükleme klasörüne yazılamıyor. Klasör yetkisini kontrol edin.",
+        "Dosya yükleme klasörüne yazılamıyor. Klasör yetkisini kontrol edin.",
 
     "Cannot read .htaccess" =>
-    ".htaccess dosyası okunamıyor",
+        ".htaccess dosyası okunamıyor",
 
     "Incorrect .htaccess file. Cannot rewrite it!" =>
-    "Hatalı .htaccess dosyası. Dosyaya yeniden yazılamıyor.",
+        "Hatalı .htaccess dosyası. Dosyaya yeniden yazılamıyor.",
 
     "Cannot read upload folder." =>
-    "Dosya yükleme klasörü okunamıyor. Klasör yetkilerini kontrol edin.",
+        "Dosya yükleme klasörü okunamıyor. Klasör yetkilerini kontrol edin.",
 
     "Cannot access or create thumbnails folder." =>
-    "Önizleme dosyaları klasörüne erişilemiyor yada oluşturulamıyor.",
+        "Önizleme dosyaları klasörüne erişilemiyor yada oluşturulamıyor.",
 
     "Cannot access or write to upload folder." =>
-    "Dosya yükleme klasörüne ulaşılamıyor yada oluşturulamıyor.",
+        "Dosya yükleme klasörüne ulaşılamıyor yada oluşturulamıyor.",
 
     "Please enter new folder name." =>
-    "Lütfen yeni klasör adını girin.",
+        "Lütfen yeni klasör adını girin.",
 
     "Unallowable characters in folder name." =>
-    "Klasör adında izin verilmeyen karakter kullandınız.",
+        "Klasör adında izin verilmeyen karakter kullandınız.",
 
     "Folder name shouldn't begins with '.'" =>
-    "Klasör adı '.' ile başlayamaz.",
+        "Klasör adı '.' ile başlayamaz.",
 
     "Please enter new file name." =>
-    "Lütfen yeni dosya adını girin.",
+        "Lütfen yeni dosya adını girin.",
 
     "Unallowable characters in file name." =>
-    "Dosya adında izin verilmeyen karakter kullandınız.",
+        "Dosya adında izin verilmeyen karakter kullandınız.",
 
     "File name shouldn't begins with '.'" =>
-    "Dosya adı '.' ile başlayamaz.",
+        "Dosya adı '.' ile başlayamaz.",
 
     "Are you sure you want to delete this file?" =>
-    "Dosyayı silmek istediğinizden emin misiniz?",
+        "Dosyayı silmek istediğinizden emin misiniz?",
 
     "Are you sure you want to delete this folder and all its content?" =>
-    "Bu klasörü ve tüm içeriğini silmek istediğinizden emin misiniz?",
+        "Bu klasörü ve tüm içeriğini silmek istediğinizden emin misiniz?",
 
     "Inexistant or inaccessible folder." =>
-    "Klasör yok yada ulaşılamıyor.",
+        "Klasör yok yada ulaşılamıyor.",
 
     "Undefined MIME types." =>
-    "Tanımsız MIME türü.",
+        "Tanımsız MIME türü.",
 
     "Fileinfo PECL extension is missing." =>
-    "Dosya Bilgisi PECL uzantısı eksik.",
+        "Dosya Bilgisi PECL uzantısı eksik.",
 
     "Opening fileinfo database failed." =>
-    "Dosya Bilgisi veritabanı açılırken hata oluştu.",
+        "Dosya Bilgisi veritabanı açılırken hata oluştu.",
 
     "You can't upload such files." =>
-    "Bu tür dosyaları yükleyemezsiniz.",
+        "Bu tür dosyaları yükleyemezsiniz.",
 
     "The file '{file}' does not exist." =>
-    "'{file}' dosyası yok.",
+        "'{file}' dosyası yok.",
 
     "Cannot read '{file}'." =>
-    "'{file}' dosyası okunamıyor.",
+        "'{file}' dosyası okunamıyor.",
 
     "Cannot copy '{file}'." =>
-    "'{file}' dosyası kopyalanamıyor.",
+        "'{file}' dosyası kopyalanamıyor.",
 
     "Cannot move '{file}'." =>
-    "'{file}' dosyası taşınamıyor.",
+        "'{file}' dosyası taşınamıyor.",
 
     "Cannot delete '{file}'." =>
-    "'{file}' dosyası silinemiyor.",
+        "'{file}' dosyası silinemiyor.",
 
     "Click to remove from the Clipboard" =>
-    "Panodan çıkarmak için tıklayın",
+        "Panodan çıkarmak için tıklayın",
 
     "This file is already added to the Clipboard." =>
-    "Bu dosya zaten panoya eklenmiş.",
+        "Bu dosya zaten panoya eklenmiş.",
 
     "Copy files here" =>
-    "Dosyaları Buraya Kopyala",
+        "Dosyaları Buraya Kopyala",
 
     "Move files here" =>
-    "Dosyaları Buraya Taşı",
+        "Dosyaları Buraya Taşı",
 
     "Delete files" =>
-    "Dosyaları Sil",
+        "Dosyaları Sil",
 
     "Clear the Clipboard" =>
-    "Panoyu Temizle",
+        "Panoyu Temizle",
 
     "Are you sure you want to delete all files in the Clipboard?" =>
-    "Panodaki tüm dosyaları silmek istediğinizden emin misiniz?",
+        "Panodaki tüm dosyaları silmek istediğinizden emin misiniz?",
 
     "Copy {count} files" =>
-    "{count} adet dosyayı kopyala",
+        "{count} adet dosyayı kopyala",
 
     "Move {count} files" =>
-    "{count} adet dosyayı taşı",
+        "{count} adet dosyayı taşı",
 
     "Add to Clipboard" =>
-    "Panoya Ekle",
+        "Panoya Ekle",
 
     "New folder name:" => "Yeni Klasör Adı:",
     "New file name:" => "Yeni Dosya Adı:",
@@ -191,46 +191,46 @@ $lang = array(
     // VERSION 2 NEW LABELS
 
     "Cannot rename the folder." =>
-    "Klasör adı değiştirilemiyor.",
+        "Klasör adı değiştirilemiyor.",
 
     "Non-existing directory type." =>
-    "Geçersiz klasör türü.",
+        "Geçersiz klasör türü.",
 
     "Cannot delete the folder." =>
-    "Klasör silinemiyor.",
+        "Klasör silinemiyor.",
 
     "The files in the Clipboard are not readable." =>
-    "Panodaki dosyalar okunamıyor.",
+        "Panodaki dosyalar okunamıyor.",
 
     "{count} files in the Clipboard are not readable. Do you want to copy the rest?" =>
-    "Panodaki {count} adet dosya okunamıyor. Geri kalanlarını kopyalamak istiyor musunuz?",
+        "Panodaki {count} adet dosya okunamıyor. Geri kalanlarını kopyalamak istiyor musunuz?",
 
     "The files in the Clipboard are not movable." =>
-    "Panodaki dosyalar taşınamıyor.",
+        "Panodaki dosyalar taşınamıyor.",
 
     "{count} files in the Clipboard are not movable. Do you want to move the rest?" =>
-    "Panodaki {count} adet dosya taşınamıyor. Geri kalanlarını taşımak istiyor musunuz?",
+        "Panodaki {count} adet dosya taşınamıyor. Geri kalanlarını taşımak istiyor musunuz?",
 
     "The files in the Clipboard are not removable." =>
-    "Dosyalar panodan çıkartılamıyor.",
+        "Dosyalar panodan çıkartılamıyor.",
 
     "{count} files in the Clipboard are not removable. Do you want to delete the rest?" =>
-    "{count} adet dosya panodan çıkartılamıyor. Geri kalanları silmek istiyor musunuz?",
+        "{count} adet dosya panodan çıkartılamıyor. Geri kalanları silmek istiyor musunuz?",
 
     "The selected files are not removable." =>
-    "Seçilen dosyalar panodan çıkartılamıyor.",
+        "Seçilen dosyalar panodan çıkartılamıyor.",
 
     "{count} selected files are not removable. Do you want to delete the rest?" =>
-    "Seçilen dosyaların {count} adedi panodan çıkartılamıyor. Geri kalanları silmek istiyor musunuz?",
+        "Seçilen dosyaların {count} adedi panodan çıkartılamıyor. Geri kalanları silmek istiyor musunuz?",
 
     "Are you sure you want to delete all selected files?" =>
-    "Seçilen tüm dosyaları silmek istediğinizden emin misiniz?",
+        "Seçilen tüm dosyaları silmek istediğinizden emin misiniz?",
 
     "Failed to delete {count} files/folders." =>
-    "{count} adet dosya/klasör silinemedi.",
+        "{count} adet dosya/klasör silinemedi.",
 
     "A file or folder with that name already exists." =>
-    "Bu isimde bir klasör yada dosya zaten var.",
+        "Bu isimde bir klasör yada dosya zaten var.",
 
     "selected files" => "dosya seçildi",
     "Type" => "Tür",

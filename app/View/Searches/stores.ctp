@@ -26,19 +26,13 @@
 		<ul class="products search_stores"> <?php
 			foreach ($storeList as $key => $value) { ?>
 
-				<li class="product">
+				<li class="product col-sm-2">
 				    <div class="product__inner">
 				        <figure class="product__image" >
 				        	<a href="<?php echo $siteUrl.'/shop/'.$value['Store']['seo_url'].'/'.$value['Store']['id']; ?>">
 				            <!-- <span class="discount_image"><span>17% OFF</span></span> -->
-				            <?php
-
-							if (file_exists(WWW_ROOT.'/storelogos/'.$value['Store']['store_logo'])) { ?>
-
-								<img alt="<?php echo $value['Store']['store_name']; ?>" src="<?php echo $siteUrl.'/storelogos/'.$value['Store']['store_logo']; ?>"> <?php
-							} else { ?>
-								<img alt="<?php echo $value['Store']['store_name']; ?>" src="<?php echo $siteUrl.'/frontend/images/no_store.jpg'; ?>" title="<?php echo $value['Store']['store_name']; ?>"> <?php
-							} ?>
+				            
+								<img alt="<?php echo $value['Store']['store_name']; ?>" src="<?php echo $cdn.'/storelogos/'.$value['Store']['store_logo']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/frontend/images/no_store.jpg"; ?>'">
 
 				            <figcaption>
 				                <div class="product-addon">

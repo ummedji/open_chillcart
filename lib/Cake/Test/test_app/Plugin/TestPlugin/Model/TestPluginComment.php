@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Test App Comment Model
  *
@@ -19,10 +20,11 @@
  * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-class TestPluginComment extends TestPluginAppModel {
+class TestPluginComment extends TestPluginAppModel
+{
 
-	public $useTable = 'test_plugin_comments';
+    public $useTable = 'test_plugin_comments';
 
-	public $name = 'TestPluginComment';
+    public $name = 'TestPluginComment';
 
 }

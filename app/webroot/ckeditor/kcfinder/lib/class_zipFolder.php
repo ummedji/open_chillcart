@@ -1,24 +1,25 @@
 <?php
 
 /** This file is part of KCFinder project. The class are taken from
-  * http://www.php.net/manual/en/function.ziparchive-addemptydir.php
-  *
-  *      @desc Directory to ZIP file archivator
-  *   @package KCFinder
-  *   @version 2.51
-  *    @author Pavel Tzonkov <pavelc@users.sourceforge.net>
-  * @copyright 2010, 2011 KCFinder Project
-  *   @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
-  *   @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
-  *      @link http://kcfinder.sunhater.com
-  */
-
-class zipFolder {
+ * http://www.php.net/manual/en/function.ziparchive-addemptydir.php
+ *
+ * @desc Directory to ZIP file archivator
+ * @package KCFinder
+ * @version 2.51
+ * @author Pavel Tzonkov <pavelc@users.sourceforge.net>
+ * @copyright 2010, 2011 KCFinder Project
+ * @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
+ * @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
+ * @link http://kcfinder.sunhater.com
+ */
+class zipFolder
+{
     protected $zip;
     protected $root;
     protected $ignored;
 
-    function __construct($file, $folder, $ignored=null) {
+    function __construct($file, $folder, $ignored = null)
+    {
         $this->zip = new ZipArchive();
 
         $this->ignored = is_array($ignored)
@@ -39,7 +40,8 @@ class zipFolder {
         $this->zip->close();
     }
 
-    function zip($folder, $parent=null) {
+    function zip($folder, $parent = null)
+    {
         $full_path = "{$this->root}$parent$folder";
         $zip_path = "$parent$folder";
         $this->zip->addEmptyDir($zip_path);

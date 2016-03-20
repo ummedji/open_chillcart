@@ -30,7 +30,7 @@
 							<?php echo $orders_list['Order']['created'];?></span>
 						</div>
 						<div class="actions">
-							<a href="<?php echo $siteUrl.'/store/Orders/reportIndex'; ?>" class="btn btn-default btn-circle">
+							<a href="javascript:void(0);" onclick="window.history.go(-1);" class="btn btn-default btn-circle">
 							<i class="fa fa-angle-left"></i>
 							<span class="hidden-480">
 							Back </span>
@@ -46,13 +46,13 @@
 										<td width="60%">
 											<div class="address-detail">
 												<div class="resName"> <?php
-													echo $orders_list['ShoppingCart'][0]['Store']['store_name'];?>
+													echo $orders_list['Store']['store_name'];?>
 												</div> <?php
 
-												echo $orders_list['ShoppingCart'][0]['Store']['street_address'].', '.
-													 	$location[$orders_list['ShoppingCart'][0]['Store']['store_zip']].', '.
-													 	$cities[$orders_list['ShoppingCart'][0]['Store']['store_city']].', '.
-													 	$states[$orders_list['ShoppingCart'][0]['Store']['store_state']].'.'; ?>
+												echo $orders_list['Store']['street_address'].', '.
+													 	$location[$orders_list['Store']['store_zip']].', '.
+													 	$cities[$orders_list['Store']['store_city']].', '.
+													 	$states[$orders_list['Store']['store_state']].'.'; ?>
 											</div>
 										</td>
 									</tr>
@@ -188,19 +188,14 @@
 											//echo "<pre>";print_r($value);?>
 									<tr>
 										<td><?php echo $count;?></td>
-
-									 <td>
-
-										 <div style="float:left;width:200px;">
-											 <img alt="<?php echo $value['product_name']; ?>" src="<?php echo $siteUrl.'/stores/'.$value['Store']['id'].'/products/carts/'.$value['product_image']; ?>" title="<?php echo $value['Store']['store_name']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/noimage.jpg"; ?>'">
-										</div>
-										 <div style="clear:both;float:left;width:200px;">
-										<?php echo $value['product_name'];?>
-										</div>
-										 <?php
-
+									 	<td>
+											<div style="float:left;width:200px;">
+												 <img alt="<?php echo $value['product_name']; ?>" src="<?php echo $cdn; ?>/stores/products/carts/<?php echo $value['product_image']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/noimage.jpg"; ?>'">
+											</div>
+											 <div style="clear:both;float:left;width:200px;">
+											<?php echo $value['product_name'];?>
+											</div> <?php
 												if (!empty($value['product_description'])) { ?>
-
 													<span class="table-addon"><?php echo $value['product_description']; ?></span> <?php
 												} ?>
 										</td>

@@ -22,32 +22,33 @@
  *
  * @package       Cake.Test.Fixture
  */
-class MyProductFixture extends CakeTestFixture {
+class MyProductFixture extends CakeTestFixture
+{
 
-/**
- * name property
- *
- * @var string 'MyProduct'
- */
-	public $name = 'MyProduct';
+    /**
+     * name property
+     *
+     * @var string 'MyProduct'
+     */
+    public $name = 'MyProduct';
 
-/**
- * fields property
- *
- * @var array
- */
-	public $fields = array(
-		'id' => array('type' => 'integer', 'key' => 'primary'),
-		'name' => array('type' => 'string', 'null' => false),
-	);
+    /**
+     * fields property
+     *
+     * @var array
+     */
+    public $fields = array(
+        'id' => array('type' => 'integer', 'key' => 'primary'),
+        'name' => array('type' => 'string', 'null' => false),
+    );
 
-/**
- * records property
- *
- * @var array
- */
-	public $records = array(
-		array('id' => 1, 'name' => 'book'),
-		array('id' => 2, 'name' => 'computer'),
-	);
+    /**
+     * records property
+     *
+     * @var array
+     */
+    public $records = array(
+        array('id' => 1, 'name' => 'book'),
+        array('id' => 2, 'name' => 'computer'),
+    );
 }

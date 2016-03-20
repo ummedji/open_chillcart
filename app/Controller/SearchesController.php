@@ -41,6 +41,24 @@ class SearchesController extends AppController {
 	public function index() {
 
 		$this->layout = 'frontend';
+		
+		if ($this->cityId != '') {
+			
+			$cityDetails = $this->City->findById($this->cityId);
+			if (!empty($this->areaId)) {
+
+				$areaDetails = $this->Location->findById($this->areaId);
+				$this->redirect($this->siteUrl.'/city/'.$cityDetails['City']['city_name'].'/'.
+																$areaDetails['Location']['area_name'].'/'.
+																$this->cityId.'/'.
+																$this->areaId);
+			} else {
+				$this->redirect($this->siteUrl.'/city/'.$cityDetails['City']['city_name'].'/'.
+																$this->cityId);
+			}
+			$this->redirect(array('controller' => 'searches', 'action' => 'stores', $this->cityId, $this->areaId));
+		}
+
 		$this->changeLocation();
 
 		if (!empty($this->request->data['Search']['city'])) {
@@ -107,6 +125,7 @@ class SearchesController extends AppController {
 
 		$this->layout = 'frontend';
 		$orderSuccess = '';
+		$stores = array();
 		if ($this->Session->read('orderplaced')) {
 			$orderSuccess = $this->Session->read('orderplaced');
 			$this->changeLocation();
@@ -145,7 +164,10 @@ class SearchesController extends AppController {
                               	'conditions'=>array('Review.store_id' => $value['Store']['id']),
 								'fields' => array('SUM(Review.rating) AS rating',
 												'Count(Review.rating) AS ratingCount')));
-			$storeList[$key]['Store']['rating'] = $ratingDetail[0]['rating']/$ratingDetail[0]['ratingCount'];
+
+			$storeList[$key]['Store']['rating'] = (!empty($ratingDetail[0]['ratingCount'])) ? 
+												$ratingDetail[0]['rating']/$ratingDetail[0]['ratingCount'] : 0;
+
 		}
 
 		if (empty($storeList)) {
@@ -201,7 +223,8 @@ class SearchesController extends AppController {
                               	'conditions'=>array('Review.store_id' => $value['Store']['id']),
 								'fields' => array('SUM(Review.rating) AS rating',
 												'Count(Review.rating) AS ratingCount')));
-			$storeList[$key]['Store']['rating'] = $ratingDetail[0]['rating']/$ratingDetail[0]['ratingCount'];
+			$storeList[$key]['Store']['rating'] = (!empty($ratingDetail[0]['ratingCount'])) ? 
+												$ratingDetail[0]['rating']/$ratingDetail[0]['ratingCount'] : 0;
 		}
 
 		$storeDetails = $this->Store->find('first', array(
@@ -235,6 +258,7 @@ class SearchesController extends AppController {
 
 			$mainCategoryList = $this->Category->find('all', array(
 				'conditions' => array('Category.status' => 1,
+									'Category.parent_id' => 0,
 					'OR' => array('Category.id' => $mainCategory))));
 
 			$subCategoryList = $this->Category->find('list', array(
@@ -309,7 +333,7 @@ class SearchesController extends AppController {
 				$deal = $this->Deal->findByMainProduct($productDetails['ProductDetail']['product_id']);
 
 				$shoppingCart['product_id'] 		 = $productDetails['ProductDetail']['id'];
-				$shoppingCart['brand_name'] 		 = ($productDetails['Product']['Brand']['brand_name']) ? 
+				$shoppingCart['brand_name'] 		 = (isset($productDetails['Product']['Brand']['brand_name'])) ? 
 														$productDetails['Product']['Brand']['brand_name'] : '';
 				$shoppingCart['session_id'] 		 = $this->SessionId;
 				$shoppingCart['product_image']		 = (isset($productDetails['Product']['ProductImage'][0]['image_alias'])) ?
@@ -374,7 +398,7 @@ class SearchesController extends AppController {
         										 'COUNT(ShoppingCart.store_id) AS productCount',
         										 'SUM(ShoppingCart.product_total_price) As productTotal')));
 		
-		$this->ShoppingCart->recursive = 3;
+		//$this->ShoppingCart->recursive = 3;
 		$storeCart = $this->ShoppingCart->find('all', array(
 								'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
 								'order' => array('ShoppingCart.store_id')));
@@ -436,7 +460,7 @@ class SearchesController extends AppController {
 
 	public function changeLocation() {
 
-		$location 	= $this->request->data['location'];
+		$location 	= (isset($this->request->data['location'])) ? $this->request->data['location'] : '';
 
 		$this->ShoppingCart->deleteAll(array("session_id"=> $this->SessionId,
 											'ShoppingCart.order_id' => 0));
@@ -536,41 +560,74 @@ class SearchesController extends AppController {
 	}
 	public function filtterByCategory(){
 		$id      = $this->request->data['id'];
-		$storeid = $this->request->data['storeid'];
-		$productList = $this->Product->find('all', array(
-			'conditions' => array('Product.category_id' => $id,
-				'Product.status' => 1,
-				'MainCategory.status' => 1,
-				'SubCategory.status' => 1,
-				'Product.store_id'=>$storeid,
-				'OR' => array('Store.collection' => 'Yes',
-					'Store.delivery'	 => 'Yes')),
-			'order' => array('Product.category_id', 'Product.sub_category_id')));
+		$storeId = $this->request->data['storeId'];
+		$count   = $this->request->data['count'];
+		$subId 	 = isset($this->request->data['subId']) ? $this->request->data['subId'] : '';
+		$productList = array();
+		if (!empty($subId)) {
+			$productList = $this->Product->find('all', array(
+									'conditions' => array('Product.category_id' => $id,
+														'Product.status' => 1,
+														'MainCategory.status' => 1,
+														'SubCategory.status' => 1,
+														'Product.store_id'=>$storeId,
+														'Product.sub_category_id' => $subId),
+									'order' => array('Product.category_id', 'Product.sub_category_id')));
+		} else {
+
+			$subcategory = $this->Category->find('list', array(
+					'conditions' =>array('Category.parent_id' => $id)));
+			
+			foreach ($subcategory as $key => $value) {
+				$productLists = $this->Product->find('all', array(
+									'conditions' => array('Product.category_id' => $id,
+														'Product.status' => 1,
+														'MainCategory.status' => 1,
+														'SubCategory.status' => 1,
+														'Product.store_id'=>$storeId,
+														'Product.sub_category_id' => $value),
+									'order' => array('Product.category_id', 'Product.sub_category_id'),
+									'limit' => 6));
+				if(!empty($productLists)) {
+
+					foreach ($productLists as $key => $value) {
+
+						if (isset($productLists[5])) {
+							$value['moreProduct'] = 1;
+						}
+						$productList[] = $value;
+					}
+				}
+			}
+		}
+		$this->set(compact('productList', 'count'));
+	}
+
+	public function dealProducts() {
+
+		$storeId = $this->request->data['storeId'];
+
+		$this->Deal->recursive = 2;
+		$dealProduct = $this->Deal->find('all', array(
+							'conditions' => array('Deal.store_id' => $storeId,
+											'Deal.status' => 1,
+											'MainProduct.status' => 1,
+										),
+							'order' => array('MainProduct.category_id', 'MainProduct.sub_category_id')));
 
 		$mainCategory = array();
 		$subCategory = array();
+		$main = $subCount = 0;
 
-		foreach ($productList as $key => $value) {
-			if (!in_array($value['Product']['category_id'], $mainCategory)) {
-				$mainCategory[] = $value['Product']['category_id'];
-			}
-
-			if (!in_array($value['Product']['sub_category_id'], $subCategory)) {
-				$subCategory[] = $value['Product']['sub_category_id'];
+		foreach ($dealProduct as $key => $value) {
+			if ($value['MainProduct']['MainCategory']['status'] == 1 &&
+				$value['MainProduct']['SubCategory']['status'] == 1
+			) {
+				if ($subCount <= 2) {
+					$dealProducts[] = $value;
+				}
 			}
 		}
-
-		$mainCategoryList = $this->Category->find('all', array(
-			'conditions' => array('Category.status' => 1,
-				'OR' => array('Category.id' => $mainCategory))));
-
-		$subCategoryList = $this->Category->find('list', array(
-			'conditions' => array('Category.status' => 1,
-				'OR' => array('Category.id' => $subCategory))));
-
-		$this->set(compact('storeList', 'productList', 'storeDetails', 'mainCategoryList',
-			'subCategoryList', 'storeId', 'dealProduct', 'metaTitle',
-			'metakeywords', 'metaDescriptions'));
+		$this->set(compact('dealProducts', 'mainCategoryList', 'subCategoryList'));
 	}
-
 }

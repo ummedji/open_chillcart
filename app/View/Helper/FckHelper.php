@@ -1,9 +1,12 @@
 <?php
-class FckHelper extends FormHelper {
+
+class FckHelper extends FormHelper
+{
 
     var $helpers = array('Html');
 
-    function ckeditor($fieldName, $options = array()) {
+    function ckeditor($fieldName, $options = array())
+    {
         //CakePHP 1.2.4.8284
         $options = $this->_initInputField($fieldName, $options);
         //If you have probelms, try adding a second underscore to _initInputField.  I haven't tested this, but some commenters say it works.
@@ -13,7 +16,7 @@ class FckHelper extends FormHelper {
         $events = null;
 
         if (array_key_exists('value', $options)) {
-            $value = $options['value']; 
+            $value = $options['value'];
         }
         if (array_key_exists('config', $options)) {
             $config = $options['config'];
@@ -24,12 +27,13 @@ class FckHelper extends FormHelper {
             unset($options['events']);
         }
 
-        require_once WWW_ROOT.DS.'js'.DS.'ckeditor'.DS.'ckeditor.php';
-		//CK Editor
+        require_once WWW_ROOT . DS . 'js' . DS . 'ckeditor' . DS . 'ckeditor.php';
+        //CK Editor
         $CKEditor = new CKEditor();
-        $CKEditor->basePath = $this->webroot.'js/ckeditor/';  
+        $CKEditor->basePath = $this->webroot . 'js/ckeditor/';
 
         return $CKEditor->editor($options['name'], $value, $config, $events);
     }
 }
+
 ?>

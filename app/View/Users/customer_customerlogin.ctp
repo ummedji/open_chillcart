@@ -1,7 +1,7 @@
 
 <div class="container loginBg">
 	<div class="row">
-		<div class="col-md-6 col-md-offset-3">
+		<div class="col-md-6 col-md-offset-1">
 			<div class="col-md-10 col-md-offset-1" >
 				<div id="login" class="loginInnerBg clearfix">
 					<h4> <?php echo __('Login', true); ?></h4><?php
@@ -24,10 +24,10 @@
 													  'autocomplete' => 'off',
 													  'div' => false)); ?>
 						</div>
-						<div class="col-md-12">
+						<div class="row clearfix">
 							<div class="col-md-6">
-								<div class="rememberpassword padding-l-15-xs">
-									<label class='checkbox'> <?php
+								<div class="rememberpassword">
+									<label class=''> <?php
 				        				echo $this->Form->input("rememberMe",
 				        							array("type"=>"checkbox",
 				        									'label'=>false,
@@ -42,13 +42,13 @@
 							</div>
 						</div>
 
-						<div class="signup-footer margin-t-15-xs">
-							<div class="col-md-6">
+						<div class="signup-footer row">
+							<div class="col-md-6 col-xs-5">
 								<?php echo $this->Form->submit(__('Login'));?>
 
 							</div>
-							<div class="col-md-6">
-								<div class="margin-t-5 text-right">
+							<div class="col-md-6 col-xs-7">
+								<div class="text-right">
 									<a class="linkRight" href="<?php echo $siteUrl.'/signup'; ?>"> <?php echo __('Create New Account', true); ?> ?</a>
 								</div>
 							</div>
@@ -71,13 +71,13 @@
 						</div>
 
 
-						<div class="signup-footer">
-							<div class="col-md-6">
+						<div class="signup-footer row">
+							<div class="col-md-6 col-xs-5">
 								<?php echo $this->Form->submit(__('Submit'));?>
 
 							</div>
-							<div class="col-md-6">
-								<div class="margin-t-5 text-right">
+							<div class="col-md-6 col-xs-7">
+								<div class="text-right">
 									<a  id="loginPage" class="linkRight" href="javascript:void(0);">  <?php echo __('Login', true); ?> </a>
 								</div>
 							</div>
@@ -89,25 +89,24 @@
 			</div>
 			<!-- <div class="socialOr"><span>Or</span></div> -->
 		</div>
-		<!--<div class="col-md-3">
+		<div class="col-md-3">
 			<div class="social-logins">
-
-				<a class="facebook" href="javascript:voic(0);">
+				<a class="facebook" href="<?php echo $siteUrl.'/users/social_login/Facebook'; ?>">
 					<img alt="facebook" title="facebook" src="<?php echo $siteUrl.'/frontend/images/facebook.png'; ?>">
 					<i>Login with Facebook</i>
 					<div class="clr"></div>
 				</a>
-				<a class="twitter" href="javascript:voic(0);">
+				<!--<a class="twitter" href="javascript:voic(0);">
 					<img alt="twitter" title="twitter" src="<?php echo $siteUrl.'/frontend/images/twitter.png'; ?>">
 					<i>Login with Twitter</i>
 					<div class="clr"></div>
-				</a>
-				<a class="googleplus" href="javascript:voic(0);">
-					<img alt="gplus" title="gplus" src="<?php echo $siteUrl.'/frontend/images/gplus.png'; ?>" >
+				</a>-->
+				<a class="googleplus" href="<?php echo $siteUrl.'/users/social_login/Google'; ?>">
+					<img alt="gplus" title="gplus" src="<?php echo $siteUrl.'/frontend/images/gplus.png'; ?>">
 					<i>Login with Google+</i>
 					<div class="clr"></div>
 				</a>
 			</div>
-		</div>-->
+		</div>
 	</div>
 </div>

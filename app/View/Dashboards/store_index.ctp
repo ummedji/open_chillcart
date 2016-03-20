@@ -35,7 +35,7 @@
 				</div>
 				</a>
 			</div>
-			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+			<!-- <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
 				<a class="dashboard-stat dashboard-stat-light red-soft" href="#">
 				<div class="visual">
 					<i class="fa fa-trophy"></i>
@@ -48,7 +48,7 @@
 					</div>
 				</div>
 				</a>
-			</div>
+			</div> -->
 			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
 				<a class="dashboard-stat dashboard-stat-light green-soft" href="#">
 				<div class="visual">

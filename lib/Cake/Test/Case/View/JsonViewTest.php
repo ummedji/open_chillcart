@@ -27,75 +27,79 @@ App::uses('JsonView', 'View');
  *
  * @package       Cake.Test.Case.View
  */
-class JsonViewTest extends CakeTestCase {
+class JsonViewTest extends CakeTestCase
+{
 
-/**
- * testRenderWithoutView method
- *
- * @return void
- */
-	public function testRenderWithoutView() {
-		$Request = new CakeRequest();
-		$Response = new CakeResponse();
-		$Controller = new Controller($Request, $Response);
-		$data = array('user' => 'fake', 'list' => array('item1', 'item2'));
-		$Controller->set(array('data' => $data, '_serialize' => 'data'));
-		$View = new JsonView($Controller);
-		$output = $View->render(false);
+    /**
+     * testRenderWithoutView method
+     *
+     * @return void
+     */
+    public function testRenderWithoutView()
+    {
+        $Request = new CakeRequest();
+        $Response = new CakeResponse();
+        $Controller = new Controller($Request, $Response);
+        $data = array('user' => 'fake', 'list' => array('item1', 'item2'));
+        $Controller->set(array('data' => $data, '_serialize' => 'data'));
+        $View = new JsonView($Controller);
+        $output = $View->render(false);
 
-		$this->assertSame(json_encode($data), $output);
-		$this->assertSame('application/json', $Response->type());
-	}
+        $this->assertSame(json_encode($data), $output);
+        $this->assertSame('application/json', $Response->type());
+    }
 
-/**
- * Test render with an array in _serialize
- *
- * @return void
- */
-	public function testRenderWithoutViewMultiple() {
-		$Request = new CakeRequest();
-		$Response = new CakeResponse();
-		$Controller = new Controller($Request, $Response);
-		$data = array('no' => 'nope', 'user' => 'fake', 'list' => array('item1', 'item2'));
-		$Controller->set($data);
-		$Controller->set('_serialize', array('no', 'user'));
-		$View = new JsonView($Controller);
-		$output = $View->render(false);
+    /**
+     * Test render with an array in _serialize
+     *
+     * @return void
+     */
+    public function testRenderWithoutViewMultiple()
+    {
+        $Request = new CakeRequest();
+        $Response = new CakeResponse();
+        $Controller = new Controller($Request, $Response);
+        $data = array('no' => 'nope', 'user' => 'fake', 'list' => array('item1', 'item2'));
+        $Controller->set($data);
+        $Controller->set('_serialize', array('no', 'user'));
+        $View = new JsonView($Controller);
+        $output = $View->render(false);
 
-		$this->assertSame(json_encode(array('no' => $data['no'], 'user' => $data['user'])), $output);
-		$this->assertSame('application/json', $Response->type());
-	}
+        $this->assertSame(json_encode(array('no' => $data['no'], 'user' => $data['user'])), $output);
+        $this->assertSame('application/json', $Response->type());
+    }
 
-/**
- * testRenderWithView method
- *
- * @return void
- */
-	public function testRenderWithView() {
-		App::build(array(
-			'View' => array(CAKE . 'Test' . DS . 'test_app' . DS . 'View' . DS)
-		));
-		$Request = new CakeRequest();
-		$Response = new CakeResponse();
-		$Controller = new Controller($Request, $Response);
-		$Controller->name = $Controller->viewPath = 'Posts';
+    /**
+     * testRenderWithView method
+     *
+     * @return void
+     */
+    public function testRenderWithView()
+    {
+        App::build(array(
+            'View' => array(CAKE . 'Test' . DS . 'test_app' . DS . 'View' . DS)
+        ));
+        $Request = new CakeRequest();
+        $Response = new CakeResponse();
+        $Controller = new Controller($Request, $Response);
+        $Controller->name = $Controller->viewPath = 'Posts';
 
-		$data = array(
-			'User' => array(
-				'username' => 'fake'
-			),
-			'Item' => array(
-				array('name' => 'item1'),
-				array('name' => 'item2')
-			)
-		);
-		$Controller->set('user', $data);
-		$View = new JsonView($Controller);
-		$output = $View->render('index');
+        $data = array(
+            'User' => array(
+                'username' => 'fake'
+            ),
+            'Item' => array(
+                array('name' => 'item1'),
+                array('name' => 'item2')
+            )
+        );
+        $Controller->set('user', $data);
+        $View = new JsonView($Controller);
+        $output = $View->render('index');
 
-		$expected = json_encode(array('user' => 'fake', 'list' => array('item1', 'item2')));
-		$this->assertSame($expected, $output);
-		$this->assertSame('application/json', $Response->type());
-	}
+        $expected = json_encode(array('user' => 'fake', 'list' => array('item1', 'item2')));
+        $this->assertSame($expected, $output);
+        $this->assertSame('application/json', $Response->type());
+    }
 
 }

@@ -3,7 +3,8 @@
 
 App::uses('Model', 'Model');
 
-class Common extends Model {    
-    public $name   = "Common";    
-   
+class Common extends Model
+{
+    public $name = "Common";
+
 }

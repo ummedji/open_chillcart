@@ -13,7 +13,7 @@ class OrdersController extends AppController {
                           'StripeCustomer', 'Storeoffer', 'Status', 'State', 'City', 'Location',
                           'Store', 'ProductDetail', 'Orderstatus', 'Notification');
 
-  public $components = array('Stripe', 'Googlemap', 'AndroidResponse');
+  public $components = array('Stripe', 'Googlemap', 'AndroidResponse', 'Twilio');
 
   public function beforeFilter() {
 
@@ -51,7 +51,6 @@ class OrdersController extends AppController {
    * @return void
    */
   public function admin_index() {
-    
   	$order_list = $this->Order->find('all', array(
                         'conditions' => array('Order.status' => 'Pending'),
                         'order' => array('Order.id DESC')));
@@ -77,17 +76,18 @@ class OrdersController extends AppController {
   }
     public function admin_failedOrderDetail(){
         $order_list = $this->Order->find('all', array(
-            'conditions' => array('Order.status' => 'Failed'),
-            'order' => array('Order.id DESC')));
-        $status = array('Pending' => 'Pending', 'Accepted' => 'Accepted',
-            'Failed' => 'Failed', 'Delivered' => 'Delivered');
+                          'conditions' => array('Order.status' => 'Failed'),
+                          'order' => array('Order.id DESC')));
+        $status = array('Pending'   => 'Pending', 'Accepted'  => 'Accepted',
+                        'Failed'    => 'Failed', 'Delivered' => 'Delivered');
+
         $this->set(compact('order_list', 'status'));
     }
 
   // Admin Dispatch Order
   public function admin_order() {
 
-    $statuss = array('Delivered','Pending','Failed');
+    $statuss = array('Delivered','Pending','Failed', 'Deleted');
 
     $location = $this->Location->find('list', array(
                                     'fields' => array('id', 'area_name')));
@@ -116,15 +116,20 @@ class OrdersController extends AppController {
   //Admin side ReportManagement Based Order View
   public function admin_reportOrderView($id = null) {
     if (!empty($id)){
-      $this->Order->recursive = 2;
-      $orders_list = $this->Order->findByRefNumber($id);
+
+      $orders_list = $this->Order->find('first', array(
+                              'conditions' => array('Order.id' => $id,
+                                                    'Order.status' => 'Delivered')));
+      if (empty($orders_list)) {
+          $this->render('/Errors/error400');
+      }
 
       $cities = $this->City->find('list', array(
-                      'conditions' => array('City.state_id' => $orders_list['ShoppingCart'][0]['Store']['store_state']),
+                      'conditions' => array('City.state_id' => $orders_list['Store']['store_state']),
                       'fields' => array('id', 'city_name')));
 
       $location = $this->Location->find('list', array(
-                      'conditions' => array('Location.city_id' => $orders_list['ShoppingCart'][0]['Store']['store_city']),
+                      'conditions' => array('Location.city_id' => $orders_list['Store']['store_city']),
                       'fields' => array('id', 'area_name')));
 
       $this->set(compact('orders_list', 'cities', 'location'));
@@ -135,21 +140,24 @@ class OrdersController extends AppController {
   }
 
   //Admin side Order view Process
-  public function admin_orderView($id = null, $page) {
+  public function admin_orderView($id = null) {
     
     if(!empty($id)){
-      $this->Order->recursive =2 ;
-      $order_detail           = $this->Order->findById($id);
+      $order_detail = $this->Order->find('first', array(
+                              'conditions' => array('Order.id' => $id)));
+      if (empty($order_detail)) {
+          $this->render('/Errors/error400');
+      }
 
       $cities = $this->City->find('list', array(
-                      'conditions' => array('City.state_id' => $order_detail['ShoppingCart'][0]['Store']['store_state']),
+                      'conditions' => array('City.state_id' => $order_detail['Store']['store_state']),
                       'fields' => array('id', 'city_name')));
 
       $location = $this->Location->find('list', array(
-                      'conditions' => array('Location.city_id' => $order_detail['ShoppingCart'][0]['Store']['store_city']),
+                      'conditions' => array('Location.city_id' => $order_detail['Store']['store_city']),
                       'fields' => array('id', 'area_name')));
       
-      $this->set(compact('order_detail', 'cities', 'location', 'page'));
+      $this->set(compact('order_detail', 'cities', 'location'));
 
     } else {
        $this->redirect(array('controller' => 'Orders', 'action' => 'index'));
@@ -159,6 +167,12 @@ class OrdersController extends AppController {
 
   //Confirm Order Process
   public function conformOrder() {
+
+      $role = $this->Auth->User('role_id');
+      if (empty($role) || $this->Auth->User('role_id') != 4) {
+          $this->redirect(array('controller' => 'searches', 'action' => 'index'));
+      }
+      
       $today= date("m/d/Y");
       $lastsessionid  = $this->Session->read("preSessionid");
       $SessionId = (!empty($lastsessionid)) ? $lastsessionid : $this->Session->id();
@@ -194,9 +208,9 @@ class OrdersController extends AppController {
           }
           
           $sourceLatLong    = $this->Googlemap->getlatitudeandlongitude($storeAddress);
-          $source_lat       = $sourceLatLong['lat'];
-          $source_long      = $sourceLatLong['long'];
-
+          $source_lat       = (isset($sourceLatLong['lat'])) ? $sourceLatLong['lat'] : 0;
+          $source_long      = (isset($sourceLatLong['lat'])) ? $sourceLatLong['long'] : 0;
+          
           if ($order['order_type'] != 'Collection') {
 
             $order['customer_name']       = $customerDetails['Customer']['first_name']. ' '.
@@ -216,8 +230,8 @@ class OrdersController extends AppController {
                             $this->siteSetting['Country']['country_name'];
 
             $destinationLatLong = $this->Googlemap->getlatitudeandlongitude($deliveryAddress);
-            $order['destination_latitude']    = $destinationLatLong['lat'];
-            $order['destination_longitude']   = $destinationLatLong['long'];
+            $order['destination_latitude']    = (isset($destinationLatLong)) ? $destinationLatLong['lat'] : 0;
+            $order['destination_longitude']   = (isset($destinationLatLong)) ? $destinationLatLong['long'] : 0;
           } else {
 
             $order['customer_name']       = $this->Auth->User('Customer.first_name'). ' '.
@@ -230,18 +244,16 @@ class OrdersController extends AppController {
             $order['city_name']           = $this->storeCity[$storeDetails['Store']['store_city']];
             $order['location_name']       = $this->storeLocation[$storeDetails['Store']['store_zip']];
 
-            $order['destination_latitude']    = $sourceLatLong['lat'];
-            $order['destination_longitude']   = $sourceLatLong['long'];
+            $order['destination_latitude']    = $source_lat;
+            $order['destination_longitude']   = $source_long;
           }
 
 
           $destination_lat  = $order['destination_latitude'];
           $destination_long = $order['destination_longitude'];
-
-          $distance         = $this->Googlemap->getDrivingDistance($source_lat,$source_long,$destination_lat,$destination_long);
-          $order['source_latitude']   = $sourceLatLong['lat'];
-          $order['source_longitude']  = $sourceLatLong['long'];
-
+          $distance = $this->Googlemap->getDrivingDistance($source_lat,$source_long,$destination_lat,$destination_long);
+          $order['source_latitude']   = $source_lat;
+          $order['source_longitude']  = $source_long;
 
           $storeOffers = $this->Storeoffer->find('first', array(
                                     'conditions' => array('Storeoffer.store_id' => $value['store_id'],
@@ -251,7 +263,6 @@ class OrdersController extends AppController {
                                     'order' => 'Storeoffer.id DESC'));
 
           $deliverDetails = $this->DeliveryTimeSlot->findById($value['time']);
-          
           $total = $this->ShoppingCart->find('all', array(
                   'conditions'=>array('ShoppingCart.session_id' => $SessionId,
                                       'ShoppingCart.store_id' => $value['store_id']),
@@ -262,32 +273,27 @@ class OrdersController extends AppController {
           $order['delivery_charge']     = ($value['orderType'] != 'Collection') ? $deliverDetails['DeliveryTimeSlot']['delivery_charge'] : 0;
           $order['order_sub_total']     = $total[0][0]['cartSubTotal'];
           $order['tax_amount']          = $deliverDetails['Store']['tax'];
-          $order['distance']            = $distance['distanceText'];
+          $order['distance']            = (isset($distance['distanceText'])) ? $distance['distanceText'] : 0 ;
           $order['offer_amount']        = ($storeOffers['Storeoffer']['offer_price'] <= $total[0][0]['cartSubTotal']) ?
                                             $total[0][0]['cartSubTotal'] * $storeOffers['Storeoffer']['offer_percentage']/100 :
                                             0;
                                             
           $order['order_grand_total']   = $order['order_sub_total'] + $order['delivery_charge'] + $order['tax_amount'] - $order['offer_amount'];
 
-          $this->Order->save($order);
-
-          $update['ref_number']         = '#GNC00'.$this->Order->id;
-          $orderId[] = $update['id']    = $this->Order->id;
-
+          $this->Order->save($order, null, null);
+          $update['ref_number'] = '#GNC00'.$this->Order->id;
+          $orderId[]    = $update['id'] = $this->Order->id;
           $this->Order->save($update);
 
           $storeDetails = $this->Store->findById($value['store_id']);
 
           // Store Owner Message
           if ($storeDetails['Store']['is_logged'] == 1) {
-            
               $deviceId      = $storeDetails['Store']['device_id'];
-              $ordDetails   = json_encode($orderDetails);
               $message      = 'New order came - '.$update['ref_number'];
               
               $gcm = $this->AndroidResponse->sendOrderByGCM(
-                      array('OrderDetails' => $ordDetails,
-                            'message'    => $message),
+                      array('message'    => $message),
                               $deviceId);
 
           }
@@ -308,8 +314,8 @@ class OrdersController extends AppController {
               $this->ProductDetail->save($value['ProductDetail']);
           }
 
+          //OrderMail
           $this->ordermail($this->Order->id);
-
           $this->Order->id = '';
       }
 
@@ -321,12 +327,10 @@ class OrdersController extends AppController {
               $orderUpdate['payment_type'] = 'cod';
               $this->Order->save($orderUpdate);
           }
-
-          /*$this->Session->setFlash('<p>'.__('Your Order Placed Successfully', true).'</p>', 'default', 
-                                          array('class' => 'alert alert-success'));*/
       } else {
 
         $id = $this->request->data['Order']['paymentMethod'];
+        $amount = 0;
 
         $stripeCard = $this->StripeCustomer->findById($id);
 
@@ -362,46 +366,76 @@ class OrdersController extends AppController {
               $orderUpdate['payment_method']  = 'paid';
               $this->Order->save($orderUpdate);
             }
-
-            /*$this->Session->setFlash('<p>'.__('Your Order Placed Successfully', true).'</p>', 'default', 
-                                        array('class' => 'alert alert-success'));*/
-
         } else {
-            $this->Session->setFlash(__('Payment failed', true),
+
+          foreach ($orderId as $key => $value) {
+
+            $orderUpdate['id']            = $value;
+            $orderUpdate['status']        = 'Failed';
+            $orderUpdate['payment_type']  = 'Card';
+            $orderUpdate['failed_reason'] = 'Payment failed';
+            $this->Order->save($orderUpdate);
+          }
+          $this->Session->setFlash(__('Payment failed', true),
                                     'default', array('class' => 'alert alert-danger'));
+          $this->redirect(array('controller' => 'searches', 'action' => 'index', 'Failed'));
         }
 
       }
 
-      $this->Session->write("preSessionid",'');
+      //Order Placed Sms
+      foreach ($orderId as $key => $value) {
+        $orderDetail = $this->Order->findById($value);
+        $customerMessage = 'Thanks for using chillcart service. Your order '.$orderDetail['Order']['ref_number'].' has been placed . Track your order at '.$this->siteUrl.'.  Regards Chillcart';
+        $toCustomerNumber = '+'.$this->siteSetting['Country']['phone_code'].$this->Auth->User('Customer.customer_phone');
+        $customerSms      = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
 
-      /*$this->Session->setFlash('<p>'.__('Your Order Place Successfull', true).'</p>', 'default', 
-                                          array('class' => 'alert alert-success'));*/
+        $storeMessage  = "Dear ".$orderDetail['Store']['store_name']." you've received a ";
+        $storeMessage .= ($orderDetail['Order']['payment_method'] != 'paid') ? 'COD' : 'PAID';
+        $storeMessage .= 'order '.$orderDetail['Order']['ref_number'].' from '.$orderDetail['Order']['customer_name'];
+
+        if ($orderDetail['Order']['order_type'] == 'Delivery') {
+             $storeMessage .= ','.$orderDetail['Order']['address'].','.$orderDetail['Order']['landmark'].
+                              ','.$orderDetail['Order']['location_name'].','.$orderDetail['Order']['city_name'].
+                              ','.$orderDetail['Order']['city_name'];
+        }
+
+        $storeMessage .= '. '.$orderDetail['Order']['order_type'].' due on '.$orderDetail['Order']['delivery_date'].' at '.$orderDetail['Order']['delivery_time_slot'].'. Thanks Chillcart';
+        $toStoreNumber = '+'.$this->siteSetting['Country']['phone_code'].$orderDetail['Store']['store_phone'];
+        $customerSms   = $this->Twilio->sendSingleSms($toStoreNumber, $storeMessage);
+
+      }
+
+      $this->Session->write("preSessionid",'');
       $this->Session->write('orderplaced', 'success');
       $this->redirect(array('controller' => 'searches', 'action' => 'index', 'Thanks'));
 
   }
   public function store_index(){
-    $this->layout           = 'assets';
-
+    $this->layout = 'assets';
     $order_list = $this->Order->find('all', array(
                         'conditions'=>array('Order.store_id' => $this->Auth->User('Store.id'),
                                             'Order.status' => 'Delivered'),
-                                'order' => array('Order.id DESC')));
+                        'order' => array('Order.id DESC')));
 
     $this->set(compact('order_list'));
   }
   public function store_reportOrderView($id = null) {
     $this->layout = 'assets';
     if (!empty($id)){
-      $this->Order->recursive = 2;
-      $orders_list = $this->Order->findByRefNumber($id);
+      $orders_list = $this->Order->find('first', array(
+                              'conditions' => array('Order.id' => $id,
+                                          'Order.status' => 'Delivered',
+                                          'Order.store_id' => $this->Auth->User('Store.id'))));
+      if (empty($orders_list)) {
+          $this->render('/Errors/error400');
+      }
       $cities = $this->City->find('list', array(
-                      'conditions' => array('City.state_id' => $orders_list['ShoppingCart'][0]['Store']['store_state']),
+                      'conditions' => array('City.state_id' => $orders_list['Store']['store_state']),
                       'fields' => array('id', 'city_name')));
 
       $location = $this->Location->find('list', array(
-                      'conditions' => array('Location.city_id' => $orders_list['ShoppingCart'][0]['Store']['store_city']),
+                      'conditions' => array('Location.city_id' => $orders_list['Store']['store_city']),
                       'fields' => array('id', 'area_name')));
 
       $this->set(compact('orders_list', 'cities', 'location'));
@@ -413,31 +447,34 @@ class OrdersController extends AppController {
    public function store_orderIndex() {
     $this->layout = 'assets';
     $id           = $this->Auth->User();
-    $this->Order->recursive =2 ;
     $order_list = $this->Order->find('all', array(
-                                      'conditions'=>array('Order.store_id'=>$id['Store']['id'],
-                                        'Order.status' => 'Pending'),
-                                      'order' => array('Order.id DESC')));
+                          'conditions'=>array('Order.store_id'=>$id['Store']['id'],
+                                            'Order.status' => 'Pending'),
+                          'order' => array('Order.id DESC')));
     $status = array('Pending' => 'Pending', 'Accepted' => 'Accepted',
                     'Failed' => 'Failed', 'Delivered' => 'Delivered');
 
     $this->set(compact('order_list', 'status'));
   }
-   public function store_orderView($id = null, $page) {
+   public function store_orderView($id = null) {
     $this->layout = 'assets';
     if(!empty($id)){
-      $this->Order->recursive =2 ;
-      $order_detail           = $this->Order->findById($id);      
 
+      $order_detail = $this->Order->find('first', array(
+                              'conditions' => array('Order.id' => $id,
+                                          'Order.store_id' => $this->Auth->User('Store.id'))));
+      if (empty($order_detail)) {
+          $this->render('/Errors/error400');
+      }
       $cities = $this->City->find('list', array(
-                      'conditions' => array('City.state_id' => $order_detail['ShoppingCart'][0]['Store']['store_state']),
+                      'conditions' => array('City.state_id' => $order_detail['Store']['store_state']),
                       'fields' => array('id', 'city_name')));
 
       $location = $this->Location->find('list', array(
-                      'conditions' => array('Location.city_id' => $order_detail['ShoppingCart'][0]['Store']['store_city']),
+                      'conditions' => array('Location.city_id' => $order_detail['Store']['store_city']),
                       'fields' => array('id', 'area_name')));
       
-      $this->set(compact('order_detail', 'cities', 'location', 'page'));
+      $this->set(compact('order_detail', 'cities', 'location'));
       
 
     } else {
@@ -448,7 +485,7 @@ class OrdersController extends AppController {
   public function store_order() {
     $this->layout = 'assets';
     $id           = $this->Auth->User();
-    $status = array('Delivered','Pending','Failed');
+    $status = array('Delivered','Pending','Failed','Deleted');
 
     $location = $this->Location->find('list', array(
                                     'fields' => array('id', 'area_name')));
@@ -460,7 +497,7 @@ class OrdersController extends AppController {
                         'conditions' => array('Order.store_id'=>$id['Store']['id'],
                                               'Order.order_type' => 'Delivery',
                             'NOT' => array('Order.status' => $status)),
-                                'order' => array('Order.id DESC')));
+                        'order' => array('Order.id DESC')));
 
     $this->set(compact('orderList', 'location', 'city'));
   }
@@ -472,7 +509,6 @@ class OrdersController extends AppController {
     $orderStatusUpdate['status']  = $this->request->data['status'];
 
     $orderDetail = $this->Order->findById($orderId);
-
 
     if (isset($this->request->data['reason'])) {
         $orderStatusUpdate['failed_reason']  = $this->request->data['reason'];
@@ -490,7 +526,6 @@ class OrdersController extends AppController {
         $orderStatusUpdate['driver_id']  = '';
 
         if ($this->Order->save($orderStatusUpdate)) {
-            
             $gcmId = $orderDetail['Driver']['device_id'];
             
             $message = array(
@@ -500,7 +535,20 @@ class OrdersController extends AppController {
 
             $gcm = $this->AndroidResponse->sendOrderByGCM($message,$gcmId);
             $gcm = json_decode($gcm, true);
+
+            $customerMessage = 'Congratulations! Your order '.$orderDetail['Order']['ref_number'].'succesfully accepted by '.
+                                $orderDetail['Store']['store_name'].'. Your order will be delivered by '.
+                                $orderDetail['Order']['delivery_date']. ' at '.$orderDetail['Order']['delivery_time_slot'].'. Thanks Chillcart';
+
+            $toCustomerNumber = '+'.$this->siteSetting['Country']['phone_code'].$orderDetail['Customer']['customer_phone'];
+            $customerSms      = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
             echo 'Success';
+        }
+    }
+
+    if ($orderStatusUpdate['status'] == 'Deleted') {
+        if ($this->Order->save($orderStatusUpdate)) {
+          echo 'Success';
         }
     }
     
@@ -518,10 +566,7 @@ class OrdersController extends AppController {
            $message = 'This order '.$orderDetail['Order']['ref_number']. ' will be '.strtolower(trim($this->request->data('status'))).'.';
         }
 
-        $gcm = $this->AndroidResponse->sendOrderByGCM(
-                        array('message'    => $message),
-                                            $deviceId);
-
+        $gcm = $this->AndroidResponse->sendOrderByGCM(array('message' => $message),$deviceId);
     }
 
     exit();
@@ -563,7 +608,18 @@ class OrdersController extends AppController {
 
             $gcm = $this->AndroidResponse->sendOrderByGCM($message,$gcmId);
             $gcm = json_decode($gcm, true);
+
+            $customerMessage = 'Congratulations! Your order '.$orderDetail['Order']['ref_number'].' succesfully accepted by '.$orderDetail['Store']['store_name'].'. Your order will be delivered by '.$orderDetail['Order']['delivery_date']. ' at '.$orderDetail['Order']['delivery_time_slot'].'. Thanks Chillcart';
+
+            $toCustomerNumber = '+'.$this->siteSetting['Country']['phone_code'].$orderDetail['Customer']['customer_phone'];
+            $customerSms      = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
+
             echo 'Success';
+        }
+    }
+    if ($orderStatusUpdate['status'] == 'Deleted') {
+        if ($this->Order->save($orderStatusUpdate)) {
+          echo 'Success';
         }
     }
     
@@ -580,22 +636,18 @@ class OrdersController extends AppController {
         } else{
            $message = 'This order '.$orderDetail['Order']['ref_number']. ' will be '.strtolower(trim($this->request->data('status'))).'.';
         }
-
-        $gcm = $this->AndroidResponse->sendOrderByGCM(
-                        array('message'    => $message),
-                                            $deviceId);
-
+        $gcm = $this->AndroidResponse->sendOrderByGCM(array('message' => $message),$deviceId);
     }
-
     exit();
   }
     public function store_collectionOrder(){
         $this->layout = 'assets';
         $id           = $this->Auth->User();
         $order_list = $this->Order->find('all', array(
-                                        'conditions' => array('Order.status' => 'Accepted','Order.store_id'=>$id['Store']['id'],
-                                            'Order.order_type' => 'Collection'),
-                                        'order' => array('Order.id DESC')));
+                              'conditions' => array('Order.status' => 'Accepted',
+                                                  'Order.store_id'=>$id['Store']['id'],
+                                                  'Order.order_type' => 'Collection'),
+                              'order' => array('Order.id DESC')));
 
         $status = array('Accepted' => 'Accepted', 'Failed' => 'Failed', 'Delivered' => 'Delivered');
 
@@ -606,11 +658,11 @@ class OrdersController extends AppController {
         $this->layout = 'assets';
         $id           = $this->Auth->User();
         $order_list = $this->Order->find('all', array(
-            'conditions' => array('Order.status' => 'Failed',
-                                    'Order.store_id'=>$id['Store']['id']),
-            'order' => array('Order.id DESC')));
+                              'conditions' => array('Order.status' => 'Failed',
+                                                      'Order.store_id'=>$id['Store']['id']),
+                              'order' => array('Order.id DESC')));
         $status = array('Pending' => 'Pending', 'Accepted' => 'Accepted',
-            'Failed' => 'Failed', 'Delivered' => 'Delivered');
+                          'Failed' => 'Failed', 'Delivered' => 'Delivered');
         $this->set(compact('order_list', 'status'));
     }
 
@@ -632,160 +684,164 @@ class OrdersController extends AppController {
         $sellerSubject = $statusmailSeller['Notification']['subject'];
 
 
-        $name= ' <table class="row note">
+        $name= '<table width="100%" border="0" style="border-color:#d9d9d9;"  cellspacing="0">
           <tbody><tr style="border-bottom:1px solid #ccc">
-                <td class="wrapper vertical-middle bold center" width="35%">S.No</td>
-                <td class="wrapper vertical-middle bold" width="20%">Item Image </td>
-                <td class="wrapper vertical-middle bold" width="7%">Item Name</td>
-                <td class="wrapper vertical-middle bold" width="20%">Qty</td>
-                <td class="wrapper vertical-middle bold" width="20%">Price</td>
-                <td class="wrapper vertical-middle bold" width="20%">Total Price</td>
+                <th style="font:bold 14px/30px Arial;background:#09a925;color:#ffffff; padding:8px; border:1px solid #d9d9d9;border-right:0;" width="3%">
+                  S.No</th>
+                <th style="font:bold 14px/30px Arial;background:#09a925;color:#ffffff; padding:8px; border:1px solid #d9d9d9;border-right:0;" width="5%">
+                  Item Image </th>
+                <th style="font:bold 14px/30px Arial;background:#09a925;color:#ffffff; padding:8px; border:1px solid #d9d9d9;border-right:0;" width="25%">
+                  Item Name</th>
+                <th style="font:bold 14px/30px Arial;background:#09a925;color:#ffffff; padding:8px; border:1px solid #d9d9d9;border-right:0;" width="5%">
+                  Qty</th>
+                <th style="font:bold 14px/30px Arial;background:#09a925;color:#ffffff; padding:8px; border:1px solid #d9d9d9;border-right:0;" width="5%">
+                  Price</th>
+                <th style="font:bold 14px/30px Arial;background:#09a925;color:#ffffff; padding:8px; border:1px solid #d9d9d9;border-right:0;" width="12%">
+                  Total Price</th>
           </tr>';
 
-      $source = $this->siteUrl.'/siteicons/logo.png/';
-      $title  = $Currency['Store_general']['logo'];
-
-      /*$storename   = $Currency['Store_general']['name'];
-      $storemailId = $Currency['Store_general']['customer_email'];*/
-
-      /*$userId   = $Currency['Store_general']['user_id'];
-      $Currency   = $Currency['Store_general']['currency_id'];
-      $CurrencySymbol = $this->Currency->findById($Currency);*/
+      $source = $this->siteUrl.'/siteicons/logo.png';
       $Currency   = $this->siteSetting['Country']['currency_symbol'];
 
 
-        $name='<table cellpadding="5" cellspacing="0" width="100%" style=" text-align:left; color:#fff; table-layout:fixed; margin:auto; color:#666; border-collapse:separate;background:#fff; border:1px solid #b1b1b2; border-radius:3px">
-           <thead><tr>
-            <th width="5%" bgcolor="#777" align="left" style="color:#fff; padding-left:10px; text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:14px;font-weight:bold;word-wrap:break-word">
-                S.No </th>
-            <th width="5%" bgcolor="#777" align="left" style="color:#fff; padding-left:10px; text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:14px;font-weight:bold;word-wrap:break-word">
-                      Item Image </th>
-            <th width="30%" bgcolor="#777" align="center" style="color:#fff; text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:14px;font-weight:bold;word-wrap:break-word">
-                      Item Name </th>
-            <th width="5%" bgcolor="#777" align="center" style="color:#fff; text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:14px;font-weight:bold;word-wrap:break-word">
-                        Qty        </th>
-            <th width="10%" bgcolor="#777" align="center" style="color:#fff; text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:14px;font-weight:bold;word-wrap:break-word">
-                        Price   </th>
-            <th width="10%" bgcolor="#777" align="center" style="color:#fff; text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:14px;font-weight:bold;word-wrap:break-word">
-                        Total Price   </th></tr>
-            </thead>
-            <tbody>';
+      foreach ($datas['ShoppingCart'] as $key => $data) {
 
-            foreach ($datas['ShoppingCart'] as $key => $data) {
+        $productSrc = $this->cdn.'/stores/products/carts/'.$data['product_image'];
 
-              $productSrc = $this->siteUrl.'/stores/'.$store_id.'/products/carts/'.$data['product_image'];
+        $serialNo = $key+1;
 
-              $serialNo = $key+1;
+        $name.='<tr>
+              <td style="border:1px solid #09a925;border-top:0;border-right:0;text-align:center; color:#000;font:14px Arial;border-left:0;" >'.$serialNo.'
+              <td style="border:1px solid #09a925;border-top:0;border-right:0;text-align:center; color:#000;font:14px Arial" >
+                <div style="width:100px; padding:5px; display:inline-block;">
 
-              $name.='<tr>
-                    <td>'.$serialNo.'
-                    <td bgcolor="#fff" style="word-wrap:break-word; padding-left:10px; width:auto; font-family:Helvetica,Arial,sans-serif;font-size:12px;border-bottom:1px solid #e0e0e0">
-                    <img src="'.$productSrc.'" width="71" alt="" style="float:left;margin-right:5px; border:1px solid #454545">    
-                <b>'. $data['productName'].'</b><br>
-              </td><td bgcolor="#fafafa" style="text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:12px;border-bottom:1px solid #e0e0e0;border-left:1px solid #e0e0e0">
-                 '. $data['product_name'].' </td>
-              <td bgcolor="#fafafa" style="text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:12px;border-bottom:1px solid #e0e0e0;border-left:1px solid #e0e0e0">
-                      '. $data['product_quantity'].'   </td>
-              <td bgcolor="#fafafa" style="text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:12px;border-bottom:1px solid #e0e0e0;border-left:1px solid #e0e0e0">
-                      '. $Currency." ".$data['product_price'] .'   </td>
-              <td bgcolor="#fafafa" style="text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:11px;border-bottom:1px solid #e0e0e0;border-left:1px solid #e0e0e0">
-                '. $Currency." ".$data['product_total_price'] .' </td>
-              </tr>'; 
-            }
-
-          $name.='</tbody>
-              <tfoot><tr>
-              <td  colspan="5" style="text-align:right;font-family:Helvetica,Arial,sans-serif;font-size:12px;word-wrap:break-word; padding-right:10px;">
-                  <b>Sub-Total :</b></td>
-           <td  style="text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:12px;border-left:1px solid #e0e0e0">
-            '. $Currency." ".$datas['Order']['order_sub_total'] .'</td>
+                  <img src='.$productSrc.' onerror="this.onerror=null;this.src='."'".$this->siteUrl.'/images/noimage.jpg'."'".'" width="71"  style="max-width:100%">
+                   </div></td>
+              <td style="border:1px solid #09a925;border-top:0;border-right:0;text-align:left; color:#000;font:14px Arial"><span style="padding:10px; display:inline-block;">'.
+                $data['product_name'].'</span></td>
+              <td style="border:1px solid #09a925;border-top:0;border-right:0;text-align:center; color:#000;font:14px Arial" >'.
+                $data['product_quantity'].'</td>
+              <td style="border:1px solid #09a925;border-top:0;border-right:0;text-align:right; padding-right:10px; color:#000;font:14px Arial" width="10%">'.
+                $Currency." ".$data['product_price'] .'</td>
+              <td style="border:1px solid #09a925;border-top:0;text-align:right; padding-right:10px; color:#000;font:14px Arial;border-right:0;" >'.
+                $Currency." ".$data['product_total_price'] .'</td>
+        </tr>'; 
+      }
+      
+        $name.='<tr>
+              <td colspan="5" style="text-align:right; padding-right:10px;font:bold 16px/30px Arial; border:1px solid #09a925;border-right:0;border-top:0;border-left:0;">
+                  Sub-Total</td>
+              <td style="text-align:right; padding-right:10px;font:16px/30px Arial; border:1px solid #09a925;border-top:0;border-right:0;">'.
+                $Currency." ".$datas['Order']['order_sub_total'] .'</td>
           </tr>';
-          
-            if ($datas['Order']['delivery_charge'] > 0) {
-              $name.='<tr>
-              <td  colspan="5" style="text-align:right;font-family:Helvetica,Arial,sans-serif;font-size:12px;word-wrap:break-word; padding-right:10px;">
-                <b>Delivery Fee  :</b></td>
-                    <td  style="text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:12px;border-left:1px solid #e0e0e0">
-                      '. $Currency." ".$datas['Order']['delivery_charge'].'</td>
-                </tr>';
-            }
+    
+      if ($datas['Order']['delivery_charge'] > 0) {
+        $name.='<tr>
+              <td colspan="5" style="text-align:right; padding-right:10px;font:bold 16px/30px Arial; border:1px solid #09a925;border-right:0;border-top:0;border-left:0;">
+                  Delivery Charge</td>
+              <td style="text-align:right; padding-right:10px;font:16px/30px Arial; border:1px solid #09a925;border-top:0;border-right:0;">'.
+                $Currency." ".$datas['Order']['delivery_charge'] .'</td>
+          </tr>';
 
-            if ($datas['Order']['tax_amount'] > 0) {
+      }
 
-              $name.='<tr>
-                <td  colspan="5" style="text-align:right;font-family:Helvetica,Arial,sans-serif;font-size:12px;word-wrap:break-word; padding-right:10px;">
-                <b>Tax  :</b></td>
-                    <td  style="text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:12px;border-left:1px solid #e0e0e0">
-                      '. $Currency." ".$datas['Order']['tax_amount'].'</td>
-                </tr>';
-            }
+      if ($datas['Order']['tax_amount'] > 0) {
 
-            if ($datas['Order']['offer_amount'] > 0) {
+        $name.='<tr>
+              <td colspan="5" style="text-align:right; padding-right:10px;font:bold 16px/30px Arial; border:1px solid #09a925;border-right:0;border-top:0;border-left:0;">
+                  Tax</td>
+              <td style="text-align:right; padding-right:10px;font:16px/30px Arial; border:1px solid #09a925;border-top:0;border-right:0;">'.
+                $Currency." ".$datas['Order']['tax_amount'] .'</td>
+          </tr>';
+      }
 
-              $name.='<tr>
-                <td  colspan="5" style="text-align:right;font-family:Helvetica,Arial,sans-serif;font-size:12px;word-wrap:break-word; padding-right:10px;">
-                <b>Offer  :</b></td>
-                    <td  style="text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:12px;border-left:1px solid #e0e0e0">
-                      '. $Currency." ".$datas['Order']['offer_amount'].'</td>
-                </tr>';
-            }
+      if ($datas['Order']['offer_amount'] > 0) {
 
 
-              $name.='<tr>
-                <td colspan="5" style="text-align:right;font-family:Helvetica,Arial,sans-serif;font-size:12px;word-wrap:break-word; padding-right:10px;">
-                  <b>Total :</b></td>
-                  <td  style="text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:12px;border-left:1px solid #e0e0e0">
-                    '. $Currency." ".$datas['Order']['order_grand_total'].' </td>
-                </tr>
-                </tfoot>
-              </table>';
+        $name.='<tr>
+              <td colspan="5" style="text-align:right; padding-right:10px;font:bold 16px/30px Arial; border:1px solid #09a925;border-right:0;border-top:0;border-left:0;">
+                  Sub-Offer</td>
+              <td style="text-align:right; padding-right:10px;font:16px/30px Arial; border:1px solid #09a925;border-top:0;border-right:0;">'.
+                $Currency." ".$datas['Order']['offer_amount'] .'</td>
+          </tr>';
+      }
 
 
-      $Address= '
-      <table border="0" width="100%" cellpadding="0" cellspacing="0" align="center"><tr>
-          <td valign="top" width="50%" style="padding:10px 10px; font-family: sans-serif; font-size: 13px; line-height: 24px; color: #3a3939; text-align: left;">
-        <table width="100%" bordercolor="#fff" bgcolor="#b1b1b2" style="border:1px solid #b1b1b2; background-color:#fff;">
-            <thead> <tr> <th bgcolor="#bd1104" style="background-color:#777; padding:5px; color:#fff">
-              Here is your order information</th> </tr>
-            </thead>
-            <tbody style="display:block;">
-              <tr><td  style="padding:5px 5px 0;" height="10px"><b>Order Number/ID :</b></td>
-                  <td style="padding:5px 5px 0 0;" height="10px">'.$datas['Order']['ref_number'].'</td>
-              </tr>
-              <tr><td style="padding:0 5px 0;" height="10px"><b>Payment Method :</b></td>
-                  <td style="padding:0 5px 0 0;" height="10px">'.str_ireplace('cod', 'cash on delivery', $datas['Order']['payment_type']) .'</td>
-              </tr>
-              <tr><td style="padding:0 5px 0;" height="10px"><b>Order Type :</b></td>
-                  <td style="padding:0 5px 0 0;" height="10px">'.
-                    $datas['Order']['order_type'].'</td>
-              </tr>
-              <tr><td style="padding:0 5px 0;" height="10px" ><b>'.$datas['Order']['order_type'].' Time :</b></td>
-                  <td style="padding:0 5px 0 0;" height="10px">'.$datas['Order']['delivery_time_slot'].'</td>
-              </tr>
-            </tbody>
+        $name.='<tr>
+              <td colspan="5" style="text-align:right;  padding-right:10px;color:#09a925;font:bold 18px/30px Arial; border:1px solid #09a925;border-right:1px solid #09a925; border-bottom:1px solid #09a925;border-top:0;border-right:0;border-left:0;">
+                Total</td>
+              <td style="text-align:right; padding-right:10px;color:#09a925;font:bold 18px/30px Arial; border:1px solid #09a925;border-right:1px solid #09a925; border-bottom:1px solid #09a925; border-top:0;border-right:0;">'.
+                $Currency." ".$datas['Order']['order_grand_total'].' </td>
+          </tr>
         </table>
-        </td><td valign="top" width="50%" style="padding:10px 10px; font-family: sans-serif; font-size: 14px; line-height: 24px;">
-          <table width="100%" bordercolor="#fff" bgcolor="#b1b1b2" style="border:1px solid #b1b1b2; background-color:#fff;">
-          <thead>
-            <tr><th bgcolor="#bd1104" style="background-color:#777; padding:5px; color:#fff">
-              Address</th></tr>
-            </thead>
-            <tbody style="display:block;">
-              <tr><td  style="padding:5px 5px 0;" height="10px"><b>'.
-                  $datas['Order']['customer_name'].'</b></td></tr>
-                <tr><td style="padding:0 5px 0;" height="10px"></br>'.
-                    $datas['Order']['address']." ".
-                    $datas['Order']['location_name']. ','.
-                    $datas['Order']['city_name'].'</td></tr><tr><td>'.
-                    $state[$datas['Order']['state_name']]." - ".
-                    $this->siteSetting['Country']['country_name']. '</td></tr><tr><td><b>'.
-                    $datas['Order']['customer_phone'].'<b></td></tr><tr><td>
-                      
-          </tbody>
-        </table>
-        </td></tr>
-      </table>';
+        </div>';
 
+
+      $Address= '<div style="width:100%; display:inline-block; ">
+                  <div style="width:100%; display:inline-block;margin-top:20px;">
+                    <div style="width:46%; display:inline-block; vertical-align:top; padding-left:20px;">
+
+                      <div style="width:100%; display:inline-block;">
+                        <h3 style="font-family:Arial; color:#09a925;" >
+                          Here is your order information</th> </h3>
+                        <div style="width:100%; display:inline-block;">
+                            <span style="width:45%; display:inline-block;font:bold 15px Arial; text-align:right; margin:5px 0;">
+                                Order Number/ID :
+                            </span>
+                            <span style="width:45%; display:inline-block;font:15px Arial; margin:5px 0; padding-left:10px;">'.
+                              $datas['Order']['ref_number'].'
+                            </span> 
+                        </div>
+                        <div style="width:100%; display:inline-block;">
+                          <span style="width:45%; display:inline-block;font:bold 15px Arial; text-align:right; margin:5px 0;">
+                            Payment Method :
+                          </span>
+                          <span style="width:45%; display:inline-block;font:15px Arial; margin:5px 0; padding-left:10px;">'.
+                            str_ireplace('cod', 'cash on delivery', $datas['Order']['payment_type']) .'
+                          </span> 
+                        </div>
+                        <div style="width:100%; display:inline-block;">
+                          <span style="width:45%; display:inline-block;font:bold 15px Arial; text-align:right; margin:5px 0;">
+                              Order Type : 
+                           </span>
+                          <span style="width:45%; display:inline-block;font:15px Arial; margin:5px 0; padding-left:10px;"> '.
+                            $datas['Order']['order_type'].'
+                          </span> 
+                        </div>  
+                        <div style="width:100%; display:inline-block;">
+                          <span style="width:45%; display:inline-block;font:bold 15px Arial; text-align:right; margin:5px 0;">
+                            '.$datas['Order']['order_type'].' Time :
+                          </span>
+                          <span style="width:45%; display:inline-block;font:15px Arial; margin:5px 0; padding-left:10px;"> '.
+                            $datas['Order']['delivery_time_slot'].'
+                          </span> 
+                        </div>
+                      </div>
+                      </div>
+                      <div style="width:45%; display:inline-block;border-left:1px dotted #09a925;min-height:200px; padding-left:30px;vertical-align:top;">
+                        <div style="width:100%; display:inline-block;">
+                          <h3 style="font-family:Arial; color:#09a925;" >
+                            Address
+                          </h3>
+                        </div>
+                        <div style="width:100%; display:inline-block;">
+                          <span style="width:100%; display:inline-block;font:bold 15px Arial;margin:5px 0;">'.
+                            $datas['Order']['customer_name'].'
+                          </span> 
+                          <span style="width:100%; display:inline-block;font:15px Arial; margin:5px 0;">'.
+                            $datas['Order']['address']." ".
+                            $datas['Order']['location_name']. ','.
+                            $datas['Order']['city_name'].'
+                          </span> 
+                          <span style="width:100%; display:inline-block;font:15px Arial; margin:5px 0;">'.
+                                $datas['Order']['state_name']." - ".
+                                $this->siteSetting['Country']['country_name']. '
+                          </span> 
+                          <span style="width:100%; display:inline-block;font:bold 15px Arial;margin:5px 0;">'.
+                            $datas['Order']['customer_phone'].'</span>  
+                          </div>
+                        </div>
+                      </div>';
 
       $customer_mail = $datas['Order']['customer_email'];
       $customerName  = $datas['Order']['customer_name'];
@@ -797,7 +853,6 @@ class OrdersController extends AppController {
 
       $mailContent = str_replace("{Customer name}", $customerName, $mailContent);
       $mailContent = str_replace("{source}", $source, $mailContent);
-      $mailContent = str_replace("{title}", $title, $mailContent);
       $mailContent = str_replace("{Store name}", $storename, $mailContent);
       $mailContent = str_replace("{orderid}", $datas['Order']['ref_number'], $mailContent);
       $mailContent = str_replace("{note}", $name, $mailContent);
@@ -811,21 +866,19 @@ class OrdersController extends AppController {
       $email->from($storemailId);
       $email->to($customer_mail);
       $email->subject($customerSubject);
-      $email->template('register');
+      $email->template('ordermail');
       $email->emailFormat('html');
       $email->viewVars(array('mailContent' => $mailContent,
                           'source' => $source,
                           'storename' => $storename));
-
       $email->send();
 
       $mailContent = $sellerContent;
 
       $mailContent = str_replace("{Customer name}", $customerName, $mailContent);
       $mailContent = str_replace("{source}", $source, $mailContent);
-      $mailContent = str_replace("{title}", $title, $mailContent);
       $mailContent = str_replace("{Store name}", $storename, $mailContent);
-      $mailContent = str_replace("{orderid}", $order_id, $mailContent);
+      $mailContent = str_replace("{orderid}", $datas['Order']['ref_number'], $mailContent);
       $mailContent = str_replace("{note}", $name, $mailContent);
       $mailContent = str_replace("{Address}", $Address, $mailContent);
       $mailContent = str_replace("{SITE_URL}", $siteUrl, $mailContent);
@@ -838,13 +891,14 @@ class OrdersController extends AppController {
       $email->from($customer_mail); 
       $email->to($storemailId);
       $email->subject($sellerSubject);
-      $email->template('register');
+      $email->template('ordermail');
       $email->emailFormat('html');
       $email->viewVars(array('mailContent' => $mailContent,
                             'source' => $source,
                             'storename' => $storename));
       
       $email->send();
+      return true;
 
     }
 

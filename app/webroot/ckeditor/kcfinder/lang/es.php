@@ -1,8 +1,8 @@
 <?php
 
 /** Spanish localization file for KCFinder
-  * Type some credits if you want
-  */
+ * Type some credits if you want
+ */
 
 $lang = array(
 

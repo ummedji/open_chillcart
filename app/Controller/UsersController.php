@@ -7,9 +7,10 @@ class UsersController extends AppController {
     public $name = 'Users';
 	var $helpers = array('Html', 'Session', 'Javascript', 'Ajax', 'Common');
 	public $uses = array('User', 'Customer','Notification');
-	public $components = array('Updown','Functions','Mpdf');
+	public $components = array('Functions', 'Hybridauth', 'Twilio', 'Mailchimp');
 	public function beforeFilter() {
-		$this->Auth->allow(array('signup', 'customer_customerLogin','storeLogin', 'activeLink', 'logout'));
+		$this->Auth->allow(array('signup', 'customer_customerLogin','storeLogin',
+								'activeLink', 'logout', 'social_login', 'social_endpoint'));
 		parent::beforeFilter();
 	}
 	public function index() {	
@@ -18,7 +19,12 @@ class UsersController extends AppController {
 		$this->set('title_for_layout', 'Admin');
 		
 		}
-	}	
+	}
+
+	public function login() {	
+		$this->redirect(array('controller' => 'searches', 'action' => 'index'));
+	}
+
     /**
      * Displays a view
      * Admin login process
@@ -45,7 +51,7 @@ class UsersController extends AppController {
 					} else {
 					     $this->Cookie->delete('rememberMe');
 					}
-					$this->redirect(array('controller' => 'users', 'action' => 'userRedirect','admin'=>false));
+					$this->redirect(array('controller' => 'dashboards', 'action' => 'index', 'admin'=>true));
 				} else { 
 
 					$this ->Session->setFlash('<p>'.__('Login failed your Username or Password Incorrect',true).'</p>', 'default', 
@@ -71,6 +77,68 @@ class UsersController extends AppController {
 
         }
 		if ($this->request->is('post')) {
+
+			if(isset($this->request->data['Users']['email']) && $this->request->data['Users']['email'] != ''){
+			   	$userData = $this->User->find('first', array(
+									   'conditions' =>array(
+										   'User.username' => trim($this->request->data['Users']['email']),
+										   'Store.status' => 1,
+										   'User.role_id' => 3)));
+
+			   	if(!empty($userData)){
+				   $newRegisteration = $this->Notification->find('first', array(
+					   					'conditions'=>array('Notification.title =' => 'Reset password')));
+
+				   $toemail  	 = $this->request->data['Users']['email'];
+				   $source	 	 = $this->siteUrl.'/siteicons/logo.png';
+				   $storeEmail   = $this->siteSetting['Sitesetting']['admin_email'];
+				   $siteName  	 = $this->siteSetting['Sitesetting']['site_name'];
+				   $storename 	 = $userData['Store']['store_name'];
+				   $tmpPassword  = $this->Functions->createTempPassword(7);
+
+				   $datas['User']['password']=$this->Auth->Password($tmpPassword);
+				   $datas['User']['id'] = $userData['User']['id'];
+
+				   	if ($this->User->save($datas['User'],null,null)){
+					   if($newRegisteration){
+						   $forgetpasswordContent = $newRegisteration['Notification']['content'];
+						   $forgetpasswordsubject = $newRegisteration['Notification']['subject'];
+					   }
+
+					   $mailContent = $forgetpasswordContent;
+					   $siteUrl = $this->siteUrl.'/store';
+					   $mailContent = str_replace("{Customer name}", $storename, $mailContent);
+					   $mailContent = str_replace("{source}", $source, $mailContent);
+					   $mailContent = str_replace("{title}", $siteName, $mailContent);
+					   $mailContent = str_replace("{SITE_URL}", $siteUrl, $mailContent);
+					   $mailContent = str_replace("{tmpPassword}", $tmpPassword, $mailContent);
+					   $mailContent = str_replace("{Store name}", $siteName, $mailContent);
+
+					   $email = new CakeEmail();
+					   $email->from($storeEmail);
+					   $email->to($toemail);
+					   $email->subject($forgetpasswordsubject);
+					   $email->template('register');
+					   $email->emailFormat('html');
+					   $email->viewVars(array('mailContent' => $mailContent,'source'=>$source,'storename'=>$siteName));
+
+					   if($email->send()){
+						// Forget Sms
+					   	$storeMessage = "We've received a request to change your password. Use this password ".$tmpPassword." to login to your account and update it ASAP. Thanks Chillcart";
+				          	$toStoreNumber = '+'.$this->siteSetting['Country']['phone_code'].$userData['Store']['contact_phone'];
+				        $storeSms 	  = $this->Twilio->sendSingleSms($toStoreNumber, $storeMessage);
+						$this->Session->setFlash('<p>'.__('Email has been sent successfully', true).'</p>', 'default',
+							   array('class' => 'alert alert-success'));
+						$this->redirect(array('controller' => 'users', 'action' => 'storeLogin', 'store' => true));
+					   }
+				    }
+			   	} else {
+			   		$this->Session->setFlash('<p>'.__('You are not authorized', true).'</p>', 'default',
+							   array('class' => 'alert alert-danger'));
+				   $this->redirect(array('controller' => 'users', 'action' => 'storeLogin', 'store' => true));
+			   	}
+		   	}
+
             $roles      = array(3);  
 			$userData   = $this->User->findByUsername($this->request->data['User']['username']);
 			if(in_array($userData['User']['role_id'],$roles)) {
@@ -172,6 +240,8 @@ class UsersController extends AppController {
 		$this -> Session -> setFlash('<p>'.__('Logout successfully', true).'</p>', 'default', 
 													array('class' => 'alert alert-success'));
 		$this->Auth->logout();
+		$this->Session->write("preSessionid",'');
+		session_regenerate_id();
 		$this->redirect(array('controller' => 'Users', 'action' => 'customerlogin', 'customer'=>true));
 
 	}
@@ -258,14 +328,17 @@ class UsersController extends AppController {
 			exit();
         }
 
+       	if (!empty($this->request->data['Customer']['customer_email'])) {
+          	//$user  = $this->User->findByUsernameAndRoleId($this->request->data['Customer']['customer_email'],4); 
 
-
-       if (!empty($this->request->data['Customer']['customer_email'])) {
-          $user  = $this->User->findByUsernameAndRoleId($this->request->data['Customer']['customer_email'],4); 
-          if(!empty($user)) {
-            $this->Session->setFlash('<p>'.__('Email already exists', true).'</p>', 'default', 
-                                                array('class' => 'alert alert-danger'));
-          } else {
+          	$user = $this->User->find('first', array(
+                      'conditions' => array('User.username' => trim($this->request->data['Customer']['customer_email']),
+                                             'User.role_id' => 4,
+                              'NOT' => array('Customer.status' => 3))));
+	        if(!empty($user)) {
+	            $this->Session->setFlash('<p>'.__('Email already exists', true).'</p>', 'default', 
+	                                                array('class' => 'alert alert-danger'));
+	        } else {
               	$this->request->data['User']['role_id']  = 4;
               	$this->request->data['User']['username'] = $this->request->data['Customer']['customer_email'];
               	$this->request->data['User']['password'] = $this->Auth->password($this->request->data['User']['password']);
@@ -305,142 +378,163 @@ class UsersController extends AppController {
 		        $email->emailFormat('html');
 		        $email->viewVars(array('mailContent' => $mailContent,'source'=>$source));
 		        $email->send();
-             
+             	
+				//Signup Sms
+		        $customerMessage = 'Thank you for registering with Chillcart.Click on below link to activate your account.'.$activation.'. Thanks Chillcart';
+	          	$toCustomerNumber = '+'.$this->siteSetting['Country']['phone_code'].$this->request->data['Customer']['customer_phone'];
+	          	$customerSms 	  = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
+
+	          	//Mailchimp Process
+	          	$merge_vars = array(
+					    'EMAIL' => $this->request->data['Customer']['customer_email'],
+					    'FNAME' => $this->request->data['Customer']['first_name'],
+					    'LNAME' => $this->request->data['Customer']['last_name']
+					  );
+	          	
+    			$this->Mailchimp->MCAPI($this->mailChimpKey);
+    			$list = $this->Mailchimp->listSubscribe($this->mailChimpListId, $this->request->data['Customer']['customer_email'], $merge_vars);
+
              	$this->Session->setFlash('<p>'.__('You have successfully registered an account. An email has been sent with further instructions', true).'</p>', 'default', 
                                                   array('class' => 'alert alert-success'));
              	$this->redirect(array('controller' => 'Users','action' => 'customerlogin','customer'=>true));
-          }
-       }
-   }
+          	}
+       	}
+   	}
    /**
     * UsersController::customer_customerlogin()
     * Customer Login Process
     * @return void
     */
-   public function customer_customerlogin() {
-    $this->layout = 'frontend';
-	   if($this->request->data['Users']['email'] != ''){
-		   $userData = $this->User->find('first', array(
-								   'conditions' =>array(
-									   'User.username' => $this->request->data['Users']['email'],
-									   'Customer.status' => 1,
-									   'User.role_id' => 4)));
+   	public function customer_customerlogin() {
+    	$this->layout = 'frontend';
 
-		   if(!empty($userData)){
-			   $newRegisteration = $this->Notification->find('first', array(
-				   					'conditions'=>array('Notification.title =' => 'Reset password')));
+    	if (isset($this->request->query['page']) && $this->request->query['page']=='checkout') {
+	    	$this->Session->write("redirectpage",'checkout');
+	    }
+		if ($this->Auth->loggedIn() && $this->Auth->user('role_id') == 4) {
+		        $this->redirect(array("controller"=>"Customers","action"=>"myaccount", 'customer'=>true));
+		} else if ($this->Auth->loggedIn()) {
+			echo '<h3 class="form-title"> You are not authorized to access this Page </h3>
+	    			<a href="'.$this->siteUrl.'/users/logout/customer"> Click here to Logout  </a>';
+			exit();
+	    }
 
-			   $toemail  = $this->request->data['Users']['email'];
-			   $adminDetails = $this->Sitesetting->find('first');
-			   $source= $this->siteUrl.'/siteicons/'.$adminDetails['Sitesetting']['site_logo'];
-			   $title= $adminDetails['Sitesetting']['site_logo'];
+    	if($this->request->is('post')) {
+		   	if(isset($this->request->data['Users']['email']) && $this->request->data['Users']['email'] != ''){
+			   $userData = $this->User->find('first', array(
+									   'conditions' =>array(
+										   'User.username' => $this->request->data['Users']['email'],
+										   'Customer.status' => 1,
+										   'User.role_id' => 4)));
 
-			   $storeEmail = $adminDetails['Sitesetting']['admin_email'];
+			   if(!empty($userData)){
+				   $newRegisteration = $this->Notification->find('first', array(
+					   					'conditions'=>array('Notification.title =' => 'Reset password')));
 
-			   $storename = $adminDetails['Sitesetting']['site_name'];
-			   $customerName = $userData['Customer']['first_name'];
-			   $tmpPassword = $this->Functions->createTempPassword(7);
-			   $datas['User']['password']=$this->Auth->Password($tmpPassword);
-			   $datas['User']['id']=$userData['User']['id'];
+				   $toemail  = $this->request->data['Users']['email'];
+				   $source	 = $this->siteUrl.'/siteicons/logo.png';
+				   $title 	 = 'logo.png';
 
-			   	if ($this->User->save($datas['User'],null,null)){
+				   $storeEmail = $this->siteSetting['Sitesetting']['admin_email'];
+				   $storename  = $this->siteSetting['Sitesetting']['site_name'];
+				   $customerName = $userData['Customer']['first_name'];
+				   $tmpPassword = $this->Functions->createTempPassword(7);
+				   $datas['User']['password']=$this->Auth->Password($tmpPassword);
+				   $datas['User']['id']=$userData['User']['id'];
 
-				   if($newRegisteration){
+				   	if ($this->User->save($datas['User'],null,null)){
 
-					   $forgetpasswordContent = $newRegisteration['Notification']['content'];
-					   $forgetpasswordsubject = $newRegisteration['Notification']['subject'];
-				   }
-				   
-				   $mailContent = $forgetpasswordContent;
-				   $userID      = $userData['User']['id'];
-				   $siteUrl = $this->siteUrl.'/customer/users/customerlogin/';
-				   $mailContent = str_replace("{Customer name}", $customerName, $mailContent);
-				   $mailContent = str_replace("{source}", $source, $mailContent);
-				   $mailContent = str_replace("{title}", $title, $mailContent);
-				   $mailContent = str_replace("{SITE_URL}", $siteUrl, $mailContent);
-				   $mailContent = str_replace("{tmpPassword}", $tmpPassword, $mailContent);
-				   $mailContent = str_replace("{Store name}", $storename, $mailContent);
+					   if($newRegisteration){
 
-				   $email = new CakeEmail();
-				   $email->from($storeEmail);
-				   $email->to($toemail);
-				   $email->subject($forgetpasswordsubject);
-				   $email->template('register');
-				   $email->emailFormat('html');
-				   $email->viewVars(array('mailContent' => $mailContent,'source'=>$source,'storename'=>$storename));
+						   $forgetpasswordContent = $newRegisteration['Notification']['content'];
+						   $forgetpasswordsubject = $newRegisteration['Notification']['subject'];
+					   }
+					   
+					   $mailContent = $forgetpasswordContent;
+					   $userID      = $userData['User']['id'];
+					   $siteUrl = $this->siteUrl.'/customer/users/customerlogin/';
+					   $mailContent = str_replace("{Customer name}", $customerName, $mailContent);
+					   $mailContent = str_replace("{source}", $source, $mailContent);
+					   $mailContent = str_replace("{title}", $title, $mailContent);
+					   $mailContent = str_replace("{SITE_URL}", $siteUrl, $mailContent);
+					   $mailContent = str_replace("{tmpPassword}", $tmpPassword, $mailContent);
+					   $mailContent = str_replace("{Store name}", $storename, $mailContent);
 
-				   if($email->send()){
-					   $this->Session->setFlash('<p>'.__('Email has been sent successfully', true).'</p>', 'default',
-						   array('class' => 'alert alert-success'));
-					   $this->redirect(array('controller' => 'users', 'action' => 'customerlogin', 'customer' => true));
-				   }
-			    }
-		   } else {
-		   		$this->Session->setFlash('<p>'.__('You are not register customer', true).'</p>', 'default',
-						   array('class' => 'alert alert-danger'));
-			   $this->redirect(array('controller' => 'users', 'action' => 'customerlogin', 'customer' => true));
-		   }
-	   }
-    if (isset($this->request->query['page']) && $this->request->query['page']=='checkout') {
-    	$this->Session->write("redirectpage",'checkout');
-    }
-	if ($this->Auth->loggedIn() && $this->Auth->user('role_id') == 4) {
-	        $this->redirect(array("controller"=>"Customers","action"=>"myaccount", 'customer'=>true));
-	} else if ($this->Auth->loggedIn()) {
-		echo '<h3 class="form-title"> You are not authorized to access this Page </h3>
-    			<a href="'.$this->siteUrl.'/users/logout/customer"> Click here to Logout  </a>';
-		exit();
-    }
-	if ($this->request->data['User']['username'] != '' && $this->request->data['User']['password'] != '') {
-        $role = array(4);
+					   $email = new CakeEmail();
+					   $email->from($storeEmail);
+					   $email->to($toemail);
+					   $email->subject($forgetpasswordsubject);
+					   $email->template('register');
+					   $email->emailFormat('html');
+					   $email->viewVars(array('mailContent' => $mailContent,'source'=>$source,'storename'=>$storename));
 
-		$userData = $this->User->find('first', array(
-								'conditions' =>array(
-												'User.username' => $this->request->data['User']['username'],
-												'Customer.status' => 1,
-												'User.role_id' => 4)));
+					   if($email->send()){
+						// Forget Sms
+					   	$customerMessage = "We've received a request to change your password. Use this password ".$tmpPassword." to login to your account and update it ASAP. Thanks Chillcart";
+				          	$toCustomerNumber = '+'.$this->siteSetting['Country']['phone_code'].$userData['Customer']['customer_phone'];
+				        $customerSms 	  = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
+						$this->Session->setFlash('<p>'.__('Email has been sent successfully', true).'</p>', 'default',
+							   array('class' => 'alert alert-success'));
+						$this->redirect(array('controller' => 'users', 'action' => 'customerlogin', 'customer' => true));
+					   }
+				    }
+			   } else {
+			   		$this->Session->setFlash('<p>'.__('You are not register customer', true).'</p>', 'default',
+							   array('class' => 'alert alert-danger'));
+				   $this->redirect(array('controller' => 'users', 'action' => 'customerlogin', 'customer' => true));
+			   }
+		   	}
+		    
 
-		if(in_array($userData['User']['role_id'], $role)) {
 
-			$this->Session->write("preSessionid",$this->Session->id());
-			if ($this->Auth->login()) {
-			 #REmember me            
-				if($this->request->data['User']['rememberMe']==1) {
-				    $this->Cookie->write('rememberMe',$this->request->data['User'],true,"12 months"); 
+			if ($this->request->data['User']['username'] != '' && $this->request->data['User']['password'] != '') {
+		        $role = array(4);
+
+				$userData = $this->User->find('first', array(
+										'conditions' =>array(
+														'User.username' => $this->request->data['User']['username'],
+														'Customer.status' => 1,
+														'User.role_id' => 4)));
+
+				if(in_array($userData['User']['role_id'], $role)) {
+
+					$this->Session->write("preSessionid",$this->Session->id());
+					if ($this->Auth->login()) {
+					 #REmember me            
+						if($this->request->data['User']['rememberMe']==1) {
+						    $this->Cookie->write('rememberMe',$this->request->data['User'],true,"12 months"); 
+						} else {
+						     $this->Cookie->delete('rememberMe');
+						}
+						if($this->Session->read("redirectpage")=='checkout') {
+		                    $this->Session->delete("redirectpage");
+		                    $this->redirect(array('controller' => 'checkouts', 'action' => 'index','customer'=>false));
+		                }
+						$this->redirect(array('controller' => 'customers', 'action' => 'myaccount'));
+
+					} else {
+
+						$this ->Session->setFlash('<p>'.__('Login failed your Username or Password Incorrect', true).'</p>', 'default', 
+											array('class' => 'alert alert-danger'));
+		                $this->redirect(array('controller' => 'users', 'action' => 'customerlogin','customer'=>true));
+					}
 				} else {
-				     $this->Cookie->delete('rememberMe');
+
+					$this ->Session->setFlash('<p>'.__('Login failed, unauthorized', true).'</p>', 'default', 
+											array('class' => 'alert alert-danger'));
+					$this->redirect(array('controller' => 'users', 'action' => 'customerlogin','customer'=>true));
 				}
-				if($this->Session->read("redirectpage")=='checkout') {
-                    $this->Session->delete("redirectpage");
-                    $this->redirect(array('controller' => 'checkouts', 'action' => 'index','customer'=>false));
-                }
-				$this->redirect(array('controller' => 'customers', 'action' => 'myaccount'));
-
-			} else {
-
-				$this ->Session->setFlash('<p>'.__('Login failed your Username or Password Incorrect', true).'</p>', 'default', 
-									array('class' => 'alert alert-danger'));
-                $this->redirect(array('controller' => 'users', 'action' => 'customerlogin','customer'=>true));
-			}
-		} else {
-
-			$this ->Session->setFlash('<p>'.__('Login failed, unauthorized', true).'</p>', 'default', 
-									array('class' => 'alert alert-danger'));
-			$this->redirect(array('controller' => 'users', 'action' => 'customerlogin','customer'=>true));
-		}
-	}   
-    
-   }
+			}   
+    	}
+   	}
    	public function store_changePassword(){
 	   	$this->layout = 'assets';
-	   	$ids          = $this->Auth->User();
-	   	if($this->request->is('post')) {
-	   		$old_password     =  $this->Auth->password($this->request->data['user']['old_pass']);
+	   	if($this->request->is('post') && $this->Auth->User('role_id') == 3) {
 	   		$new_password     =  $this->Auth->password($this->request->data['user']['new_pass']);
 	   		$confirm_password =  $this->Auth->password($this->request->data['user']['confirm_pass']);
 	   		if ($new_password == $confirm_password) {
 	   			$this->request->data['User']['password'] = $new_password;
-	   			$this->request->data['User']['id']		 = $ids['id']; 
+	   			$this->request->data['User']['id']		 = $this->Auth->User('id'); 
 	   			if($this->User->save($this->request->data['User'], null, null)){
 					$this->Session->setFlash('<p>'.__('Password successfully Changed', true).'</p>', 'default', 
 										array('class' => 'alert alert-success'));
@@ -455,14 +549,13 @@ class UsersController extends AppController {
    	} 
 
    	public function admin_changePassword(){
-	   	$ids          = $this->Auth->User();
 	   	if($this->request->is('post')) {
 	   		$old_password     =  $this->Auth->password($this->request->data['user']['old_pass']);
 	   		$new_password     =  $this->Auth->password($this->request->data['user']['new_pass']);
 	   		$confirm_password =  $this->Auth->password($this->request->data['user']['confirm_pass']);
 	   		if ($new_password == $confirm_password) {
 	   			$this->request->data['User']['password'] = $new_password;
-	   			$this->request->data['User']['id']		 = $ids['id']; 
+	   			$this->request->data['User']['id']		 = $this->Auth->User('id'); 
 	   			if($this->User->save($this->request->data['User'], null, null)){
 					$this->Session->setFlash('<p>'.__('Password successfully Changed', true).'</p>', 'default', 
 										array('class' => 'alert alert-success'));
@@ -501,5 +594,119 @@ class UsersController extends AppController {
 				$this->redirect(array('controller' => 'users', 'action' => 'signup'));
 			}
 		}
-	} 
+	}
+
+
+	//Social login process
+	public function social_login($provider) {
+		
+
+			if( $this->Hybridauth->connect($provider) ){
+				$this->_successfulHybridauth($provider,$this->Hybridauth->user_profile);
+	        }else{
+	            // error
+				$this->Session->setFlash($this->Hybridauth->error);
+				$this->redirect($this->Auth->loginAction);
+	        }
+	}
+
+	public function social_endpoint($provider = null) {
+		$this->Hybridauth->processEndpoint();
+	}
+	
+	private function _successfulHybridauth($provider, $incomingProfile){
+
+		$existingProfile = $this->User->find('first', array(
+									'conditions' => array('User.username' => $incomingProfile['User']['email'])));
+
+		if ($existingProfile) {
+			$this->_doSocialLogin($existingProfile,true);
+		} else {
+
+			$this->request->data['User']['role_id']  = 4;
+          	$this->request->data['User']['username'] = $incomingProfile['User']['email'];
+
+          	$tmpPassword = $this->Functions->createTempPassword(7);
+			$this->request->data['User']['password'] = $this->Auth->Password($tmpPassword);
+
+
+          	$this->User->save($this->request->data['User'],null,null);
+          	$this->request->data['Customer']['user_id'] = $this->User->id;
+          	$this->request->data['Customer']['first_name'] = $incomingProfile['User']['first_name'];
+          	$this->request->data['Customer']['last_name']  = $incomingProfile['User']['last_name'];
+          	$this->request->data['Customer']['customer_email']  = $incomingProfile['User']['email'];
+          
+          	$this->Customer->save($this->request->data['Customer'],null,null);
+          	//Mail Processing From Admin To Customer
+     	 	$newRegisteration = $this->Notification->find('first',array(
+                                                        'conditions'=>array(
+                                                        'Notification.title'=>'Customer activation')));
+          	if($newRegisteration){
+
+				$regContent = $newRegisteration['Notification']['content'];
+				$regsubject = $newRegisteration['Notification']['subject'];
+         	}
+
+            $adminEmail   = $this->siteSetting['Sitesetting']['admin_email']; 
+            $source= $this->siteUrl.'/siteicons/logo.png';
+
+	        $mailContent  = $regContent;
+	        $userID       = $this->Customer->id;
+	        $siteUrl      = $this->siteUrl;
+	        $activation   = $this->siteUrl. '/users/activeLink/'.$userID;
+	        $customerName = $this->request->data['Customer']['first_name'];
+
+	        $store_name   = $this->siteSetting['Sitesetting']['site_name'];
+
+	        $mailContent  = str_replace("{firstname}", $customerName, $mailContent);
+	        $mailContent  = str_replace("{activation}", $activation, $mailContent);
+	        $mailContent  = str_replace("{siteUrl}", $siteUrl, $mailContent);
+	        $mailContent  = str_replace("{store name}",$store_name, $mailContent);
+	        $mailContent .='<p> This is your tmp password:'. $tmpPassword.'</p>';
+
+	        $email        = new CakeEmail();
+	        $email->from($adminEmail);
+	        $email->to($this->request->data['Customer']['customer_email']);
+	        $email->subject($regsubject);
+	        $email->template('register');
+	        $email->emailFormat('html');
+	        $email->viewVars(array('mailContent' => $mailContent,'source'=>$source));
+	        $email->send();
+
+	        //Mailchimp Process
+          	$merge_vars = array(
+				    'EMAIL' => $this->request->data['Customer']['customer_email'],
+				    'FNAME' => $this->request->data['Customer']['first_name'],
+				    'LNAME' => $this->request->data['Customer']['last_name']
+				  );
+			$this->Mailchimp->MCAPI($this->mailChimpKey);
+			$list = $this->Mailchimp->listSubscribe($this->mailChimpListId, $this->request->data['Customer']['customer_email'], $merge_vars);
+
+	        $newProfile = $this->User->findById($this->User->id);
+	        $this->_doSocialLogin($newProfile);
+
+		}
+	}
+	
+	private function _doSocialLogin($user, $returning = false) {
+
+		$userDetails 			 = $user['User'];
+		$userDetails['Customer'] = $user['Customer'];
+
+		if (!empty($user['Customer']['id'])) {
+			$this->Session->write("preSessionid",$this->Session->id());
+			if ($this->Auth->login($userDetails)) {
+				if($this->Session->read("redirectpage")=='checkout') {
+		            $this->Session->delete("redirectpage");
+		            $this->redirect(array('controller' => 'checkouts', 'action' => 'index','customer'=>false));
+		        }
+			} else {
+				$this->Session->setFlash(__('Unknown Error could not verify the user: '));
+			}
+		} else {
+			$this ->Session->setFlash('<p>'.__('Login failed, unauthorized', true).'</p>', 'default', 
+										array('class' => 'alert alert-danger'));
+		}
+		$this->redirect(array('controller' => 'users', 'action' => 'customerlogin', 'customer' => true));
+	}
 }

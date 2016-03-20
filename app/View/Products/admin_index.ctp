@@ -25,13 +25,15 @@
 							
 						</div>
 					</div>
-					<div class="portlet-body"> <?php
-
-						echo $this->Form->create('Product', array('enctype' => 'multipart/form-data','url'=>array("controller"=>'products','action'=>'importProduct',$store_id, 'admin' => false),'type'=>'file')); ?>
-						<div class="row margin-b-10">
-							<span class="col-md-8" id="addnewbutton_toggle">
-								<div class="row">
-									<span class="col-md-5"> 
+					<div class="portlet-body">
+						<div class="col-sm-9 no-padding">
+							<?php echo $this->Form->create('Product', array(
+													'enctype' => 'multipart/form-data',
+													'url'=>array("controller"=>'products',
+													'action'=>'importProduct',
+													'admin' => false),'type'=>'file')); ?>
+								<span class="col-md-12 no-padding" id="addnewbutton_toggle">
+									<span class="col-md-4"> 
 										<?php echo $this->Form->input('Product.store_id',
 												array('type'  => 'select',
 													  'class' => 'form-control',
@@ -40,80 +42,106 @@
 									 				  'label'=> false,
 									 				  'div' => false));
 										?>
+										<label class="error" id="storeError" generated="true" for="ProductStoreId"></label>
 									</span>
-			               			<span class="col-md-5">
+									<span class="error" id="storeError"></span>
+			               			<span class="col-md-4 no-padding">
 				               			<?php echo $this->form->input('excel', array('type' => 'file',
 			            														'class' => 'form-control',
 			            														'label' => false,
 			            														'div' => false)); 
 			            				?>
+			            				<label class="error" id="excelError" generated="true" for="excel"></label>
 									</span>
 			               			<span class="col-md-2"> 
-			               				<?php  echo $this->Form->button('Save',array( 'Class' => 'btn btn-primary' ));
+			               				<?php  echo $this->Form->button('Import',
+			               											array('Class' => 'btn btn-primary',
+			               													'onclick' => 'return importValidate();'
+			               													));
 		               					echo $this->Form->end(); ?>
 		               				</span>
-		               			</div>
-							</span>
-
-							<a href="#instruction_Modal" data-toggle="modal" > Instruction </a>
-
-	               			<span class="col-md-4 text-right">  <?php
-	               				echo $this->Html->link('<i class="fa fa-download"></i> Download',
+		               			</span>
+		               	</div>
+		               	<div class="col-sm-3">
+		               			<?php
+	               				echo $this->Html->link('<i class="fa fa-download"></i> Sample',
 												array('action' => 'download','admin' => false),
-												array('Class'=>'btn btn-primary',
+												array('Class'=>'btn btn-primary pull-right no-margin',
 													'escape'=>false)
 												);
 	               				 ?>
-							</span> 
-						</div>
-
-						<?php echo $this->Form->create('Commons', array('class'=>'form-horizontal',
+	               		</div>
+	               		<div class="col-sm-12">
+	               			<hr></div>
+	               		<?php echo $this->Form->create('Commons', array('class'=>'form-horizontal',
 							'controller'=>'Commons','action'=>'multipleSelect')); ?>
+
 						<div class="table-toolbar">
 							
-								<div id="send" style="display:none" class="pull-left">
-									<div class="pull-right" id="addnewbutton_toggle"> <?php
-										echo $this->Form->hidden("Model",array('value'=>'Product',
-											'name'=>'data[name]'));
-										if (!empty($products_detail)) {
-											echo $this->Form->submit(__('Active'),
-												array('class'=>'btn btn-success btn-sm',
-													'name'=> 'actions',
-													'div'=>false,
-													'onclick'=>'return recorddelete(this);'
-												)); ?> <?php
-											echo $this->Form->submit(__('Deactive'),
-												array('class'=>'btn btn-warning btn-sm',
-													'name'=> 'actions',
-													'div'=>false,
-													'onclick'=>'return recorddelete(this);'
-												)); ?> <?php
-											echo $this->Form->submit(__('Delete'),
-												array('Class'=>'btn btn-danger btn-sm',
-													'name'=> 'actions',
-													'div'=>false,
-													'onclick'=>'return recorddelete(this);'
-												));
-										} ?>
-									</div>
-								</div>
-								
-									<div class="btn-group pull-right"><?php
-										echo $this->Html->link('Add New <i class="fa fa-plus"></i>',
-																array('controller'=>'Products',
-																	   'action'=>'add'),
-																array('class'=>'btn green',
-																		'escape'=>false)
-															  );
-										?>
-									</div>
 							
+							<div id="send" style="display:none" class="pull-left">
+								<div class="pull-right" id="addnewbutton_toggle"> <?php
+									echo $this->Form->hidden("Model",array('value'=>'Product',
+										'name'=>'data[name]'));
+									if (!empty($products_detail)) {
+										echo $this->Form->submit(__('Active'),
+											array('class'=>'btn btn-success btn-sm',
+												'name'=> 'actions',
+												'div'=>false,
+												'onclick'=>'return recorddelete(this);'
+											)); ?> <?php
+										echo $this->Form->submit(__('Deactive'),
+											array('class'=>'btn btn-warning btn-sm',
+												'name'=> 'actions',
+												'div'=>false,
+												'onclick'=>'return recorddelete(this);'
+											)); ?> <?php
+										echo $this->Form->submit(__('Delete'),
+											array('Class'=>'btn btn-danger btn-sm',
+												'name'=> 'actions',
+												'div'=>false,
+												'onclick'=>'return recorddelete(this);'
+											));
+									} ?>
+								</div>
+							</div>
+
+							
+							<div class="btn-group pull-right"><?php
+								echo $this->Html->link('Add New <i class="fa fa-plus"></i>',
+														array('controller'=>'Products',
+															   'action'=>'add'),
+														array('class'=>'btn green',
+																'escape'=>false)
+													  );
+								?>
+							</div>
+							<span class="col-md-4 pull-right no-padding"> 
+               					<label class="control-label col-sm-3">Filter</label>
+								<span class="col-md-9"> 
+									<?php echo $this->Form->input('Store.Storeproduct',
+											array('type'  => 'select',
+												  'class' => 'form-control',
+												  'options'=> array($stores),
+												  'empty' => 'Select Store',
+												  'id' 		=> 'Storeproduct', 
+												  'onchange' => 'storeProducts();',
+								 				  'label'=> false,
+								 				  'div' => false));
+									?>
+									<label class="error" id="storeProductError" generated="true" for="ProductStoreId"></label>
+								</span>
+							
+							</span> 
+						
 						</div>
+						
 						<table class="table table-striped table-bordered table-hover checktable" id="sample_12">
 							<thead>
 								<tr>
 									<th class="table-checkbox no-sort"><input type="checkbox" class="group-checkable test1" data-set="#sample_1 .checkboxes" /></th>
 									<th>Item Name</th>
+									<th>Store Name</th>
 									<th>Main Category</th>
 									<th>Sub Category</th>
 									<th>Total Stock</th>
@@ -123,45 +151,46 @@
 							</thead>
 							<tbody><?php 
                             
-                                    foreach($products_detail as $key => $value){ ?>
-								<tr class="odd gradeX" id="record<?php echo $value['Product']['id'];?>">
-									<td> <?php
-										echo $this->Form->checkbox($value['Product']['id'],
-											array('class'=>'checkboxes test' ,
-												'label'=>false,
-												'hiddenField'=>false,
-												'value'=> $value['Product']['id'])); ?> </td>
-                                    <td><?php echo $value['Product']['product_name'];?></td>
-									<td><?php echo $value['MainCategory']['category_name'];?></td>
-									<td><?php echo $value['SubCategory']['category_name'];?></td>
-									<td><?php echo $value['ProductDetail'][0]['quantity'];?></td>
-									<td align="center"> <?php 
-                                            if($value['Product']['status'] == 0) {?>
-                                                <a title="Deactive" class="buttonStatus red_bck" href="javascript:void(0);" 
-                                                onclick="statusChange(<?php echo $value['Product']['id'];?>,'Product');">
-                                            <i class="fa fa-times"></i><!-- deactive --></a>
-                                            <?php } else if($value['Product']['status'] == 1){
-                                            ?>
-                                                <a title="active" class="buttonStatus" href="javascript:void(0);" 
-                                                onclick="statusChange(<?php echo $value['Product']['id'];?>,'Product');">
-                                            <i class="fa fa-check"></i></a>
-                                            <?php } else {?>
-                                                    <a title="Pending" class="buttonStatus yellow_bck" href="javascript:void(0);" 
-                                                onclick="statusChange(<?php echo $value['Product']['id'];?>,'Product');">
-                                            <i class="fa fa-exclamation"></i><!-- Pending --></a>
-                                            <?php }?>
-                                    </td>
-									<td align="center">	<?php
-										echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',
-																array('controller'=>'Products',
-																	   'action'=>'edit',
-																		$value['Product']['id']),
-																array('class'=>'buttonEdit',
-																		'escape'=>false));?>
-                                    <a class="buttonAction" href="javascript:void(0);"
-                                        onclick="deleteprocess(<?php echo $value['Product']['id'];?>,'Product');" ><i class="fa fa-trash-o"></i></a>
-									</td>
-								</tr><?php 
+                                foreach($products_detail as $key => $value){  ?>
+									<tr class="odd gradeX" id="record<?php echo $value['Product']['id'];?>">
+										<td> <?php
+											echo $this->Form->checkbox($value['Product']['id'],
+												array('class'=>'checkboxes test' ,
+													'label'=>false,
+													'hiddenField'=>false,
+													'value'=> $value['Product']['id'])); ?> </td>
+	                                    <td><?php echo $value['Product']['product_name'];?></td>
+	                                    <td> <?php echo $value['Store']['store_name']; ?> </td>
+										<td><?php echo $value['MainCategory']['category_name'];?></td>
+										<td><?php echo $value['SubCategory']['category_name'];?></td>
+										<td><?php echo $value['ProductDetail'][0]['quantity'];?></td>
+										<td align="center"> <?php 
+	                                            if($value['Product']['status'] == 0) {?>
+	                                                <a title="Deactive" class="buttonStatus red_bck" href="javascript:void(0);" 
+	                                                onclick="statusChange(<?php echo $value['Product']['id'];?>,'Product');">
+	                                            <i class="fa fa-times"></i><!-- deactive --></a>
+	                                            <?php } else if($value['Product']['status'] == 1){
+	                                            ?>
+	                                                <a title="active" class="buttonStatus" href="javascript:void(0);" 
+	                                                onclick="statusChange(<?php echo $value['Product']['id'];?>,'Product');">
+	                                            <i class="fa fa-check"></i></a>
+	                                            <?php } else {?>
+	                                                    <a title="Pending" class="buttonStatus yellow_bck" href="javascript:void(0);" 
+	                                                onclick="statusChange(<?php echo $value['Product']['id'];?>,'Product');">
+	                                            <i class="fa fa-exclamation"></i><!-- Pending --></a>
+	                                            <?php }?>
+	                                    </td>
+										<td align="center">	<?php
+											echo $this->Html->link('<i class="fa fa-pencil-square-o"></i>',
+																	array('controller'=>'Products',
+																		   'action'=>'edit',
+																			$value['Product']['id']),
+																	array('class'=>'buttonEdit',
+																			'escape'=>false));?>
+	                                    <a class="buttonAction" href="javascript:void(0);"
+	                                        onclick="deleteprocess(<?php echo $value['Product']['id'];?>,'Product');" ><i class="fa fa-trash-o"></i></a>
+										</td>
+									</tr><?php 
 								}?>
 							</tbody>
 						</table><?php echo $this->Form->end(); ?>
@@ -170,34 +199,4 @@
 			</div>
 		</div>
 	</div>
-</div>
-
-
-
-<div class="modal fade" id="instruction_Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
-  <div class="modal-dialog" role="document">
-
-    <div class="modal-content">	
-    	<div class="modal-header menuCartHeader clearfix">
-			<button data-dismiss="modal" class="close" type="button">
-				<span aria-hidden="true">×</span>
-			</button>
-			<h4>
-				Item Images Variant
-			</h4>
-		</div>
-	      
-      <div class="modal-body">
-      	<pre> 
-      					Width		Height
-
-Carts  		 	78		64
-Home 			265		265
-Product detail	 	1024		768
-Scroll			67		55
-Original		-		-
-      	</pre>
-      </div>
-</div>
-</div>
 </div>

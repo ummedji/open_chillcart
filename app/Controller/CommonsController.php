@@ -736,10 +736,10 @@ class CommonsController extends AppController {
                             $this->Product->save($this->request->data['Product']);
 
                         }
-                        $this->redirect(array('controller' => 'Products','action' => 'index'));
+                        $this->redirect(array('controller' => 'Products','action' => 'index', $this->request->data['Store']['Storeproduct']));
                     } else {
                         echo "please try again";
-                        $this->redirect(array('controller' => 'Products','action' => 'index'));
+                        $this->redirect(array('controller' => 'Products','action' => 'index', $this->request->data['Store']['Storeproduct']));
                     }
                 } elseif($key  == 'Deactive') {
                     if(!empty($this->request->data['Commons'])) {
@@ -751,10 +751,10 @@ class CommonsController extends AppController {
                             $this->Product->save($this->request->data['Product']);
 
                         }
-                        $this->redirect(array('controller' => 'Products','action' => 'index'));
+                        $this->redirect(array('controller' => 'Products','action' => 'index', $this->request->data['Store']['Storeproduct']));
                     } else {
                         echo "please try again";
-                        $this->redirect(array('controller' => 'Products','action' => 'index'));
+                        $this->redirect(array('controller' => 'Products','action' => 'index', $this->request->data['Store']['Storeproduct']));
                     }
 
                 } else {
@@ -766,10 +766,10 @@ class CommonsController extends AppController {
                             $this->Product->save($this->request->data['Product']);
 
                         }
-                        $this->redirect(array('controller' => 'Products','action' => 'index'));
+                        $this->redirect(array('controller' => 'Products','action' => 'index', $this->request->data['Store']['Storeproduct']));
                     } else {
                         echo "please try again";
-                        $this->redirect(array('controller' => 'Products','action' => 'index'));
+                        $this->redirect(array('controller' => 'Products','action' => 'index', $this->request->data['Store']['Storeproduct']));
                     }
 
                 }

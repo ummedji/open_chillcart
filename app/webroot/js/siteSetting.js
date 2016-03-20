@@ -1,25 +1,3 @@
-function statesList() {
-	var id = $('#SitesettingSiteCountry').val();
-	$.post('locations',{'id':id, 'model':'State'}, function(response) {
-		$("#SitesettingSiteState").html(response);
-	});
-}
-
-
-function citiesList() {
-	var id = $('#SitesettingSiteState').val();
-	$.post('locations',{'id':id, 'model':'City'}, function(response) {
-		$("#SitesettingSiteCity").html(response);
-	});
-}
-
-function locationList() {
-	var id = $('#SitesettingSiteCity').val();
-	$.post('locations',{'id':id, 'model':'Location'}, function(response) {
-		$("#SitesettingSiteZip").html(response);
-	});
-}
-
 function smtpDetails () {
 	if ($("#SitesettingMailOptionSMTP").is(":checked")) {
 		$("#smtp").show();
@@ -43,6 +21,10 @@ $(document).ready(function(){
 
 	});
 
+	setTimeout(function(){				
+	    $('#flashMessage').fadeOut();
+	},3000);
+
 
 });
 
@@ -61,7 +43,6 @@ function offlineDetails () {
 function validate () {
 
 	var SitesettingSiteName 		= $.trim($("#SitesettingSiteName").val());
-
 	var SitesettingAdminName 		= $.trim($("#SitesettingAdminName").val());
 	var SitesettingAdminEmail 		= $.trim($("#SitesettingAdminEmail").val());
 	var SitesettingContactUsEmail 	= $.trim($("#SitesettingContactUsEmail").val());
@@ -90,6 +71,15 @@ function validate () {
 	var SitesettingSmsSourceNumber	= $.trim($("#SitesettingSmsSourceNumber").val());
 
 	var SitesettingOtherLanguage	= $.trim($('#SitesettingOtherLanguage').val());
+
+	var Sitesettingmailchimpkey		= $.trim($("#SitesettingMailchimpKey").val());
+	var Sitesettingmailchimplist	= $.trim($("#SitesettingMailchimpListId").val());
+
+	var Sitesettingfacbookapi		= $.trim($("#SitesettingFacebookApiId").val());
+	var Sitesettingfacbooksecret	= $.trim($("#SitesettingFacebookSecretKey").val());
+
+	var Sitesettinggoogleapi		= $.trim($("#SitesettingGoogleApiId").val());
+	var Sitesettinggooglesecret  	= $.trim($("#SitesettingGoogleSecretKey").val());
 
 	if(SitesettingSiteName == ''){
         $("[href=#site]").trigger('click');
@@ -214,33 +204,80 @@ function validate () {
 		$("#languageError").html("Please enter other language");
 		$("#SitesettingOtherLanguage").focus();
 		return false;
-
-
+	} else if(Sitesettingmailchimpkey == ''){
+		$("[href=#mailchimp]").trigger('click');
+		$("#mailchimpError").html("Please enter mailchimp key");
+		$("#Sitesettingmailchimpkey").focus();
+		return false;
+	} else if(Sitesettingmailchimplist == ''){
+		$("[href=#mailchimp]").trigger('click');
+		$("#mailchimpError").html("Please enter mailchimp list");
+		$("#Sitesettingmailchimplist").focus();
+		return false;
+	} else if(Sitesettingfacbookapi == ''){
+		$("[href=#facebook]").trigger('click');
+		$("#facebookError").html("Please enter facebook api key");
+		$("#Sitesettingfacbookapi").focus();
+		return false;
+	} else if(Sitesettingfacbooksecret == ''){
+		$("[href=#facebook]").trigger('click');
+		$("#facebookError").html("Please enter facebook secret key");
+		$("#Sitesettingfacbooksecret").focus();
+		return false;
+	}else if(Sitesettinggoogleapi == ''){
+		$("[href=#google]").trigger('click');
+		$("#googleError").html("Please enter google api key");
+		$("#Sitesettinggoogleapi").focus();
+		return false;
+	} else if(Sitesettinggooglesecret == ''){
+		$("[href=#google]").trigger('click');
+		$("#googleError").html("Please enter google secret key");
+		$("#Sitesettinggooglesecret").focus();
+		return false;
 	}
 }
-jQuery().ready(function() {
-var paymentAddvalidator = jQuery("#SitesettingAdminPaymentSettingForm").validate({
-		rules: {
-			"data[Sitesetting][stripe_url]": {
-				required: true,
-			},
-			"data[Sitesetting][stripe_ac]": {
-				required: true,
-			}
-		},
-		messages: { 
-			"data[Sitesetting][stripe_url]": {
-				required: "Please Enter Url detail",
-			},
-			"data[Sitesetting][stripe_ac]": {
-				required: "Please Enter the account detail",
-			}
-
-		}
-	});
-});
 
 function save () {
 	//alert('You cannot access payment setting at the moment');
 	//return false;
+}
+
+function storeProducts() {
+	var id = $('#Storeproduct').val();
+	if (id != '') {
+		window.location.href = rp+'/admin/products/index/'+id;
+	} else {
+		$("#storeProductError").html("Please select store");
+	}
+	return false;
+}
+
+$('#sample_12').dataTable( {
+	columnDefs: [
+	   { 
+	   	 "bSortable" : false,
+	   	 "aTargets" : [ "no-sort" ]
+	   }
+	]
+} );
+
+function importValidate() {
+
+	var ProductStoreId 	= $.trim($("#ProductStoreId").val());
+	var excel 			= $.trim($("#excel").val());
+	var error = 0;
+
+	if(ProductStoreId == ''){
+		error = 1;
+		$("#storeError").html("Please select store");
+	}
+
+	if(excel == '') {
+		error = 1;
+		$("#excelError").html("Please select xls file");
+	}
+
+	if (error == 1) {
+		return false;
+	}
 }
