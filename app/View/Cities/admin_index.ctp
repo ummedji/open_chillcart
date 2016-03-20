@@ -30,45 +30,44 @@
 							'controller'=>'Commons','action'=>'multipleSelect')); ?>
 						<div class="table-toolbar">
 							
-								<div id="send" style="display:none"  class="pull-left">
-									<div class="pull-right" id="addnewbutton_toggle"> <?php
-										echo $this->Form->hidden("Model",array('value'=>'City',
-											'name'=>'data[name]'));
-										if (!empty($city_list)) {
-											echo $this->Form->submit(__('Active'),
-												array('class'=>'btn btn-success btn-sm',
-													'name'=> 'actions',
-													'div'=>false,
-													'onclick'=>'return recorddelete(this);'
-												)); ?> <?php
-											echo $this->Form->submit(__('Deactive'),
-												array('class'=>'btn btn-warning btn-sm',
-													'name'=> 'actions',
-													'div'=>false,
-													'onclick'=>'return recorddelete(this);'
-												)); ?> <?php
-											echo $this->Form->submit(__('Delete'),
-												array('Class'=>'btn btn-danger btn-sm',
-													'name'=> 'actions',
-													'div'=>false,
-													'onclick'=>'return recorddelete(this);'
-												));
-										} ?>
-									</div>
+							<div id="send" style="display:none"  class="pull-left">
+								<div class="pull-right" id="addnewbutton_toggle"> <?php
+									echo $this->Form->hidden("Model",array('value'=>'City',
+										'name'=>'data[name]'));
+									if (!empty($city_list)) {
+										echo $this->Form->submit(__('Active'),
+											array('class'=>'btn btn-success btn-sm',
+												'name'=> 'actions',
+												'div'=>false,
+												'onclick'=>'return recorddelete(this);'
+											)); ?> <?php
+										echo $this->Form->submit(__('Deactive'),
+											array('class'=>'btn btn-warning btn-sm',
+												'name'=> 'actions',
+												'div'=>false,
+												'onclick'=>'return recorddelete(this);'
+											)); ?> <?php
+										echo $this->Form->submit(__('Delete'),
+											array('Class'=>'btn btn-danger btn-sm',
+												'name'=> 'actions',
+												'div'=>false,
+												'onclick'=>'return recorddelete(this);'
+											));
+									} ?>
 								</div>
+							</div>
 								
-									<div class="btn-group pull-right"><?php 
-										echo $this->Html->link('Add New <i class="fa fa-plus"></i>',
-																array('controller'=>'Cities',
-																	   'action'=>'add'),
-																array('class'=>'btn green',
-																		'escape'=>false)
-															  );
-										?>
-									</div>
-								
+							<div class="btn-group pull-right"><?php 
+								echo $this->Html->link('Add New <i class="fa fa-plus"></i>',
+														array('controller'=>'Cities',
+															   'action'=>'add'),
+														array('class'=>'btn green',
+																'escape'=>false)
+													  );
+								?>
+							</div>
 						</div>
-						<table class="table table-striped table-bordered table-hover checktable1" id="sample_12">
+						<table class="table table-striped table-bordered table-hover checktable" id="sample_12">
 							<thead>
 								<tr>
 									<th class="table-checkbox no-sort"><input type="checkbox" class="group-checkable test1" data-set="#sample_1 .checkboxes" /></th>
