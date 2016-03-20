@@ -77,6 +77,7 @@
                             										array('class'=>'form-control',
                             											  'autocomplete' => 'off',
                                                                           'label' => false,
+                                                                          'readonly' => true,
                             											  'div' => false)); ?>
 											<span class="input-group-addon"> to </span>
 											<?php
@@ -84,6 +85,7 @@
                             										array('class'=>'form-control',
                             											  'autocomplete' => 'off',
                                                                           'label' => false,
+                                                                          'readonly' => true,
                             											  'div' => false)); ?>
 										</div>
 										<!-- /input-group -->

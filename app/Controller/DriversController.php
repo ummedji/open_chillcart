@@ -458,8 +458,16 @@ class DriversController extends AppController
     public function store_edit($id = null)
     {
         $this->layout = 'assets';
+        $store_id = $this->Auth->User('Store.id');
         if (!empty($this->request->data)) {
 
+            $getDriverEditData = $this->User->find('first', array(
+                                      'conditions' => array('User.id' => $this->request->data['User']['id'],
+                                                        'Driver.store_id' => $store_id)));
+            if (empty($getDriverEditData)) {
+                $this->render('/Errors/error400');
+            }
+            
             $driver_checking = $this->User->find('first', array(
                             'conditions' => array('User.username' => trim($this->request->data['Driver']['driver_phone']),
                                     'NOT' => array('User.id' => $this->request->data['User']['id'],
@@ -477,7 +485,13 @@ class DriversController extends AppController
             }
 
         }
-        $driverDetails = $this->Driver->findById($id);
+        $driverDetails = $this->Driver->find('first', array(
+                                  'conditions' => array('Driver.id' => $id,
+                                                    'Driver.store_id' => $store_id)));
+        if (empty($driverDetails)) {
+            $this->render('/Errors/error400');
+        }
+
         $this->request->data = $driverDetails;
     }
 

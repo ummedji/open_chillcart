@@ -125,6 +125,7 @@ class SearchesController extends AppController {
 
 		$this->layout = 'frontend';
 		$orderSuccess = '';
+		$stores = array();
 		if ($this->Session->read('orderplaced')) {
 			$orderSuccess = $this->Session->read('orderplaced');
 			$this->changeLocation();

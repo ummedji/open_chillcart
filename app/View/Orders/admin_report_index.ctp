@@ -52,7 +52,7 @@
 									echo $this->Html->link($value['Order']['ref_number'],
 																array('controller'=>'Orders',
 																	   'action'=>'reportOrderView',
-																	   $value['Order']['ref_number'])
+																	   $value['Order']['id'])
 															  );?></td>
 									<td><?php echo $value['Order']['customer_name'];?></td>
 									<td><?php echo $value['Order']['order_grand_total'];?></td>

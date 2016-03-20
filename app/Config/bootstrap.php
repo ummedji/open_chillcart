@@ -43,6 +43,15 @@ elseif (getenv("APPLICATION_ENV") == "DEMO"):
         's3Secret' => 'DfYEkDUU17/asCOcDLqZ+T9A/2T8v9ILWIukqqAy',
         'bucket' => 'demo.chillcart.images',
         'endpoint' => 's3-eu-west-1.amazonaws.com', // [optional] Only required if your endpoint is not s3-eu-west-1.amazonaws.com
+        'cdn' => 'https://s3-eu-west-1.amazonaws.com/demo.chillcart.images'
+    )
+);
+elseif (getenv("APPLICATION_ENV") == "BETA"):
+  Configure::write('CakeS3', array(
+        's3Key' => 'AKIAJ7UUZ7Q22HDUQKMA',
+        's3Secret' => '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',
+        'bucket' => 'beta.chillcart.images',
+        'endpoint' => 's3-eu-west-1.amazonaws.com', // [optional] Only required if your endpoint is not s3-eu-west-1.amazonaws.com
         'cdn' => 'https://dnrskjoxjtgst.cloudfront.net'
     )
 );
@@ -52,7 +61,7 @@ elseif (getenv("APPLICATION_ENV") == "TESTING"):
         's3Secret' => 'DfYEkDUU17/asCOcDLqZ+T9A/2T8v9ILWIukqqAy',
         'bucket' => 'testing.chillcart.images',
         'endpoint' => 's3-eu-west-1.amazonaws.com', // [optional] Only required if your endpoint is not s3-eu-west-1.amazonaws.com
-        'cdn' => 'https://dnrskjoxjtgst.cloudfront.net'
+        'cdn' => 'https://s3-eu-west-1.amazonaws.com/testing.chillcart.images'
     )
 );
 else:
