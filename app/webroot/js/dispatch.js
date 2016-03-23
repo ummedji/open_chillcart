@@ -154,32 +154,24 @@ $('.statusLog').on('click', function() {
 
 
 $(document).ready(function(){
-	
-
 	$(".table").on('click','.buttonStatus',function() {
 		if($(this).hasClass('red_bck')){
 			$(this).removeClass('red_bck');
 			$(this).children("i").removeClass('fa-times').addClass("fa-check");
+            $(this).attr("title","active");
 		}
 		else if($(this).hasClass('yellow_bck')){
 			$(this).removeClass('yellow_bck');
 			$(this).children("i").removeClass('fa-exclamation').addClass("fa-check");
+            $(this).attr("title","Pending");
 		}
 		else{
 			$(this).addClass('red_bck');
 			$(this).children("i").removeClass('fa-check').addClass("fa-times");
+            $(this).attr("title","Deactive");
 		}
 
 	});
-
-
-	
-	/*$('#sample_12').DataTable( {
-        "processing": true,
-        "serverSide": true,
-        "ajax": "../server_side/scripts/server_processing.php"
-    } );*/
-
 });
 
 function trackOrder(orderId) {

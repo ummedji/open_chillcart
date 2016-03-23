@@ -133,7 +133,7 @@ class MobileApiController extends AppController
                     break;
 
                 case 'DriverImageUpload':
-
+                
                     $driver = $this->Driver->findById($this->request->data('driverid'));
                     if (!empty($this->request->data['image'])) {
                         // Get image string posted from Android App
@@ -377,19 +377,20 @@ class MobileApiController extends AppController
                         if (!empty($this->request->data['image']) && $status == 'Delivered') {
                             // Get image string posted from Android App
                             $base = $this->request->data['image'];
-                            //chmod(APP.'webroot/OrderProof/', 777);
                             // Get file name posted from Android App
-                            $fileId = 'Order_signature' . $orderId . '.png';
-                            $filename = APP . 'webroot/OrderProof/' . $fileId;
+                            $fileId   = 'Order_signature' . $orderId . '.png';
+                            $filename = ROOT.DS.'app'.DS."tmp".DS."OrderProof".DS.$fileId;
                             // Decode Image
                             $binary = base64_decode($base);
                             header('Content-Type: bitmap; charset=utf-8');
 
                             $file = fopen($filename, 'wb+');
-                            // Create File
                             fwrite($file, $binary);
                             fclose($file);
 
+                            // S3 Upload Process
+                            $orderProofS3  = 'OrderProof/';
+                            $result = $this->CakeS3->putObject($filename, $orderProofS3.$fileId, S3::ACL_PUBLIC_READ);
                             $ordStatus['Order']['payment_method'] = 'paid';
                         }
 
@@ -397,11 +398,11 @@ class MobileApiController extends AppController
                         $response['success'] = 1;
                         $response['message'] = 'Order Status Change Successfully';
 
-			// Driver SMS
+                        //Driver SMS
                         if ($status == 'Collected') {
 
                             $driverMessage = "Congratulations ! Your order ".$ordStatus['Order']['ref_number']." is on it's way to you. It wiil be delivered by ".
-						$ordStatus['Driver']['driver_name'].". Thanks for shopping with Chillcart and stay connected.";
+                            $ordStatus['Driver']['driver_name'].". Thanks for shopping with Chillcart and stay connected.";
                         }
 
                         if ($status == 'Delivered') {

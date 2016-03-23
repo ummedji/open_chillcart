@@ -228,7 +228,11 @@ class SearchesController extends AppController {
 		}
 
 		$storeDetails = $this->Store->find('first', array(
-											'conditions' => array('Store.id' => $storeId)));
+									'conditions' => array('Store.id' => $storeId,
+											  				'Store.status' => 1)));
+		if (empty($storeDetails)) {
+			$this->redirect(array('controller' => 'searches', 'action' => 'index'));
+		}
 
 		if ($storeDetails['Store']['collection'] == 'Yes' ||
 			$storeDetails['Store']['delivery'] == 'Yes' &&
@@ -242,6 +246,9 @@ class SearchesController extends AppController {
 									'OR' => array('Store.collection' => 'Yes',
 										'Store.delivery'	 => 'Yes')),
 								'order' => array('Product.category_id', 'Product.sub_category_id')));
+			if (empty($productList)) {
+				$this->redirect(array('controller' => 'searches', 'action' => 'index'));
+			}
 
 			$mainCategory = array();
 			$subCategory = array();

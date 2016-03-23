@@ -47,26 +47,21 @@ class CheckoutsController extends AppController
     {
 
         $this->layout = 'frontend';
-
-        $this->ShoppingCart->recursive = 2;
         $shopCartDetails = $this->ShoppingCart->find('all', array(
-                                        'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
-                                        'order' => array('ShoppingCart.store_id'),
-                                        'group' => 'ShoppingCart.store_id'));
+                                'conditions' => array('ShoppingCart.session_id' => $this->SessionId,
+                                                    'ShoppingCart.order_id' => 0),
+                                'order' => array('ShoppingCart.store_id'),
+                                'group' => 'ShoppingCart.store_id'));
         if (empty($shopCartDetails)) {
             $this->redirect(array('controller' => 'searches', 'action' => 'index'));
         }
 
         foreach ($shopCartDetails as $keys => $values) {
-
-
             $storeSlots[$keys]['store_name'] = $values['Store']['store_name'];
-            $storeSlots[$keys]['store_id'] = $values['Store']['id'];
-
-            $storeSlots[$keys]['delivery'] = $values['Store']['delivery'];
+            $storeSlots[$keys]['store_id']   = $values['Store']['id'];
+            $storeSlots[$keys]['delivery']   = $values['Store']['delivery'];
             $storeSlots[$keys]['collection'] = $values['Store']['collection'];
-            $storeSlots[$keys]['seo_url'] = $values['Store']['seo_url'];
-
+            $storeSlots[$keys]['seo_url']    = $values['Store']['seo_url'];
 
             $timeSlots = $this->DeliveryTimeSlot->find('all', array(
                 'conditions' => array('DeliveryTimeSlot.store_id' => $values['Store']['id'])));
@@ -75,7 +70,7 @@ class CheckoutsController extends AppController
 
                 $time = strtotime(date('h:i A'));
                 $from = strtotime(date('h:i A', strtotime($value['TimeSlot']['time_from'])));
-                $to = strtotime(date('h:i A', strtotime($value['TimeSlot']['time_to'])));
+                $to   = strtotime(date('h:i A', strtotime($value['TimeSlot']['time_to'])));
 
                 if ($time <= $from) {
                     if ($value['DeliveryTimeSlot']['delivery_charge'] != 0) {
@@ -133,15 +128,12 @@ class CheckoutsController extends AppController
         }
 
         $optionDays = array('Today' => __('Today'), 'Tomorrow' => __('Tomorrow'));
-
         $addresses = $this->CustomerAddressBook->find('all', array(
-            'conditions' => array('CustomerAddressBook.customer_id' => $this->Auth->User('Customer.id'),
-                'CustomerAddressBook.status' => 1)));
-
+                            'conditions' => array('CustomerAddressBook.customer_id' => 
+                                                    $this->Auth->User('Customer.id'),
+                                                'CustomerAddressBook.status' => 1)));
         $stripeCards = $this->StripeCustomer->find('all', array(
             'conditions' => array('StripeCustomer.customer_id' => $this->Auth->User('Customer.id'))));
-
-
         $this->set(compact('addresses', 'shopCartDetails', 'storeSlots', 'optionDays', 'stripeCards'));
     }
 

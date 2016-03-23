@@ -54,7 +54,7 @@
 
 	                <li><span class="col-md-4 col-sm-4 col-xs-12"> <?php echo __('Address', true); ?></span> <span class="col-md-8 col-sm-8 col-xs-12 site-color"><i>:</i> <?php
 						$address  = $order_detail['Order']['address'].', ';
-						$address .= ($order_detail['Order']['landmark']) ? $order_detail['Order']['landmark'] : '';
+						$address .= ($order_detail['Order']['landmark']) ? $order_detail['Order']['landmark'].', ' : '';
 						$address .= $order_detail['Order']['location_name'].', '.$order_detail['Order']['city_name'].', '.
 							 $order_detail['Order']['state_name'].'.'; 
 
@@ -174,13 +174,8 @@
 					} ?>						
 					</tbody>
 				</table> <?php
-				if ($order_detail['Order']['status'] == 'Delivered') {
-
-					if (file_exists(WWW_ROOT.'/OrderProof/Order_signature'.$order_detail['Order']['id'].'.png')) { ?>
-
-						<center><img src="<?php echo $siteUrl; ?>/OrderProof/Order_signature<?php echo $order_detail['Order']['id']; ?>.png"></center> <?php
-					}
-					
+				if ($order_detail['Order']['status'] == 'Delivered') { ?>
+					<center><img src="<?php echo $cdn.'/OrderProof/Order_signature'.$order_detail['Order']['id'].'.png';?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/No-Signature.jpg"; ?>'"></center> <?php
 				} ?>
 			</div>
 		</div>

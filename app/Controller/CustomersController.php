@@ -31,16 +31,14 @@ class CustomersController extends AppController
      * Admin View Particular Customer Detail
      * @return void
      */
-    public function admin_customerIndex()
+    public function admin_customerIndex($id = null)
     {
-        $ids = $this->params['pass'];
-        $id = $ids[0];
         if ($id == null) {
             $this->redirect(array('controller' => 'Customers', 'action' => 'index'));
         } else {
             $addressbook_list = $this->CustomerAddressBook->find('all', array(
                 'conditions' => array('CustomerAddressBook.customer_id' => $id)));
-            $this->set("addressbook_list", $addressbook_list);
+            $this->set(compact('addressbook_list'));
         }
     }
 

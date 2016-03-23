@@ -12,11 +12,11 @@ class CitiesController extends AppController
      * City Management Process
      * @return void
      */
-    public function admin_index()
+    public function admin_index($id = null)
     {
-        if ($this->request->params['pass'][0]) {
+        if (isset($id)) {
             $city_list = $this->City->find('all', array(
-                'conditions' => array('City.state_id' => $this->request->params['pass'][0],
+                'conditions' => array('City.state_id' => $id,
                     'NOT' => array('City.status' => 3))));
         } else {
             $city_list = $this->City->find('all', array(
