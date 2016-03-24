@@ -186,7 +186,6 @@ class CakeS3Component extends Component
     {
 
         try {
-
             S3::putObject(S3::inputFile($filePathToUpload), $this->bucket, $locationOnS3, $permission, array(), $mimeType);
             $info = $this->getObjectInfo($locationOnS3);
             return array(
