@@ -126,7 +126,6 @@ class ProductsController extends AppController {
                           
                         #Upload
                         //$upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
-
                         $result = $this->CakeS3->putObject($value['tmp_name'], $origpathS3.$newName, S3::ACL_PUBLIC_READ);
                         $AmazonS3Image = $result['url'];
 
@@ -728,22 +727,25 @@ class ProductsController extends AppController {
 
                     // Product Image Name onls Save
                     $images = explode(',', $value[11]);
-
+			print_r($images);
                     foreach ($images as $key => $val) {
 
                       $imgType = explode('.', $val);
 
                       $imagesizedata = getimagesize($val);
+		
 
                       if ($imagesizedata) {
 
-                        if (in_array($imgType[1], $allowed_ext)) {
+                        if (in_array(end($imgType), $allowed_ext)) {
 
-                          $newName = str_replace(" ","-", uniqid(). '.' .$product['product_name'].'.'.$imgType[1]);
-
-                          $results = $this->CakeS3->putObject($val, $origpathS3.$newName, S3::ACL_PUBLIC_READ);
+                          $newName = str_replace(" ","-", uniqid(). '.' .$product['product_name'].'.'.end($imgType));
+               		  $pathpe = ROOT.DS.'app'.DS."tmp".DS."Excel".DS;
+			  file_put_contents($pathpe.$newName, file_get_contents($val));	
+                          $results = $this->CakeS3->putObject($pathpe.$newName, $origpathS3.$newName, S3::ACL_PUBLIC_READ);
+			
                           $AmazonS3Image = $results['url'];
-
+			
                           #Resize
                           $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0,$homepathS3);
                           $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0, $cartpathS3);
