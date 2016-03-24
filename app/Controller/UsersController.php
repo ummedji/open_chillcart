@@ -356,14 +356,13 @@ class UsersController extends AppController {
 					$regsubject = $newRegisteration['Notification']['subject'];
              	}
 
-	            $adminEmail   = $this->siteSetting['Sitesetting']['admin_email']; 
-
+	            $adminEmail   = $this->siteSetting['Sitesetting']['admin_email'];
+	            $source	 	  = $this->siteUrl.'/siteicons/logo.png';
 		        $mailContent  = $regContent;
 		        $userID       = $this->Customer->id;
 		        $siteUrl      = $this->siteUrl;
 		        $activation   = $this->siteUrl. '/users/activeLink/'.$userID;
 		        $customerName = $this->request->data['Customer']['first_name'];
-
 		        $store_name   = $this->siteSetting['Sitesetting']['site_name'];
 
 		        $mailContent  = str_replace("{firstname}", $customerName, $mailContent);
@@ -451,7 +450,6 @@ class UsersController extends AppController {
 					   }
 					   
 					   $mailContent = $forgetpasswordContent;
-					   $userID      = $userData['User']['id'];
 					   $siteUrl = $this->siteUrl.'/customer/users/customerlogin/';
 					   $mailContent = str_replace("{Customer name}", $customerName, $mailContent);
 					   $mailContent = str_replace("{source}", $source, $mailContent);
@@ -550,7 +548,6 @@ class UsersController extends AppController {
 
    	public function admin_changePassword(){
 	   	if($this->request->is('post')) {
-	   		$old_password     =  $this->Auth->password($this->request->data['user']['old_pass']);
 	   		$new_password     =  $this->Auth->password($this->request->data['user']['new_pass']);
 	   		$confirm_password =  $this->Auth->password($this->request->data['user']['confirm_pass']);
 	   		if ($new_password == $confirm_password) {

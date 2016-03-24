@@ -132,6 +132,11 @@ class SearchesController extends AppController {
 			$this->Session->delete('orderplaced');
 		}
 
+		if ($this->Session->read('orderFailed')) {
+			$this->changeLocation();
+			$this->Session->delete('orderFailed');
+		}
+
 		$storeLists = $this->Product->find('all', array(
 							'conditions' => array(
 												'Store.status' => 1,
@@ -191,6 +196,7 @@ class SearchesController extends AppController {
 
 		$cityId = $this->Session->read('Search.city');
 		$areaId = $this->Session->read('Search.area');
+		$stores = array();
 
 		$storeLists = $this->Product->find('all', array(
 			'conditions' => array(
@@ -245,21 +251,22 @@ class SearchesController extends AppController {
 									'SubCategory.status' => 1,
 									'OR' => array('Store.collection' => 'Yes',
 										'Store.delivery'	 => 'Yes')),
-								'order' => array('Product.category_id', 'Product.sub_category_id')));
+								'order' => array('Product.category_id', 'Product.sub_category_id'),
+								'group' => array('Product.sub_category_id')));
 			if (empty($productList)) {
 				$this->redirect(array('controller' => 'searches', 'action' => 'index'));
 			}
 
 			$mainCategory = array();
-			$subCategory = array();
+			$subCategoryList = array();
 
 			foreach ($productList as $key => $value) {
 				if (!in_array($value['Product']['category_id'], $mainCategory)) {
 					$mainCategory[] = $value['Product']['category_id'];
 				}
 
-				if (!in_array($value['Product']['sub_category_id'], $subCategory)) {
-					$subCategory[] = $value['Product']['sub_category_id'];
+				if (!in_array($value['Product']['sub_category_id'], $subCategoryList)) {
+					$subCategoryList[] = $value['Product']['sub_category_id'];
 				}
 			}
 
@@ -268,9 +275,6 @@ class SearchesController extends AppController {
 									'Category.parent_id' => 0,
 					'OR' => array('Category.id' => $mainCategory))));
 
-			$subCategoryList = $this->Category->find('list', array(
-				'conditions' => array('Category.status' => 1,
-					'OR' => array('Category.id' => $subCategory))));
 
 			$this->Deal->recursive = 2;
 			$dealProducts = $this->Deal->find('all', array(
@@ -569,8 +573,11 @@ class SearchesController extends AppController {
 		$id      = $this->request->data['id'];
 		$storeId = $this->request->data['storeId'];
 		$count   = $this->request->data['count'];
+		$searchKey   = (!empty($this->request->data['searchKey'])) ? trim($this->request->data['searchKey']) : '';
+
 		$subId 	 = isset($this->request->data['subId']) ? $this->request->data['subId'] : '';
 		$productList = array();
+
 		if (!empty($subId)) {
 			$productList = $this->Product->find('all', array(
 									'conditions' => array('Product.category_id' => $id,
@@ -579,6 +586,16 @@ class SearchesController extends AppController {
 														'SubCategory.status' => 1,
 														'Product.store_id'=>$storeId,
 														'Product.sub_category_id' => $subId),
+									'order' => array('Product.category_id', 'Product.sub_category_id')));
+		} elseif (!empty($searchKey)) {
+
+			$productList = $this->Product->find('all', array(
+									'conditions' => array('Product.category_id' => $id,
+														'Product.status' => 1,
+														'MainCategory.status' => 1,
+														'SubCategory.status' => 1,
+														'Product.store_id'=>$storeId,
+														"Product.product_name LIKE" => "%".$searchKey."%"),
 									'order' => array('Product.category_id', 'Product.sub_category_id')));
 		} else {
 

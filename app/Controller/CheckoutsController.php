@@ -318,19 +318,11 @@ class CheckoutsController extends AppController
     public function orderReview()
     {
 
-        $id = $this->request->data['id'];
-
+        $id             = $this->request->data['id'];
         $orderTypeCheck = $this->request->data['orderTypeCheck'];
-
-        $orderTypes = explode(',', $orderTypeCheck);
-
-        //echo "<pre>"; print_r($orderTypes);
-
-
-        $data = explode(',', $id);
-
-        $today = date("m/d/Y");
-
+        $orderTypes     = explode(',', $orderTypeCheck);
+        $data           = explode(',', $id);
+        $today          = date("m/d/Y");
 
         foreach ($data as $key => $value) {
 
@@ -348,7 +340,6 @@ class CheckoutsController extends AppController
                     ' TO ' . $deliverySlot['TimeSlot']['time_to'];
             }
 
-
             $storeOffers = $this->Storeoffer->find('first', array(
                 'conditions' => array('Storeoffer.store_id' => $deliverySlot['Store']['id'],
                     'Storeoffer.status' => 1,
@@ -357,12 +348,11 @@ class CheckoutsController extends AppController
                 'order' => 'Storeoffer.id DESC'));
 
             $storeProduct = $this->ShoppingCart->find('all', array(
-                'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
+                'conditions' => array('ShoppingCart.session_id' => $this->SessionId,
+                                     'ShoppingCart.order_id' => 0),
                 'fields' => array('store_id',
                     'SUM(ShoppingCart.product_total_price) As productTotal'),
                 'group' => array('ShoppingCart.store_id')));
-
-            //echo "<pre>"; print_r($storeOffers);
 
             if (!empty($storeOffers)) {
 
@@ -373,22 +363,17 @@ class CheckoutsController extends AppController
                 }
             }
 
-
             if (!empty($deliverySlot['Store']['tax'])) {
                 $taxDetails[$key]['store_name'] = $deliverySlot['Store']['store_name'];
                 $taxDetails[$key]['tax'] = $deliverySlot['Store']['tax'];
             }
-
-
             $offerDetails[$key]['store_id'] = $deliverySlot['Store']['id'];
             $offerDetails[$key]['store_name'] = $deliverySlot['Store']['store_name'];
-
-            //echo "<pre>"; print_r($offerDetails);
-
         }
         //$this->ShoppingCart->recursive = 3;
         $shopCart = $this->ShoppingCart->find('all', array(
-            'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
+            'conditions' => array('ShoppingCart.session_id' => $this->SessionId,
+                                  'ShoppingCart.order_id' => 0),
             'order' => array('ShoppingCart.store_id')));
 
         $this->set(compact('shopCart', 'deliveryDetails', 'offerDetails', 'taxDetails'));
@@ -398,8 +383,8 @@ class CheckoutsController extends AppController
     public function deliveryLocation()
     {
 
-        $id = $this->request->data['id'];
-        $orderTypes = $this->request->data['orderTypes'];
+        $id = (!empty($this->request->data['id'])) ? $this->request->data['id'] : '';
+        $orderTypes = (!empty($this->request->data['orderTypes'])) ? $this->request->data['orderTypes'] : '';
 
         $orderTypes = explode(',', $orderTypes);
 

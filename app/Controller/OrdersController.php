@@ -179,9 +179,9 @@ class OrdersController extends AppController {
 
       foreach ($this->request->data['Order']['timeSlot'] as $key => $value) {
 
-          $customerDetails = $this->CustomerAddressBook->findById($this->request->data['Order']['delivery_id']);
-
-          
+          if (!empty($this->request->data['Order']['delivery_id'])) {
+            $customerDetails = $this->CustomerAddressBook->findById($this->request->data['Order']['delivery_id']);
+          }
           $order['store_id']            = $value['store_id'];
           $order['customer_id']         = $this->Auth->User('Customer.id');
           $order['user_type']           = 'Customer';
@@ -265,6 +265,7 @@ class OrdersController extends AppController {
           $deliverDetails = $this->DeliveryTimeSlot->findById($value['time']);
           $total = $this->ShoppingCart->find('all', array(
                   'conditions'=>array('ShoppingCart.session_id' => $SessionId,
+                                      'ShoppingCart.order_id' => 0,
                                       'ShoppingCart.store_id' => $value['store_id']),
                   'fields' => array('SUM(ShoppingCart.product_total_price) AS cartSubTotal')));
 
@@ -301,6 +302,7 @@ class OrdersController extends AppController {
           $this->ShoppingCart->updateAll(
                         array('ShoppingCart.order_id' => $this->Order->id),
                         array('ShoppingCart.session_id' => $SessionId,
+                               'ShoppingCart.order_id' => 0,
                               'ShoppingCart.store_id'   => $value['store_id']));
 
           $cartProducts = $this->ShoppingCart->find('all', array(
@@ -380,6 +382,7 @@ class OrdersController extends AppController {
             $orderUpdate['payment_type']  = 'Card';
             $orderUpdate['failed_reason'] = 'Payment failed';
             $this->Order->save($orderUpdate);
+            $this->Session->write('orderFailed', 'failed');
           }
           $this->Session->setFlash(__('Payment failed', true),
                                     'default', array('class' => 'alert alert-danger'));

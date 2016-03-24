@@ -673,8 +673,42 @@ class ProductsController extends AppController {
                   $product['id']                  = '';
                   $product['store_id']            = $store_id;
                   $product['product_name']        = $value[1];
-                  $product['category_id']         = $value[2];
-                  $product['sub_category_id']     = $value[3];
+
+                  $mainCategory = $this->Category->find('first', array(
+                                          'conditions' => array('Category.parent_id' => 0,
+                                                                'Category.category_name' =>trim($value[2]),
+                                                  'NOT' => array('Category.status' => 3))));
+
+                  if (!empty($mainCategory)) {
+                    $product['category_id'] = $mainCategory['Category']['id'];
+                  } else {
+                    $category['Category']['category_name'] = $value[2];
+                    $category['Category']['status']        = 1;
+                    $category['Category']['parent_id']     = 0;
+                    $this->Category->save($category, null, null);
+                    $product['category_id'] = $this->Category->id;
+                    $this->Category->id = '';
+                  }
+
+                  $subCategory = $this->Category->find('first', array(
+                                            'conditions' => array('Category.parent_id' => $product['category_id'],
+                                                                  'Category.category_name' => trim($value[3]),
+                                                  'NOT' => array('Category.status' => 3))));
+
+                  if (!empty($subCategory)) {
+                    $product['sub_category_id'] = $subCategory['Category']['id'];
+                  } else {
+                    $subCategory['Category']['category_name'] = $value[3];
+                    $subCategory['Category']['parent_id']     = $product['category_id'];
+                    $subCategory['Category']['status']        = 1;
+                    $this->Category->save($subCategory, null, null);
+                    $product['sub_category_id'] = $this->Category->id;
+                    $this->Category->id = '';
+                  }
+
+                  /*$product['category_id']         = $value[2];
+                  $product['sub_category_id']     = $value[3];*/
+
                   $product['price_option']        = $value[4];
                   $product['product_description'] = $value[10];
                   $product['brand_id']            = 0;
@@ -686,7 +720,7 @@ class ProductsController extends AppController {
                     $ProductDetail['product_id']    = $this->Product->id;
                     $ProductDetail['sub_name']      = $value[5];
                     $ProductDetail['orginal_price'] = $value[6];
-                    $ProductDetail['compare_price'] = $value[7];
+                    $ProductDetail['compare_price'] = (!empty($value[7])) ? $value[7] : '';
                     $ProductDetail['quantity']      = $value[8];
                     $ProductDetail['product_code']  = $value[9];
 
