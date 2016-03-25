@@ -528,7 +528,6 @@ $(window).load(function(){
 
 		} else {
 			var splits   = getvalue.split('_');
-
 			var id		 = splits[0];
 			var storeId  = splits[1];
 			$.post(rp+'searches/filtterByCategory', {'id': id,'storeId':storeId, 'count': count}, function (response) {
@@ -542,6 +541,8 @@ $(window).load(function(){
 });
 
 function categoriesProduct(id, subId, storeId) {
+	var searchKey = $('#searchKey').val('');
+	$('#messageError').hide();
 	$.post(rp+'searches/filtterByCategory', {'id': id,'storeId':storeId, 'subId' : subId, 'count': 1}, 
 		function (response) {
 			$("#filtterByCategory").html('');
@@ -551,10 +552,64 @@ function categoriesProduct(id, subId, storeId) {
 }
 
 function dealsProduct(storeId) {
+	var searchKey = $('#searchKey').val('');
+	$('#messageError').hide();
 	$.post(rp+'searches/dealProducts', {'storeId':storeId}, 
 		function (response) {
 			$("#filtterByCategory").html('');
 			$("#filtterByCategory").append(response);
 		}
 	);
+}
+
+function searchProducts() {
+	
+	$('.ui-loader').show();
+	$('#messageError').hide();
+	var searchKey = $('#searchKey').val();
+	var searchKeyCount = $('#searchKey').val().length;
+	var noresult = 0;
+
+	if (searchKey == '') {
+		$(".searchMenuForm").after('<label class="error">Please enter product name</label>');
+		$('.ui-loader').hide();
+	} else if (searchKeyCount < 3) {
+		$(".searchMenuForm").after('<label class="error">Please enter minimum 3 letters of product name</label>');
+		$('.ui-loader').hide();
+	} else {
+		var countCategory = $('#countCategory').val();
+		count = 0;
+		$("#filtterByCategory").html('');
+
+		for (var i = 0; i < countCategory; i++) {
+			count++;
+			var getvalue = $('#check'+i).val();
+			var splits   = getvalue.split('_');
+			var id		 = splits[0];
+			var storeId  = splits[1];
+
+			$.post(rp+'searches/filtterByCategory', {'id': id,'storeId':storeId, 'count':count, 'searchKey' : searchKey}, function (response) {
+				if (response != '') {
+					noresult = 1;
+					$("#filtterByCategory").append(response);
+					//$('.ui-loader').hide();
+				}
+			});
+		}
+	}
+	setTimeout(function(){	
+		if (noresult != 1) {
+			$('#messageError').show();
+		}
+	    $('.ui-loader').hide();
+	},1000);
+	return false;
+}
+
+
+function productSearch(event) {
+	$('.error').hide();
+	if (event.which == 13 || event.keyCode == 13) {
+		searchProducts();
+	}
 }

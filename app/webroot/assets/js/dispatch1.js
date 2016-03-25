@@ -332,19 +332,20 @@ $(document).ready(function () {
         if ($(this).hasClass('red_bck')) {
             $(this).removeClass('red_bck');
             $(this).children("i").removeClass('fa-times').addClass("fa-check");
+            $(this).attr("title","active");
         }
         else if ($(this).hasClass('yellow_bck')) {
             $(this).removeClass('yellow_bck');
             $(this).children("i").removeClass('fa-exclamation').addClass("fa-check");
+            $(this).attr("title","Pending");
         }
         else {
             $(this).addClass('red_bck');
             $(this).children("i").removeClass('fa-check').addClass("fa-times");
+            $(this).attr("title","Deactive");
         }
 
     });
-
-
 });
 
 $('.statusLog').on('click', function () {

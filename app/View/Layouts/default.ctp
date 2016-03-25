@@ -98,7 +98,6 @@ echo $this->element('admin/topheader'); } ?>
 	<?php
 		echo $this->Html->script(array('jquery-1.11.0.min',
 									'jquery-migrate-1.2.1.min',
-									'jquery-ui-1.10.3.custom.min',
 									'bootstrap.min',
 									'bootstrap-hover-dropdown.min',
 									'jquery.uniform.min'));
@@ -126,6 +125,7 @@ echo $this->element('admin/topheader'); } ?>
                                     'bootstrap-datepicker',
                                     'summernote.min',
                                     'daterangepicker',
+                                    'jquery-ui-1.10.3.custom.min',
                                     'siteSetting'
                                     )); ?>
 	

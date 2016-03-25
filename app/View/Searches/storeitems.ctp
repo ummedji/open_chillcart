@@ -39,12 +39,18 @@
 				</ul>
 				<h1> <?php echo __('Categories', true); ?></h1>
 				<ul class="maincategory"> <?php
-					foreach ($mainCategoryList as $key => $value) { ?>
+					$categoryCount = 0;
+					foreach ($mainCategoryList as $key => $value) { 
+						$categoryCount = $key+1; ?>
 						<li>
 							<a href="javascript:void(0);" class="mainMenu"><?php
 								echo $value['Category']['category_name']; ?></a><?php
 							echo $this->Form->hidden('check' ,array('value'=>$value['Category']['id'].'_'.$storeId,
-								'class'=>'remove_'.$value['Category']['id']));?>
+								'class'=>'remove_'.$value['Category']['id']));
+
+							echo $this->Form->hidden('' ,array('value'=>$value['Category']['id'].'_'.$storeId,
+																'id' => 'check'.$key));
+								?>
 							<ul class="subcategories">
 								<li>
 									<a href="javascript:void(0);" onclick="categoriesProduct(<?php echo $value['Category']['id'].',0,'.$storeId;?>);"> <span>&rarr;</span> All <?php
@@ -62,7 +68,9 @@
 								} ?>
 							</ul>
 						</li> <?php
-					} ?>
+					}
+					echo $this->Form->hidden('', array('value'=> $categoryCount,
+														'id' => 'countCategory')); ?>
 										
 				</ul>
 			</div>
@@ -71,6 +79,9 @@
 	
 	<div class="rightSideBar">
 		<div id="filtterByCategory"></div>
+		<div id="messageError" style="display:none">
+			<h1><center>There is no product</center></h1>
+		</div>
 		<div id="cart-sidebar">
 			<a class="mobile_cart_close" href="javascript:void(0);"><i class="fa fa-chevron-left"></i></a>
 			<div class="cart-sidebar-overlay"></div>
@@ -87,6 +98,4 @@
 		</div>
 		<div class="modal fade" id="addCartPop"> </div>
 	</div>
-
 </div>
-

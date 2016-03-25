@@ -302,32 +302,30 @@ $(document).ready(function(){
 
 
 //Editor Js file
-jQuery(document).ready(function() {       
-   Metronic.init(); // init metronic core components
+jQuery(document).ready(function() {
+	Metronic.init(); // init metronic core components
 	Layout.init(); // init current layout
 	Demo.init(); // init demo features
-   ComponentsEditors.init();
+	ComponentsEditors.init();
+   
+	$('#StoreofferFromDate').datepicker({
+		minDate: 0,
+        maxDate: "+60D",
+        numberOfMonths: 1,
+        onSelect: function(selected) {
+          $("#StoreofferToDate").datepicker("option","minDate", selected)
+        }
+	 });
+
+	$('#StoreofferToDate').datepicker({
+		minDate: 0,
+        maxDate:"+60D",
+        numberOfMonths: 1,
+        onSelect: function(selected) {
+           $("#StoreofferFromDate").datepicker("option","maxDate", selected)
+        }
+	 });
 });
-
-
-$('.date-picker input').datepicker({ minDate: 0 });
-
-$('.date-pickers input').datepicker({ maxDate: 0 });
-
-var dateToday = new Date();
-var dates = $("#StoreofferFromDate, #StoreofferToDate").datepicker({
-    defaultDate: "+1w",
-    changeMonth: true,
-    numberOfMonths: 1,
-    minDate: dateToday,
-    onSelect: function(selectedDate) {
-        var option = this.id == "StoreofferFromDate" ? "minDate" : "maxDate",
-            instance = $(this).data("datepicker"),
-            date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
-        dates.not(this).datepicker("option", option, date);
-    }
-});
-
 
 function productImageDelete() {
 

@@ -872,12 +872,26 @@ $(document).ready(function () {
             $(".checktable th input[type='checkbox']").parent().removeClass("checked");
         }
     });
+
+    $('#StoreofferFromDate').datepicker({
+        minDate: 0,
+        maxDate: "+60D",
+        numberOfMonths: 1,
+        onSelect: function(selected) {
+          $("#StoreofferToDate").datepicker("option","minDate", selected)
+        }
+    });
+
+    $('#StoreofferToDate').datepicker({
+        minDate: 0,
+        maxDate:"+60D",
+        numberOfMonths: 1,
+        onSelect: function(selected) {
+           $("#StoreofferFromDate").datepicker("option","maxDate", selected)
+        }
+    });
+
 });
-
-
-$('.date-picker input').datepicker({minDate: 0});
-
-$('.date-pickers input').datepicker({maxDate: 0});
 
 
 function productImageDelete() {

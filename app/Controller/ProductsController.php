@@ -66,7 +66,7 @@ class ProductsController extends AppController {
             } else {
 
                 $this->request->data['Product']['store_id'] = $store_id;
-                $this->request->data['Product']['brand_id'] =  ($this->request->data['Product']['brand_id'] != '') ? 
+                $this->request->data['Product']['brand_id'] =  (isset($this->request->data['Product']['brand_id']) &&                                               $this->request->data['Product']['brand_id'] != '') ? 
                                                                 $this->request->data['Product']['brand_id'] : 0;
                 $this->request->data['Product']['sub_category_id'] =
                                                       ($this->request->data['Product']['sub_category_id'] != '') ? 
@@ -115,41 +115,41 @@ class ProductsController extends AppController {
 
                 $productimages = $this->request->data['ProductImage'];
                 foreach($productimages as $key => $value) {
+                  if (!empty($value['tmp_name'])) {
+                    $imagesizedata = getimagesize($value['tmp_name']);
+                    if ($imagesizedata) {
 
-                  $imagesizedata = getimagesize($value['tmp_name']);
-                  if ($imagesizedata) {
+                      if($value['name'] != "" && in_array($value['type'], $allowed_ext)) {
 
-                    if($value['name'] != "" && in_array($value['type'], $allowed_ext)) {
+                        $newName    = str_replace(" ","-", uniqid()  . '.' .$value['name']); 
+                        $targetdir = $origpath.DS;
+                          
+                        #Upload
+                        //$upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
+                        $result = $this->CakeS3->putObject($value['tmp_name'], $origpathS3.$newName, S3::ACL_PUBLIC_READ);
+                        $AmazonS3Image = $result['url'];
 
-                      $newName    = str_replace(" ","-", uniqid()  . '.' .$value['name']); 
-                      $targetdir = $origpath.DS;
-                        
-                      #Upload
-                      //$upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
+                        #Resize
+                        $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0,$homepathS3);
+                        $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0, $cartpathS3);
+                        $this->Img->resampleGD($AmazonS3Image, $scrollimg, $newName, 67, 55, 1, 0, $scrollimgS3);
+                        $this->Img->resampleGD($AmazonS3Image, $prod_det_path, $newName, 1024, 768, 1, 0, $prod_det_pathS3);
 
-                      $result = $this->CakeS3->putObject($value['tmp_name'], $origpathS3.$newName, S3::ACL_PUBLIC_READ);
-                      $AmazonS3Image = $result['url'];
+                        //unlink Images
+                        @unlink($homepath.$newName);
+                        @unlink($cartpath.$newName);
+                        @unlink($$scrollimg.$newName);
+                        @unlink($$prod_det_path.$newName);
 
-                      #Resize
-                      $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0,$homepathS3);
-                      $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0, $cartpathS3);
-                      $this->Img->resampleGD($AmazonS3Image, $scrollimg, $newName, 67, 55, 1, 0, $scrollimgS3);
-                      $this->Img->resampleGD($AmazonS3Image, $prod_det_path, $newName, 1024, 768, 1, 0, $prod_det_pathS3);
+                        $product_images['product_id']  = $this->Product->id;
+                        $product_images['store_id']    = $store_id;
+                        $product_images['image']       = $value['name'];
+                        $product_images['image_alias'] = $newName;
 
-                      //unlink Images
-                      @unlink($homepath.$newName);
-                      @unlink($cartpath.$newName);
-                      @unlink($$scrollimg.$newName);
-                      @unlink($$prod_det_path.$newName);
-
-                      $product_images['product_id']  = $this->Product->id;
-                      $product_images['store_id']    = $store_id;
-                      $product_images['image']       = $value['name'];
-                      $product_images['image_alias'] = $newName;
-
-                      $this->ProductImage->save($product_images);
-                      $this->ProductImage->id = "";
-                  	}
+                        $this->ProductImage->save($product_images);
+                        $this->ProductImage->id = "";
+                    	}
+                    }
                   }
                 }
                 $this->Session->setFlash('<p>'.__('Your Product has been saved', true).'</p>', 'default', 
@@ -242,49 +242,50 @@ class ProductsController extends AppController {
 
               $productimages = $this->request->data['ProductImage'];
               foreach($productimages as $key => $value) {
+                if (!empty($value['tmp_name'])) {
+                  $imagesizedata = getimagesize($value['tmp_name']);
+                  if ($imagesizedata) {
 
-                $imagesizedata = getimagesize($value['tmp_name']);
-                if ($imagesizedata) {
+                    if($value['name'] != "" && in_array($value['type'], $allowed_ext)) {
 
-                  if($value['name'] != "" && in_array($value['type'], $allowed_ext)) {
-
-                      $newName    = str_replace(" ","-", uniqid()  . '.' .$value['name']); 
-                      $targetdir = $origpath.DS;
-
-
-                      //$this->CakeS3->putObject($cartpath.$newName, $homepath.$newName, S3::ACL_PUBLIC_READ);
-
-                      /*$result = $this->CakeS3->putObject($value['tmp_name'], $cartpath.$newName, S3::ACL_PUBLIC_READ);
-                      $result = $this->CakeS3->putObject($value['tmp_name'], $scrollimg.$newName, S3::ACL_PUBLIC_READ);
-                      $result = $this->CakeS3->putObject($value['tmp_name'], $prod_det_path.$newName, S3::ACL_PUBLIC_READ);*/
-                      
-                      #Upload
-                      //$upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
+                        $newName    = str_replace(" ","-", uniqid()  . '.' .$value['name']); 
+                        $targetdir = $origpath.DS;
 
 
-                      $result = $this->CakeS3->putObject($value['tmp_name'], $origpathS3.$newName, S3::ACL_PUBLIC_READ);
-                      $AmazonS3Image = $result['url'];
+                        //$this->CakeS3->putObject($cartpath.$newName, $homepath.$newName, S3::ACL_PUBLIC_READ);
 
-                      #Resize
-                      $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0,$homepathS3);
-                      $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0, $cartpathS3);
-                      $this->Img->resampleGD($AmazonS3Image, $scrollimg, $newName, 67, 55, 1, 0, $scrollimgS3);
-                      $this->Img->resampleGD($AmazonS3Image, $prod_det_path, $newName, 1024, 768, 1, 0, $prod_det_pathS3);
+                        /*$result = $this->CakeS3->putObject($value['tmp_name'], $cartpath.$newName, S3::ACL_PUBLIC_READ);
+                        $result = $this->CakeS3->putObject($value['tmp_name'], $scrollimg.$newName, S3::ACL_PUBLIC_READ);
+                        $result = $this->CakeS3->putObject($value['tmp_name'], $prod_det_path.$newName, S3::ACL_PUBLIC_READ);*/
+                        
+                        #Upload
+                        //$upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
 
-                      //unlink Images
-                      @unlink($homepath.$newName);
-                      @unlink($cartpath.$newName);
-                      @unlink($scrollimg.$newName);
-                      @unlink($prod_det_path.$newName);
 
-                      $product_images['product_id']  = $this->Product->id;
-                      $product_images['store_id']    = $store_id;
-                      $product_images['image']       = $value['name'];
-                      $product_images['image_alias'] = $newName;
+                        $result = $this->CakeS3->putObject($value['tmp_name'], $origpathS3.$newName, S3::ACL_PUBLIC_READ);
+                        $AmazonS3Image = $result['url'];
 
-                      $this->ProductImage->save($product_images);
-                      $this->ProductImage->id = "";
+                        #Resize
+                        $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0,$homepathS3);
+                        $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0, $cartpathS3);
+                        $this->Img->resampleGD($AmazonS3Image, $scrollimg, $newName, 67, 55, 1, 0, $scrollimgS3);
+                        $this->Img->resampleGD($AmazonS3Image, $prod_det_path, $newName, 1024, 768, 1, 0, $prod_det_pathS3);
 
+                        //unlink Images
+                        @unlink($homepath.$newName);
+                        @unlink($cartpath.$newName);
+                        @unlink($scrollimg.$newName);
+                        @unlink($prod_det_path.$newName);
+
+                        $product_images['product_id']  = $this->Product->id;
+                        $product_images['store_id']    = $store_id;
+                        $product_images['image']       = $value['name'];
+                        $product_images['image_alias'] = $newName;
+
+                        $this->ProductImage->save($product_images);
+                        $this->ProductImage->id = "";
+
+                    }
                   }
                 }
               }
@@ -359,7 +360,7 @@ class ProductsController extends AppController {
               } else {
 
                   $this->request->data['Product']['store_id']        = $store_id;
-                  $this->request->data['Product']['brand_id'] =  ($this->request->data['Product']['brand_id'] != '') ? 
+                  $this->request->data['Product']['brand_id'] =  (isset($this->request->data['Product']['brand_id']) &&                                               $this->request->data['Product']['brand_id'] != '') ? 
                                                                 $this->request->data['Product']['brand_id'] : 0;
                   //$this->request->data['Product']['product_image'] = $this->request->data['product_image'][0];
                   $this->request->data['Product']['sub_category_id'] =  
@@ -409,43 +410,44 @@ class ProductsController extends AppController {
 
                   $productimages = $this->request->data['ProductImage'];
                   foreach($productimages as $key => $value) {
+                    if (!empty($value['tmp_name'])) {
+                      $imagesizedata = getimagesize($value['tmp_name']);
+                      if ($imagesizedata) {
 
-                    $imagesizedata = getimagesize($value['tmp_name']);
-                    if ($imagesizedata) {
+                        if($value['name'] != "" && in_array($value['type'], $allowed_ext)) {
 
-                      if($value['name'] != "" && in_array($value['type'], $allowed_ext)) {
+                          $newName    = str_replace(" ","-", uniqid()  . '.' .$value['name']); 
+                          $targetdir = $origpath.DS;
+                            
+                          #Upload
+                          //$upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
 
-                        $newName    = str_replace(" ","-", uniqid()  . '.' .$value['name']); 
-                        $targetdir = $origpath.DS;
-                          
-                        #Upload
-                        //$upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
+                          $result = $this->CakeS3->putObject($value['tmp_name'], $origpathS3.$newName, S3::ACL_PUBLIC_READ);
+                          $AmazonS3Image = $result['url'];
 
-                        $result = $this->CakeS3->putObject($value['tmp_name'], $origpathS3.$newName, S3::ACL_PUBLIC_READ);
-                        $AmazonS3Image = $result['url'];
+                          #Resize
+                          $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0,$homepathS3);
+                          $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0, $cartpathS3);
+                          $this->Img->resampleGD($AmazonS3Image, $scrollimg, $newName, 67, 55, 1, 0, $scrollimgS3);
+                          $this->Img->resampleGD($AmazonS3Image, $prod_det_path, $newName, 1024, 768, 1, 0, $prod_det_pathS3);
 
-                        #Resize
-                        $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0,$homepathS3);
-                        $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0, $cartpathS3);
-                        $this->Img->resampleGD($AmazonS3Image, $scrollimg, $newName, 67, 55, 1, 0, $scrollimgS3);
-                        $this->Img->resampleGD($AmazonS3Image, $prod_det_path, $newName, 1024, 768, 1, 0, $prod_det_pathS3);
+                          //unlink Images
+                          @unlink($homepath.$newName);
+                          @unlink($cartpath.$newName);
+                          @unlink($scrollimg.$newName);
+                          @unlink($prod_det_path.$newName);
 
-                        //unlink Images
-                        @unlink($homepath.$newName);
-                        @unlink($cartpath.$newName);
-                        @unlink($scrollimg.$newName);
-                        @unlink($prod_det_path.$newName);
+                          $product_images['product_id']  = $this->Product->id;
+                          $product_images['store_id']    = $store_id;
+                          $product_images['image']       = $value['name'];
+                          $product_images['image_alias'] = $newName;
 
-                        $product_images['product_id']  = $this->Product->id;
-                        $product_images['store_id']    = $store_id;
-                        $product_images['image']       = $value['name'];
-                        $product_images['image_alias'] = $newName;
+                          $this->ProductImage->save($product_images);
+                          $this->ProductImage->id = "";
 
-                        $this->ProductImage->save($product_images);
-                        $this->ProductImage->id = "";
-
+                        }
                       }
-                    }    
+                    }
                   }
 
 
@@ -536,42 +538,43 @@ class ProductsController extends AppController {
 
               $productimages = $this->request->data['ProductImage'];
               foreach($productimages as $key => $value) {
+                if (!empty($value['tmp_name'])) {
+                  $imagesizedata = getimagesize($value['tmp_name']);
+                  if ($imagesizedata) {
 
-                $imagesizedata = getimagesize($value['tmp_name']);
-                if ($imagesizedata) {
+                    if($value['name'] != "" && in_array($value['type'], $allowed_ext)) {
 
-                  if($value['name'] != "" && in_array($value['type'], $allowed_ext)) {
+                        $newName    = str_replace(" ","-", uniqid()  . '.' .$value['name']); 
+                        $targetdir = $origpath.DS;
+                        
+                        #Upload
+                        //$upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
 
-                      $newName    = str_replace(" ","-", uniqid()  . '.' .$value['name']); 
-                      $targetdir = $origpath.DS;
-                      
-                      #Upload
-                      //$upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
+                        $result = $this->CakeS3->putObject($value['tmp_name'], $origpathS3.$newName, S3::ACL_PUBLIC_READ);
+                        $AmazonS3Image = $result['url'];
 
-                      $result = $this->CakeS3->putObject($value['tmp_name'], $origpathS3.$newName, S3::ACL_PUBLIC_READ);
-                      $AmazonS3Image = $result['url'];
+                        #Resize
+                        $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0,$homepathS3);
+                        $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0, $cartpathS3);
+                        $this->Img->resampleGD($AmazonS3Image, $scrollimg, $newName, 67, 55, 1, 0, $scrollimgS3);
+                        $this->Img->resampleGD($AmazonS3Image, $prod_det_path, $newName, 1024, 768, 1, 0, $prod_det_pathS3);
 
-                      #Resize
-                      $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0,$homepathS3);
-                      $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0, $cartpathS3);
-                      $this->Img->resampleGD($AmazonS3Image, $scrollimg, $newName, 67, 55, 1, 0, $scrollimgS3);
-                      $this->Img->resampleGD($AmazonS3Image, $prod_det_path, $newName, 1024, 768, 1, 0, $prod_det_pathS3);
+                        //unlink Images
+                        @unlink($homepath.$newName);
+                        @unlink($cartpath.$newName);
+                        @unlink($scrollimg.$newName);
+                        @unlink($prod_det_path.$newName);
 
-                      //unlink Images
-                      @unlink($homepath.$newName);
-                      @unlink($cartpath.$newName);
-                      @unlink($scrollimg.$newName);
-                      @unlink($prod_det_path.$newName);
+                        $product_images['product_id']  = $this->Product->id;
+                        $product_images['store_id']    = $store_id;
+                        $product_images['image']       = $value['name'];
+                        $product_images['image_alias'] = $newName;
 
-                      $product_images['product_id']  = $this->Product->id;
-                      $product_images['store_id']    = $store_id;
-                      $product_images['image']       = $value['name'];
-                      $product_images['image_alias'] = $newName;
-
-                      $this->ProductImage->save($product_images);
-                      $this->ProductImage->id = "";
+                        $this->ProductImage->save($product_images);
+                        $this->ProductImage->id = "";
+                    }
                   }
-                }    
+                }
               }
 
               $this->Session->setFlash('<p>'.__('Your Product has been saved', true).'</p>', 'default', 
@@ -669,8 +672,42 @@ class ProductsController extends AppController {
                   $product['id']                  = '';
                   $product['store_id']            = $store_id;
                   $product['product_name']        = $value[1];
-                  $product['category_id']         = $value[2];
-                  $product['sub_category_id']     = $value[3];
+
+                  $mainCategory = $this->Category->find('first', array(
+                                          'conditions' => array('Category.parent_id' => 0,
+                                                                'Category.category_name' =>trim($value[2]),
+                                                  'NOT' => array('Category.status' => 3))));
+
+                  if (!empty($mainCategory)) {
+                    $product['category_id'] = $mainCategory['Category']['id'];
+                  } else {
+                    $category['Category']['category_name'] = $value[2];
+                    $category['Category']['status']        = 1;
+                    $category['Category']['parent_id']     = 0;
+                    $this->Category->save($category, null, null);
+                    $product['category_id'] = $this->Category->id;
+                    $this->Category->id = '';
+                  }
+
+                  $subCategory = $this->Category->find('first', array(
+                                            'conditions' => array('Category.parent_id' => $product['category_id'],
+                                                                  'Category.category_name' => trim($value[3]),
+                                                  'NOT' => array('Category.status' => 3))));
+
+                  if (!empty($subCategory)) {
+                    $product['sub_category_id'] = $subCategory['Category']['id'];
+                  } else {
+                    $subCategory['Category']['category_name'] = $value[3];
+                    $subCategory['Category']['parent_id']     = $product['category_id'];
+                    $subCategory['Category']['status']        = 1;
+                    $this->Category->save($subCategory, null, null);
+                    $product['sub_category_id'] = $this->Category->id;
+                    $this->Category->id = '';
+                  }
+
+                  /*$product['category_id']         = $value[2];
+                  $product['sub_category_id']     = $value[3];*/
+
                   $product['price_option']        = $value[4];
                   $product['product_description'] = $value[10];
                   $product['brand_id']            = 0;
@@ -682,7 +719,7 @@ class ProductsController extends AppController {
                     $ProductDetail['product_id']    = $this->Product->id;
                     $ProductDetail['sub_name']      = $value[5];
                     $ProductDetail['orginal_price'] = $value[6];
-                    $ProductDetail['compare_price'] = $value[7];
+                    $ProductDetail['compare_price'] = (!empty($value[7])) ? $value[7] : '';
                     $ProductDetail['quantity']      = $value[8];
                     $ProductDetail['product_code']  = $value[9];
 
@@ -690,22 +727,25 @@ class ProductsController extends AppController {
 
                     // Product Image Name onls Save
                     $images = explode(',', $value[11]);
-
+			print_r($images);
                     foreach ($images as $key => $val) {
 
                       $imgType = explode('.', $val);
 
                       $imagesizedata = getimagesize($val);
+		
 
                       if ($imagesizedata) {
 
-                        if (in_array($imgType[1], $allowed_ext)) {
+                        if (in_array(end($imgType), $allowed_ext)) {
 
-                          $newName = str_replace(" ","-", uniqid(). '.' .$product['product_name'].'.'.$imgType[1]);
-
-                          $results = $this->CakeS3->putObject($val, $origpathS3.$newName, S3::ACL_PUBLIC_READ);
+                          $newName = str_replace(" ","-", uniqid(). '.' .$product['product_name'].'.'.end($imgType));
+               		  $pathpe = ROOT.DS.'app'.DS."tmp".DS."Excel".DS;
+			  file_put_contents($pathpe.$newName, file_get_contents($val));	
+                          $results = $this->CakeS3->putObject($pathpe.$newName, $origpathS3.$newName, S3::ACL_PUBLIC_READ);
+			
                           $AmazonS3Image = $results['url'];
-
+			
                           #Resize
                           $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0,$homepathS3);
                           $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0, $cartpathS3);

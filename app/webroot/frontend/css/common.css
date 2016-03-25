@@ -100,7 +100,7 @@ width: 100%;}
 .searchshopList figure:hover .listhead{display:none;}
 
 /* Shop Details Start */
-.detailheader{background: #26ec78; position: fixed; width: 100%; z-index: 1000;}
+.detailheader{background: #006400; position: fixed; width: 100%; z-index: 1000;}
 .navbar-nav > li.menuDropdown{position:static;}
 .detailheader .navbar{margin:0;}
 .header.detailheader .dropdown-menu.shopMenuDropdown{padding:15px; min-width:200px; border-radius:4px!important; width: 100%;}

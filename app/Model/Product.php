@@ -17,10 +17,10 @@ class Product extends Model
             'className' => 'Category',
             'foreignKey' => 'sub_category_id',
             'dependent' => true),
-        'Brand' => array(
+        /*'Brand' => array(
             'className' => 'Brand',
             'foreignKey' => 'brand_id',
-            'dependent' => true));
+            'dependent' => true)*/);
     public $hasMany = array(
         'ProductDetail' => array('className' => 'ProductDetail',
             'foreignKey' => 'product_id',

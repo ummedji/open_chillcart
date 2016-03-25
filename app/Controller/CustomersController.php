@@ -31,16 +31,14 @@ class CustomersController extends AppController
      * Admin View Particular Customer Detail
      * @return void
      */
-    public function admin_customerIndex()
+    public function admin_customerIndex($id = null)
     {
-        $ids = $this->params['pass'];
-        $id = $ids[0];
         if ($id == null) {
             $this->redirect(array('controller' => 'Customers', 'action' => 'index'));
         } else {
             $addressbook_list = $this->CustomerAddressBook->find('all', array(
                 'conditions' => array('CustomerAddressBook.customer_id' => $id)));
-            $this->set("addressbook_list", $addressbook_list);
+            $this->set(compact('addressbook_list'));
         }
     }
 
@@ -356,7 +354,7 @@ class CustomersController extends AppController
     {
 
         $title = $this->request->data['title'];
-        $ids = ($this->request->data['id']) ? $this->request->data['id'] : 0;
+        $ids = (isset($this->request->data['id'])) ? $this->request->data['id'] : 0;
 
         if (!empty($title)) {
             $address_check = $this->CustomerAddressBook->find('first', array(
@@ -415,29 +413,7 @@ class CustomersController extends AppController
                     array('class' => 'alert alert-success'));
                 $this->redirect(array('controller' => 'Customers', 'action' => 'myaccount'));
             }
-
         }
-        /*$ids                 = $this->Auth->User();
-        $getStateData        = $this->User->findById($ids['id']);
-        $customer_id         = $getStateData['Customer']['id'];
-        if (!empty($this->request->data['CustomerAddressBook']['address_title'])) {
-            $address_check   = $this->CustomerAddressBook->find('all',array('conditions'=>array(
-                                            'CustomerAddressBook.address_title'=>
-                                            trim($this->request->data['CustomerAddressBook']['address_title']),
-                                            'OR'=>array('CustomerAddressBook.customer_id'=>$customer_id))
-                                            ));
-            if(!empty($address_check)) {
-                 $this->Session->setFlash('<p>'.__('Address Book Already Exists', true).'</p>', 'default',
-                                              array('class' => 'alert alert-danger'));
-                 $this->redirect(array('controller' => 'Customers','action' => 'myaccount'));
-            } else {
-                 $this->request->data['CustomerAddressBook']['customer_id'] =  $customer_id ;
-                 $this->CustomerAddressBook->save($this->request->data['CustomerAddressBook']);
-                 $this->Session->setFlash('<p>'.__('Your CustomerAddressBook has been saved', true).'</p>', 'default',
-                                              array('class' => 'alert alert-success'));
-                 $this->redirect(array('controller' => 'Customers','action' => 'myaccount'));
-            }
-        }*/
     }
 
     /**
@@ -660,9 +636,7 @@ class CustomersController extends AppController
     public function customer_addressbookStatus($id = null)
     {
         $id = $this->request->data['id'];
-
         $authuser = $this->Auth->user();
-
         if ((!empty($id)) && (!empty($authuser))) {
             $Status = $this->CustomerAddressBook->find('first', array(
                             'conditions' => array('CustomerAddressBook.id' => $id,
@@ -686,7 +660,6 @@ class CustomersController extends AppController
                 $file = fopen($filePath,"a+");
                 fwrite($file, PHP_EOL.'Address---->'.$Status.PHP_EOL. 'CustomerAuth--------->'.$Auth.PHP_EOL);
                 fclose($file);
-
             }
         } else {
             echo "sorry unable change your status";
@@ -742,18 +715,16 @@ class CustomersController extends AppController
 
     public function customer_passchecking()
     {
-        $pass = $this->request->data['pass'];
-        $user_detail = $this->User->findById($this->Auth->User('id'));
-        $old_password = $user_detail['User']['password'];
+        $pass           = $this->request->data['pass'];
+        $user_detail    = $this->User->findById($this->Auth->User('id'));
+        $old_password   = $user_detail['User']['password'];
         $check_password = $this->Auth->password($pass);
-        if ($check_password == $old_password) {
+        if($check_password == $old_password ){
             echo "sucess";
-            exit();
         } else {
             echo "failed";
-            exit();
         }
-
+        exit();
     }
 
 }
