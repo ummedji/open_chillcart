@@ -85,15 +85,11 @@ $(document).ready(function(){
 	var cartheiMob = $(window).height() - ( $(".mobile_cart").outerHeight() );
 	//var cartheiMob = $(window).height() ;
 
-	if( $(window).width() > 767 ) { $(".cart-items").css("height",carthei); }
-	else{ 
-			$(".cart-items").css({"height":cartheiMob}); 
-		} 
-
-
-	
-
-	//alert(carthei);
+	if( $(window).width() > 767 ) {
+		$(".cart-items").css("height",carthei);
+	} else{ 
+		$(".cart-items").css({"height":cartheiMob}); 
+	}
 
 	/* add note scirpt */
 
@@ -101,10 +97,7 @@ $(document).ready(function(){
 		$(this).next(".edit-special-instructions").removeClass('hide');
 	});
 
-
-
 	/* Cancel note scirpt */
-
 	$(".cancelinst").click(function(){
 		$(this).parent().addClass('hide');
 	});
@@ -113,10 +106,6 @@ $(document).ready(function(){
 		$(".category_mobile").toggleClass('open');
 	});
 
-
-	
- 
-	
 	//$(".cart-items").click(function(){
 	var windowHeight = $(window).height();
 	
@@ -155,8 +144,6 @@ $(document).ready(function(){
 		
     });
 
-
-
    	$('.intnumber').keypress(function(event) {
     
     	var key = window.event ? event.keyCode : event.which;
@@ -192,7 +179,6 @@ function locationList() {
 		$("#location").html(response);
 	});
 }
-
 
 function productDetails(id) {
 	$.post(rp+'searches/productdetails',{'id':id}, function(response) {
@@ -284,9 +270,6 @@ function description(id) {
 }
 
 function cart() {
-
-	//alert('RR');
-	
 	$.post(rp+'searches/cart',{}, function(response) {
 		var data = response.split("||@@||");
 
@@ -359,7 +342,6 @@ function changeLocation () {
    		return false;
    	}
 }
-
 
 function citiesList() {
 	var id = $('#CustomerAddressBookStateId').val();
@@ -468,9 +450,6 @@ function minOrderStore () {
 function cancelOrder(id) {
 	$('#OrderId').val(id);
 }
-
-
-
 
 $(document).ready(function(){
 
@@ -611,5 +590,32 @@ function productSearch(event) {
 	$('.error').hide();
 	if (event.which == 13 || event.keyCode == 13) {
 		searchProducts();
+	}
+}
+
+
+function changeCustomerEmail() {
+
+	var CustomerCustomerEmail = $.trim($("#CustomerCustomerEmail").val());
+	$('#userMailError').html('');
+
+	if(CustomerCustomerEmail == ''){
+        
+		$("#userMailError").html("Please enter email");
+		$("#CustomerCustomerEmail").focus();
+		return false;
+	} else if(!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(CustomerCustomerEmail))){
+
+    	$('#userMailError').html('Please enter the valid email');
+    	$('#CustomerCustomerEmail').focus();
+    	return false;
+
+    } else {
+	    var line = 'Are you sure want to change your email if continue your current session will be signout automatically ?';
+	    if (confirm(line)) {
+	        //$('#CustomerChangeCustomerEmailForm').submit();
+	    } else {
+	        return false;
+	    }
 	}
 }

@@ -328,9 +328,8 @@ class UsersController extends AppController {
 			exit();
         }
 
-       	if (!empty($this->request->data['Customer']['customer_email'])) {
-          	//$user  = $this->User->findByUsernameAndRoleId($this->request->data['Customer']['customer_email'],4); 
-
+       	if (!empty($this->request->data['Customer']['customer_email']) && !empty($this->request->data['Customer']['customer_phone']) && !empty($this->request->data['Customer']['first_name']) && !empty($this->request->data['Customer']['last_name']) && !empty($this->request->data['User']['password']) && !empty($this->request->data['User']['confir_password']) && ($this->request->data['User']['password'] == $this->request->data['User']['confir_password'])) {
+       		
           	$user = $this->User->find('first', array(
                       'conditions' => array('User.username' => trim($this->request->data['Customer']['customer_email']),
                                              'User.role_id' => 4,
@@ -375,7 +374,7 @@ class UsersController extends AppController {
 		        $email->subject($regsubject);
 		        $email->template('register');
 		        $email->emailFormat('html');
-		        $email->viewVars(array('mailContent' => $mailContent,'source'=>$source));
+		        $email->viewVars(array('mailContent' => $mailContent,'source'=>$source,'storename' => $store_name));
 		        $email->send();
              	
 				//Signup Sms
@@ -667,7 +666,7 @@ class UsersController extends AppController {
 	        $email->subject($regsubject);
 	        $email->template('register');
 	        $email->emailFormat('html');
-	        $email->viewVars(array('mailContent' => $mailContent,'source'=>$source));
+	        $email->viewVars(array('mailContent' => $mailContent,'source'=>$source, 'storename' => $store_name));
 	        $email->send();
 
 	        //Mailchimp Process

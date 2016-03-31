@@ -46,13 +46,15 @@ class CheckoutsController extends AppController
     public function index()
     {
 
+        $minOrderCheck = $this->storeMinOrderCheck();
+
         $this->layout = 'frontend';
         $shopCartDetails = $this->ShoppingCart->find('all', array(
                                 'conditions' => array('ShoppingCart.session_id' => $this->SessionId,
                                                     'ShoppingCart.order_id' => 0),
                                 'order' => array('ShoppingCart.store_id'),
                                 'group' => 'ShoppingCart.store_id'));
-        if (empty($shopCartDetails)) {
+        if (empty($shopCartDetails) || empty($minOrderCheck)) {
             $this->redirect(array('controller' => 'searches', 'action' => 'index'));
         }
 
@@ -135,6 +137,24 @@ class CheckoutsController extends AppController
         $stripeCards = $this->StripeCustomer->find('all', array(
             'conditions' => array('StripeCustomer.customer_id' => $this->Auth->User('Customer.id'))));
         $this->set(compact('addresses', 'shopCartDetails', 'storeSlots', 'optionDays', 'stripeCards'));
+    }
+
+    // Min Order Check
+    public function storeMinOrderCheck() {
+
+        $this->ShoppingCart->recursive = 2;
+        $storeProduct = $this->ShoppingCart->find('all',array(
+                                        'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
+                                        'fields' => array('store_id',
+                                                         'COUNT(ShoppingCart.store_id) AS productCount',
+                                                         'SUM(ShoppingCart.product_total_price) As productTotal'),
+                                        'group'=>array('ShoppingCart.store_id')));
+        foreach ($storeProduct as $key => $value) {
+            if ($value['Store']['minimum_order'] > $value[0]['productTotal']) {
+                return false;
+            }
+        }
+        return true;
     }
 
 

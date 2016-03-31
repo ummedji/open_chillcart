@@ -29,7 +29,7 @@
 		<link rel="stylesheet" href="<?php echo $this->webroot; ?>frontend/css/mobile.css" type="text/css" media="all">
 		<link rel="stylesheet" href="<?php echo $this->webroot; ?>frontend/css/mobile_1.css" type="text/css" media="all">		
 
-		<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,400italic" rel="stylesheet" type="text/css">
+		<link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,400italic" rel="stylesheet" type="text/css">
 
 		 <?php
 	
@@ -214,10 +214,9 @@
 		            "data[User][password]": {
 						required: "<?php echo __('Please enter password'); ?>",
 					}
-
 				}
 			});
-
+			
 			var changepasswordvalidator = jQuery("#CustomerChangePasswordForm").validate({
 				rules: {
 					"data[User][oldpassword]": {
@@ -664,16 +663,16 @@
 						$('#cart-sidebar').hide();
 					});
 				});
-			</script>
-	<?php
+			</script> <?php
 		}
-	if (!empty($siteSetting['Sitesetting']['google_analytics'])) {
-		echo '<script>'. $siteSetting['Sitesetting']['google_analytics']. '</script>';
-	}
 
-	if (!empty($siteSetting['Sitesetting']['woopra_analytics'])) {
-		echo '<script>'. $siteSetting['Sitesetting']['woopra_analytics']. '</script>';
-	} ?>
+		if (!empty($siteSetting['Sitesetting']['google_analytics'])) {
+			echo '<script>'. $siteSetting['Sitesetting']['google_analytics']. '</script>';
+		}
+
+		if (!empty($siteSetting['Sitesetting']['woopra_analytics'])) {
+			echo '<script>'. $siteSetting['Sitesetting']['woopra_analytics']. '</script>';
+		} ?>
 
 
 	</body>

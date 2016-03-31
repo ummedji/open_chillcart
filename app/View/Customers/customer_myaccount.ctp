@@ -141,7 +141,7 @@
 									</div>
 								</div>
 
-								<div class="form-group profile-box clearfix">
+								<!-- <div class="form-group profile-box clearfix">
 									<label class="control-label col-md-12 text-left"> <?php echo __('Email', true); ?></label>
 									<div class="col-md-12">
 										<div class="formLabel"><?php
@@ -159,7 +159,7 @@
 			                    											  'div' => false)); ?>
 										<span class="lableclose"><i class="fa fa-times-circle"></i></span>
 									</div>
-								</div>
+								</div> -->
 
 								<div class="form-group profile-box clearfix">
 									<label class="control-label col-md-12 text-left"> <?php echo __('Phone Number', true); ?></label>
@@ -250,6 +250,43 @@
 				</div>
 			</div>
 			<div class="myorderTab" id="password_change_content" style="display:none;">
+
+				<!-- User Email Change -->
+				<h1> <?php echo __('Change User Email', true); ?></h1><?php
+				echo $this->Form->create('Customer', array('class' => 'form-horizontal col-md-8',
+															'controller'=>'Customers',
+															'action'=>'changeCustomerEmail',
+															'onsubmit' => 'return changeCustomerEmail();' )); ?>
+					<div class="cardDetailHead"> <?php echo __('User Email', true); ?></div>
+					<div class="form-group margin-t-25">
+						<label class="control-label col-md-4"> <?php echo __('Current User Email', true); ?></label>
+						<div class="col-md-8"><?php
+							echo $this->request->data['User']['username'];  ?>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-4"> <?php echo __('New User Email', true); ?></label>
+						<div class="col-md-8"><?php
+							echo $this->Form->input('Customer.customer_email',
+								array('class'=>'form-control',
+									'autocomplete' => 'off',
+									'label' => false,
+									'value' => false,
+									'div' => false)); ?>
+									<label class="error" id="userMailError"></label>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-md-8 col-md-offset-4"> <?php
+							echo $this->Form->button(__('Update'), array('class'=>'btn btn-primary')); ?>
+						</div>					
+					</div> <?php 
+				echo $this->Form->end();?>
+
+
+
+				<!-- Change Password -->
 				<h1> <?php echo __('Password', true); ?></h1><?php
 				echo $this->Form->create('Customer', array('class' => 'form-horizontal col-md-8','controller'=>'Customers','action'=>'changePassword')); ?>
 					<div class="cardDetailHead"> <?php echo __('Change Password', true); ?></div>

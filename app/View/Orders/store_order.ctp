@@ -85,9 +85,38 @@
 												else:
 													?> <span class="tdnotassign"> <?php echo 'Not Yet Assigned'; ?> </span> <?php
 												endif; ?>
+
 											</td>
 
-											<td align="center" id="status<?php echo $value['Order']['id']; ?>" class="order_status"><span><?php echo $value['Order']['status']; ?></span></td>
+											<td align="center" class="order_status"><span><?php echo $value['Order']['status']; ?></span>
+
+											<span class="padding-b-5 col-sm-12">
+
+
+
+
+												<?php
+
+													echo 'Others'; ?>
+												</span>
+												<div class="col-sm-12">	<?php
+
+													echo $this->Form->input('orderStatus_'.$value['Order']['id'],
+														array('type'=>'select',
+															 'class'=>'form-control',
+															 'options'=> array($status),
+															 'onchange' => "orderStatus(".$value['Order']['id'].");",
+															 'label'=> false,
+															 'empty' => 'Select',
+															 'value' => $value['Order']['status'])); ?>
+												</div>
+
+												<div class="contain" id="reason_<?php echo $value['Order']['id']; ?>"></div> 
+
+
+
+
+											</td>
 
 											<td align="center"><?php
 												/*echo $this->Html->link('<i class="fa fa-search"></i>',

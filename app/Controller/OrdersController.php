@@ -172,16 +172,30 @@ class OrdersController extends AppController {
       if (empty($role) || $this->Auth->User('role_id') != 4) {
           $this->redirect(array('controller' => 'searches', 'action' => 'index'));
       }
+
+      if ($this->request->data['Order']['paymentMethod'] != 'cod') {
+          $stripeCard = $this->StripeCustomer->find('first', array(
+                              'conditions' => array(
+                                        'StripeCustomer.id' => $this->request->data['Order']['paymentMethod'],
+                                        'StripeCustomer.customer_id' => $this->Auth->User('Customer.id'))));
+          if (empty($stripeCard)) {
+              $this->redirect(array('controller' => 'searches', 'action' => 'index'));
+          }
+      }
       
       $today= date("m/d/Y");
       $lastsessionid  = $this->Session->read("preSessionid");
       $SessionId = (!empty($lastsessionid)) ? $lastsessionid : $this->Session->id();
 
+      if (!empty($this->request->data['Order']['delivery_id'])) {
+        $customerDetails = $this->CustomerAddressBook->find('first', array(
+                        'conditions' => array(
+                            'CustomerAddressBook.id' => $this->request->data['Order']['delivery_id'],
+                            'CustomerAddressBook.customer_id' => $this->Auth->User('Customer.id'))));
+      }
+      
       foreach ($this->request->data['Order']['timeSlot'] as $key => $value) {
 
-          if (!empty($this->request->data['Order']['delivery_id'])) {
-            $customerDetails = $this->CustomerAddressBook->findById($this->request->data['Order']['delivery_id']);
-          }
           $order['store_id']            = $value['store_id'];
           $order['customer_id']         = $this->Auth->User('Customer.id');
           $order['user_type']           = 'Customer';
@@ -208,8 +222,8 @@ class OrdersController extends AppController {
           }
           
           $sourceLatLong    = $this->Googlemap->getlatitudeandlongitude($storeAddress);
-          $source_lat       = (isset($sourceLatLong['lat'])) ? $sourceLatLong['lat'] : 0;
-          $source_long      = (isset($sourceLatLong['lat'])) ? $sourceLatLong['long'] : 0;
+          $source_lat       = (!empty($sourceLatLong['lat'])) ? $sourceLatLong['lat'] : 0;
+          $source_long      = (!empty($sourceLatLong['long'])) ? $sourceLatLong['long'] : 0;
           
           if ($order['order_type'] != 'Collection') {
 
@@ -230,8 +244,9 @@ class OrdersController extends AppController {
                             $this->siteSetting['Country']['country_name'];
 
             $destinationLatLong = $this->Googlemap->getlatitudeandlongitude($deliveryAddress);
-            $order['destination_latitude']    = (isset($destinationLatLong)) ? $destinationLatLong['lat'] : 0;
-            $order['destination_longitude']   = (isset($destinationLatLong)) ? $destinationLatLong['long'] : 0;
+
+            $order['destination_latitude']    = (!empty($destinationLatLong['lat'])) ? $destinationLatLong['lat'] : 0;
+            $order['destination_longitude']   = (!empty($destinationLatLong['long'])) ? $destinationLatLong['long'] : 0;
           } else {
 
             $order['customer_name']       = $this->Auth->User('Customer.first_name'). ' '.
@@ -496,7 +511,7 @@ class OrdersController extends AppController {
   public function store_order() {
     $this->layout = 'assets';
     $id           = $this->Auth->User();
-    $status = array('Delivered','Pending','Failed','Deleted');
+    $statuss = array('Delivered','Pending','Failed','Deleted');
 
     $location = $this->Location->find('list', array(
                                     'fields' => array('id', 'area_name')));
@@ -507,10 +522,11 @@ class OrdersController extends AppController {
     $orderList = $this->Order->find('all', array(
                         'conditions' => array('Order.store_id'=>$id['Store']['id'],
                                               'Order.order_type' => 'Delivery',
-                            'NOT' => array('Order.status' => $status)),
+                            'NOT' => array('Order.status' => $statuss)),
                         'order' => array('Order.id DESC')));
+    $status = array('Failed' => 'Failed', 'Delivered' => 'Delivered');
 
-    $this->set(compact('orderList', 'location', 'city'));
+    $this->set(compact('orderList', 'location', 'city', 'status'));
   }
 
 
