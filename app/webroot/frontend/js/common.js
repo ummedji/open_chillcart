@@ -541,6 +541,28 @@ function dealsProduct(storeId) {
 	);
 }
 
+
+
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1);
+        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+    }
+    return "";
+}
+
+
+
 function searchProducts() {
 	
 	$('.ui-loader').show();
@@ -549,6 +571,8 @@ function searchProducts() {
 	var searchKeyCount = $('#searchKey').val().length;
 	var noresult = 0;
 
+	//var searchProduct = getCookie("searchProduct");
+
 	if (searchKey == '') {
 		$(".searchMenuForm").after('<label class="error">Please enter product name</label>');
 		$('.ui-loader').hide();
@@ -556,32 +580,38 @@ function searchProducts() {
 		$(".searchMenuForm").after('<label class="error">Please enter minimum 3 letters of product name</label>');
 		$('.ui-loader').hide();
 	} else {
-		var countCategory = $('#countCategory').val();
-		count = 0;
-		$("#filtterByCategory").html('');
 
-		for (var i = 0; i < countCategory; i++) {
-			count++;
-			var getvalue = $('#check'+i).val();
-			var splits   = getvalue.split('_');
-			var id		 = splits[0];
-			var storeId  = splits[1];
+		//if (searchProduct != searchKey) {
 
-			$.post(rp+'searches/filtterByCategory', {'id': id,'storeId':storeId, 'count':count, 'searchKey' : searchKey}, function (response) {
-				if (response != '') {
-					noresult = 1;
-					$("#filtterByCategory").append(response);
-					//$('.ui-loader').hide();
-				}
-			});
-		}
+			//setCookie("searchProduct", searchKey, 365);
+			var countCategory = $('#countCategory').val();
+			count = 0;
+			$("#filtterByCategory").html('');
+
+			for (var i = 0; i < countCategory; i++) {
+				count++;
+				var getvalue = $('#check'+i).val();
+				var splits   = getvalue.split('_');
+				var id		 = splits[0];
+				var storeId  = splits[1];
+
+				$.post(rp+'searches/filtterByCategory', {'id': id,'storeId':storeId, 'count':count, 'searchKey' : searchKey}, function (response) {
+					if (response != '') {
+						noresult = 1;
+						$("#filtterByCategory").append(response);
+						//$('.ui-loader').hide();
+					}
+				});
+			}
+		//}
+
+		setTimeout(function(){	
+			if (noresult != 1) {
+				$('#messageError').show();
+			}
+		    $('.ui-loader').hide();
+		},1000);
 	}
-	setTimeout(function(){	
-		if (noresult != 1) {
-			$('#messageError').show();
-		}
-	    $('.ui-loader').hide();
-	},1000);
 	return false;
 }
 
@@ -613,9 +643,10 @@ function changeCustomerEmail() {
     } else {
 	    var line = 'Are you sure want to change your email if continue your current session will be signout automatically ?';
 	    if (confirm(line)) {
-	        //$('#CustomerChangeCustomerEmailForm').submit();
+	        $('#CustomerChangeCustomerEmailForm').submit();
 	    } else {
 	        return false;
 	    }
 	}
+	
 }

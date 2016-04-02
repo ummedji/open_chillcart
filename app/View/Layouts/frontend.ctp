@@ -32,6 +32,8 @@
 		<link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,400italic" rel="stylesheet" type="text/css">
 
 		 <?php
+
+		 //echo "<pre>"; print_r($loggedUser);
 	
 	if($this->request->params['controller'] == "searches" &&
 			$this->request->params['action'] == 'index') { ?>
@@ -82,10 +84,35 @@
     <script type="text/javascript" src="<?php echo $this->webroot; ?>frontend/js/owl.carousel.min.js"></script>
 
 
-    <script type="text/javascript">    	
+    <script type="text/javascript">
+    	var loggedUser = "<?php echo (isset($loggedUser['role_id'])) ? $loggedUser['role_id'] : ''; ?>";
+    	
+    	if (loggedUser == 4) {
+    		sessionCheck();
+    	}
+
 
 		var rp = "<?php echo $siteUrl.'/'; ?>";
 		var publishKey = "<?php echo $publishKey; ?>";
+
+
+		function sessionCheck() {
+
+			idleTimer = null;
+			idleState = false;
+			idleWait = 1800000;
+			$('*').bind('click mousemove keydown scroll', function () {
+				clearTimeout(idleTimer);
+				if (idleState == true) { 
+					//$("#logid").val("Not in Idle");						
+				}
+				idleState = false;
+				idleTimer = setTimeout(function () { 
+					window.location.href = rp+'customer/users/userLogout';
+					idleState = true; }, idleWait);
+			});
+			$("body").trigger("mousemove");
+		}
 		
 
 		$(window).load(function() {
@@ -114,31 +141,23 @@
 
 			$("#cart-sidebar").css("top", $(".header").height());
 
-			if( $(window).width() > 767 ) 
-				{
-					$(".leftsideBar").css({ "padding-top": navbar_height + 30 }); 
+			if( $(window).width() > 767 ) {
+				$(".leftsideBar").css({ "padding-top": navbar_height + 30 }); 
 
-					var leftsideBarHei = $(window).height() - ( $(".header").outerHeight() );
-					$(".leftsideBar_scroller").css("height",leftsideBarHei);
-				}
-			else 
-				{ 
-					$(".leftsideBar").css({ "padding-top": 0 });
-					
-					var leftsideBarHei = $(window).height() - ( 65 );
-					$(".leftsideBar_scroller").css("height",leftsideBarHei);
-				}
+				var leftsideBarHei = $(window).height() - ( $(".header").outerHeight() );
+				$(".leftsideBar_scroller").css("height",leftsideBarHei);
+			} else { 
+				$(".leftsideBar").css({ "padding-top": 0 });
+				
+				var leftsideBarHei = $(window).height() - ( 65 );
+				$(".leftsideBar_scroller").css("height",leftsideBarHei);
+			}
 
 			$(".rightSideBar").css({ "margin-top": navbar_height });
-
-
-
 		}
 
 
 		jQuery().ready(function() {
-
-
 			var signupvalidator = jQuery("#UserSignupForm").validate({
 				rules: {
 				   "data[Customer][first_name]": {

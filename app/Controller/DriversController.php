@@ -43,59 +43,61 @@ class DriversController extends AppController
 
     public function admin_add()
     {
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->Driver->set($this->request->data);
+            if($this->Driver->validates()) {
+                $driver  = $this->User->find('first', array(
+                                    'conditions' => array('User.username' => $this->request->data['User']['username'],
+                                            'NOT' => array('User.id' => $this->request->data['User']['id'],
+                                                            'Driver.status' => 'Delete'))));
+                if (!empty($driver)) {
+                    $this->Session->setFlash('<p>' . __('Driver Already Exists ', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                } else {
+                    $this->request->data['User']['role_id'] = 5;
+                    $this->request->data['User']['password'] = $this->Auth->password($this->request->data['User']['password']);
+                    if ($this->User->save($this->request->data['User'], null, null)) {
 
-        if (!empty($this->request->data['User']['username'])) {
+                        $this->request->data['Driver']['parent_id'] = $this->User->id;
+                        $this->request->data['Driver']['driver_phone'] = $this->request->data['User']['username'];
 
-            $driver  = $this->User->find('first', array(
-                                'conditions' => array('User.username' => $this->request->data['User']['username'],
-                                        'NOT' => array('User.id' => $this->request->data['User']['id'],
-                                                        'Driver.status' => 'Delete'))));
+                        $this->Driver->save($this->request->data['Driver'], null, null);
 
-            if (!empty($driver)) {
-                $this->Session->setFlash('<p>' . __('Driver Already Exists ', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
-            } else {
+                        $this->Session->setFlash('<p>' . __('Driver Successfully Created', true) . '</p>', 'default',
+                            array('class' => 'alert alert-success'));
 
-                $this->request->data['User']['role_id'] = 5;
-                $this->request->data['User']['password'] = $this->Auth->password($this->request->data['User']['password']);
-                if ($this->User->save($this->request->data['User'], null, null)) {
-
-                    $this->request->data['Driver']['parent_id'] = $this->User->id;
-                    $this->request->data['Driver']['driver_phone'] = $this->request->data['User']['username'];
-
-                    $this->Driver->save($this->request->data['Driver'], null, null);
-
-                    $this->Session->setFlash('<p>' . __('Driver Successfully Created', true) . '</p>', 'default',
-                        array('class' => 'alert alert-success'));
-
-                    $this->redirect(array('controller' => 'drivers', 'action' => 'index', 'admin' => true));
-
+                        $this->redirect(array('controller' => 'drivers', 'action' => 'index', 'admin' => true));
+                    }
                 }
+            } else {
+                $this->Driver->validationErrors;
             }
         }
     }
 
-
     public function admin_edit($id = null) {
 
-        if (!empty($this->request->data)) {
-
-            $driver_checking = $this->User->find('first', array(
-                            'conditions' => array('User.username' => trim($this->request->data['Driver']['driver_phone']),
-                                    'NOT' => array('User.id' => $this->request->data['User']['id'],
-                                                    'Driver.status' => 'Delete'))));
-            if (!empty($driver_checking)) {
-                $this->Session->setFlash('<p>' . __('Driver Already Exists ', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->Driver->set($this->request->data);
+            if($this->Driver->validates()) {
+                $driver_checking = $this->User->find('first', array(
+                                'conditions' => array('User.username' => trim($this->request->data['Driver']['driver_phone']),
+                                        'NOT' => array('User.id' => $this->request->data['User']['id'],
+                                                        'Driver.status' => 'Delete'))));
+                if (!empty($driver_checking)) {
+                    $this->Session->setFlash('<p>' . __('Driver Already Exists ', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                } else {
+                    $this->request->data['User']['Username'] = trim($this->request->data['Driver']['driver_phone']);
+                    $this->User->save($this->request->data['User'], null, null);
+                    $this->Driver->save($this->request->data['Driver'], null, null);
+                    $this->Session->setFlash('<p>' . __('Driver Successfully Created', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'drivers', 'action' => 'index', 'admin' => true));
+                }
             } else {
-                $this->request->data['User']['Username'] = trim($this->request->data['Driver']['driver_phone']);
-                $this->User->save($this->request->data['User'], null, null);
-                $this->Driver->save($this->request->data['Driver'], null, null);
-                $this->Session->setFlash('<p>' . __('Driver Successfully Created', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'drivers', 'action' => 'index', 'admin' => true));
+                $this->Driver->validationErrors;
             }
-
         }
         $driverDetails = $this->Driver->findById($id);
         $this->request->data = $driverDetails;
@@ -104,17 +106,18 @@ class DriversController extends AppController
 
     public function admin_addvehicle($id = null)
     {
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->Vehicle->set($this->request->data);
+            if($this->Vehicle->validates()) {
 
-        if (!empty($this->request->data['Vehicle']['vehicle_name'])) {
-
-            $this->request->data['Vehicle']['driver_id'] = $id;
-
-            if ($this->Vehicle->save($this->request->data['Vehicle'], null, null)) {
-
-                $this->Session->setFlash('<p>' . __('Driver Vehicle Added Successfully', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'drivers', 'action' => 'index', 'admin' => true));
-
+                $this->request->data['Vehicle']['driver_id'] = $id;
+                if ($this->Vehicle->save($this->request->data['Vehicle'], null, null)) {
+                    $this->Session->setFlash('<p>' . __('Driver Vehicle Added Successfully', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'drivers', 'action' => 'index', 'admin' => true));
+                }
+            } else {
+                $this->Vehicle->validationErrors;
             }
         }
     }
@@ -123,18 +126,26 @@ class DriversController extends AppController
     public function admin_editvehicle($id = null, $vehicleId = null)
     {
 
-        if (!empty($this->request->data['Vehicle']['vehicle_name'])) {
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->Vehicle->set($this->request->data);
+            if($this->Vehicle->validates()) {
 
-            if ($this->Vehicle->save($this->request->data['Vehicle'], null, null)) {
-
-                $this->Session->setFlash('<p>' . __('Driver Vehicle updated Successfully', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'drivers', 'action' => 'index', 'admin' => true));
-
+                if ($this->Vehicle->save($this->request->data['Vehicle'], null, null)) {
+                    $this->Session->setFlash('<p>' . __('Driver Vehicle updated Successfully', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'drivers', 'action' => 'index', 'admin' => true));
+                }
+            } else {
+                $this->Vehicle->validationErrors;
             }
         }
-
-        $this->request->data = $this->Vehicle->findById($vehicleId);
+        $driverVehicleDetails = $this->Vehicle->find('first', array(
+                                    'conditions' => array('Vehicle.id' => $vehicleId,
+                                                            'Vehicle.driver_id' => $id)));
+        if (empty($driverVehicleDetails)) {
+            $this->render('/Errors/error400');
+        }
+        $this->request->data = $driverVehicleDetails;
     }
 
     public function availDrivers($orderId) {
@@ -406,32 +417,33 @@ class DriversController extends AppController
     {
         $this->layout = 'assets';
         $id = $this->Auth->User();
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->Driver->set($this->request->data);
+            if($this->Driver->validates()) {
+                $driver  = $this->User->find('first', array(
+                                    'conditions' => array('User.username' => $this->request->data['User']['username'],
+                                         'NOT' => array('User.id' => $this->request->data['User']['id'],
+                                                        'Driver.status' => 'Delete'))));
+                if (!empty($driver)) {
+                    $this->Session->setFlash('<p>' . __('Driver Already Exists ', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                } else {
+                    $this->request->data['User']['role_id'] = 5;
+                    $this->request->data['User']['password'] = $this->Auth->password($this->request->data['User']['password']);
+                    if ($this->User->save($this->request->data['User'], null, null)) {
 
-        if (!empty($this->request->data['User']['username'])) {
+                        $this->request->data['Driver']['parent_id'] = $this->User->id;
+                        $this->request->data['Driver']['store_id'] = $id['Store']['id'];
+                        $this->request->data['Driver']['driver_phone'] = $this->request->data['User']['username'];
+                        $this->Driver->save($this->request->data['Driver'], null, null);
 
-            $driver  = $this->User->find('first', array(
-                                'conditions' => array('User.username' => $this->request->data['User']['username'],
-                                     'NOT' => array('User.id' => $this->request->data['User']['id'],
-                                                    'Driver.status' => 'Delete'))));
-
-            if (!empty($driver)) {
-                $this->Session->setFlash('<p>' . __('Driver Already Exists ', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
-            } else {
-
-                $this->request->data['User']['role_id'] = 5;
-                $this->request->data['User']['password'] = $this->Auth->password($this->request->data['User']['password']);
-                if ($this->User->save($this->request->data['User'], null, null)) {
-
-                    $this->request->data['Driver']['parent_id'] = $this->User->id;
-                    $this->request->data['Driver']['store_id'] = $id['Store']['id'];
-                    $this->request->data['Driver']['driver_phone'] = $this->request->data['User']['username'];
-                    $this->Driver->save($this->request->data['Driver'], null, null);
-
-                    $this->Session->setFlash('<p>' . __('Driver Successfully Created', true) . '</p>', 'default',
-                        array('class' => 'alert alert-success'));
-                    $this->redirect(array('controller' => 'drivers', 'action' => 'index', 'store' => true));
+                        $this->Session->setFlash('<p>' . __('Driver Successfully Created', true) . '</p>', 'default',
+                            array('class' => 'alert alert-success'));
+                        $this->redirect(array('controller' => 'drivers', 'action' => 'index', 'store' => true));
+                    }
                 }
+            } else {
+                $this->Vehicle->validationErrors;
             }
         }
     }
@@ -440,16 +452,17 @@ class DriversController extends AppController
     public function store_addvehicle($id = null)
     {
         $this->layout = 'assets';
-        if (!empty($this->request->data['Vehicle']['vehicle_name'])) {
-
-            $this->request->data['Vehicle']['driver_id'] = $id;
-
-            if ($this->Vehicle->save($this->request->data['Vehicle'], null, null)) {
-
-                $this->Session->setFlash('<p>' . __('Driver Vehicle Added Successfully', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'drivers', 'action' => 'index', 'store' => true));
-
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->Vehicle->set($this->request->data);
+            if($this->Vehicle->validates()) {
+                $this->request->data['Vehicle']['driver_id'] = $id;
+                if ($this->Vehicle->save($this->request->data['Vehicle'], null, null)) {
+                    $this->Session->setFlash('<p>' . __('Driver Vehicle Added Successfully', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'drivers', 'action' => 'index', 'store' => true));
+                }
+            } else {
+                $this->Vehicle->validationErrors;
             }
         }
     }
@@ -459,31 +472,33 @@ class DriversController extends AppController
     {
         $this->layout = 'assets';
         $store_id = $this->Auth->User('Store.id');
-        if (!empty($this->request->data)) {
-
-            $getDriverEditData = $this->User->find('first', array(
-                                      'conditions' => array('User.id' => $this->request->data['User']['id'],
-                                                        'Driver.store_id' => $store_id)));
-            if (empty($getDriverEditData)) {
-                $this->render('/Errors/error400');
-            }
-            
-            $driver_checking = $this->User->find('first', array(
-                            'conditions' => array('User.username' => trim($this->request->data['Driver']['driver_phone']),
-                                    'NOT' => array('User.id' => $this->request->data['User']['id'],
-                                                    'Driver.status' => 'Delete'))));
-            if (!empty($driver_checking)) {
-                $this->Session->setFlash('<p>' . __('Driver Already Exists ', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->Driver->set($this->request->data);
+            if($this->Driver->validates()) {
+                $getDriverEditData = $this->User->find('first', array(
+                                          'conditions' => array('User.id' => $this->request->data['User']['id'],
+                                                            'Driver.store_id' => $store_id)));
+                if (empty($getDriverEditData)) {
+                    $this->render('/Errors/error400');
+                }
+                $driver_checking = $this->User->find('first', array(
+                                'conditions' => array('User.username' => trim($this->request->data['Driver']['driver_phone']),
+                                        'NOT' => array('User.id' => $this->request->data['User']['id'],
+                                                        'Driver.status' => 'Delete'))));
+                if (!empty($driver_checking)) {
+                    $this->Session->setFlash('<p>' . __('Driver Already Exists ', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                } else {
+                    $this->request->data['User']['Username'] = trim($this->request->data['Driver']['driver_phone']);
+                    $this->User->save($this->request->data['User'], null, null);
+                    $this->Driver->save($this->request->data['Driver'], null, null);
+                    $this->Session->setFlash('<p>' . __('Driver Successfully updated', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'drivers', 'action' => 'index', 'store' => true));
+                }
             } else {
-                $this->request->data['User']['Username'] = trim($this->request->data['Driver']['driver_phone']);
-                $this->User->save($this->request->data['User'], null, null);
-                $this->Driver->save($this->request->data['Driver'], null, null);
-                $this->Session->setFlash('<p>' . __('Driver Successfully updated', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'drivers', 'action' => 'index', 'store' => true));
+                $this->Driver->validationErrors;
             }
-
         }
         $driverDetails = $this->Driver->find('first', array(
                                   'conditions' => array('Driver.id' => $id,
@@ -491,7 +506,6 @@ class DriversController extends AppController
         if (empty($driverDetails)) {
             $this->render('/Errors/error400');
         }
-
         $this->request->data = $driverDetails;
     }
 
@@ -499,16 +513,25 @@ class DriversController extends AppController
     public function store_editVehicle($id = null, $vehicleId = null)
     {
         $this->layout = 'assets';
-        if (!empty($this->request->data['Vehicle']['vehicle_name'])) {
-            if ($this->Vehicle->save($this->request->data['Vehicle'], null, null)) {
-
-                $this->Session->setFlash('<p>' . __('Driver Vehicle updated Successfully', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'drivers', 'action' => 'index', 'store' => true));
-
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->Vehicle->set($this->request->data);
+            if($this->Vehicle->validates()) {
+                if ($this->Vehicle->save($this->request->data['Vehicle'], null, null)) {
+                    $this->Session->setFlash('<p>' . __('Driver Vehicle updated Successfully', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'drivers', 'action' => 'index', 'store' => true));
+                }
+            } else {
+                $this->Vehicle->validationErrors;
             }
         }
-        $this->request->data = $this->Vehicle->findById($vehicleId);
+        $driverVehicleDetails = $this->Vehicle->find('first', array(
+                                    'conditions' => array('Vehicle.id' => $vehicleId,
+                                                            'Vehicle.driver_id' => $id)));
+        if (empty($driverVehicleDetails)) {
+            $this->render('/Errors/error400');
+        }
+        $this->request->data = $driverVehicleDetails;
     }
 
     public function store_availDriver($orderId)
@@ -561,10 +584,8 @@ class DriversController extends AppController
                         $availDrivers[$key]['Driver']['vehicle_name'] = $value['Vehicle']['vehicle_name'];
                         $availDrivers[$key]['Driver']['vehicle_model'] = $value['Vehicle']['vehicle_name'];
                     //}
-
                 }
             }
-
             $this->set(compact('orderId', 'availDrivers'));
         }
     }

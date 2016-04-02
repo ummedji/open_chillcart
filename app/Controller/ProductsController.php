@@ -49,116 +49,115 @@ class ProductsController extends AppController {
   //super admin add process
 	public function admin_add() {
 
-		if (!empty($this->request->data['Product']['product_name'])) {
+	  if ($this->request->is('post') || $this->request->is('put')) {
+      $this->Product->set($this->request->data);
+      if($this->Product->validates()) {
+          $store_id = $this->request->data['Product']['store_id'];
+          $Product_check = $this->Product->find('all', array(
+                    						'conditions'=>array('Product.product_name'=>
+                                                trim($this->request->data['Product']['product_name']),
+                                                'Product.store_id' => $store_id,
+                                      'NOT' => array('Product.status' => 3))));
 
-       		$store_id = $this->request->data['Product']['store_id'];
-            
-            $Product_check = $this->Product->find('all', array(
-                      						'conditions'=>array('Product.product_name'=>
-                                                  trim($this->request->data['Product']['product_name']),
-                                                  'Product.store_id' => $store_id,
-                                        'NOT' => array('Product.status' => 3))));
+          if (!empty($Product_check)) {
+                  $this->Session->setFlash('<p>'.__('Product already exists', true).'</p>', 'default', 
+                                                            array('class' => 'alert alert-danger'));
+          } else {
+              $this->request->data['Product']['store_id'] = $store_id;
+              $this->request->data['Product']['brand_id'] =  (isset($this->request->data['Product']['brand_id']) &&                                               $this->request->data['Product']['brand_id'] != '') ? 
+                                                              $this->request->data['Product']['brand_id'] : 0;
+              $this->request->data['Product']['sub_category_id'] =
+                                                    ($this->request->data['Product']['sub_category_id'] != '') ? 
+                                                    $this->request->data['Product']['sub_category_id'] : 0;
+              $this->request->data['Product']['status'] = 1;
 
-            if (!empty($Product_check)) {
+              $this->Product->save($this->request->data['Product'], null, null);
 
-                    $this->Session->setFlash('<p>'.__('Product already exists', true).'</p>', 'default', 
-                                                              array('class' => 'alert alert-danger'));
-            } else {
+              if($this->request->data['Product']['price_option'] == "single") {
 
-                $this->request->data['Product']['store_id'] = $store_id;
-                $this->request->data['Product']['brand_id'] =  (isset($this->request->data['Product']['brand_id']) &&                                               $this->request->data['Product']['brand_id'] != '') ? 
-                                                                $this->request->data['Product']['brand_id'] : 0;
-                $this->request->data['Product']['sub_category_id'] =
-                                                      ($this->request->data['Product']['sub_category_id'] != '') ? 
-                                                      $this->request->data['Product']['sub_category_id'] : 0;
-                $this->request->data['Product']['status'] = 1;
-
-                $this->Product->save($this->request->data['Product'], null, null);
-
-                if($this->request->data['Product']['price_option'] == "single") {
-
-                    $this->request->data['ProductDetail']['product_id']    = $this->Product->id;
-                    $this->request->data['ProductDetail']['sub_name']      = 
-                                          (!empty($this->request->data['ProductDetail']['sub_name'])) ?
-                                          $this->request->data['ProductDetail']['sub_name'] :
-                                          $this->request->data['Product']['product_name'] ;
-                  
-                    $this->ProductDetail->save($this->request->data['ProductDetail'],null,null);
-
-                } else {
-
-                  $productDetails = $this->request->data['ProductDetail'];
-                    foreach ($productDetails as $key => $value) {
-                      if (is_array($value)) {
-                          $value['product_id']    = $this->Product->id;
-                          $this->ProductDetail->save($value, null, null);
-                          $this->ProductDetail->id = '';
-                      }
-                    }
-                }
-
+                  $this->request->data['ProductDetail']['product_id']    = $this->Product->id;
+                  $this->request->data['ProductDetail']['sub_name']      = 
+                                        (!empty($this->request->data['ProductDetail']['sub_name'])) ?
+                                        $this->request->data['ProductDetail']['sub_name'] :
+                                        $this->request->data['Product']['product_name'] ;
                 
-                $root      = ROOT.DS.'app'.DS."tmp".DS."products".DS;
-                $origpath  = $root."original".DS;
-                $homepath  = $root."home".DS;
-                $cartpath  = $root."carts".DS;
-                $scrollimg = $root."scrollimg".DS;
-                $prod_det_path = $root."product_details".DS;
+                  $this->ProductDetail->save($this->request->data['ProductDetail'],null,null);
 
-                $origpathS3  = 'stores/products/original/';
-                $homepathS3  = 'stores/products/home/';
-                $cartpathS3  = 'stores/products/carts/';
-                $scrollimgS3 = 'stores/products/scrollimg/';
-                $prod_det_pathS3 = 'stores/products/product_details/';
-                
-                $allowed_ext = array('image/jpg', 'image/jpeg', 'image/png', 'image/gif');
+              } else {
 
-                $productimages = $this->request->data['ProductImage'];
-                foreach($productimages as $key => $value) {
-                  if (!empty($value['tmp_name'])) {
-                    $imagesizedata = getimagesize($value['tmp_name']);
-                    if ($imagesizedata) {
-
-                      if($value['name'] != "" && in_array($value['type'], $allowed_ext)) {
-
-                        $newName    = str_replace(" ","-", uniqid()  . '.' .$value['name']); 
-                        $targetdir = $origpath.DS;
-                          
-                        #Upload
-                        //$upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
-
-                        $result = $this->CakeS3->putObject($value['tmp_name'], $origpathS3.$newName, S3::ACL_PUBLIC_READ);
-                        $AmazonS3Image = $result['url'];
-
-                        #Resize
-                        $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0,$homepathS3);
-                        $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0, $cartpathS3);
-                        $this->Img->resampleGD($AmazonS3Image, $scrollimg, $newName, 67, 55, 1, 0, $scrollimgS3);
-                        $this->Img->resampleGD($AmazonS3Image, $prod_det_path, $newName, 1024, 768, 1, 0, $prod_det_pathS3);
-
-                        //unlink Images
-                        @unlink($homepath.$newName);
-                        @unlink($cartpath.$newName);
-                        @unlink($$scrollimg.$newName);
-                        @unlink($$prod_det_path.$newName);
-
-                        $product_images['product_id']  = $this->Product->id;
-                        $product_images['store_id']    = $store_id;
-                        $product_images['image']       = $value['name'];
-                        $product_images['image_alias'] = $newName;
-
-                        $this->ProductImage->save($product_images);
-                        $this->ProductImage->id = "";
-                    	}
+                $productDetails = $this->request->data['ProductDetail'];
+                  foreach ($productDetails as $key => $value) {
+                    if (is_array($value)) {
+                        $value['product_id']    = $this->Product->id;
+                        $this->ProductDetail->save($value, null, null);
+                        $this->ProductDetail->id = '';
                     }
                   }
+              }
+
+              $root      = ROOT.DS.'app'.DS."tmp".DS."products".DS;
+              $origpath  = $root."original".DS;
+              $homepath  = $root."home".DS;
+              $cartpath  = $root."carts".DS;
+              $scrollimg = $root."scrollimg".DS;
+              $prod_det_path = $root."product_details".DS;
+
+              $origpathS3  = 'stores/products/original/';
+              $homepathS3  = 'stores/products/home/';
+              $cartpathS3  = 'stores/products/carts/';
+              $scrollimgS3 = 'stores/products/scrollimg/';
+              $prod_det_pathS3 = 'stores/products/product_details/';
+              
+              $allowed_ext = array('image/jpg', 'image/jpeg', 'image/png', 'image/gif');
+
+              $productimages = $this->request->data['ProductImage'];
+              foreach($productimages as $key => $value) {
+                if (!empty($value['tmp_name'])) {
+                  $imagesizedata = getimagesize($value['tmp_name']);
+                  if ($imagesizedata) {
+
+                    if($value['name'] != "" && in_array($value['type'], $allowed_ext)) {
+
+                      $newName    = str_replace(" ","-", uniqid()  . '.' .$value['name']); 
+                      $targetdir = $origpath.DS;
+                        
+                      #Upload
+                      //$upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
+
+                      $result = $this->CakeS3->putObject($value['tmp_name'], $origpathS3.$newName, S3::ACL_PUBLIC_READ);
+                      $AmazonS3Image = $result['url'];
+
+                      #Resize
+                      $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0,$homepathS3);
+                      $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0, $cartpathS3);
+                      $this->Img->resampleGD($AmazonS3Image, $scrollimg, $newName, 67, 55, 1, 0, $scrollimgS3);
+                      $this->Img->resampleGD($AmazonS3Image, $prod_det_path, $newName, 1024, 768, 1, 0, $prod_det_pathS3);
+
+                      //unlink Images
+                      @unlink($homepath.$newName);
+                      @unlink($cartpath.$newName);
+                      @unlink($$scrollimg.$newName);
+                      @unlink($$prod_det_path.$newName);
+
+                      $product_images['product_id']  = $this->Product->id;
+                      $product_images['store_id']    = $store_id;
+                      $product_images['image']       = $value['name'];
+                      $product_images['image_alias'] = $newName;
+
+                      $this->ProductImage->save($product_images);
+                      $this->ProductImage->id = "";
+                  	}
+                  }
                 }
-                $this->Session->setFlash('<p>'.__('Your Product has been saved', true).'</p>', 'default', 
-                                                  array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'Products','action' => 'index', $store_id));
-            }
-            
-       }
+              }
+              $this->Session->setFlash('<p>'.__('Your Product has been saved', true).'</p>', 'default', 
+                                                array('class' => 'alert alert-success'));
+              $this->redirect(array('controller' => 'Products','action' => 'index', $store_id));
+          }
+      } else {
+          $this->Product->validationErrors;
+      }
+    }
 
 		$brand_list     = $this->Brand->find('list',array(
                                 'conditions'=>array('Brand.status'=>1),
@@ -181,121 +180,126 @@ class ProductsController extends AppController {
      */
     public function admin_edit($id = null) {
 
-        if(!empty($this->request->data['Product']['product_name'])) {
+        if ($this->request->is('post') || $this->request->is('put')) {
+          $this->Product->set($this->request->data);
+          if($this->Product->validates()) {
 
-        	$store_id = $this->request->data['Product']['store_id'];
-          $product_check = $this->Product->find('first', array(
-                                      'conditions'=>array(
-                                      'Product.product_name'=>trim($this->request->data['Product']['product_name']),
-                                      'Product.store_id' => $store_id,
-                                      'NOT' => array('Product.id'=>$this->request->data['Product']['id'],
-                                                      'Product.status' => 3))));
+          	$store_id = $this->request->data['Product']['store_id'];
+            $product_check = $this->Product->find('first', array(
+                                        'conditions'=>array(
+                                        'Product.product_name'=>trim($this->request->data['Product']['product_name']),
+                                        'Product.store_id' => $store_id,
+                                        'NOT' => array('Product.id'=>$this->request->data['Product']['id'],
+                                                        'Product.status' => 3))));
 
-          if(!empty($product_check)) {
-                $this->Session->setFlash('<p>'.__('Product already exists', true).'</p>', 'default', 
-                                                            array('class' => 'alert alert-danger'));
-          } else {
+            if(!empty($product_check)) {
+                  $this->Session->setFlash('<p>'.__('Product already exists', true).'</p>', 'default', 
+                                                              array('class' => 'alert alert-danger'));
+            } else {
 
-              $this->request->data['Product']['brand_id'] =  (isset($this->request->data['Product']['brand_id']) &&
-                                                              $this->request->data['Product']['brand_id'] != '') ? 
-                                                                $this->request->data['Product']['brand_id'] : 0;
-              $this->request->data['Product']['sub_category_id'] =  
-                                                            ($this->request->data['Product']['sub_category_id'] != '') ? 
-                                                            $this->request->data['Product']['sub_category_id'] : 0;
-              $this->Product->save($this->request->data['Product'], null, null);
-              $this->ProductDetail->deleteAll(array('product_id' => $this->Product->id));
+                $this->request->data['Product']['brand_id'] =  (isset($this->request->data['Product']['brand_id']) &&
+                                                                $this->request->data['Product']['brand_id'] != '') ? 
+                                                                  $this->request->data['Product']['brand_id'] : 0;
+                $this->request->data['Product']['sub_category_id'] =  
+                                                              ($this->request->data['Product']['sub_category_id'] != '') ? 
+                                                              $this->request->data['Product']['sub_category_id'] : 0;
+                $this->Product->save($this->request->data['Product'], null, null);
+                $this->ProductDetail->deleteAll(array('product_id' => $this->Product->id));
 
-              if($this->request->data['Product']['price_option'] == "single") {
+                if($this->request->data['Product']['price_option'] == "single") {
 
-                  $this->request->data['ProductDetail']['product_id'] = $this->Product->id;
-                  $this->request->data['ProductDetail']['sub_name']   = 
-                                                        (!empty($this->request->data['ProductDetail']['sub_name'])) ?
-                                                                $this->request->data['ProductDetail']['sub_name'] :
-                                                                $this->request->data['Product']['product_name'] ;
-                  $this->ProductDetail->save($this->request->data['ProductDetail'],null,null);
+                    $this->request->data['ProductDetail']['product_id'] = $this->Product->id;
+                    $this->request->data['ProductDetail']['sub_name']   = 
+                                                          (!empty($this->request->data['ProductDetail']['sub_name'])) ?
+                                                                  $this->request->data['ProductDetail']['sub_name'] :
+                                                                  $this->request->data['Product']['product_name'] ;
+                    $this->ProductDetail->save($this->request->data['ProductDetail'],null,null);
 
-              } else {
+                } else {
 
-                $productDetails = $this->request->data['ProductDetail'];
-                  foreach ($productDetails as $key => $value) {
-                    if (is_array($value)) {
-                        $value['product_id']    = $this->Product->id;
-                        $this->ProductDetail->save($value, null, null);
-                        $this->ProductDetail->id = '';
+                  $productDetails = $this->request->data['ProductDetail'];
+                    foreach ($productDetails as $key => $value) {
+                      if (is_array($value)) {
+                          $value['product_id']    = $this->Product->id;
+                          $this->ProductDetail->save($value, null, null);
+                          $this->ProductDetail->id = '';
+                      }
                     }
-                  }
-              }
-              
-              $root      = ROOT.DS.'app'.DS."tmp".DS."products".DS;
-              $origpath  = $root."original".DS;
-              $homepath  = $root."home".DS;
-              $cartpath  = $root."carts".DS;
-              $scrollimg = $root."scrollimg".DS;
-              $prod_det_path = $root."product_details".DS;
+                }
+                
+                $root      = ROOT.DS.'app'.DS."tmp".DS."products".DS;
+                $origpath  = $root."original".DS;
+                $homepath  = $root."home".DS;
+                $cartpath  = $root."carts".DS;
+                $scrollimg = $root."scrollimg".DS;
+                $prod_det_path = $root."product_details".DS;
 
-              $origpathS3  = 'stores/products/original/';
-              $homepathS3  = 'stores/products/home/';
-              $cartpathS3  = 'stores/products/carts/';
-              $scrollimgS3 = 'stores/products/scrollimg/';
-              $prod_det_pathS3 = 'stores/products/product_details/';
+                $origpathS3  = 'stores/products/original/';
+                $homepathS3  = 'stores/products/home/';
+                $cartpathS3  = 'stores/products/carts/';
+                $scrollimgS3 = 'stores/products/scrollimg/';
+                $prod_det_pathS3 = 'stores/products/product_details/';
 
-              $allowed_ext = array('image/jpg', 'image/jpeg', 'image/png', 'image/gif');
+                $allowed_ext = array('image/jpg', 'image/jpeg', 'image/png', 'image/gif');
 
-              $productimages = $this->request->data['ProductImage'];
-              foreach($productimages as $key => $value) {
-                if (!empty($value['tmp_name'])) {
-                  $imagesizedata = getimagesize($value['tmp_name']);
-                  if ($imagesizedata) {
+                $productimages = $this->request->data['ProductImage'];
+                foreach($productimages as $key => $value) {
+                  if (!empty($value['tmp_name'])) {
+                    $imagesizedata = getimagesize($value['tmp_name']);
+                    if ($imagesizedata) {
 
-                    if($value['name'] != "" && in_array($value['type'], $allowed_ext)) {
+                      if($value['name'] != "" && in_array($value['type'], $allowed_ext)) {
 
-                        $newName    = str_replace(" ","-", uniqid()  . '.' .$value['name']); 
-                        $targetdir = $origpath.DS;
-
-
-                        //$this->CakeS3->putObject($cartpath.$newName, $homepath.$newName, S3::ACL_PUBLIC_READ);
-
-                        /*$result = $this->CakeS3->putObject($value['tmp_name'], $cartpath.$newName, S3::ACL_PUBLIC_READ);
-                        $result = $this->CakeS3->putObject($value['tmp_name'], $scrollimg.$newName, S3::ACL_PUBLIC_READ);
-                        $result = $this->CakeS3->putObject($value['tmp_name'], $prod_det_path.$newName, S3::ACL_PUBLIC_READ);*/
-                        
-                        #Upload
-                        //$upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
+                          $newName    = str_replace(" ","-", uniqid()  . '.' .$value['name']); 
+                          $targetdir = $origpath.DS;
 
 
-                        $result = $this->CakeS3->putObject($value['tmp_name'], $origpathS3.$newName, S3::ACL_PUBLIC_READ);
-                        $AmazonS3Image = $result['url'];
+                          //$this->CakeS3->putObject($cartpath.$newName, $homepath.$newName, S3::ACL_PUBLIC_READ);
 
-                        #Resize
-                        $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0,$homepathS3);
-                        $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0, $cartpathS3);
-                        $this->Img->resampleGD($AmazonS3Image, $scrollimg, $newName, 67, 55, 1, 0, $scrollimgS3);
-                        $this->Img->resampleGD($AmazonS3Image, $prod_det_path, $newName, 1024, 768, 1, 0, $prod_det_pathS3);
+                          /*$result = $this->CakeS3->putObject($value['tmp_name'], $cartpath.$newName, S3::ACL_PUBLIC_READ);
+                          $result = $this->CakeS3->putObject($value['tmp_name'], $scrollimg.$newName, S3::ACL_PUBLIC_READ);
+                          $result = $this->CakeS3->putObject($value['tmp_name'], $prod_det_path.$newName, S3::ACL_PUBLIC_READ);*/
+                          
+                          #Upload
+                          //$upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
 
-                        //unlink Images
-                        @unlink($homepath.$newName);
-                        @unlink($cartpath.$newName);
-                        @unlink($scrollimg.$newName);
-                        @unlink($prod_det_path.$newName);
 
-                        $product_images['product_id']  = $this->Product->id;
-                        $product_images['store_id']    = $store_id;
-                        $product_images['image']       = $value['name'];
-                        $product_images['image_alias'] = $newName;
+                          $result = $this->CakeS3->putObject($value['tmp_name'], $origpathS3.$newName, S3::ACL_PUBLIC_READ);
+                          $AmazonS3Image = $result['url'];
 
-                        $this->ProductImage->save($product_images);
-                        $this->ProductImage->id = "";
+                          #Resize
+                          $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0,$homepathS3);
+                          $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0, $cartpathS3);
+                          $this->Img->resampleGD($AmazonS3Image, $scrollimg, $newName, 67, 55, 1, 0, $scrollimgS3);
+                          $this->Img->resampleGD($AmazonS3Image, $prod_det_path, $newName, 1024, 768, 1, 0, $prod_det_pathS3);
 
+                          //unlink Images
+                          @unlink($homepath.$newName);
+                          @unlink($cartpath.$newName);
+                          @unlink($scrollimg.$newName);
+                          @unlink($prod_det_path.$newName);
+
+                          $product_images['product_id']  = $this->Product->id;
+                          $product_images['store_id']    = $store_id;
+                          $product_images['image']       = $value['name'];
+                          $product_images['image_alias'] = $newName;
+
+                          $this->ProductImage->save($product_images);
+                          $this->ProductImage->id = "";
+
+                      }
                     }
                   }
                 }
-              }
 
-              //exit();
+                //exit();
 
-              $this->Session->setFlash('<p>'.__('Your Product has been saved', true).'</p>', 'default', 
-                                                              array('class' => 'alert alert-success'));
-              $this->redirect(array('controller' => 'Products','action' => 'index', $store_id));
+                $this->Session->setFlash('<p>'.__('Your Product has been saved', true).'</p>', 'default', 
+                                                                array('class' => 'alert alert-success'));
+                $this->redirect(array('controller' => 'Products','action' => 'index', $store_id));
+            }
+          } else {
+            $this->Product->validationErrors;
           }
         }
          
@@ -349,7 +353,9 @@ class ProductsController extends AppController {
       $this->layout = 'assets';
       $stores_id    = $this->Auth->User();
       $store_id     = $stores_id['Store']['id'];
-      if (!empty($this->request->data['Product']['product_name'])) {              
+      if ($this->request->is('post') || $this->request->is('put')) {
+          $this->Product->set($this->request->data);
+          if($this->Product->validates()) {
               $Product_check = $this->Product->find('all', array(
                           'conditions'=>array('Product.product_name'=>trim($this->request->data['Product']['product_name']),
                                               'Product.store_id' => $store_id,
@@ -457,7 +463,10 @@ class ProductsController extends AppController {
                   $this->redirect(array('controller' => 'Products','action' => 'index'));
               }
               
-         }
+          } else {
+            $this->Product->validationErrors;
+          }
+      }
 
       $brand_list     = $this->Brand->find('list', array(
                                           'conditions'=>array('Brand.status'=>1),
@@ -474,113 +483,118 @@ class ProductsController extends AppController {
      public function store_edit($id = null) {
         $this->layout = 'assets';
         $store_id     = $this->Auth->User('Store.id');          
-        if(!empty($this->request->data['Product']['product_name'])) {
+        if ($this->request->is('post') || $this->request->is('put')) {
+          $this->Product->set($this->request->data);
+          if($this->Product->validates()) {
 
-          $getProductEditData = $this->Product->find('first', array(
-                                      'conditions' => array('Product.id' => $this->request->data['Product']['id'],
-                                                        'Product.store_id' => $store_id)));
-          if (empty($getProductEditData)) {
-              $this->render('/Errors/error400');
-          }
+            $getProductEditData = $this->Product->find('first', array(
+                                        'conditions' => array('Product.id' => $this->request->data['Product']['id'],
+                                                          'Product.store_id' => $store_id)));
+            if (empty($getProductEditData)) {
+                $this->render('/Errors/error400');
+            }
 
-          $product_check = $this->Product->find('first', array(
-                                      'conditions'=>array(
-                                      'Product.product_name'=>trim($this->request->data['Product']['product_name']),
-                                      'Product.store_id' => $store_id,
-                                      'NOT' => array('Product.id'=>$this->request->data['Product']['id'],
-                                                      'Product.status' => 3))));
-          if(!empty($product_check)) {
-                $this->Session->setFlash('<p>'.__('Product already exists', true).'</p>', 'default', 
-                                                            array('class' => 'alert alert-danger'));
-          } else {
-              $this->request->data['Product']['brand_id'] = (isset($this->request->data['Product']['brand_id']) && 
-                                                              $this->request->data['Product']['brand_id'] != '') ? 
-                                                                $this->request->data['Product']['brand_id'] : 0;
-              $this->request->data['Product']['sub_category_id'] =  
-                                                            ($this->request->data['Product']['sub_category_id'] != '') ? 
-                                                                $this->request->data['Product']['sub_category_id'] : 0;
-              $this->Product->save($this->request->data['Product'], null, null);
-              $this->ProductDetail->deleteAll(array('product_id' => $this->Product->id));
+            $product_check = $this->Product->find('first', array(
+                                        'conditions'=>array(
+                                        'Product.product_name'=>trim($this->request->data['Product']['product_name']),
+                                        'Product.store_id' => $store_id,
+                                        'NOT' => array('Product.id'=>$this->request->data['Product']['id'],
+                                                        'Product.status' => 3))));
+            if(!empty($product_check)) {
+                  $this->Session->setFlash('<p>'.__('Product already exists', true).'</p>', 'default', 
+                                                              array('class' => 'alert alert-danger'));
+            } else {
+                $this->request->data['Product']['brand_id'] = (isset($this->request->data['Product']['brand_id']) && 
+                                                                $this->request->data['Product']['brand_id'] != '') ? 
+                                                                  $this->request->data['Product']['brand_id'] : 0;
+                $this->request->data['Product']['sub_category_id'] =  
+                                                              ($this->request->data['Product']['sub_category_id'] != '') ? 
+                                                                  $this->request->data['Product']['sub_category_id'] : 0;
+                $this->Product->save($this->request->data['Product'], null, null);
+                $this->ProductDetail->deleteAll(array('product_id' => $this->Product->id));
 
-              if($this->request->data['Product']['price_option'] == "single") {
+                if($this->request->data['Product']['price_option'] == "single") {
 
-                  $this->request->data['ProductDetail']['product_id']    = $this->Product->id;
-                  $this->request->data['ProductDetail']['sub_name']      = (!empty($this->request->data['ProductDetail']['sub_name'])) ?
-                                                                              $this->request->data['ProductDetail']['sub_name'] :
-                                                                              $this->request->data['Product']['product_name'] ;
-                  $this->ProductDetail->save($this->request->data['ProductDetail'],null,null);
+                    $this->request->data['ProductDetail']['product_id']    = $this->Product->id;
+                    $this->request->data['ProductDetail']['sub_name']      = (!empty($this->request->data['ProductDetail']['sub_name'])) ?
+                                                                                $this->request->data['ProductDetail']['sub_name'] :
+                                                                                $this->request->data['Product']['product_name'] ;
+                    $this->ProductDetail->save($this->request->data['ProductDetail'],null,null);
 
-              } else {
+                } else {
 
-                $productDetails = $this->request->data['ProductDetail'];
-                  foreach ($productDetails as $key => $value) {
-                    if (is_array($value)) {
-                        $value['product_id']    = $this->Product->id;
-                        $this->ProductDetail->save($value, null, null);
-                        $this->ProductDetail->id = '';
+                  $productDetails = $this->request->data['ProductDetail'];
+                    foreach ($productDetails as $key => $value) {
+                      if (is_array($value)) {
+                          $value['product_id']    = $this->Product->id;
+                          $this->ProductDetail->save($value, null, null);
+                          $this->ProductDetail->id = '';
+                      }
                     }
-                  }
-              }
+                }
 
-              $root      = ROOT.DS.'app'.DS."tmp".DS."products".DS;
-              $origpath  = $root."original".DS;
-              $homepath  = $root."home".DS;
-              $cartpath  = $root."carts".DS;
-              $scrollimg = $root."scrollimg".DS;
-              $prod_det_path = $root."product_details".DS;
+                $root      = ROOT.DS.'app'.DS."tmp".DS."products".DS;
+                $origpath  = $root."original".DS;
+                $homepath  = $root."home".DS;
+                $cartpath  = $root."carts".DS;
+                $scrollimg = $root."scrollimg".DS;
+                $prod_det_path = $root."product_details".DS;
 
-              $origpathS3  = 'stores/products/original/';
-              $homepathS3  = 'stores/products/home/';
-              $cartpathS3  = 'stores/products/carts/';
-              $scrollimgS3 = 'stores/products/scrollimg/';
-              $prod_det_pathS3 = 'stores/products/product_details/';
-              
-              $allowed_ext = array('image/jpg', 'image/jpeg', 'image/png', 'image/gif');
+                $origpathS3  = 'stores/products/original/';
+                $homepathS3  = 'stores/products/home/';
+                $cartpathS3  = 'stores/products/carts/';
+                $scrollimgS3 = 'stores/products/scrollimg/';
+                $prod_det_pathS3 = 'stores/products/product_details/';
+                
+                $allowed_ext = array('image/jpg', 'image/jpeg', 'image/png', 'image/gif');
 
-              $productimages = $this->request->data['ProductImage'];
-              foreach($productimages as $key => $value) {
-                if (!empty($value['tmp_name'])) {
-                  $imagesizedata = getimagesize($value['tmp_name']);
-                  if ($imagesizedata) {
+                $productimages = $this->request->data['ProductImage'];
+                foreach($productimages as $key => $value) {
+                  if (!empty($value['tmp_name'])) {
+                    $imagesizedata = getimagesize($value['tmp_name']);
+                    if ($imagesizedata) {
 
-                    if($value['name'] != "" && in_array($value['type'], $allowed_ext)) {
+                      if($value['name'] != "" && in_array($value['type'], $allowed_ext)) {
 
-                        $newName    = str_replace(" ","-", uniqid()  . '.' .$value['name']); 
-                        $targetdir = $origpath.DS;
-                        
-                        #Upload
-                        //$upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
+                          $newName    = str_replace(" ","-", uniqid()  . '.' .$value['name']); 
+                          $targetdir = $origpath.DS;
+                          
+                          #Upload
+                          //$upload = $this->Img->upload($value['tmp_name'], $targetdir, $newName);
 
-                        $result = $this->CakeS3->putObject($value['tmp_name'], $origpathS3.$newName, S3::ACL_PUBLIC_READ);
-                        $AmazonS3Image = $result['url'];
+                          $result = $this->CakeS3->putObject($value['tmp_name'], $origpathS3.$newName, S3::ACL_PUBLIC_READ);
+                          $AmazonS3Image = $result['url'];
 
-                        #Resize
-                        $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0,$homepathS3);
-                        $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0, $cartpathS3);
-                        $this->Img->resampleGD($AmazonS3Image, $scrollimg, $newName, 67, 55, 1, 0, $scrollimgS3);
-                        $this->Img->resampleGD($AmazonS3Image, $prod_det_path, $newName, 1024, 768, 1, 0, $prod_det_pathS3);
+                          #Resize
+                          $this->Img->resampleGD($AmazonS3Image, $homepath, $newName, 265, 265, 1, 0,$homepathS3);
+                          $this->Img->resampleGD($AmazonS3Image, $cartpath, $newName, 78, 64, 1, 0, $cartpathS3);
+                          $this->Img->resampleGD($AmazonS3Image, $scrollimg, $newName, 67, 55, 1, 0, $scrollimgS3);
+                          $this->Img->resampleGD($AmazonS3Image, $prod_det_path, $newName, 1024, 768, 1, 0, $prod_det_pathS3);
 
-                        //unlink Images
-                        @unlink($homepath.$newName);
-                        @unlink($cartpath.$newName);
-                        @unlink($scrollimg.$newName);
-                        @unlink($prod_det_path.$newName);
+                          //unlink Images
+                          @unlink($homepath.$newName);
+                          @unlink($cartpath.$newName);
+                          @unlink($scrollimg.$newName);
+                          @unlink($prod_det_path.$newName);
 
-                        $product_images['product_id']  = $this->Product->id;
-                        $product_images['store_id']    = $store_id;
-                        $product_images['image']       = $value['name'];
-                        $product_images['image_alias'] = $newName;
+                          $product_images['product_id']  = $this->Product->id;
+                          $product_images['store_id']    = $store_id;
+                          $product_images['image']       = $value['name'];
+                          $product_images['image_alias'] = $newName;
 
-                        $this->ProductImage->save($product_images);
-                        $this->ProductImage->id = "";
+                          $this->ProductImage->save($product_images);
+                          $this->ProductImage->id = "";
+                      }
                     }
                   }
                 }
-              }
 
-              $this->Session->setFlash('<p>'.__('Your Product has been saved', true).'</p>', 'default', 
-                                                              array('class' => 'alert alert-success'));
-              $this->redirect(array('controller' => 'Products','action' => 'index'));
+                $this->Session->setFlash('<p>'.__('Your Product has been saved', true).'</p>', 'default', 
+                                                                array('class' => 'alert alert-success'));
+                $this->redirect(array('controller' => 'Products','action' => 'index'));
+            }
+          } else {
+            $this->Product->validationErrors;
           }
         }
 

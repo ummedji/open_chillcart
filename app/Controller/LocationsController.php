@@ -12,8 +12,8 @@ class LocationsController extends AppController
      * Location Management Proccess
      * @return void
      */
-    public function admin_index($id) {
-        if (isset($id) && $id != '') {
+    public function admin_index($id = null) {
+        if ($id != '') {
             //switch (trim($key)){
             //case 'locations';
             $location_list = $this->Location->find('all', array(
@@ -36,27 +36,32 @@ class LocationsController extends AppController
      */
     public function admin_add()
     {
+
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->Location->set($this->request->data);
+            if($this->Location->validates()) {
+                $Location = $this->Location->find('all', array(
+                    'conditions' => array(
+                        'area_name' => trim($this->request->data['Location']['area_name']))));
+                if (!empty($Location)) {
+                    $this->Session->setFlash('<p>' . __('Already Exists Location', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                } else {
+                    $this->Location->save($this->request->data, null, null);
+                    $this->Session->setFlash('<p>' . __('Your Location has been saved', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'Locations', 'action' => 'index'));
+                }
+            } else {
+                $this->Location->validationErrors;
+            }
+        }
+
         $state_list = $this->State->find('list', array(
             'conditions' => array('State.status' => 1),
             'fields' => array('State.id', 'State.state_name')));
-        $city_list = $this->City->find('list', array(
-            'conditions' => array('City.status' => 1),
-            'fields' => array('City.id', 'City.city_name')));
-        $this->set(compact('state_list', 'city_list'));
-        if ($this->request->is('post')) {
-            $Location = $this->Location->find('all', array(
-                'conditions' => array(
-                    'area_name' => trim($this->request->data['Location']['area_name']))));
-            if (!empty($Location)) {
-                $this->Session->setFlash('<p>' . __('Already Exists Location', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
-            } else {
-                $this->Location->save($this->request->data, null, null);
-                $this->Session->setFlash('<p>' . __('Your Location has been saved', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'Locations', 'action' => 'index'));
-            }
-        }
+        
+        $this->set(compact('state_list'));
 
     }
 
@@ -68,20 +73,25 @@ class LocationsController extends AppController
      */
     public function admin_edit($id = null)
     {
-        if (!empty($this->request->data['Location']['area_name'])) {
-            $Location = $this->Location->find('all', array(
-                'conditions' => array(
-                    'area_name' => trim($this->request->data['Location']['area_name']),
-                    'NOT' => array(
-                        'Location.id' => $this->request->data['Location']['id']))));
-            if (!empty($Location)) {
-                $this->Session->setFlash('<p>' . __('Unable to add your Location', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->Location->set($this->request->data);
+            if($this->Location->validates()) {
+                $Location = $this->Location->find('all', array(
+                    'conditions' => array(
+                        'area_name' => trim($this->request->data['Location']['area_name']),
+                        'NOT' => array(
+                            'Location.id' => $this->request->data['Location']['id']))));
+                if (!empty($Location)) {
+                    $this->Session->setFlash('<p>' . __('Unable to add your Location', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                } else {
+                    $this->Location->save($this->request->data, null, null);
+                    $this->Session->setFlash('<p>' . __('Your Location has been saved', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'Locations', 'action' => 'index'));
+                }
             } else {
-                $this->Location->save($this->request->data, null, null);
-                $this->Session->setFlash('<p>' . __('Your Location has been saved', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'Locations', 'action' => 'index'));
+                $this->Location->validationErrors;
             }
         }
         $getStateData = $this->Location->findById($id);

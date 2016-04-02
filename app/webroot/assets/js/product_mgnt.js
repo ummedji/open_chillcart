@@ -1,4 +1,4 @@
-jQuery().ready(function () {
+/*jQuery().ready(function () {
 
     setTimeout(function(){
         $("#flashMessage").hide();
@@ -402,7 +402,7 @@ jQuery().ready(function () {
 
     });
 
-});
+});*/
 function validateStoreEdit() {
     var StoreContactName = $.trim($("#StoreContactName").val());
     var StoreContactPhone = $.trim($("#StoreContactPhone").val());
