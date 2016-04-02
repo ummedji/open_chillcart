@@ -7,7 +7,7 @@ class UsersController extends AppController {
     public $name = 'Users';
 	var $helpers = array('Html', 'Session', 'Javascript', 'Ajax', 'Common');
 	public $uses = array('User', 'Customer','Notification');
-	public $components = array('Functions', 'Hybridauth', 'Twilio', 'Mailchimp');
+	public $components = array('Functions', 'Hybridauth', 'Twilio', 'Mailchimp', 'Session');
 	public function beforeFilter() {
 		$this->Auth->allow(array('signup', 'customer_customerLogin','storeLogin',
 								'activeLink', 'logout', 'social_login', 'social_endpoint'));
@@ -40,29 +40,35 @@ class UsersController extends AppController {
 			exit();      	
 
         }
-		if ($this->request->is('post')) {
-            $roles      = array(1);  
-			$userData   = $this->User->findByUsername($this->request->data['User']['username']);
-			if(in_array($userData['User']['role_id'],$roles)) {
-				if ($this->Auth->login()) {
-					#REmember me            
-					if($this->request->data['User']['rememberMe']==1) {
-					    $this->Cookie->write('rememberMe',$this->request->data['User'],true,"12 months"); 
-					} else {
-					     $this->Cookie->delete('rememberMe');
-					}
-					$this->redirect(array('controller' => 'dashboards', 'action' => 'index', 'admin'=>true));
-				} else { 
+		if ($this->request->is('post') || $this->request->is('put')) {
+			//$this->User->create();
+			$this->User->set($this->request->data);
+        	if($this->User->validates()) {
+        		$roles      = array(1);  
+				$userData   = $this->User->findByUsername($this->request->data['User']['username']);
+				if(in_array($userData['User']['role_id'],$roles)) {
+					if ($this->Auth->login()) {
+						#REmember me            
+						if($this->request->data['User']['rememberMe']==1) {
+						    $this->Cookie->write('rememberMe',$this->request->data['User'],true,"12 months"); 
+						} else {
+						     $this->Cookie->delete('rememberMe');
+						}
+						$this->redirect(array('controller' => 'dashboards', 'action' => 'index', 'admin'=>true));
+					} else { 
 
-					$this ->Session->setFlash('<p>'.__('Login failed your Username or Password Incorrect',true).'</p>', 'default', 
-										array('class' => 'alert alert-danger'));
-                    $this->redirect(array('controller' => 'users', 'action' => 'login','admin'=>true));
-				 }
-			} else {
-				$this ->Session->setFlash('<p>'.__('Login failed, unauthorized', true).'</p>', 'default', 
-										array('class' => 'alert alert-danger'));
-				$this->redirect(array('controller' => 'users', 'action' => 'login','admin'=>true));
-			}
+						$this ->Session->setFlash('<p>'.__('Login failed your Username or Password Incorrect',true).'</p>', 'default', 
+											array('class' => 'alert alert-danger'));
+	                    $this->redirect(array('controller' => 'users', 'action' => 'login','admin'=>true));
+					 }
+				} else {
+					$this ->Session->setFlash('<p>'.__('Login failed, unauthorized', true).'</p>', 'default', 
+											array('class' => 'alert alert-danger'));
+					$this->redirect(array('controller' => 'users', 'action' => 'login','admin'=>true));
+				}
+        	} else {
+				$this->User->validationErrors;
+	        }
 		}
 		$this->request->data['User']    = $this->Cookie->read('rememberMe');  
 		$this->set('title_for_layout', 'Admin');      
@@ -76,8 +82,8 @@ class UsersController extends AppController {
 			exit();      	
 
         }
-		if ($this->request->is('post')) {
-
+		if ($this->request->is('post') || $this->request->is('put')) {
+			
 			if(isset($this->request->data['Users']['email']) && $this->request->data['Users']['email'] != ''){
 			   	$userData = $this->User->find('first', array(
 									   'conditions' =>array(
@@ -138,28 +144,33 @@ class UsersController extends AppController {
 				   $this->redirect(array('controller' => 'users', 'action' => 'storeLogin', 'store' => true));
 			   	}
 		   	}
+		   	$this->User->set($this->request->data);
+			if($this->User->validates()) {
 
-            $roles      = array(3);  
-			$userData   = $this->User->findByUsername($this->request->data['User']['username']);
-			if(in_array($userData['User']['role_id'],$roles)) {
-				if ($this->Auth->login()) {
-					#REmember me            
-					if($this->request->data['User']['rememberMe']==1) {
-					    $this->Cookie->write('rememberMe',$this->request->data['User'],true,"12 months"); 
-					} else {
-					     $this->Cookie->delete('rememberMe');
-					}
-					$this->redirect(array('controller' => 'dashboards', 'action' => 'index', 'store'=>true));
-				} else { 
+	            $roles      = array(3);  
+				$userData   = $this->User->findByUsername($this->request->data['User']['username']);
+				if(in_array($userData['User']['role_id'],$roles)) {
+					if ($this->Auth->login()) {
+						#REmember me            
+						if($this->request->data['User']['rememberMe']==1) {
+						    $this->Cookie->write('rememberMe',$this->request->data['User'],true,"12 months"); 
+						} else {
+						     $this->Cookie->delete('rememberMe');
+						}
+						$this->redirect(array('controller' => 'dashboards', 'action' => 'index', 'store'=>true));
+					} else { 
 
-					$this ->Session->setFlash('<p>'.__('Login failed your Username or Password Incorrect',true).'</p>', 'default', 
-										array('class' => 'alert alert-danger'));
-                    $this->redirect(array('controller' => 'users', 'action' => 'storeLogin','store'=>true));
-				 }
+						$this ->Session->setFlash('<p>'.__('Login failed your Username or Password Incorrect',true).'</p>', 'default', 
+											array('class' => 'alert alert-danger'));
+	                    $this->redirect(array('controller' => 'users', 'action' => 'storeLogin','store'=>true));
+					 }
+				} else {
+					$this ->Session->setFlash('<p>'.__('Login failed, unauthorized', true).'</p>', 'default', 
+											array('class' => 'alert alert-danger'));
+					$this->redirect(array('controller' => 'users', 'action' => 'storeLogin','store'=>true));
+				}
 			} else {
-				$this ->Session->setFlash('<p>'.__('Login failed, unauthorized', true).'</p>', 'default', 
-										array('class' => 'alert alert-danger'));
-				$this->redirect(array('controller' => 'users', 'action' => 'storeLogin','store'=>true));
+				$this->User->validationErrors;
 			}
 		}
 		$this->request->data['User']    = $this->Cookie->read('rememberMe');
@@ -328,75 +339,80 @@ class UsersController extends AppController {
 			exit();
         }
 
-       	if (!empty($this->request->data['Customer']['customer_email'])) {
-          	//$user  = $this->User->findByUsernameAndRoleId($this->request->data['Customer']['customer_email'],4); 
+       	if($this->request->is('post') || $this->request->is('put')) {
+       		$this->Customer->set($this->request->data);
+       		$this->User->invalidFields();
 
-          	$user = $this->User->find('first', array(
-                      'conditions' => array('User.username' => trim($this->request->data['Customer']['customer_email']),
-                                             'User.role_id' => 4,
-                              'NOT' => array('Customer.status' => 3))));
-	        if(!empty($user)) {
-	            $this->Session->setFlash('<p>'.__('Email already exists', true).'</p>', 'default', 
-	                                                array('class' => 'alert alert-danger'));
-	        } else {
-              	$this->request->data['User']['role_id']  = 4;
-              	$this->request->data['User']['username'] = $this->request->data['Customer']['customer_email'];
-              	$this->request->data['User']['password'] = $this->Auth->password($this->request->data['User']['password']);
-              	$this->User->save($this->request->data['User'],null,null);
-              	$this->request->data['Customer']['user_id'] = $this->User->id;
-              
-              	$this->Customer->save($this->request->data['Customer'],null,null);
-              	//Mail Processing From Admin To Customer
-         	 	$newRegisteration = $this->Notification->find('first',array(
-                                                            'conditions'=>array(
-                                                            'Notification.title'=>'Customer activation')));
-              	if($newRegisteration){
+       		if($this->Customer->validates()) {
+	          	$user = $this->User->find('first', array(
+	                      'conditions' => array('User.username' => trim($this->request->data['Customer']['customer_email']),
+	                                             'User.role_id' => 4,
+	                              'NOT' => array('Customer.status' => 3))));
+		        if(!empty($user)) {
+		            $this->Session->setFlash('<p>'.__('Email already exists', true).'</p>', 'default', 
+		                                                array('class' => 'alert alert-danger'));
+		        } else {
+	              	$this->request->data['User']['role_id']  = 4;
+	              	$this->request->data['User']['username'] = $this->request->data['Customer']['customer_email'];
+	              	$this->request->data['User']['password'] = $this->Auth->password($this->request->data['User']['password']);
+	              	$this->User->save($this->request->data['User'],null,null);
+	              	$this->request->data['Customer']['user_id'] = $this->User->id;
+	              
+	              	$this->Customer->save($this->request->data['Customer'],null,null);
+	              	//Mail Processing From Admin To Customer
+	         	 	$newRegisteration = $this->Notification->find('first',array(
+	                                                            'conditions'=>array(
+	                                                            'Notification.title'=>'Customer activation')));
+	              	if($newRegisteration){
 
-					$regContent = $newRegisteration['Notification']['content'];
-					$regsubject = $newRegisteration['Notification']['subject'];
-             	}
+						$regContent = $newRegisteration['Notification']['content'];
+						$regsubject = $newRegisteration['Notification']['subject'];
+	             	}
 
-	            $adminEmail   = $this->siteSetting['Sitesetting']['admin_email'];
-	            $source	 	  = $this->siteUrl.'/siteicons/logo.png';
-		        $mailContent  = $regContent;
-		        $userID       = $this->Customer->id;
-		        $siteUrl      = $this->siteUrl;
-		        $activation   = $this->siteUrl. '/users/activeLink/'.$userID;
-		        $customerName = $this->request->data['Customer']['first_name'];
-		        $store_name   = $this->siteSetting['Sitesetting']['site_name'];
+		            $adminEmail   = $this->siteSetting['Sitesetting']['admin_email'];
+		            $source	 	  = $this->siteUrl.'/siteicons/logo.png';
+			        $mailContent  = $regContent;
+			        $userID       = $this->Customer->id;
+			        $siteUrl      = $this->siteUrl;
+			        $activation   = $this->siteUrl. '/users/activeLink/'.$userID;
+			        $customerName = $this->request->data['Customer']['first_name'];
+			        $store_name   = $this->siteSetting['Sitesetting']['site_name'];
 
-		        $mailContent  = str_replace("{firstname}", $customerName, $mailContent);
-		        $mailContent  = str_replace("{activation}", $activation, $mailContent);
-		        $mailContent  = str_replace("{siteUrl}", $siteUrl, $mailContent);
-		        $mailContent  = str_replace("{store name}",$store_name, $mailContent);
-		        $email        = new CakeEmail();
-		        $email->from($adminEmail);
-		        $email->to($this->request->data['Customer']['customer_email']);
-		        $email->subject($regsubject);
-		        $email->template('register');
-		        $email->emailFormat('html');
-		        $email->viewVars(array('mailContent' => $mailContent,'source'=>$source));
-		        $email->send();
-             	
-				//Signup Sms
-		        $customerMessage = 'Thank you for registering with Chillcart.Click on below link to activate your account.'.$activation.'. Thanks Chillcart';
-	          	$toCustomerNumber = '+'.$this->siteSetting['Country']['phone_code'].$this->request->data['Customer']['customer_phone'];
-	          	$customerSms 	  = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
+			        $mailContent  = str_replace("{firstname}", $customerName, $mailContent);
+			        $mailContent  = str_replace("{activation}", $activation, $mailContent);
+			        $mailContent  = str_replace("{siteUrl}", $siteUrl, $mailContent);
+			        $mailContent  = str_replace("{store name}",$store_name, $mailContent);
+			        $email        = new CakeEmail();
+			        $email->from($adminEmail);
+			        $email->to($this->request->data['Customer']['customer_email']);
+			        $email->subject($regsubject);
+			        $email->template('register');
+			        $email->emailFormat('html');
+			        $email->viewVars(array('mailContent' => $mailContent,'source'=>$source,'storename' => $store_name));
+			        $email->send();
+	             	
+					//Signup Sms
+			        $customerMessage = 'Thank you for registering with Chillcart.Click on below link to activate your account.'.$activation.'. Thanks Chillcart';
+		          	$toCustomerNumber = '+'.$this->siteSetting['Country']['phone_code'].$this->request->data['Customer']['customer_phone'];
+		          	$customerSms 	  = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
 
-	          	//Mailchimp Process
-	          	$merge_vars = array(
-					    'EMAIL' => $this->request->data['Customer']['customer_email'],
-					    'FNAME' => $this->request->data['Customer']['first_name'],
-					    'LNAME' => $this->request->data['Customer']['last_name']
-					  );
-	          	
-    			$this->Mailchimp->MCAPI($this->mailChimpKey);
-    			$list = $this->Mailchimp->listSubscribe($this->mailChimpListId, $this->request->data['Customer']['customer_email'], $merge_vars);
+		          	//Mailchimp Process
+		          	$merge_vars = array(
+						    'EMAIL' => $this->request->data['Customer']['customer_email'],
+						    'FNAME' => $this->request->data['Customer']['first_name'],
+						    'LNAME' => $this->request->data['Customer']['last_name']
+						  );
+		          	
+	    			$this->Mailchimp->MCAPI($this->mailChimpKey);
+	    			$list = $this->Mailchimp->listSubscribe($this->mailChimpListId, $this->request->data['Customer']['customer_email'], $merge_vars);
 
-             	$this->Session->setFlash('<p>'.__('You have successfully registered an account. An email has been sent with further instructions', true).'</p>', 'default', 
-                                                  array('class' => 'alert alert-success'));
-             	$this->redirect(array('controller' => 'Users','action' => 'customerlogin','customer'=>true));
-          	}
+	             	$this->Session->setFlash('<p>'.__('You have successfully registered an account. An email has been sent with further instructions', true).'</p>', 'default', 
+	                                                  array('class' => 'alert alert-success'));
+	             	$this->redirect(array('controller' => 'Users','action' => 'customerlogin','customer'=>true));
+	          	}
+			} else {
+				$this->User->validationErrors;
+			}
        	}
    	}
    /**
@@ -418,7 +434,7 @@ class UsersController extends AppController {
 			exit();
 	    }
 
-    	if($this->request->is('post')) {
+    	if($this->request->is('post') || $this->request->is('put')) {
 		   	if(isset($this->request->data['Users']['email']) && $this->request->data['Users']['email'] != ''){
 			   $userData = $this->User->find('first', array(
 									   'conditions' =>array(
@@ -482,52 +498,55 @@ class UsersController extends AppController {
 				   $this->redirect(array('controller' => 'users', 'action' => 'customerlogin', 'customer' => true));
 			   }
 		   	}
-		    
+		    $this->User->set($this->request->data);
+		   	if($this->User->validates()) {
 
+				if ($this->request->data['User']['username'] != '' && $this->request->data['User']['password'] != '') {
+			        $role = array(4);
 
-			if ($this->request->data['User']['username'] != '' && $this->request->data['User']['password'] != '') {
-		        $role = array(4);
-
-				$userData = $this->User->find('first', array(
+					$userData = $this->User->find('first', array(
 										'conditions' =>array(
-														'User.username' => $this->request->data['User']['username'],
-														'Customer.status' => 1,
-														'User.role_id' => 4)));
+													'User.username' => $this->request->data['User']['username'],
+													'Customer.status' => 1,
+													'User.role_id' => 4)));
 
-				if(in_array($userData['User']['role_id'], $role)) {
+					if(in_array($userData['User']['role_id'], $role)) {
 
-					$this->Session->write("preSessionid",$this->Session->id());
-					if ($this->Auth->login()) {
-					 #REmember me            
-						if($this->request->data['User']['rememberMe']==1) {
-						    $this->Cookie->write('rememberMe',$this->request->data['User'],true,"12 months"); 
+						$this->Session->write("preSessionid",$this->Session->id());
+						if ($this->Auth->login()) {
+						 #REmember me            
+							if($this->request->data['User']['rememberMe']==1) {
+							    $this->Cookie->write('rememberMe',$this->request->data['User'],true,"12 months"); 
+							} else {
+							     $this->Cookie->delete('rememberMe');
+							}
+							if($this->Session->read("redirectpage")=='checkout') {
+			                    $this->Session->delete("redirectpage");
+			                    $this->redirect(array('controller' => 'checkouts', 'action' => 'index','customer'=>false));
+			                }
+							$this->redirect(array('controller' => 'customers', 'action' => 'myaccount'));
+
 						} else {
-						     $this->Cookie->delete('rememberMe');
-						}
-						if($this->Session->read("redirectpage")=='checkout') {
-		                    $this->Session->delete("redirectpage");
-		                    $this->redirect(array('controller' => 'checkouts', 'action' => 'index','customer'=>false));
-		                }
-						$this->redirect(array('controller' => 'customers', 'action' => 'myaccount'));
 
+							$this ->Session->setFlash('<p>'.__('Login failed your Username or Password Incorrect', true).'</p>', 'default', 
+												array('class' => 'alert alert-danger'));
+			                $this->redirect(array('controller' => 'users', 'action' => 'customerlogin','customer'=>true));
+						}
 					} else {
 
-						$this ->Session->setFlash('<p>'.__('Login failed your Username or Password Incorrect', true).'</p>', 'default', 
-											array('class' => 'alert alert-danger'));
-		                $this->redirect(array('controller' => 'users', 'action' => 'customerlogin','customer'=>true));
+						$this ->Session->setFlash('<p>'.__('Login failed, unauthorized', true).'</p>', 'default', 
+												array('class' => 'alert alert-danger'));
+						$this->redirect(array('controller' => 'users', 'action' => 'customerlogin','customer'=>true));
 					}
-				} else {
-
-					$this ->Session->setFlash('<p>'.__('Login failed, unauthorized', true).'</p>', 'default', 
-											array('class' => 'alert alert-danger'));
-					$this->redirect(array('controller' => 'users', 'action' => 'customerlogin','customer'=>true));
 				}
-			}   
+			} else {
+				$this->User->validationErrors;
+			}
     	}
    	}
    	public function store_changePassword(){
 	   	$this->layout = 'assets';
-	   	if($this->request->is('post') && $this->Auth->User('role_id') == 3) {
+	   	if($this->request->is('post') || $this->request->is('put') && $this->Auth->User('role_id') == 3) {
 	   		$new_password     =  $this->Auth->password($this->request->data['user']['new_pass']);
 	   		$confirm_password =  $this->Auth->password($this->request->data['user']['confirm_pass']);
 	   		if ($new_password == $confirm_password) {
@@ -547,7 +566,7 @@ class UsersController extends AppController {
    	} 
 
    	public function admin_changePassword(){
-	   	if($this->request->is('post')) {
+	   	if($this->request->is('post') || $this->request->is('put')) {
 	   		$new_password     =  $this->Auth->password($this->request->data['user']['new_pass']);
 	   		$confirm_password =  $this->Auth->password($this->request->data['user']['confirm_pass']);
 	   		if ($new_password == $confirm_password) {
@@ -667,7 +686,7 @@ class UsersController extends AppController {
 	        $email->subject($regsubject);
 	        $email->template('register');
 	        $email->emailFormat('html');
-	        $email->viewVars(array('mailContent' => $mailContent,'source'=>$source));
+	        $email->viewVars(array('mailContent' => $mailContent,'source'=>$source, 'storename' => $store_name));
 	        $email->send();
 
 	        //Mailchimp Process

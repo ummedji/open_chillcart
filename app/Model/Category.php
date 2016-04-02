@@ -19,4 +19,18 @@ class Category extends Model
             ),
     );
 
+    var $validate = array(
+        'category_name' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please Enter the CategoryName'
+            )
+        ),
+        'parent_id' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please Enter the Maincategory'
+            )
+        )
+    );
 }

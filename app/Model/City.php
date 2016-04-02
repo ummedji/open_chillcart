@@ -12,4 +12,25 @@ class City extends Model
             'foreignKey' => 'country_id',
             'dependent' => true),
     );
+
+    var $validate = array(
+        'country_id' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please select the country'
+            )
+        ),
+        'state_id' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please select the state'
+            )
+        ),
+        'city_name' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please enter the city name'
+            )
+        )
+	);
 }

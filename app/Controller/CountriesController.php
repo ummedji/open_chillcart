@@ -28,17 +28,22 @@ class CountriesController extends AppController
     public function admin_add()
     {
         if ($this->request->is('post')) {
-            $Country = $this->Country->find('all', array(
-                'conditions' => array(
-                    'country_name' => trim($this->request->data['Country']['country_name']))));
-            if (!empty($Country)) {
-                $this->Session->setFlash('<p>' . __('Already Exists Country', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
+            $this->Country->set($this->request->data);
+            if($this->Country->validates()) {
+                $Country = $this->Country->find('all', array(
+                    'conditions' => array(
+                        'country_name' => trim($this->request->data['Country']['country_name']))));
+                if (!empty($Country)) {
+                    $this->Session->setFlash('<p>' . __('Already Exists Country', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                } else {
+                    $this->Country->save($this->request->data, null, null);
+                    $this->Session->setFlash('<p>' . __('Your State has been saved', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'Countries', 'action' => 'index'));
+                }
             } else {
-                $this->Country->save($this->request->data, null, null);
-                $this->Session->setFlash('<p>' . __('Your State has been saved', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'Countries', 'action' => 'index'));
+                $this->Country->validationErrors;
             }
         }
     }
@@ -51,20 +56,26 @@ class CountriesController extends AppController
      */
     public function admin_edit($id = null)
     {
-        if (!empty($this->request->data['Country']['country_name'])) {
-            $Country = $this->Country->find('all', array(
-                'conditions' => array(
-                    'country_name' => trim($this->request->data['Country']['country_name']),
-                    'NOT' => array('Country.id' => $this->request->data['Country']['id']))));
-            if (!empty($Country)) {
-                $this->Session->setFlash('<p>' . __('Unable to add your Country', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->Country->set($this->request->data);
+            if($this->Country->validates()) {
+                $Country = $this->Country->find('all', array(
+                    'conditions' => array(
+                        'country_name' => trim($this->request->data['Country']['country_name']),
+                        'NOT' => array('Country.id' => $this->request->data['Country']['id']))));
+                if (!empty($Country)) {
+                    $this->Session->setFlash('<p>' . __('Unable to add your Country', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                } else {
+                    $this->Country->save($this->request->data, null, null);
+                    $this->Session->setFlash('<p>' . __('Your Country has been saved', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'Countries', 'action' => 'index'));
+                }
             } else {
-                $this->Country->save($this->request->data, null, null);
-                $this->Session->setFlash('<p>' . __('Your Country has been saved', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'Countries', 'action' => 'index'));
+                $this->Country->validationErrors;
             }
+
         }
         $getStateData = $this->Country->findById($id);
         $this->request->data = $getStateData;

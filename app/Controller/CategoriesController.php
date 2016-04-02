@@ -32,21 +32,26 @@ class CategoriesController extends AppController
     {
 
         if ($this->request->is('post')) {
+            $this->Category->set($this->request->data);
+            if($this->Category->validates()) {
 
-            $Category_check = $this->Category->find('first', array(
-                'conditions' => array(
-                    'Category.parent_id' => 0,
-                    'Category.category_name' => trim($this->request->data['Category']['category_name']),
-                    'NOT' => array('Category.status' => 3))));
+                $Category_check = $this->Category->find('first', array(
+                    'conditions' => array(
+                        'Category.parent_id' => 0,
+                        'Category.category_name' => trim($this->request->data['Category']['category_name']),
+                        'NOT' => array('Category.status' => 3))));
 
-            if (!empty($Category_check)) {
-                $this->Session->setFlash('<p>' . __('Unable to add your Category', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
+                if (!empty($Category_check)) {
+                    $this->Session->setFlash('<p>' . __('Unable to add your Category', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                } else {
+                    $this->Category->save($this->request->data, null, null);
+                    $this->Session->setFlash('<p>' . __('Your Category has been saved', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'Categories', 'action' => 'index'));
+                }
             } else {
-                $this->Category->save($this->request->data, null, null);
-                $this->Session->setFlash('<p>' . __('Your Category has been saved', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'Categories', 'action' => 'index'));
+                $this->Category->validationErrors;
             }
         }
     }
@@ -59,27 +64,29 @@ class CategoriesController extends AppController
      */
     public function admin_edit($id = null)
     {
-        if (!empty($this->request->data['Category']['category_name'])) {
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->Category->set($this->request->data);
+            if($this->Category->validates()) {
 
-            /*echo "<pre>"; print_r($this->request->data);
-            exit();*/
-
-            $Category = $this->Category->find('first', array(
-                'conditions' => array(
-                    'Category.parent_id' => 0,
-                    'Category.category_name' => trim($this->request->data['Category']['category_name']),
-                    'NOT' => array('Category.id' => $this->request->data['Category']['id'],
-                        'Category.status' => 3))));
+                $Category = $this->Category->find('first', array(
+                    'conditions' => array(
+                        'Category.parent_id' => 0,
+                        'Category.category_name' => trim($this->request->data['Category']['category_name']),
+                        'NOT' => array('Category.id' => $this->request->data['Category']['id'],
+                            'Category.status' => 3))));
 
 
-            if (!empty($Category)) {
-                $this->Session->setFlash('<p>' . __('Unable to add your Category', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
+                if (!empty($Category)) {
+                    $this->Session->setFlash('<p>' . __('Unable to add your Category', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                } else {
+                    $this->Category->save($this->request->data, null, null);
+                    $this->Session->setFlash('<p>' . __('Your Category has been saved', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'Categories', 'action' => 'index'));
+                }
             } else {
-                $this->Category->save($this->request->data, null, null);
-                $this->Session->setFlash('<p>' . __('Your Category has been saved', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'Categories', 'action' => 'index'));
+                $this->Category->validationErrors;
             }
         }
         $getStateData = $this->Category->findById($id);
@@ -95,21 +102,26 @@ class CategoriesController extends AppController
     {
 
         if ($this->request->is('post')) {
+            $this->Category->set($this->request->data);
+            if($this->Category->validates()) {
 
-            $Category_check = $this->Category->find('first', array(
-                'conditions' => array(
-                    'Category.parent_id' => $this->request->data['Category']['parent_id'],
-                    'Category.category_name' => trim($this->request->data['Category']['category_name']),
-                    'NOT' => array('Category.status' => 3))));
+                $Category_check = $this->Category->find('first', array(
+                    'conditions' => array(
+                        'Category.parent_id' => $this->request->data['Category']['parent_id'],
+                        'Category.category_name' => trim($this->request->data['Category']['category_name']),
+                        'NOT' => array('Category.status' => 3))));
 
-            if (!empty($Category_check)) {
-                $this->Session->setFlash('<p>' . __('Unable to add your Category', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
+                if (!empty($Category_check)) {
+                    $this->Session->setFlash('<p>' . __('Unable to add your Category', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                } else {
+                    $this->Category->save($this->request->data, null, null);
+                    $this->Session->setFlash('<p>' . __('Your Category has been saved', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'Categories', 'action' => 'subcatindex'));
+                }
             } else {
-                $this->Category->save($this->request->data, null, null);
-                $this->Session->setFlash('<p>' . __('Your Category has been saved', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'Categories', 'action' => 'subcatindex'));
+                $this->Category->validationErrors;
             }
         }
 
@@ -144,22 +156,28 @@ class CategoriesController extends AppController
      */
     public function admin_subCatEdit($id = null)
     {
-        if (!empty($this->request->data['Category']['category_name'])) {
-            $category = $this->Category->find('all', array(
-                'conditions' => array(
-                    'Category.category_name' => $this->request->data['Category']['category_name'],
-                    'NOT' => array('Category.id' => $this->request->data['Category']['id'],
-                        'Category.parent_id' => $this->request->data['Category']['parent_id'],
-                        'Category.status' => 3))
-            ));
-            if (!empty($Category)) {
-                $this->Session->setFlash('<p>' . __('Unable to add your Category', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->Category->set($this->request->data);
+            if($this->Category->validates()) {
+
+                $category = $this->Category->find('all', array(
+                    'conditions' => array(
+                        'Category.category_name' => $this->request->data['Category']['category_name'],
+                        'NOT' => array('Category.id' => $this->request->data['Category']['id'],
+                            'Category.parent_id' => $this->request->data['Category']['parent_id'],
+                            'Category.status' => 3))
+                ));
+                if (!empty($Category)) {
+                    $this->Session->setFlash('<p>' . __('Unable to add your Category', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                } else {
+                    $this->Category->save($this->request->data, null, null);
+                    $this->Session->setFlash('<p>' . __('Your Category has been saved', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'Categories', 'action' => 'subcatindex'));
+                }
             } else {
-                $this->Category->save($this->request->data, null, null);
-                $this->Session->setFlash('<p>' . __('Your Category has been saved', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'Categories', 'action' => 'subcatindex'));
+                $this->Category->validationErrors;
             }
         }
         $getStateData = $this->Category->findById($id);
@@ -213,18 +231,24 @@ class CategoriesController extends AppController
     {
         $this->layout = 'assets';
         if ($this->request->is('post')) {
-            $Category_check = $this->Category->find('all', array(
-                'conditions' => array('Category.category_name' =>
-                    trim($this->request->data['Category']['category_name']),
-                    'NOT' => array('Category.status' => 3))));
-            if (!empty($Category_check)) {
-                $this->Session->setFlash('<p>' . __('Unable to add your Category', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
+            $this->Category->set($this->request->data);
+            if($this->Category->validates()) {
+
+                $Category_check = $this->Category->find('all', array(
+                                    'conditions' => array('Category.parent_id' => 0,
+                                        'Category.category_name' =>trim($this->request->data['Category']['category_name']),
+                                                'NOT' => array('Category.status' => 3))));
+                if (!empty($Category_check)) {
+                    $this->Session->setFlash('<p>' . __('Unable to add your Category', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                } else {
+                    $this->Category->save($this->request->data, null, null);
+                    $this->Session->setFlash('<p>' . __('Your Category has been saved', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'Categories', 'action' => 'index'));
+                }
             } else {
-                $this->Category->save($this->request->data, null, null);
-                $this->Session->setFlash('<p>' . __('Your Category has been saved', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'Categories', 'action' => 'index'));
+                $this->Category->validationErrors;
             }
         }
     }
@@ -246,87 +270,101 @@ class CategoriesController extends AppController
     public function store_edit($id = null)
     {
         $this->layout = 'assets';
-        if (!empty($this->request->data['Category']['category_name'])) {
-            $Category = $this->Category->find('first', array(
-                'conditions' => array(
-                        'Category.parent_id' => 0,
-                        'Category.category_name' => trim($this->request->data['Category']['category_name']),
-                        'NOT' => array('Category.id' =>$this->request->data['Category']['id'],
-                                            'Category.status' => 3))));
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->Category->set($this->request->data);
+            if($this->Category->validates()) {
+                $Category = $this->Category->find('first', array(
+                    'conditions' => array(
+                            'Category.parent_id' => 0,
+                            'Category.category_name' => trim($this->request->data['Category']['category_name']),
+                            'NOT' => array('Category.id' =>$this->request->data['Category']['id'],
+                                                'Category.status' => 3))));
 
-        if(!empty($Category)) {
-            $this->Session->setFlash('<p>'.__('Unable to add your Category', true).'</p>', 'default', 
-                                          array('class' => 'alert alert-danger'));
-        } else {
-            $this->Category->save($this->request->data,null,null);
-            $this->Session->setFlash('<p>'.__('Your Category has been saved', true).'</p>', 'default', 
-                                              array('class' => 'alert alert-success'));
-            $this->redirect(array('controller' => 'Categories','action' => 'index'));
+                if(!empty($Category)) {
+                    $this->Session->setFlash('<p>'.__('Unable to add your Category', true).'</p>', 'default', 
+                                                  array('class' => 'alert alert-danger'));
+                } else {
+                    $this->Category->save($this->request->data,null,null);
+                    $this->Session->setFlash('<p>'.__('Your Category has been saved', true).'</p>', 'default', 
+                                                      array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'Categories','action' => 'index'));
+                }
+            } else {
+                $this->Category->validationErrors;
+            }
+        } 
+        $getStateData = $this->Category->findById($id);
+        $this->request->data = $getStateData;
+    }  
+    public function store_subCatAdd(){
+
+        $this->layout  = 'assets';
+        if ($this->request->is('post')) {
+            $this->Category->set($this->request->data);
+            if($this->Category->validates()) {
+                $Category_check = $this->Category->find('first', array(
+                                      'conditions' => array(
+                                                    'Category.parent_id' => $this->request->data['Category']['parent_id'],
+                                                    'Category.category_name' => trim($this->request->data['Category']['category_name']),
+                                        'NOT' => array('Category.status' => 3))));
+                if(!empty($Category_check)) {
+                    $this->Session->setFlash('<p>'.__('Unable to add your Category', true).'</p>', 'default', 
+                                                      array('class' => 'alert alert-danger'));
+                } else {
+                    $this->Category->save($this->request->data,null,null);
+                    $this->Session->setFlash('<p>'.__('Your Category has been saved', true).'</p>', 'default', 
+                                                      array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'Categories','action' => 'subCatIndex','store'=>true));
+                }
+            } else {
+                $this->Category->validationErrors;
+            }
         }
-    } 
-    $getStateData = $this->Category->findById($id);
-    $this->request->data = $getStateData;
-  }  
-  public function store_subCatAdd(){
+        $Category_list = $this->Category->find('list',array(
+                                'conditions'=>array('Category.parent_id'=>0,'Category.status'=>1),
+                                'fields'=>array('Category.id','Category.category_name')));
+        $this->set('Category_list',$Category_list);    
+    }
 
-    $this->layout  = 'assets';
-    $Category_list = $this->Category->find('list',array(
-                            'conditions'=>array('Category.parent_id'=>0,'Category.status'=>1),
-                            'fields'=>array('Category.id','Category.category_name')));
-    $this->set('Category_list',$Category_list);
-    if($this->request->is('post')) {
-        $Category_check = $this->Category->find('first', array(
-                              'conditions' => array(
-                                            'Category.parent_id' => $this->request->data['Category']['parent_id'],
-                                            'Category.category_name' => trim($this->request->data['Category']['category_name']),
-                                'NOT' => array('Category.status' => 3))));
-        if(!empty($Category_check)) {
-            $this->Session->setFlash('<p>'.__('Unable to add your Category', true).'</p>', 'default', 
-                                              array('class' => 'alert alert-danger'));
-        } else {
-            $this->Category->save($this->request->data,null,null);
-            $this->Session->setFlash('<p>'.__('Your Category has been saved', true).'</p>', 'default', 
-                                              array('class' => 'alert alert-success'));
-            $this->redirect(array('controller' => 'Categories','action' => 'subCatIndex','store'=>true));
-        }
-    }    
-  }
-   public function store_subCatIndex() {
-    $this->layout  = 'assets';
-    $subCategory_list = $this->Category->find('all',array(
-                              'conditions'=>array(
-                              'NOT'=>array(
-                              'Category.parent_id'=>0,'Category.status'=>3)),
-                                'order'=>'Category.id DESC'));
-    $this->set('subCategory_list',$subCategory_list);
-  }  
-   public function store_subCatEdit($id=null){   
-    $this->layout  = 'assets';
+    public function store_subCatIndex() {
+        $this->layout  = 'assets';
+        $subCategory_list = $this->Category->find('all',array(
+                                  'conditions'=>array(
+                                  'NOT'=>array(
+                                  'Category.parent_id'=>0,'Category.status'=>3)),
+                                    'order'=>'Category.id DESC'));
+        $this->set('subCategory_list',$subCategory_list);
+    }  
+    public function store_subCatEdit($id=null){   
+        $this->layout  = 'assets';
 
-    if(!empty($this->request->data['Category']['category_name'])) {
-
-        $category    = $this->Category->find('all',array(
-                            'conditions'=>array(
-                                'Category.category_name'=>$this->request->data['Category']['category_name'],
-                            'NOT'=>array('Category.id'=>$this->request->data['Category']['id'],
-                                          'Category.parent_id'=>$this->request->data['Category']['parent_id'],
-                                          'Category.status' => 3))
-        ));
-          if(!empty($Category)) {
-            $this->Session->setFlash('<p>'.__('Unable to add your Category', true).'</p>', 'default', 
-                                              array('class' => 'alert alert-danger'));
-          } else {
-            $this->Category->save($this->request->data,null,null);
-            $this->Session->setFlash('<p>'.__('Your Category has been saved', true).'</p>', 'default', 
-                                              array('class' => 'alert alert-success'));
-            $this->redirect(array('controller' => 'Categories','action' => 'subCatIndex'));
-          }
-    }   
-    $getStateData = $this->Category->findById($id);
-    $Category_list = $this->Category->find('list',array(
-                              'conditions'=>array('Category.parent_id'=>0,'Category.status'=>1),
-                              'fields'=>array('Category.id','Category.category_name')));
-    $this->set('Category_list',$Category_list);
-    $this->request->data = $getStateData;
-  }
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->Category->set($this->request->data);
+            if($this->Category->validates()) {
+                $category    = $this->Category->find('all',array(
+                                'conditions'=>array(
+                                    'Category.category_name'=>$this->request->data['Category']['category_name'],
+                                'NOT'=>array('Category.id'=>$this->request->data['Category']['id'],
+                                              'Category.parent_id'=>$this->request->data['Category']['parent_id'],
+                                              'Category.status' => 3))));
+                if(!empty($Category)) {
+                    $this->Session->setFlash('<p>'.__('Unable to add your Category', true).'</p>', 'default', 
+                                                  array('class' => 'alert alert-danger'));
+                } else {
+                    $this->Category->save($this->request->data,null,null);
+                    $this->Session->setFlash('<p>'.__('Your Category has been saved', true).'</p>', 'default', 
+                                                      array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'Categories','action' => 'subCatIndex'));
+                }
+            } else {
+                $this->Category->validationErrors;
+            }
+        }   
+        $getStateData = $this->Category->findById($id);
+        $Category_list = $this->Category->find('list',array(
+                                  'conditions'=>array('Category.parent_id'=>0,'Category.status'=>1),
+                                  'fields'=>array('Category.id','Category.category_name')));
+        $this->set('Category_list',$Category_list);
+        $this->request->data = $getStateData;
+    }
 }

@@ -181,6 +181,18 @@ Configure::write('Session', array(
     'defaults' => 'php'
 ));
 
+/*Configure::write(
+    'Session',
+    array(
+        'defaults' => 'php',
+        'timeout' => 1,
+        //'cookieTimeout' => 0,
+        //'cookie' => 'newNameSESSION'
+        'autoRegenerate' => true
+    )
+);*/
+
+
 /**
  * The level of CakePHP security.
  */

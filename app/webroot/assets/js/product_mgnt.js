@@ -1,4 +1,4 @@
-jQuery().ready(function () {
+/*jQuery().ready(function () {
 
     setTimeout(function(){
         $("#flashMessage").hide();
@@ -402,7 +402,7 @@ jQuery().ready(function () {
 
     });
 
-});
+});*/
 function validateStoreEdit() {
     var StoreContactName = $.trim($("#StoreContactName").val());
     var StoreContactPhone = $.trim($("#StoreContactPhone").val());
@@ -931,7 +931,7 @@ function orderStatus(orderId) {
 
     if (status != 'Failed' && status != 'Pending') {
         $.post(rp + '/store/orders/orderStatus', {'orderId': orderId, 'status': status}, function (response) {
-            $('#orderList_' + orderId).remove();
+            $('#orderDetails' + orderId).remove();
             var message = 'This order moves to delivered';
             if (status != 'Delivered') {
                 message = 'This order moves to ';
@@ -960,14 +960,14 @@ function changeOrderStatus(orderId) {
     var reason = $('#failedReason_' + orderId).val();
 
     if (reason != '') {
-        //$.post(rp+'/store/orders/orderStatus',{'orderId':orderId, 'status':'Failed', 'reason':reason}, function(response) {
-        //$('#orderList_'+orderId).remove();
-        $('#orderMessage').html('This order moves to failed with reason');
-        $('#orderMessage').show();
-        setTimeout(function () {
-            $('#orderMessage').fadeOut();
-        }, 3000);
-        //});
+        $.post(rp+'/store/orders/orderStatus',{'orderId':orderId, 'status':'Failed', 'reason':reason}, function(response) {
+            $('#orderDetails'+orderId).remove();
+            $('#orderMessage').html('This order moves to failed with reason');
+            $('#orderMessage').show();
+            setTimeout(function () {
+                $('#orderMessage').fadeOut();
+            }, 3000);
+        });
     } else {
         alert('Please enter the reason for failed order');
     }
@@ -979,7 +979,7 @@ function deleteOrder(orderId) {
 
     if (confirm(line)) {
         $.post(rp + '/store/orders/orderStatus', {'orderId': orderId, 'status': 'Deleted'}, function (response) {
-            $('#orderList_' + orderId).remove();
+            $('#orderDetails' + orderId).remove();
         });
     }
 }

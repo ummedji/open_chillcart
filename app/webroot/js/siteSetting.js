@@ -123,22 +123,22 @@ function validate () {
 		return false;		
 	} else if(SitesettingSiteCountry == ''){
         $("[href=#location]").trigger('click');
-		$("#locationError").html("Please enter site country");
+		$("#locationError").html("Please select the country");
 		$("#SitesettingSiteCountry").focus();
 		return false;		
 	} else if(SitesettingSiteState == ''){
         $("[href=#location]").trigger('click');
-		$("#locationError").html("Please enter site state");
+		$("#locationError").html("Please select the state");
 		$("#SitesettingSiteState").focus();
 		return false;		
 	} else if(SitesettingSiteCity == ''){
         $("[href=#location]").trigger('click');
-		$("#locationError").html("Please enter site city");
+		$("#locationError").html("Please select the city");
 		$("#SitesettingSiteCity").focus();
 		return false;		
 	} else if(SitesettingSiteZip == ''){
         $("[href=#location]").trigger('click');
-		$("#locationError").html("Please enter site zipcode/area name");
+		$("#locationError").html("Please select zipcode/area name");
 		$("#SitesettingSiteZip").focus();
 		return false;		
 	} else if ($("#SitesettingMailOptionSMTP").is(":checked")) {
@@ -171,7 +171,7 @@ function validate () {
 		return false;		
 	} else if(SitesettingVatPercent == ''){
         $("[href=#invoice]").trigger('click');
-		$("#invoiceError").html("Please enter VAT");
+		$("#invoiceError").html("Please enter VAT percentage");
 		$("#SitesettingVatPercent").focus();
 		return false;		
 	} else if(SitesettingCardFee == ''){        

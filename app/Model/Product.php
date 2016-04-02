@@ -32,4 +32,38 @@ class Product extends Model
         'Deal' => array('className' => 'Deal',
             'foreignKey' => 'main_product',
             'dependent' => true));
+
+    var $validate = array(
+        'store_id' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please Select the store'
+            )
+        ),
+        'product_name' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please Enter the Product Name'
+            )
+        ),
+        'category_id' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please Select the category'
+            )
+        ),
+        'sub_category_id' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please Select the sub category'
+            )
+        ),
+        'price_option' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please select the city'
+            )
+        )
+    );
+
 }

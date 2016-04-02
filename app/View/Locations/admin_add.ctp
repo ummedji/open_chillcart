@@ -40,7 +40,6 @@
 												echo $this->Form->input('state_id',
 														array('type'  => 'select',
 															  'class' => 'form-control',
-															  'options'=> array($state_list),
                                                                'onchange' => 'cityFillter();',
 															  'empty' => 'Select State',
 											 				  'label'=> false)); ?>

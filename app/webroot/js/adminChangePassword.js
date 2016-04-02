@@ -118,27 +118,7 @@ jQuery(function() {
 
     }
   });
-
-  /*var paymentAddvalidator = jQuery("#paymentAdminPaymentSettingForm").validate({
-    rules: {
-      "data[payment][url]": {
-        required: true,
-      },
-      "data[payment][account]": {
-        required: true,
-      }
-    },
-    messages: { 
-      "data[payment][url]": {
-        required: "Please Enter Url detail",
-      },
-      "data[payment][account]": {
-        required: "Please Enter the account detail",
-      }
-
-    }
-  });*/
-
+  
   var CategoryAddvalidator = jQuery("#CategoryAdminAddForm").validate({
     rules: {
       "data[Category][category_name]": {
@@ -810,7 +790,7 @@ jQuery(function() {
       },
       "data[User][conformpassword]": {
         required: true,
-        //equalsTo:'#UserPassword',
+        equalTo:'#UserPassword',
       },
       "data[Driver][address]": {
         required: true,
@@ -975,7 +955,7 @@ jQuery(function() {
     },
     messages: { 
       "data[State][state_name]": {
-        required: "Please select the state",
+        required: "Please enter the state name",
       },
       "data[State][country_id]": {
         required: "Please select the Country",
@@ -1098,6 +1078,9 @@ jQuery(function() {
   });
   var CityAddvalidator = jQuery("#CityAdminAddForm").validate({
     rules: {
+      "data[City][country_id]": {
+        required: true,
+      },
       "data[City][state_id]": {
         required: true,
       },
@@ -1106,17 +1089,23 @@ jQuery(function() {
       }
     },
     messages: { 
+      "data[City][country_id]": {
+        required: "Please select the country",
+      },
       "data[City][state_id]": {
         required: "Please select the state",
       },
       "data[City][city_name]": {
-        required: "Please select the City",
+        required: "Please enter the city name",
       }
 
     }
   });
   var CityEditvalidator = jQuery("#CityAdminEditForm").validate({
     rules: {
+      "data[City][country_id]": {
+        required: true,
+      },
       "data[City][state_id]": {
         required: true,
       },
@@ -1125,11 +1114,14 @@ jQuery(function() {
       }
     },
     messages: { 
+      "data[City][country_id]": {
+        required: "Please select the country",
+      },
       "data[City][state_id]": {
         required: "Please select the state",
       },
       "data[City][city_name]": {
-        required: "Please select the City",
+        required: "Please select the city name",
       }
 
     }
@@ -1198,7 +1190,4 @@ jQuery(function() {
       }
     }
   });
-
-
-
 });
