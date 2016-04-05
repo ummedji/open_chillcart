@@ -641,7 +641,7 @@ position: absolute;right: 2px;text-align: center;text-transform: uppercase;}
 
 #sync1.owl-carousel .owl-wrapper-outer{text-align: center;max-height: 380px;height: 380px;margin-bottom: 35px; }
 #sync2.owl-carousel .owl-wrapper-outer{ margin-bottom: 15px;text-align: center;}
-#sync1.owl-carousel .owl-wrapper-outer .owl-item .item{ padding: 25px 25px;background: #f7f7f7;border: 3px solid #eee;display: inline-block;max-width: 100%;}
+#sync1.owl-carousel .owl-wrapper-outer .owl-item .item{ padding: 25px 25px;display: inline-block;max-width: 100%;}
 
 .store_slotes{ background: #f7f7f7; margin-bottom: 20px; padding: 15px 0 0 ;border: 1px solid #eee; }
 .store_name{font: 17px/20px FuturaHeavy !important; color: #038F1B; } 
