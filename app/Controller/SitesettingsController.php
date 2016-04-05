@@ -16,26 +16,31 @@ class SitesettingsController extends AppController
     public function admin_index()
     {
 
-        if (!empty($this->request->data)) {
-            $destinationPath = WWW_ROOT . 'siteicons';
-            if ($this->request->data['Sitesetting']['site_logo']['error'] == 0) {
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->Sitesetting->set($this->request->data);
+            if($this->Sitesetting->validates()) {
+                $destinationPath = WWW_ROOT . 'siteicons';
+                if ($this->request->data['Sitesetting']['site_logo']['error'] == 0) {
 
-                $refFile = $this->Updown->uploadFile($this->request->data['Sitesetting']['site_logo'],
-                    $destinationPath);
-                rename($destinationPath . '/' . $refFile['refName'], $destinationPath . '/logo.png');
+                    $refFile = $this->Updown->uploadFile($this->request->data['Sitesetting']['site_logo'],
+                        $destinationPath);
+                    rename($destinationPath . '/' . $refFile['refName'], $destinationPath . '/logo.png');
 
+                }
+                if ($this->request->data['Sitesetting']['site_fav']['error'] == 0) {
+                    $refFav = $this->Updown->uploadFile($this->request->data['Sitesetting']['site_fav'],
+                        $destinationPath);
+                    rename($destinationPath . '/' . $refFav['refName'], $destinationPath . '/fav.ico');
+                }
+                $this->request->data['Sitesetting']['site_logo'] = 'logo.png';
+                $this->request->data['Sitesetting']['site_fav'] = 'fav.ico';
+                $this->request->data['Sitesetting']['user_id'] = $this->Auth->User('id');
+                $this->Sitesetting->save($this->request->data, null, null);
+                $this->Session->setFlash('<p>' . __('Successfully Site Setting details updated', true) . '</p>', 'default',
+                    array('class' => 'alert alert-success'));
+            } else {
+                $this->Sitesetting->validationErrors;
             }
-            if ($this->request->data['Sitesetting']['site_fav']['error'] == 0) {
-                $refFav = $this->Updown->uploadFile($this->request->data['Sitesetting']['site_fav'],
-                    $destinationPath);
-                rename($destinationPath . '/' . $refFav['refName'], $destinationPath . '/fav.ico');
-            }
-            $this->request->data['Sitesetting']['site_logo'] = 'logo.png';
-            $this->request->data['Sitesetting']['site_fav'] = 'fav.ico';
-            $this->request->data['Sitesetting']['user_id'] = $this->Auth->User('id');
-            $this->Sitesetting->save($this->request->data, null, null);
-            $this->Session->setFlash('<p>' . __('Successfully Site Setting details updated', true) . '</p>', 'default',
-                array('class' => 'alert alert-success'));
         }
 
         $stores = $this->Sitesetting->find('first');
@@ -105,9 +110,6 @@ class SitesettingsController extends AppController
         $user_id = $this->Auth->User();
         $site_id = $this->Sitesetting->findByUserId($user_id['id']);
         if (!empty($this->request->data)) {
-            $this->request->data['Sitesetting']['stripe_mode'] = $this->request->data['Sitesetting']['stripe_mode'];
-            $this->request->data['Sitesetting']['stripe_url'] = $this->request->data['Sitesetting']['stripe_url'];
-            $this->request->data['Sitesetting']['stripe_ac'] = $this->request->data['Sitesetting']['stripe_ac'];
             $this->request->data['Sitesetting']['id'] = $site_id['Sitesetting']['id'];
             $this->Sitesetting->save($this->request->data['Sitesetting'], null, null);
             $this->Session->setFlash('<p>' . __('Your Account Detail has been saved', true) . '</p>', 'default',

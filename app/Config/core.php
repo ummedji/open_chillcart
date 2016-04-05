@@ -132,7 +132,7 @@ Configure::write('Routing.prefixes', array('admin', 'store', 'customer'));
  * or in each action using $this->cacheAction = true.
  *
  */
-//Configure::write('Cache.check', true);
+Configure::write('Cache.check', true);
 
 /**
  * Defines the default error type when using the log() function. Used for
@@ -180,6 +180,18 @@ define('LOG_ERROR', LOG_ERR);
 Configure::write('Session', array(
     'defaults' => 'php'
 ));
+
+/*Configure::write(
+    'Session',
+    array(
+        'defaults' => 'php',
+        'timeout' => 1,
+        //'cookieTimeout' => 0,
+        //'cookie' => 'newNameSESSION'
+        'autoRegenerate' => true
+    )
+);*/
+
 
 /**
  * The level of CakePHP security.

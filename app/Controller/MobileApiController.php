@@ -8,7 +8,7 @@ App::uses('CakeEmail', 'Network/Email');
 
 class MobileApiController extends AppController
 {
-    public $components = array('AndroidResponse', 'Notification', 'Functions', 'Twilio');
+    public $components = array('AndroidResponse', 'Notification', 'CakeS3', 'Twilio');
     public $uses = array('User', 'Order', 'Driver', 'DriverTracking', 'Orderstatus', 'MailContent',
         'State', 'City', 'Location');
 
@@ -108,8 +108,8 @@ class MobileApiController extends AppController
                             $response['currency'] = $this->siteSetting['Country']['currency_symbol'];
 
                             $driverImage = (!empty($driver['Driver']['image']))
-                                ? $this->siteUrl . '/driversImage/' . $driver['Driver']['image']
-                                : $this->siteUrl . '/driversImage/no-photo.png';
+                                ? $this->cdn . '/driversImage/' . $driver['Driver']['image']
+                                : $this->siteUrl . '/images/no-photo.png';
 
                             $response['driverImage'] = $driverImage;
                             $response['driverStatus'] = 'Available';
@@ -133,7 +133,7 @@ class MobileApiController extends AppController
                     break;
 
                 case 'DriverImageUpload':
-
+                
                     $driver = $this->Driver->findById($this->request->data('driverid'));
                     if (!empty($this->request->data['image'])) {
                         // Get image string posted from Android App
@@ -141,7 +141,11 @@ class MobileApiController extends AppController
 
                         // Get file name posted from Android App
                         $fileId = $driver['Driver']['id'] . time() . '.png';
-                        $filename = APP . 'webroot/driversImage/' . $fileId;
+                        //$filename = APP . 'webroot/driversImage/' . $fileId;
+
+                        $driverImageS3  = 'driversImage/';
+                        $filename      = ROOT.DS.'app'.DS."tmp".DS."driversImage".DS.$fileId;
+
                         // Decode Image
                         $binary = base64_decode($base);
                         header('Content-Type: bitmap; charset=utf-8');
@@ -150,15 +154,17 @@ class MobileApiController extends AppController
                         // Create File
                         fwrite($file, $binary);
                         fclose($file);
-                        #Save Driver Image
 
+                        $result = $this->CakeS3->putObject($filename, $driverImageS3.$fileId, S3::ACL_PUBLIC_READ);
+
+                        #Save Driver Image
                         $driverImage['Driver']['id'] = $driver['Driver']['id'];
                         $driverImage['Driver']['image'] = $fileId;
                         $this->Driver->save($driverImage);
 
                         $response['success'] = 1;
                         $response['message'] = 'Image uploaded successfully!';
-                        $response['driverImage'] = $this->siteUrl . '/driversImage/' . $fileId;
+                        $response['driverImage'] = $this->cdn . '/driversImage/' . $fileId;
                     } else {
                         $response['success'] = 0;
                         $response['message'] = 'Image not upload!';
@@ -173,8 +179,8 @@ class MobileApiController extends AppController
                     if (is_array($driver) && $driver['User']['role_id'] == 5) {
 
                         $driverImage = (!empty($driver['Driver']['image']))
-                            ? $this->siteUrl . '/driversImage/' . $driver['Driver']['image']
-                            : $this->siteUrl . '/driversImage/no-photo.png';
+                            ? $this->cdn . '/driversImage/' . $driver['Driver']['image']
+                            : $this->siteUrl . '/images/no-photo.png';
 
                         $response['success'] = 1;
                         $response['DriverName'] = $driver['Driver']['driver_name'];
@@ -311,7 +317,7 @@ class MobileApiController extends AppController
                             /*if ($this->siteSetting['Setting']['isSms'] == 1) {
 
                                 $receiver  = '+91'.$ordStatus['Order']['customer_phone'];
-                                $message   = "Dear ".$ordStatus['Order']['customer_name'].", your Order ".$ordStatus['Order']['custom_order_id']."  has been ".$status.".";
+                                $message   = "Dear ".$ordStatus['Order']['customer_name'].", your Order ".$ordStatus['Order']['ref_number']."  has been ".$status.".";
                                 $this->Functions->sendSms($receiver, $message);
                             }*/
 
@@ -320,8 +326,8 @@ class MobileApiController extends AppController
 
                             /*if ($status == 'On the way') {
                                 $trackContent   = 'http://dispatchsystem.net/trackings/index.php?r='
-                                                .base64_encode($ordStatus['Order']['custom_order_id']);
-                                $trackSubject   = 'Track your order('.$ordStatus['Order']['custom_order_id'].')';
+                                                .base64_encode($ordStatus['Order']['ref_number']);
+                                $trackSubject   = 'Track your order('.$ordStatus['Order']['ref_number'].')';
                                 $adminMail      = $this->siteSetting['Setting']['siteemail'];
                                 $customerMail   = $ordStatus['Order']['customer_email'];
 
@@ -352,7 +358,7 @@ class MobileApiController extends AppController
                             $siteUrl = $this->siteUrl;
 
                             $mailContent = str_replace("{customerName}", $ordStatus['Order']['customer_name'], $mailContent);
-                            $mailContent = str_replace("{orderId}", $ordStatus['Order']['custom_order_id'], $mailContent);
+                            $mailContent = str_replace("{orderId}", $ordStatus['Order']['ref_number'], $mailContent);
                             $mailContent = str_replace("{status}", $status, $mailContent);
 
                             $email = new CakeEmail();
@@ -371,39 +377,51 @@ class MobileApiController extends AppController
                         if (!empty($this->request->data['image']) && $status == 'Delivered') {
                             // Get image string posted from Android App
                             $base = $this->request->data['image'];
-                            //chmod(APP.'webroot/OrderProof/', 777);
                             // Get file name posted from Android App
-                            $fileId = 'Order_signature' . $orderId . '.png';
-                            $filename = APP . 'webroot/OrderProof/' . $fileId;
+                            $fileId   = 'Order_signature' . $orderId . '.png';
+                            $filename = ROOT.DS.'app'.DS."tmp".DS."OrderProof".DS.$fileId;
                             // Decode Image
                             $binary = base64_decode($base);
                             header('Content-Type: bitmap; charset=utf-8');
 
                             $file = fopen($filename, 'wb+');
-                            // Create File
                             fwrite($file, $binary);
                             fclose($file);
 
+                            // S3 Upload Process
+                            $orderProofS3  = 'OrderProof/';
+                            $result = $this->CakeS3->putObject($filename, $orderProofS3.$fileId, S3::ACL_PUBLIC_READ);
                             $ordStatus['Order']['payment_method'] = 'paid';
                         }
 
                         $this->Order->save($ordStatus);
-
-
-                        $customerMessage = "Dear " . $ordStatus['Customer']['first_name'] . ",Your order has been " . $status . ' by driver, Order id : ' . $ordStatus['Order']['ref_number'];
-
-                        $toCustomerNumber = '+' . $this->siteSetting['Country']['phone_code'] . $ordStatus['Customer']['customer_phone'];
-
-                        $customerSms = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
-
-
                         $response['success'] = 1;
                         $response['message'] = 'Order Status Change Successfully';
+
+                        //Driver SMS
+                        if ($status == 'Collected') {
+
+                            $driverMessage = "Congratulations ! Your order ".$ordStatus['Order']['ref_number']." is on it's way to you. It wiil be delivered by ".
+                            $ordStatus['Driver']['driver_name'].". Thanks for shopping with Chillcart and stay connected.";
+                        }
+
+                        if ($status == 'Delivered') {
+
+                            $driverMessage = "Congratulations ! Your order ".$ordStatus['Order']['ref_number']." successfully delivered by ".$ordStatus['Driver']['driver_name'];
+                        }
+
+                        $statusArray = array('Collected', 'Delivered', 'Accepted');
+
+                        if (in_array($status, $statusArray)) {
+
+                            $toDriverNumber = '+'.$this->siteSetting['Country']['phone_code'].$ordStatus['Driver']['driver_phone'];
+                            $driverSms      = $this->Twilio->sendSingleSms($toDriverNumber, $driverMessage);
+                        }
 
                         $driverDetail = $this->Driver->findById($driverId);
 
                         //Push Notification
-                        $message = ($status == 'Accepted') ? $ordStatus['Order']['ref_number'] . ' - Order is not picked up by ' . $driverDetail['User']['firstname'] . ' ' . $driverDetail['User']['name'] : $ordStatus['Order']['custom_order_id'] . " - Order status changed to " . $status;
+                        $message = ($status == 'Accepted') ? $ordStatus['Order']['ref_number'] . ' - Order is not picked up by ' . $driverDetail['User']['firstname'] . ' ' . $driverDetail['User']['name'] : $ordStatus['Order']['ref_number'] . " - Order status changed to " . $status;
                         //$this->Notification->pushNotification($message);
                         //Send Order Status To Native Site
                         if (!empty($this->siteSetting['Setting']['url'])) {
@@ -489,23 +507,6 @@ class MobileApiController extends AppController
                             $orderDetails[$key]['CustomerName'] = $value['Order']['customer_name'];
                             $orderDetails[$key]['PaymentType'] = $value['Order']['payment_type'];
 
-
-                            /* $orderDetails[$key]['RestaurantName']         = stripslashes($value['Restaurant']['restaurant_name']);
-                             $orderDetails[$key]['CustomerName']           = stripslashes($value['Order']['customer_name']);
-                             $orderDetails[$key]['SourceAddress']          = stripslashes($value['Restaurant']['restaurant_address']);
-                             $orderDetails[$key]['SourceLatitude']         = $value['Restaurant']['latitude'];
-                             $orderDetails[$key]['SourceLongitude']        = $value['Restaurant']['longitude'];
-                             $orderDetails[$key]['DestinationAddress']     = stripslashes($value['Order']['delivery_address']);
-                             $orderDetails[$key]['DestinationLatitude']    = $value['Order']['delivery_latitude'];
-                             $orderDetails[$key]['DestinationLongitude']   = $value['Order']['delivery_longitude'];
-                             $orderDetails[$key]['OrderDate']              = $value['Order']['order_date'];
-                             $orderDetails[$key]['OrderTime']              = $value['Order']['order_time'];
-                             $orderDetails[$key]['OrderPrice']             = $value['Order']['total'];
-                             $orderDetails[$key]['OrderId']                = $value['Order']['id'];
-                             $orderDetails[$key]['OrderGenerateId']        = $value['Order']['custom_order_id'];
-                             $orderDetails[$key]['PaymentType']            = ($value['Order']['payment_type'] == null) ? '' : $value['Order']['payment_type'];
-                             $orderDetails[$key]['OrderStatus']            = $value['Statuses']['status'];*/
-
                         }
 
                         $response['success'] = 1;
@@ -570,20 +571,6 @@ class MobileApiController extends AppController
                             $orderDetails[$key]['CustomerName'] = $value['Order']['customer_name'];
                             $orderDetails[$key]['PaymentType'] = $value['Order']['payment_type'];
 
-
-                            /*$orderDetails[$key]['RestaurantName']         = stripslashes($value['Restaurant']['restaurant_name']);
-                            $orderDetails[$key]['SourceAddress']          = stripslashes($value['Restaurant']['restaurant_address']);
-                            $orderDetails[$key]['SourceLatitude']         = $value['Restaurant']['latitude'];
-                            $orderDetails[$key]['SourceLongitude']        = $value['Restaurant']['longitude'];
-                            $orderDetails[$key]['DestinationAddress']     = stripslashes($value['Order']['delivery_address']);
-                            $orderDetails[$key]['DestinationLatitude']    = $value['Order']['delivery_latitude'];
-                            $orderDetails[$key]['DestinationLongitude']   = $value['Order']['delivery_longitude'];
-                            $orderDetails[$key]['OrderDate']              = $value['Order']['order_date'];
-                            $orderDetails[$key]['OrderTime']              = $value['Order']['order_time'];
-                            $orderDetails[$key]['OrderPrice']             = $value['Order']['total'];
-                            $orderDetails[$key]['OrderId']                = $value['Order']['id'];
-                            $orderDetails[$key]['OrderGenerateId']        = $value['Order']['custom_order_id'];
-                            $orderDetails[$key]['OrderStatus']            = $value['Statuses']['status'];*/
                         }
                         $response['success'] = 1;
                         $response['orders'] = $orderDetails;
@@ -677,35 +664,6 @@ class MobileApiController extends AppController
                             $orderDetails[$key]['Hour'] = $hour;
                             $orderDetails[$key]['Min'] = $min;
                             $orderDetails[$key]['Sec'] = $sec;
-
-
-                            /*$datetime1 = new DateTime(date('Y-m-d G:i:s'));
-                            $datetime2 = new DateTime($value['Order']['updated']);
-                            $interval  = $datetime1->diff($datetime2);
-                            $hour      = $interval->format('%H');
-                            $min       = $interval->format('%I');
-                            $sec       = $interval->format('%S');
-                            $day       = $interval->format('%D');
-                            
-                            $orderDetails[$key]['StoreName']            = stripslashes($value['Restaurant']['restaurant_name']);
-                            $orderDetails[$key]['CustomerName']           = stripslashes($value['Order']['customer_name']);
-                            $orderDetails[$key]['SourceAddress']          = stripslashes($value['Restaurant']['restaurant_address']);
-                            $orderDetails[$key]['SourceLatitude']         = $value['Restaurant']['latitude'];
-                            $orderDetails[$key]['SourceLongitude']        = $value['Restaurant']['longitude'];
-                            $orderDetails[$key]['DestinationAddress']     = stripslashes($value['Order']['delivery_address']);
-                            $orderDetails[$key]['DestinationLatitude']    = $value['Order']['delivery_latitude'];
-                            $orderDetails[$key]['DestinationLongitude']   = $value['Order']['delivery_longitude'];
-                            $orderDetails[$key]['OrderDate']              = $value['Order']['order_date'];
-                            $orderDetails[$key]['OrderTime']              = $value['Order']['order_time'];
-                            $orderDetails[$key]['OrderPrice']             = $value['Order']['total'];
-                            $orderDetails[$key]['OrderId']                = $value['Order']['id'];
-                            $orderDetails[$key]['OrderGenerateId']        = $value['Order']['custom_order_id'];
-                            $orderDetails[$key]['PaymentType']            = ($value['Order']['payment_type'] == null) ? '' : $value['Order']['payment_type'];
-                            $orderDetails[$key]['OrderStatus']            = $value['Statuses']['status'];
-                            $orderDetails[$key]['Day']                    = $day;
-                            $orderDetails[$key]['Hour']                   = $hour;
-                            $orderDetails[$key]['Min']                    = $min;
-                            $orderDetails[$key]['Sec']                    = $sec;*/
                         }
                         $response['success'] = 1;
                         $response['orders'] = $orderDetails;
@@ -767,27 +725,6 @@ class MobileApiController extends AppController
                         $orderDet['status'] = $orderDetails['Order']['status'];
 
                         $orderDet['orderMenu'] = stripslashes_deep($orderDetails['ShoppingCart']);
-
-
-                        /*$orderDet['orderId']            = $orderDetails['Order']['custom_order_id'];
-                        $orderDet['customerName']       = stripslashes($orderDetails['Order']['customer_name']);
-                        $orderDet['customerAddress']    = stripslashes($orderDetails['Order']['delivery_address']);
-                        $orderDet['customerEmail']      = $orderDetails['Order']['customer_email'];
-                        $orderDet['customerPhone']      = $orderDetails['Order']['customer_phone'];
-                        $orderDet['restaurantName']     = stripslashes($orderDetails['Restaurant']['restaurant_name']);
-                        $orderDet['restaurantAddress']  = stripslashes($orderDetails['Restaurant']['restaurant_address']);
-                        $orderDet['offer']              = $orderDetails['Order']['offer'];
-                        $orderDet['tax']                = $orderDetails['Order']['tax'];
-                        $orderDet['deliveryCharge']     = $orderDetails['Order']['delivery_charge'];
-                        $orderDet['subTotal']           = $orderDetails['Order']['subtotal'];
-                        $orderDet['total']              = $orderDetails['Order']['total'];
-                        $orderDet['paymentType']        = $orderDetails['Order']['payment_type'];
-                        $orderDet['deliveryDate']       = $orderDetails['Order']['order_date'];
-                        $orderDet['deliveryTime']       = $orderDetails['Order']['order_time'];
-                        $orderDet['orderDate']          = $orderDetails['Order']['created'];
-                        $orderDet['status']             = $orderDetails['Statuses']['status'];
-                        $orderDet['Description']        = stripslashes($orderDetails['Order']['description']);
-                        $orderDet['orderMenu']          = stripslashes_deep($orderDetails['OrderItem']);*/
 
                         $response = $orderDet;
                     } else {

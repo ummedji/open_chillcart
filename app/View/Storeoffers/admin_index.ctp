@@ -74,6 +74,7 @@
 								<tr>
 									<th class="table-checkbox no-sort"><input type="checkbox" class="group-checkable test1" data-set="#sample_1 .checkboxes" /></th>
 									<th>Offer Percentge(%)</th>
+									<th>Store Name</th>
 									<th>Offer Price</th>
 									<th>Offer From</th>
 									<th>Offer To</th>
@@ -84,7 +85,7 @@
 							</thead>
 							<tbody><?php 
 								
-									foreach ($Storeoffer_list as $key =>$value){//echo "<pre>"; print_r($value);echo "</pre>";?>
+									foreach ($Storeoffer_list as $key =>$value){ ?>
 								<tr class="odd gradeX" id="record<?php echo $value['Storeoffer']['id'];?>">
 										<td> <?php
 											echo $this->Form->checkbox($value['Storeoffer']['id'],
@@ -93,6 +94,7 @@
 													'hiddenField'=>false,
 													'value'=> $value['Storeoffer']['id'])); ?> </td>
 									<td><?php echo $value['Storeoffer']['offer_percentage'];?></td>
+									<td><?php echo $value['Store']['store_name'];?></td>
 									<td><?php echo $value['Storeoffer']['offer_price'];?></td>
 									<td><?php echo $value['Storeoffer']['from_date'];?></td>
 									<td><?php echo $value['Storeoffer']['to_date'];?></td>

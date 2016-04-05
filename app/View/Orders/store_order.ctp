@@ -55,12 +55,11 @@
 											<td> <?php    
 												echo $this->Html->link($value['Order']['ref_number'],
 																	array('action' => 'orderView',
-																			$value['Order']['id'],
-																			'dispatch'),
+																			$value['Order']['id']),
 																	array('class' => 'no-padding blue bold'));  ?>
 												<br/> <?php
 
-												$restaurantAddress = $value['Store']['street_address'].', '.
+												$storeAddress = $value['Store']['street_address'].', '.
 																	$location[$value['Store']['store_zip']].', '.
 																	$city[$value['Store']['store_city']].', '.
 																	$states[$value['Store']['store_state']];
@@ -71,7 +70,7 @@
 																	$value['Order']['state_name']; ?>
 
 												<span class="address orange-location"><?php
-													echo stripslashes($restaurantAddress); ?></span></br></br>
+													echo stripslashes($storeAddress); ?></span></br></br>
 												<span class="address blue-location"><?php 
 													echo stripslashes($customerAddress); ?></span>
 											</td>
@@ -86,9 +85,38 @@
 												else:
 													?> <span class="tdnotassign"> <?php echo 'Not Yet Assigned'; ?> </span> <?php
 												endif; ?>
+
 											</td>
 
-											<td align="center" id="status<?php echo $value['Order']['id']; ?>" class="order_status"><span><?php echo $value['Order']['status']; ?></span></td>
+											<td align="center" class="order_status"><span><?php echo $value['Order']['status']; ?></span>
+
+											<span class="padding-b-5 col-sm-12">
+
+
+
+
+												<?php
+
+													echo 'Others'; ?>
+												</span>
+												<div class="col-sm-12">	<?php
+
+													echo $this->Form->input('orderStatus_'.$value['Order']['id'],
+														array('type'=>'select',
+															 'class'=>'form-control',
+															 'options'=> array($status),
+															 'onchange' => "orderStatus(".$value['Order']['id'].");",
+															 'label'=> false,
+															 'empty' => 'Select',
+															 'value' => $value['Order']['status'])); ?>
+												</div>
+
+												<div class="contain" id="reason_<?php echo $value['Order']['id']; ?>"></div> 
+
+
+
+
+											</td>
 
 											<td align="center"><?php
 												/*echo $this->Html->link('<i class="fa fa-search"></i>',

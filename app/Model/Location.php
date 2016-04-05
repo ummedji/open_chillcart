@@ -11,4 +11,35 @@ class Location extends Model
         'State' => array('className' => 'State',
             'foreignKey' => 'state_id',
             'dependent' => true));
+
+    var $validate = array(
+        'state_id' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please select the state'
+            )
+        ),
+        'city_id' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please select the city'
+            )
+        ),
+        'area_name' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please enter the area name'
+            )
+        ),
+        'zip_code' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please enter the zip code name'
+            ),
+            'zip_no_should_be_numeric' => array(
+                'rule' => 'numeric',
+                'message' => 'Please enter valid zip code'
+            )
+        )
+	);
 }

@@ -6,9 +6,9 @@ App::uses('CakeEmail', 'Network/Email');
 
 class StoreMobileApiController extends AppController
 {
-    public $components = array('AndroidResponse', 'Notification', 'Functions', 'Googlemap', 'Twilio');
-    public $uses = array('User', 'Order', 'Orderstatus', 'MailContent',
-        'State', 'City', 'Location', 'Store', 'Driver', 'DriverTracking');
+    public $components = array('AndroidResponse', 'Functions', 'Googlemap', 'Twilio');
+    public $uses = array('User', 'Order', 'Notification', 'State', 'City', 'Location', 'Store', 'Driver',
+                        'DriverTracking');
 
     public function beforeFilter()
     {
@@ -79,6 +79,69 @@ class StoreMobileApiController extends AppController
                     }
                     break;
 
+                case 'forgotmail':
+
+                    $userData = $this->User->find('first', array(
+                                           'conditions' =>array(
+                                               'User.username' => trim($this->request->data['forgetemail']),
+                                               'Store.status' => 1,
+                                               'User.role_id' => 3)));
+
+                    if(!empty($userData)){
+                       $newRegisteration = $this->Notification->find('first', array(
+                                            'conditions'=>array('Notification.title =' => 'Reset password')));
+
+                       $toemail      = $this->request->data['forgetemail'];
+                       $source       = $this->siteUrl.'/siteicons/logo.png';
+                       $storeEmail   = $this->siteSetting['Sitesetting']['admin_email'];
+                       $siteName     = $this->siteSetting['Sitesetting']['site_name'];
+                       $storename    = $userData['Store']['store_name'];
+                       $tmpPassword  = $this->Functions->createTempPassword(7);
+
+                       $datas['User']['password']=$this->Auth->Password($tmpPassword);
+                       $datas['User']['id'] = $userData['User']['id'];
+
+                        if ($this->User->save($datas['User'],null,null)){
+                            if($newRegisteration){
+                                $forgetpasswordContent = $newRegisteration['Notification']['content'];
+                                $forgetpasswordsubject = $newRegisteration['Notification']['subject'];
+                            }
+
+                            $mailContent = $forgetpasswordContent;
+                            $siteUrl = $this->siteUrl.'/store';
+                            $mailContent = str_replace("{Customer name}", $storename, $mailContent);
+                            $mailContent = str_replace("{source}", $source, $mailContent);
+                            $mailContent = str_replace("{title}", $siteName, $mailContent);
+                            $mailContent = str_replace("{SITE_URL}", $siteUrl, $mailContent);
+                            $mailContent = str_replace("{tmpPassword}", $tmpPassword, $mailContent);
+                            $mailContent = str_replace("{Store name}", $siteName, $mailContent);
+
+                            $email = new CakeEmail();
+                            $email->from($storeEmail);
+                            $email->to($toemail);
+                            $email->subject($forgetpasswordsubject);
+                            $email->template('register');
+                            $email->emailFormat('html');
+                            $email->viewVars(array('mailContent' => $mailContent,
+                                                    'source'=>$source,
+                                                    'storename'=>$siteName));
+                            if($email->send()){
+                                // Forget Sms
+                                $storeMessage = "We've received a request to change your password. Use this password ".$tmpPassword." to login to your account and update it ASAP. Thanks Chillcart";
+                                $toStoreNumber = '+'.$this->siteSetting['Country']['phone_code'].$userData['Store']['contact_phone'];
+                                $storeSms     = $this->Twilio->sendSingleSms($toStoreNumber, $storeMessage);
+
+                                $response['success'] = '1';
+                                $response['message'] = 'Email has been sent successfully';
+                            }
+                        }
+                    } else {
+                        $response['success'] = '0';
+                        $response['message'] = 'You are not authorized';
+                    }
+
+                break;
+
                 case 'StoreDetail':
                     $id = $this->request->data['user_id'];
                     $store = $this->Store->find('first', array(
@@ -87,7 +150,7 @@ class StoreMobileApiController extends AppController
                         $response['id'] = $store['Store']['id'];
                         $response['name'] = $store['Store']['contact_name'];
                         $response['email'] = $store['Store']['contact_email'];
-                        $response['phone'] = $store['Store']['store_phone'];
+                        $response['phone'] = $store['Store']['contact_phone'];
                         $response['success'] = '1';
 
                     } else {
@@ -197,10 +260,8 @@ class StoreMobileApiController extends AppController
                     break;
 
                 case 'orderStatusChange':
-
-                    $orderDetail = $this->Order->findById($orderId);
-
                     $order_id = $this->request->data['order_id'];
+		    $orderDetail = $this->Order->findById($order_id);
                     if ($order_id != '') {
                         $this->request->data['Order']['id'] = $order_id;
                         if ($this->request->data['status'] == 'Accept') {
@@ -221,15 +282,12 @@ class StoreMobileApiController extends AppController
                             $this->request->data['Order']['failed_reason'] = $this->request->data['cancel_reason'];
                             $this->Order->save($this->request->data['Order']);
                         }
-
-
-                        $customerMessage = "Dear " . $orderDetail['Customer']['first_name'] . ",Your order has been " . $this->request->data['status'] . ' by store, Order id : ' . $orderDetail['Order']['ref_number'];
-
-                        $toCustomerNumber = '+' . $this->siteSetting['Country']['phone_code'] . $orderDetail['Customer']['customer_phone'];
-
-                        $customerSms = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
-
-
+			//Cuctomer SMS
+                        $customerMessage  = 'Congratulations! Your order '.$orderDetail['Order']['ref_number'].' succesfully accepted by '.
+						$orderDetail['Store']['store_name'].'. Your order will be delivered by '.
+						$orderDetail['Order']['delivery_date']. ' at '.$orderDetail['Order']['delivery_time_slot'].'. Thanks Chillcart';
+                        $toCustomerNumber = '+'.$this->siteSetting['Country']['phone_code'].$orderDetail['Customer']['customer_phone'];
+                        $customerSms      = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
                         $response['success'] = '1';
                         $response['message'] = 'Status has been Changed';
                     } else {
@@ -321,7 +379,18 @@ class StoreMobileApiController extends AppController
                             $this->Order->save($orderStatus);
 
                             $gcm = json_decode($gcm, true);
-                            //echo $gcm['success'];
+			    // Driver SMS
+                            $driverMessage  = 'Dear '.$driverDetails['Driver']['driver_name'].',pick up ';
+                            $driverMessage .= ($orders['Order']['payment_method'] != 'paid') ? 'COD' : 'PAID';
+                            $driverMessage .= ' order '.$orders['Order']['ref_number'].' from '.$orders['Order']['customer_name'];
+                            $driverMessage .=   ','.$orders['Order']['address'].','.$orders['Order']['landmark'].
+                                                ','.$orders['Order']['location_name'].','.$orders['Order']['city_name'].
+                                                ','.$orders['Order']['city_name'];
+
+                            $driverMessage .= '. '.$orders['Order']['order_type'].' due on '.$orders['Order']['delivery_date'].' at '.
+                                                $orders['Order']['delivery_time_slot'].'. Thanks Chillcart';
+                            $toDriverNumber = '+'.$this->siteSetting['Country']['phone_code'].$driverDetails['Driver']['driver_phone'];
+                            $driverSms      = $this->Twilio->sendSingleSms($toDriverNumber, $driverMessage);
                         }
 
                         $response['success'] = '1';
@@ -560,7 +629,7 @@ class StoreMobileApiController extends AppController
                                     $value['DriverTracking']['driver_longitude'],
                                     $pickup['Latitude'],
                                     $pickup['Longitude']);
-                                if (!empty($distance)) {
+                                //if (!empty($distance)) {
 
                                     $availDrivers[$key]['id'] = $value['Driver']['id'];
                                     $availDrivers[$key]['status'] = $value['Driver']['driver_status'];
@@ -571,7 +640,7 @@ class StoreMobileApiController extends AppController
                                     $availDrivers[$key]['vehicle_name'] = $value['Vehicle']['vehicle_name'];
                                     $availDrivers[$key]['vehicle_model'] = $value['Vehicle']['vehicle_name'];
 
-                                }
+                                //}
 
                             }
                             $response['driverDetail'] = ($availDrivers) ? $availDrivers : array();

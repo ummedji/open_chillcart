@@ -176,7 +176,12 @@ class Sanitize
 
         if (is_array($data)) {
             foreach ($data as $key => $val) {
-                $data[$key] = Sanitize::clean($val, $options);
+                $ignore = array('google_analytics', 'woopra_analytics', 'content');
+                if (!in_array($key, $ignore)) {
+                    $cleanReocrd = Sanitize::clean($val, $options);
+                    $replace     = array('\n', '\r', '\t');
+                    $data[$key]  = str_replace($replace, ' ', $cleanReocrd);
+                }
             }
             return $data;
         } else {
@@ -203,6 +208,7 @@ class Sanitize
             }
             return $data;
         }
+        exit();
     }
 
     /**

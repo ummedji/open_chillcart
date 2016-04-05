@@ -1,6 +1,6 @@
 <div class="contain">
 	<div class="contain">
-		<h3 class="page-title">Edit Book</h3>
+		<h3 class="page-title">Edit Adress Book</h3>
 		<div class="page-bar">
 			<ul class="page-breadcrumb">
 				<li>
@@ -49,6 +49,7 @@
 										<div class="col-md-6 col-lg-4"><?php
 													echo $this->Form->input('address',
 															array('class'=>'form-control',
+																	'type' => 'text',
 																	'label'=>false)); ?>
 										</div>
 									</div>
@@ -61,7 +62,7 @@
 										</div>
 									</div>
 									<div class="form-group">
-										<label class="col-md-3 control-label">Apt/Suite/Building</label>
+										<label class="col-md-3 control-label">Apt/Suite/Building<span class="star">*</span></label>
 										<div class="col-md-6 col-lg-4"><?php
 													echo $this->Form->input('landmark',
 															array('class'=>'form-control',
@@ -76,7 +77,7 @@
 															  'class' => 'form-control',
 															  'options'=> array($state_list),
                                                               'onchange' => 'cityFillters();',
-															  'empty' => 'selete your state',
+															  'empty' => 'Select state',
 											 				  'label'=> false)); ?>
 										</div>
 									</div>
@@ -88,7 +89,7 @@
 															  'class' => 'form-control',
 															  'options'=> array($city_list),
                                                               'onchange' => 'locationFillters();',
-															  'empty' => 'selete your city',
+															  'empty' => 'Select city',
 											 				  'label'=> false)); ?>
 										</div>
 									</div>
@@ -99,7 +100,7 @@
 														array('type'  => 'select',
 															  'class' => 'form-control',
 															  'options'=> array($location_list),
-															  'empty' => 'selete your Area/Zip',
+															  'empty' => 'Select Area/Zip',
 											 				  'label'=> false)); 
                                                  echo $this->Form->hidden('id');
 											echo $this->Form->hidden('ids',array('value'=>$this->request->data['Customer']['id']));?>

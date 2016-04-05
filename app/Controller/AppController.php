@@ -4,6 +4,7 @@ session_start();
 
 App::uses('Controller', 'Controller');
 App::uses('ExceptionRenderer', 'Error');
+App::uses('Sanitize', 'Utility');
 
 /**
  * Application Controller
@@ -40,6 +41,7 @@ class AppController extends Controller
     {
 
         $this->basicSetup();
+        //$this->Session->renew();
 
         if ($this->params['prefix'] === 'admin') {
 
@@ -55,10 +57,18 @@ class AppController extends Controller
         }
 
         $this->Auth->authorize = array('Controller');
-
+        $this->beforeSave();
         parent::beforeFilter();
 
     }
+
+	public function beforeSave($options = array()) {
+		$this->data = Sanitize::clean($this->data,array(
+            'remove_html' => 1
+        ));
+        
+		return true;
+	}
 
 
     ////////////////////////////////////////////////////////////////////
@@ -66,10 +76,10 @@ class AppController extends Controller
     public function basicSetup()
     {
 
-        $this->siteUrl = 'http://' . $_SERVER['HTTP_HOST'];
+        $this->siteUrl = 'https://' . $_SERVER['HTTP_HOST'];
         $this->set('siteUrl', $this->siteUrl);
 
-        $this->siteName = 'http://' . $_SERVER['HTTP_HOST'];
+        $this->siteName = 'https://' . $_SERVER['HTTP_HOST'];
         $this->set('siteName', $this->siteName);
 
         $this->siteSetting = $siteDetails = $this->Sitesetting->find('first');
@@ -97,28 +107,37 @@ class AppController extends Controller
         Configure::write('Stripe.TestSecret', $siteDetails['Sitesetting']['stripe_secretkeyTest']);
         Configure::write('Stripe.LiveSecret', $siteDetails['Sitesetting']['stripe_secretkey']);
         Configure::write('Stripe.mode', $siteDetails['Sitesetting']['stripe_mode']);
+	Configure::write('Twilio.AccountSid', $siteDetails['Sitesetting']['sms_id']);
+	Configure::write('Twilio.AuthToken', $siteDetails['Sitesetting']['sms_token']);
+	Configure::write('Twilio.from', $siteDetails['Sitesetting']['sms_source_number']);
+
+        Configure::write('Hybridauth', array(
+                    "Google" => array("enabled" => true,
+                        "keys" => array("id" => $siteDetails['Sitesetting']['google_api_id'],
+                                        "secret" => $siteDetails['Sitesetting']['google_secret_key'])),
+                    "Facebook" => array("enabled" => true,
+                        "keys" => array("id" => $siteDetails['Sitesetting']['facebook_api_id'],
+                                        "secret" => $siteDetails['Sitesetting']['facebook_secret_key']))));
 
         $publishKey = ($siteDetails['Sitesetting']['stripe_mode'] != 'Live') ?
-            $siteDetails['Sitesetting']['stripe_publishkeyTest'] :
-            $siteDetails['Sitesetting']['stripe_publishkey'];
-
+                            $siteDetails['Sitesetting']['stripe_publishkeyTest'] :
+                            $siteDetails['Sitesetting']['stripe_publishkey'];
+        $this->mailChimpKey 	= $siteDetails['Sitesetting']['mailchimp_key'];
+        $this->mailChimpListId 	= $siteDetails['Sitesetting']['mailchimp_list_id'];
 
         //Bucket
         $this->siteBucket = $siteBucket = Configure::read('CakeS3.bucket');
-
+        $this->cdn = $cdn = Configure::read('CakeS3.cdn');
 
         date_default_timezone_set($this->siteSetting['Sitesetting']['site_timezone']);
-
         $language = ($this->siteSetting['Sitesetting']['default_language'] == 1) ? 'eng' : 'deu';
-
         Configure::write('Config.language', $language);
-
 
         $metaTitle = $siteDetails['Sitesetting']['meta_title'];
         $metakeywords = $siteDetails['Sitesetting']['meta_keywords'];
         $metaDescriptions = $siteDetails['Sitesetting']['meta_description'];
 
-        $this->set(compact('siteCurrency', 'metaTitle', 'metakeywords', 'metaDescriptions', 'publishKey', 'siteBucket'));
+        $this->set(compact('siteCurrency', 'metaTitle', 'metakeywords', 'metaDescriptions', 'publishKey', 'siteBucket', 'cdn'));
 
         $this->set('loggedUser', $this->loggedUser);
 

@@ -43,34 +43,40 @@
 	    				 		'div'=>false)); ?>
 			</button>
 		</div>
-		<!-- <div class="forget-password">
+		<div class="forget-password">
 			<h4>Forgot your password ?</h4>
 			<p>
 				 no worries, click <a href="javascript:;" id="forget-password">
 				here </a>
 				to reset your password.
 			</p>
-		</div> --> <?php
+		</div> <?php
 		echo $this->Form->end(); ?>
 
+		<?php
+		echo $this->Form->create('Users', array('class' => 'forget-form','id'=>'forgetmail')); ?>
+			<h3>Forget Password ?</h3>
+			<p>
+				 Enter your e-mail address below to reset your password.
+			</p>
+			<div class="form-group">
+				<div class="input-icon">
+					<i class="fa fa-envelope"></i> <?php
 
-	<!-- <form class="forget-form" action="index.html" method="post">
-		<h3>Forget Password ?</h3>
-		<p>
-			 Enter your e-mail address below to reset your password.
-		</p>
-		<div class="form-group">
-			<div class="input-icon">
-				<i class="fa fa-envelope"></i>
-				<input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" name="email"/>
+					echo $this->Form->input('email',
+										array('label' => false,
+											'placeholder' => 'Email',
+											'class'=>'form-control placeholder-no-fix',
+											'autocomplete' => 'off',
+											'div' => false)); ?> 
+
+
+				</div>
 			</div>
-		</div>
-		<div class="form-actions">
-			<button type="button" id="back-btn" class="btn">
-			<i class="m-icon-swapleft"></i> Back </button>
-			<button type="submit" class="btn green-haze pull-right">
-			Submit <i class="m-icon-swapright m-icon-white"></i>
-			</button>
-		</div>
-	</form> -->
+			<div class="form-actions">
+				<button type="button" id="back-btn" class="btn">
+				<i class="m-icon-swapleft"></i> Back </button>
+				<?php echo $this->Form->submit('Submit', array('class' => 'btn green-haze pull-right', 'div' => false));?>
+			</div> <?php
+		echo $this->Form->end(); ?>
 </div>

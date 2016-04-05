@@ -76,6 +76,7 @@
                             					echo $this->Form->input('Storeoffer.from_date',
                             										array('class'=>'form-control',
                             											  'autocomplete' => 'off',
+                            											  'readonly' => true,
                                                                           'label' => false,
                             											  'div' => false)); ?>
 											<span class="input-group-addon"> to </span>
@@ -83,6 +84,7 @@
                             					echo $this->Form->input('Storeoffer.to_date',
                             										array('class'=>'form-control',
                             											  'autocomplete' => 'off',
+                            											  'readonly' => true,
                                                                           'label' => false,
                             											  'div' => false)); ?>
 										</div>

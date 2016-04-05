@@ -176,14 +176,14 @@ class CakeNumber
             if ($options['zero'] !== 0) {
                 return $options['zero'];
             }
-        } elseif ($number < 1 && $number > -1) {
+        } /*elseif ($number < 1 && $number > -1) {
             if ($options['fractionSymbol'] !== false) {
                 $multiply = intval('1' . str_pad('', $options['places'], '0'));
                 $number = $number * $multiply;
                 $options['places'] = null;
                 $symbolKey = 'fraction';
             }
-        }
+        }*/
 
         $position = $options[$symbolKey . 'Position'] != 'after' ? 'before' : 'after';
         $options[$position] = $options[$symbolKey . 'Symbol'];

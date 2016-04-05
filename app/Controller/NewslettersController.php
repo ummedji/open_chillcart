@@ -8,7 +8,7 @@ class NewslettersController extends AppController
 {
     public $helpers = array('Html', 'Form', 'Session', 'Javascript');
     public $uses = array('Customer');
-    public $components = array('Updown');
+    public $components = array('Updown', 'CakeS3');
 
     /**
      * NewslettersController::admin_index()
@@ -130,13 +130,12 @@ class NewslettersController extends AppController
 
         $imagesizedata = getimagesize($this->params['form']['file']['tmp_name']);
         if ($imagesizedata) {
-
             if (!empty($this->params['form']['file'])) {
-
-                $imagePath = WWW_ROOT . "images" . DS . "newsletter";
-                $imagePathUrl = $this->siteUrl . '/' . 'images' . '/' . 'newsletter';
-                $imageName = $this->Updown->uploadFile($this->params['form']['file'], $imagePath);
-                echo $imagePathUrl . '/' . $imageName['refName'];
+                $newName = $this->params['form']['file']['name'];
+                $origpathS3  = 'newsletter/';
+                // Amazon S3 Upload
+                $result = $this->CakeS3->putObject($this->params['form']['file']['tmp_name'], $origpathS3.$newName, S3::ACL_PUBLIC_READ);
+                echo $result['url'];
                 exit();
             }
         }

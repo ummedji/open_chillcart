@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/> <?php
 	echo $this->Html->meta('icon', $this->Html->url($siteUrl.'/siteicons/fav.ico')); ?>
-<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css">
 <link href="<?php echo $siteUrl.'/assets/css/font-awesome.min.css';?>" rel="stylesheet" type="text/css">
 <link href="<?php echo $siteUrl.'/assets/css/bootstrap.min.css';?> "
 rel="stylesheet" type="text/css">
@@ -19,9 +19,13 @@ rel="stylesheet" type="text/css">
 <link href="<?php echo $siteUrl.'/assets/css/plugins.css';?>" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $siteUrl.'/assets/css/components.css';?>" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $siteUrl.'/assets/css/layout.css';?>" rel="stylesheet" type="text/css"/>
-<link id="style_color" href="<?php echo $siteUrl.'/assets/css/themes/default.css';?>" rel="stylesheet" type="text/css"/>
+
+
+<!-- <link id="style_color" href="<?php echo $siteUrl.'/assets/css/themes/default.css';?>" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $siteUrl.'/assets/css/daterangepicker.css';?>" rel="stylesheet" type="text/css"/>
-<link href="<?php echo $siteUrl.'/assets/css/bootstrap-datepicker.css';?>" rel="stylesheet" type="text/css"/>
+<link href="<?php echo $siteUrl.'/assets/css/bootstrap-datepicker.css';?>" rel="stylesheet" type="text/css"/> -->
+
+
 <link href="<?php echo $siteUrl.'/assets/css/custom.css';?>" rel="stylesheet" type="text/css"/>
 
 <link href="<?php echo $siteUrl.'/assets/css/jquery.ui.datepicker.css';?>" rel="stylesheet" type="text/css"/>
@@ -82,13 +86,14 @@ rel="stylesheet" type="text/css">
 	<script src="<?php echo $siteUrl.'/assets/js/jquery.validate.min.js';?>" type="text/javascript"></script>
 	<script src="<?php echo $siteUrl.'/assets/js/dispatch1.js';?>" type="text/javascript"></script>
 	<script src="<?php echo $siteUrl.'/assets/js/daterangepicker.js';?>" type="text/javascript"></script>
-	<script src="<?php echo $siteUrl.'/assets/js/jquery.ui.datepicker.js';?>" type="text/javascript"></script>
+	
 	<script>
 	jQuery(document).ready(function() {       
 		Metronic.init(); // init metronic core components
 		Layout.init(); // init current layout
 		Demo.init(); // init demo features
 	});
+
 	</script>
 </body>
 <!-- END BODY -->

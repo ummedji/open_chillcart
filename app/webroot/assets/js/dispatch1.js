@@ -1,4 +1,4 @@
-jQuery(document).ready(function () {
+/*jQuery(document).ready(function () {
     var DriverStoreAddForm = jQuery("#DriverStoreAddForm").validate({
         rules: {
             "data[Driver][driver_name]": {
@@ -168,18 +168,13 @@ jQuery(document).ready(function () {
         }
     });
 
-});
+});*/
 
-/*$(document).ready(function() {
-
- trackings();
- updateOrderMap();
- });*/
 
 //Clear Console
 function clearConsole() {
-    if (window.console || window.console.firebug) {
-        //console.clear();
+    if(window.console || window.console.firebug) {
+        console.clear();
     }
 }
 
@@ -188,7 +183,6 @@ function clearConsole() {
 function updateOrderMap() {
 
     $.post(rp + '/AjaxAction', {'Action': 'orderManage'}, function (response) {
-
         response = response.split('@@@@');
         if (response[0] != '') {
             var data = JSON.parse(response[0]);
@@ -233,7 +227,7 @@ function updateOrderMap() {
         }
         setTimeout(function () {
             updateOrderMap();
-        }, 2000)
+        }, 3000)
         return false;
     });
 }
@@ -274,10 +268,10 @@ function viewTrack(ordId) {
 }
 
 function trackings() {
-    var ordId = $('#trackOrderId').val();
-
+    var ordId = $('#trackOrderId').val(); 
+    
     if (ordId != '' && $('#trackid:hidden').length == 0) {
-        $.post(rp + '/AjaxAction', {'OrderId': ordId, 'Action': 'LoadTrackingMap'}, function (response) {
+        $.post(rp+'/AjaxAction',{'OrderId':ordId,'Action':'LoadTrackingMap'}, function(response) {
             clearConsole();
             removeMapIcons();
             var result = response.split('||@@||');
@@ -285,7 +279,7 @@ function trackings() {
             $('#trackingDistance').html(result[1]);
         });
     }
-    setTimeout(function () {
+    setTimeout(function() {
         trackings();
     }, 4000);
     return false;
@@ -302,9 +296,9 @@ function removeMapIcons() {
 
 //Delete all marker
 function deleteMarkers() {
-    for (var i = 0; i < markers.length; i++) {
-        markers[i].setMap(null);
-    }
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(null);
+  }
 
 }
 
@@ -319,6 +313,9 @@ function trackOrder(orderId) {
 
 
 $(document).ready(function () {
+    /*trackings();
+    updateOrderMap();*/
+
     $('#sample_12').dataTable({
         columnDefs: [
             {
@@ -332,19 +329,20 @@ $(document).ready(function () {
         if ($(this).hasClass('red_bck')) {
             $(this).removeClass('red_bck');
             $(this).children("i").removeClass('fa-times').addClass("fa-check");
+            $(this).attr("title","active");
         }
         else if ($(this).hasClass('yellow_bck')) {
             $(this).removeClass('yellow_bck');
             $(this).children("i").removeClass('fa-exclamation').addClass("fa-check");
+            $(this).attr("title","Pending");
         }
         else {
             $(this).addClass('red_bck');
             $(this).children("i").removeClass('fa-check').addClass("fa-times");
+            $(this).attr("title","Deactive");
         }
 
     });
-
-
 });
 
 $('.statusLog').on('click', function () {
@@ -359,4 +357,3 @@ $('.statusLog').on('click', function () {
         return false;
     });
 });
-

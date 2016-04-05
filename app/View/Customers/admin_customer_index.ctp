@@ -34,34 +34,31 @@
 						echo $this->Form->create('Commons', array('class'=>'form-horizontal',
 							'controller'=>'Commons','action'=>'multipleSelect')); ?>
 						<div class="table-toolbar">
-							<div class="row">
-								<div id="send" style="display:none"  class="pull-left">
-									<div class="pull-right" id="addnewbutton_toggle"> <?php
-										echo $this->Form->hidden("Model",array('value'=>'CustomerAddressBook',
-											'name'=>'data[name]'));
-										if (!empty($addressbook_list)) {
-											echo $this->Form->submit(__('Active'),
-												array('class'=>'btn btn-success btn-sm',
-													'name'=> 'actions',
-													'div'=>false,
-													'onclick'=>'return recorddelete(this);'
-												)); ?> <?php
-											echo $this->Form->submit(__('Deactive'),
-												array('class'=>'btn btn-warning btn-sm',
-													'name'=> 'actions',
-													'div'=>false,
-													'onclick'=>'return recorddelete(this);'
-												)); ?> <?php
-											echo $this->Form->submit(__('Delete'),
-												array('Class'=>'btn btn-danger btn-sm',
-													'name'=> 'actions',
-													'div'=>false,
-													'onclick'=>'return recorddelete(this);'
-												));
-										} ?>
-									</div>
+							<div id="send" style="display:none"  class="pull-left">
+								<div class="pull-right" id="addnewbutton_toggle"> <?php
+									echo $this->Form->hidden("Model",array('value'=>'CustomerAddressBook',
+										'name'=>'data[name]'));
+									if (!empty($addressbook_list)) {
+										echo $this->Form->submit(__('Active'),
+											array('class'=>'btn btn-success btn-sm',
+												'name'=> 'actions',
+												'div'=>false,
+												'onclick'=>'return recorddelete(this);'
+											)); ?> <?php
+										echo $this->Form->submit(__('Deactive'),
+											array('class'=>'btn btn-warning btn-sm',
+												'name'=> 'actions',
+												'div'=>false,
+												'onclick'=>'return recorddelete(this);'
+											)); ?> <?php
+										echo $this->Form->submit(__('Delete'),
+											array('Class'=>'btn btn-danger btn-sm',
+												'name'=> 'actions',
+												'div'=>false,
+												'onclick'=>'return recorddelete(this);'
+											));
+									} ?>
 								</div>
-
 							</div>
 						</div>
 						<table class="table table-striped table-bordered table-hover checktable" id="sample_12">

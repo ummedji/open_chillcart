@@ -12,11 +12,11 @@ class CitiesController extends AppController
      * City Management Process
      * @return void
      */
-    public function admin_index()
+    public function admin_index($id = null)
     {
-        if ($this->request->params['pass'][0]) {
+        if (isset($id)) {
             $city_list = $this->City->find('all', array(
-                'conditions' => array('City.state_id' => $this->request->params['pass'][0],
+                'conditions' => array('City.state_id' => $id,
                     'NOT' => array('City.status' => 3))));
         } else {
             $city_list = $this->City->find('all', array(
@@ -34,31 +34,32 @@ class CitiesController extends AppController
      */
     public function admin_add()
     {
-        $state_list = $this->State->find('list', array(
-            'conditions' => array('State.status' => 1),
-            'fields' => array(
-                'State.id', 'State.state_name')));
+
+        if ($this->request->is('post')) {
+            $this->City->set($this->request->data);
+            if($this->City->validates()) {
+                $City = $this->City->find('all', array(
+                        'conditions' => array(
+                            ' city_name' => trim($this->request->data['City']['city_name'])))
+                );
+                if (!empty($City)) {
+                    $this->Session->setFlash('<p>' . __('City name already exists', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                } else {
+                    $this->City->save($this->request->data, null, null);
+                    $this->Session->setFlash('<p>' . __('Your City has been saved', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'Cities', 'action' => 'index'));
+                }
+            } else {
+                $this->City->validationErrors;
+            }
+        }
         $country_list = $this->Country->find('list', array(
             'conditions' => array('Country.status' => 1),
             'fields' => array(
                 'Country.id', 'Country.country_name')));
-        $this->set("state_list", $state_list);
         $this->set("country_list", $country_list);
-        if ($this->request->is('post')) {
-            $City = $this->City->find('all', array(
-                    'conditions' => array(
-                        ' city_name' => trim($this->request->data['City']['city_name'])))
-            );
-            if (!empty($City)) {
-                $this->Session->setFlash('<p>' . __('Unable to add your City', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
-            } else {
-                $this->City->save($this->request->data, null, null);
-                $this->Session->setFlash('<p>' . __('Your City has been saved', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'Cities', 'action' => 'index'));
-            }
-        }
     }
 
     /**
@@ -70,21 +71,26 @@ class CitiesController extends AppController
     public function admin_edit($id = null)
     {
 
-        if (!empty($this->request->data['City']['city_name'])) {
-            $City_list = $this->City->find('first', array(
-                'conditions' => array(
-                    'City.city_name' => $this->request->data['City']['city_name'],
-                    'City.state_id' => $this->request->data['City']['state_id'],
-                    'NOT' => array('City.id' => $this->request->data['City']['id']))));
+         if ($this->request->is('post') || $this->request->is('put')) {
+            $this->City->set($this->request->data);
+            if($this->City->validates()) {
+                $City_list = $this->City->find('first', array(
+                    'conditions' => array(
+                        'City.city_name' => $this->request->data['City']['city_name'],
+                        'City.state_id' => $this->request->data['City']['state_id'],
+                        'NOT' => array('City.id' => $this->request->data['City']['id']))));
 
-            if (!empty($City_list)) {
-                $this->Session->setFlash('<p>' . __('Unable to add your City', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
+                if (!empty($City_list)) {
+                    $this->Session->setFlash('<p>' . __('City name already exists', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                } else {
+                    $this->City->save($this->request->data, null, null);
+                    $this->Session->setFlash('<p>' . __('Your City has been updated', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'Cities', 'action' => 'index'));
+                }
             } else {
-                $this->City->save($this->request->data, null, null);
-                $this->Session->setFlash('<p>' . __('Your City has been saved', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'Cities', 'action' => 'index'));
+                $this->City->validationErrors;
             }
         }
         $getStateData = $this->City->findById($id);

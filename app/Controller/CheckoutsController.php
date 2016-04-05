@@ -46,24 +46,24 @@ class CheckoutsController extends AppController
     public function index()
     {
 
-        $this->layout = 'frontend';
+        $minOrderCheck = $this->storeMinOrderCheck();
 
-        $this->ShoppingCart->recursive = 2;
+        $this->layout = 'frontend';
         $shopCartDetails = $this->ShoppingCart->find('all', array(
-            'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
-            'order' => array('ShoppingCart.store_id'),
-            'group' => 'ShoppingCart.store_id'));
+                                'conditions' => array('ShoppingCart.session_id' => $this->SessionId,
+                                                    'ShoppingCart.order_id' => 0),
+                                'order' => array('ShoppingCart.store_id'),
+                                'group' => 'ShoppingCart.store_id'));
+        if (empty($shopCartDetails) || empty($minOrderCheck)) {
+            $this->redirect(array('controller' => 'searches', 'action' => 'index'));
+        }
 
         foreach ($shopCartDetails as $keys => $values) {
-
-
             $storeSlots[$keys]['store_name'] = $values['Store']['store_name'];
-            $storeSlots[$keys]['store_id'] = $values['Store']['id'];
-
-            $storeSlots[$keys]['delivery'] = $values['Store']['delivery'];
+            $storeSlots[$keys]['store_id']   = $values['Store']['id'];
+            $storeSlots[$keys]['delivery']   = $values['Store']['delivery'];
             $storeSlots[$keys]['collection'] = $values['Store']['collection'];
-            $storeSlots[$keys]['seo_url'] = $values['Store']['seo_url'];
-
+            $storeSlots[$keys]['seo_url']    = $values['Store']['seo_url'];
 
             $timeSlots = $this->DeliveryTimeSlot->find('all', array(
                 'conditions' => array('DeliveryTimeSlot.store_id' => $values['Store']['id'])));
@@ -72,7 +72,7 @@ class CheckoutsController extends AppController
 
                 $time = strtotime(date('h:i A'));
                 $from = strtotime(date('h:i A', strtotime($value['TimeSlot']['time_from'])));
-                $to = strtotime(date('h:i A', strtotime($value['TimeSlot']['time_to'])));
+                $to   = strtotime(date('h:i A', strtotime($value['TimeSlot']['time_to'])));
 
                 if ($time <= $from) {
                     if ($value['DeliveryTimeSlot']['delivery_charge'] != 0) {
@@ -130,16 +130,31 @@ class CheckoutsController extends AppController
         }
 
         $optionDays = array('Today' => __('Today'), 'Tomorrow' => __('Tomorrow'));
-
         $addresses = $this->CustomerAddressBook->find('all', array(
-            'conditions' => array('CustomerAddressBook.customer_id' => $this->Auth->User('Customer.id'),
-                'CustomerAddressBook.status' => 1)));
-
+                            'conditions' => array('CustomerAddressBook.customer_id' => 
+                                                    $this->Auth->User('Customer.id'),
+                                                'CustomerAddressBook.status' => 1)));
         $stripeCards = $this->StripeCustomer->find('all', array(
             'conditions' => array('StripeCustomer.customer_id' => $this->Auth->User('Customer.id'))));
-
-
         $this->set(compact('addresses', 'shopCartDetails', 'storeSlots', 'optionDays', 'stripeCards'));
+    }
+
+    // Min Order Check
+    public function storeMinOrderCheck() {
+
+        $this->ShoppingCart->recursive = 2;
+        $storeProduct = $this->ShoppingCart->find('all',array(
+                                        'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
+                                        'fields' => array('store_id',
+                                                         'COUNT(ShoppingCart.store_id) AS productCount',
+                                                         'SUM(ShoppingCart.product_total_price) As productTotal'),
+                                        'group'=>array('ShoppingCart.store_id')));
+        foreach ($storeProduct as $key => $value) {
+            if ($value['Store']['minimum_order'] > $value[0]['productTotal']) {
+                return false;
+            }
+        }
+        return true;
     }
 
 
@@ -162,8 +177,7 @@ class CheckoutsController extends AppController
     {
 
         $data = $this->Functions->parseSerialize($this->params['data']['formData']);
-        $this->request->data = $data['data'];
-
+        $this->request->data = $data['amp;data'];
         if (!empty($this->request->data['StripeCustomer'])) {
             $datas = array("stripeToken" => $this->request->data['StripeCustomer']['stripe_token_id']);
             $this->request->data['StripeCustomer']['customer_id'] = $this->Auth->User('Customer.id');
@@ -324,19 +338,11 @@ class CheckoutsController extends AppController
     public function orderReview()
     {
 
-        $id = $this->request->data['id'];
-
+        $id             = $this->request->data['id'];
         $orderTypeCheck = $this->request->data['orderTypeCheck'];
-
-        $orderTypes = explode(',', $orderTypeCheck);
-
-        //echo "<pre>"; print_r($orderTypes);
-
-
-        $data = explode(',', $id);
-
-        $today = date("m/d/Y");
-
+        $orderTypes     = explode(',', $orderTypeCheck);
+        $data           = explode(',', $id);
+        $today          = date("m/d/Y");
 
         foreach ($data as $key => $value) {
 
@@ -354,7 +360,6 @@ class CheckoutsController extends AppController
                     ' TO ' . $deliverySlot['TimeSlot']['time_to'];
             }
 
-
             $storeOffers = $this->Storeoffer->find('first', array(
                 'conditions' => array('Storeoffer.store_id' => $deliverySlot['Store']['id'],
                     'Storeoffer.status' => 1,
@@ -363,12 +368,11 @@ class CheckoutsController extends AppController
                 'order' => 'Storeoffer.id DESC'));
 
             $storeProduct = $this->ShoppingCart->find('all', array(
-                'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
+                'conditions' => array('ShoppingCart.session_id' => $this->SessionId,
+                                     'ShoppingCart.order_id' => 0),
                 'fields' => array('store_id',
                     'SUM(ShoppingCart.product_total_price) As productTotal'),
                 'group' => array('ShoppingCart.store_id')));
-
-            //echo "<pre>"; print_r($storeOffers);
 
             if (!empty($storeOffers)) {
 
@@ -379,22 +383,17 @@ class CheckoutsController extends AppController
                 }
             }
 
-
             if (!empty($deliverySlot['Store']['tax'])) {
                 $taxDetails[$key]['store_name'] = $deliverySlot['Store']['store_name'];
                 $taxDetails[$key]['tax'] = $deliverySlot['Store']['tax'];
             }
-
-
             $offerDetails[$key]['store_id'] = $deliverySlot['Store']['id'];
             $offerDetails[$key]['store_name'] = $deliverySlot['Store']['store_name'];
-
-            //echo "<pre>"; print_r($offerDetails);
-
         }
-        $this->ShoppingCart->recursive = 3;
+        //$this->ShoppingCart->recursive = 3;
         $shopCart = $this->ShoppingCart->find('all', array(
-            'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
+            'conditions' => array('ShoppingCart.session_id' => $this->SessionId,
+                                  'ShoppingCart.order_id' => 0),
             'order' => array('ShoppingCart.store_id')));
 
         $this->set(compact('shopCart', 'deliveryDetails', 'offerDetails', 'taxDetails'));
@@ -404,8 +403,8 @@ class CheckoutsController extends AppController
     public function deliveryLocation()
     {
 
-        $id = $this->request->data['id'];
-        $orderTypes = $this->request->data['orderTypes'];
+        $id = (!empty($this->request->data['id'])) ? $this->request->data['id'] : '';
+        $orderTypes = (!empty($this->request->data['orderTypes'])) ? $this->request->data['orderTypes'] : '';
 
         $orderTypes = explode(',', $orderTypes);
 

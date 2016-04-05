@@ -23,7 +23,7 @@ For Admin template
     <meta name="robots" content="noindex,nofollow"/>
 	<?php echo $this->Html->meta('icon'); ?>
 
-	<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css"/>
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $this->webroot;?>assets/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $this->webroot;?>assets/css/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $this->webroot;?>assets/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>

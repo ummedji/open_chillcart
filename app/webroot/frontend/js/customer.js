@@ -21,7 +21,6 @@ function locationFillters() {
 
     })
 }
-
 //City Fillter Process
 function cityFillter() {
     var id = $('#CustomerAddressBookStateIds').val();
@@ -38,100 +37,77 @@ function locationFillter() {
 
     })
 }
-
-
 //customer delete action
-function customerdelete(ids, models) {
-    var id = ids;
-    var model = models;
-    $.post(rp + 'admin/Commons/deleteProcess', {'id': id, 'model': model}, function (response) {
+function customerdelete(id, model) {
+    $.post(rp+'customer/Customers/deleteaddress',{'id':id,'model':model}, function(response) {
+        $("#record"+id).remove();
     });
-    $("#record" + id).remove();
-
 }
+
 //Status Change
-function statusChange(ids, models) {
-    var id = ids;
-    var model = models;
-    $.post(rp + 'admin/Commons/statusChanges', {'id': id, 'model': model}, function (response) {
-
-    });
+function statusChange(id, model) {
+    $.post(rp+'customer/Customers/addressbookStatus',{'id':id,'model':model},function(response) {
+    })
 }
+
+// delete card
+function deletecard(id) {
+    $.post(rp + 'customer/Customers/deletecard', {'id': id}, function (response) {
+        $("#card" + id).remove();
+    })
+}
+
 //OrderInvoice Details Print Format 
 function documentPrints() {
     var win = window.open('', 'printwindow');
-    win.document.write('<html><head><title>Print Order Invoice!</title><link rel="stylesheet" type="text/css" href="styles.css"></head><body>');
+    win.document.write('<html><head><title>Print Order Invoice!</title><link rel="stylesheet" type="text/css" href="bootstrap.min.css"><link rel="stylesheet" type="text/css" href="common_new.css"><link rel="stylesheet" type="text/css" href="common.css"></head><body>');
     win.document.write($(".myorderTab").html());
     win.document.write('</body></html>');
     win.print();
-    $('.link').hide();
+    //$('.link').hide();
     $('.footer').hide();
     $('#sidebar').hide();
     win.close();
+    $('.link').show();
+    $('.footer').show();
+    $('#sidebar').show();
 }
 
-function pdfdownload(ids) {
-    var id = ids;
+function pdfdownload(id) {
     $.post(rp + 'customer/Customers/downloadiInvoice', {'id': id}, function (response) {
         // alert(response) ;
     });
 }
-function orderid(ids) {
-    var id = ids;
+function orderid(id) {
     $('#reviewId').val(id);
 
 }
 $(document).ready(function () {
-
-
     $(".table").on('click', '.buttonStatus', function () {
         if ($(this).hasClass('red_bck')) {
             $(this).removeClass('red_bck');
             $(this).children("i").removeClass('fa-times').addClass("fa-check");
+            $(this).attr("title","active");
         }
         else if ($(this).hasClass('yellow_bck')) {
             $(this).removeClass('yellow_bck');
             $(this).children("i").removeClass('fa-exclamation').addClass("fa-check");
+            $(this).attr("title","Pending");
         }
         else {
             $(this).addClass('red_bck');
             $(this).children("i").removeClass('fa-check').addClass("fa-times");
+            $(this).attr("title","Deactive");
         }
 
     });
-
     $("#forgetPage").click(function () {
         $("#forgetsmail").show();
         $("#login").hide();
 
     });
-
     $('#loginPage').click(function () {
         $("#forgetsmail").hide();
         $("#login").show();
     })
-
 });
-
-function deletecard(ids) {
-    var id = ids;
-    $.post(rp + 'customer/Customers/deletecard', {'id': id}, function (response) {
-
-    })
-    $("#card" + id).remove();
-}
-function statusChange(ids, models) {
-    var id = ids;
-    var model = models;
-    $.post(rp + 'customer/Customers/addressbookStatus', {'id': id, 'model': model}, function (response) {
-
-    })
-}
-function customerdelete(ids, models) {
-    var id = ids;
-    var model = models;
-    $.post(rp + 'customer/Customers/deleteaddress', {'id': id, 'model': model}, function (response) {
-    });
-    $("#record" + id).remove();
-
-}

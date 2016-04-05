@@ -30,46 +30,44 @@
 						echo $this->Form->create('Commons', array('class'=>'form-horizontal',
 							'controller'=>'Commons','action'=>'multipleSelect')); ?>
 						<div class="table-toolbar">
-							<div class="row">
-								<div id="send" style="display:none" class="pull-left">
-									<div class="pull-right" id="addnewbutton_toggle"> <?php
-										echo $this->Form->hidden("Model",array('value'=>'Review',
-											'name'=>'data[name]'));
-										if (!empty($Review_list)) {
-											echo $this->Form->submit(__('Active'),
-												array('class'=>'btn btn-success btn-sm',
-													'name'=> 'actions',
-													'div'=>false,
-													'onclick'=>'return recorddelete(this);'
-												)); ?> <?php
-											echo $this->Form->submit(__('Deactive'),
-												array('class'=>'btn btn-warning btn-sm',
-													'name'=> 'actions',
-													'div'=>false,
-													'onclick'=>'return recorddelete(this);'
-												)); ?> <?php
-											echo $this->Form->submit(__('Delete'),
-												array('Class'=>'btn btn-danger btn-sm',
-													'name'=> 'actions',
-													'div'=>false,
-													'onclick'=>'return recorddelete(this);'
-												));
-										} ?>
-									</div>
+							<div id="send" style="display:none" class="pull-left">
+								<div class="pull-right" id="addnewbutton_toggle"> <?php
+									echo $this->Form->hidden("Model",array('value'=>'Review',
+										'name'=>'data[name]'));
+									if (!empty($Review_list)) {
+										echo $this->Form->submit(__('Active'),
+											array('class'=>'btn btn-success btn-sm',
+												'name'=> 'actions',
+												'div'=>false,
+												'onclick'=>'return recorddelete(this);'
+											)); ?> <?php
+										echo $this->Form->submit(__('Deactive'),
+											array('class'=>'btn btn-warning btn-sm',
+												'name'=> 'actions',
+												'div'=>false,
+												'onclick'=>'return recorddelete(this);'
+											)); ?> <?php
+										echo $this->Form->submit(__('Delete'),
+											array('Class'=>'btn btn-danger btn-sm',
+												'name'=> 'actions',
+												'div'=>false,
+												'onclick'=>'return recorddelete(this);'
+											));
+									} ?>
 								</div>
-								<!--<div class="col-md-12">
-									<div class="btn-group pull-left">
-										<?php
-												echo $this->Form->input('store_id',
-														array('type'  => 'select',
-															  'class' => 'form-control',
-															  'options'=> array($store_list),
-                                                             'onchange' => 'Fillter();',
-															  'empty' => 'SelectStore',
-											 				  'label'=> false)); ?>
-									</div>
-								</div>-->
 							</div>
+							<!--<div class="col-md-12">
+								<div class="btn-group pull-left">
+									<?php
+											echo $this->Form->input('store_id',
+													array('type'  => 'select',
+														  'class' => 'form-control',
+														  'options'=> array($store_list),
+                                                         'onchange' => 'Fillter();',
+														  'empty' => 'SelectStore',
+										 				  'label'=> false)); ?>
+								</div>
+							</div>-->
 						</div>
 						<table class="table table-striped table-bordered table-hover checktable" id="sample_12">
 							<thead>

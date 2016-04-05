@@ -28,6 +28,7 @@
 						echo $this->Form->input('address',
 								array('class'=>'form-control',
 										'id'=>'street',
+										'type' => 'text',
 										'label'=>false)); ?>
 						<label class="error streeterorr"></label>
 					</div>

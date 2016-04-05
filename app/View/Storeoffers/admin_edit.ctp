@@ -41,7 +41,7 @@
 														array('type'  => 'select',
 															  'class' => 'form-control',
 															  'options'=> array($Store_list),
-															  'empty' => 'SelectCountry',
+															  'empty' => 'SelectStore',
 											 				  'label'=> false)); ?>
 									</div>
 								</div>
@@ -77,6 +77,7 @@
                             										array('class'=>'form-control',
                             											  'autocomplete' => 'off',
                                                                           'label' => false,
+                                                                          'readonly' => true,
                             											  'div' => false)); ?>
 											<span class="input-group-addon"> to </span>
 											<?php
@@ -84,6 +85,7 @@
                             										array('class'=>'form-control',
                             											  'autocomplete' => 'off',
                                                                           'label' => false,
+                                                                          'readonly' => true,
                             											  'div' => false)); ?>
 										</div>
 										<!-- /input-group -->

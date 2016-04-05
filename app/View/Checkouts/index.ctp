@@ -342,6 +342,7 @@
 							echo $this->Form->input('address',
 									array('class'=>'form-control',
 											'label'=>false,
+											'type' => 'text',
 											'value' => '')); ?>
 						</div>
 					</div>

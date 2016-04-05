@@ -1,4 +1,4 @@
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=falsee&libraries=places"></script>
+<script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=falsee&libraries=places"></script>
 <div class="contain">
 	<div class="contain">
 		<h3 class="page-title">Edit Dispatch</h3>
@@ -106,7 +106,8 @@
 										echo $this->Form->input('driver_description',
 													array('class' => 'form-control',
 														  'label' => false));
-										echo $this->Form->hidden('id'); ?>
+										echo $this->Form->hidden('id');
+										echo $this->Form->hidden('User.id'); ?>
 									</div>
 								</div>
 							</div>
@@ -157,11 +158,7 @@
 	  	google.maps.event.addListener(autocomplete, 'place_changed', function() {
 	    	fillInAddress();
 	  	});
-	  
-	  	autocomplete2 = new google.maps.places.Autocomplete(
-	      /** @type {HTMLInputElement} */(document.getElementById('addLocation')),
-	      { types: ['geocode'],componentRestrictions: {country: "<?php echo $siteSetting['Country']['iso']; ?>"} }
-	    );      
+	  	 
 	  	google.maps.event.addListener(autocomplete, 'place_changed', function() {
 	    	fillInAddress();
 	  	});
