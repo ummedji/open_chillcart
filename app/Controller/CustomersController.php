@@ -10,7 +10,7 @@ class CustomersController extends AppController
         'Location', 'State', 'Order', 'ShoppingCart',
         'StripeCustomer', 'Status', 'ProductImage', 'Notification', 'Review');
     public $components = array( 'Updown', 'Functions', 'Mpdf', 'CakeS3', 'Session');
-
+    
     /**
      * CustomersController::admin_index()
      * Admin View CustomerManagement
@@ -50,15 +50,18 @@ class CustomersController extends AppController
     public function admin_add()
     {
         if($this->request->is('post') || $this->request->is('put')) {
-
             $this->Customer->set($this->request->data);
             if($this->Customer->validates()) {
+                $CustomerExist = $this->User->find('first', array(
+                                'conditions' => array(
+                                      'User.username' => trim($this->request->data['Customer']['customer_email']),
+                                  'NOT' => array('Customer.status' => 3))));
+                $CustomerExists = $this->User->find('first', array(
+                                'conditions' => array(
+                                    'User.username' => trim($this->request->data['Customer']['customer_email']),
+                                'NOT' => array('Store.status' => 3))));
 
-                $user = $this->User->find('first', array(
-                            'conditions' => array('User.username' => trim($this->request->data['Customer']['customer_email']),
-                                        'User.role_id' => 4,
-                                        'NOT' => array('Customer.status' => 3))));
-                if (!empty($user)) {
+                if (!empty($CustomerExist) || !empty($CustomerExists)) {
                     $this->Session->setFlash('<p>' . __('Already Exists Users', true) . '</p>', 'default',
                         array('class' => 'alert alert-danger'));
                 } else {
@@ -127,8 +130,12 @@ class CustomersController extends AppController
                                 'conditions' => array('User.username' => trim($this->request->data['Customer']['customer_email']),
                                         'NOT' => array('User.id' => $customer['User']['id'],
                                                         'Customer.status' => 3))));
+                $CustomerExists = $this->User->find('first', array(
+                                'conditions' => array(
+                                        'User.username' => trim($this->request->data['Customer']['customer_email']),
+                                    'NOT' => array('Store.status' => 3))));
+                if(!empty($customerEmailCheck)  || !empty($CustomerExists)) {
 
-                if (!empty($customerEmailCheck)) {
                     $this->Session->setFlash('<p>' . __('User Email Already Exists', true) . '</p>', 'default',
                         array('class' => 'alert alert-danger'));
                 } else {
@@ -298,14 +305,20 @@ class CustomersController extends AppController
     public function customer_changeCustomerEmail() {
 
         if ($this->request->is('post') || $this->request->is('put')) {
+            $this->request->data['Customer']['customer_email'] = trim($this->request->data['Customer']['customer_email']);
             $this->Customer->set($this->request->data);
             if($this->Customer->validates()) {
                 $CustomerExist = $this->User->find('first', array(
                                 'conditions' => array(
                                             'User.username' => trim($this->request->data['Customer']['customer_email']),
-                                        'NOT' => array('Customer.status' => 3,
-                                                        'Store.status' => 3))));
-                if (!empty($CustomerExist)) {
+                                        'NOT' => array('Customer.status' => 3))));
+                $CustomerExists = $this->User->find('first', array(
+                                'conditions' => array(
+                                            'User.username' => trim($this->request->data['Customer']['customer_email']),
+                                        'NOT' => array('Store.status' => 3))));
+
+                if (!empty($CustomerExist) || !empty($CustomerExists)) {
+                    
                     $this->Session->setFlash('<p>' . __('Email Already Exists', true) . '</p>', 'default',
                                                                 array('class' => 'alert alert-danger'));
                     $this->redirect(array('controller' => 'Customers', 'action' => 'myaccount'));
@@ -392,6 +405,7 @@ class CustomersController extends AppController
                 $this->Customer->validationErrors;
             }
         }
+        $this->redirect(array('controller' => 'Customers', 'action' => 'myaccount'));
     }
 
 

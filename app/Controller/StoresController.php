@@ -61,25 +61,28 @@ class StoresController extends AppController
         if ($this->request->is('post') || $this->request->is('put')) {
             $this->Store->set($this->request->data);
             if($this->Store->validates()) {
-                $userData = $this->User->find('first', array(
-                        'conditions' => array(
-                            'User.role_id' => 3,
-                            'User.username' => $this->request->data['User']['username']))
-                );
-                if (!empty($userData)) {
+                $CustomerExist = $this->User->find('first', array(
+                                'conditions' => array('User.role_id' => 4,
+                                      'User.username' => trim($this->request->data['User']['username']),
+                                  'NOT' => array('Customer.status' => 3))));
+                $StoreExists = $this->User->find('first', array(
+                                'conditions' => array('User.role_id' => 3,
+                                            'User.username' => trim($this->request->data['User']['username']),
+                                        'NOT' => array('Store.status' => 3))));
+                if (!empty($CustomerExist) || !empty($StoreExists)) {
 
                     $storeCity = $this->City->find('list', array(
                                     'conditions' => array('City.state_id' => $this->request->data['Store']['store_state']),
                                     'fields' => array('City.id', 'City.city_name')));
-
-                    
                     if ($this->siteSetting['Sitesetting']['search_by'] == 'zip') {
                         $storeLocation = $this->Location->find('list', array(
-                                                'conditions' => array('Location.city_id' => $this->request->data['Store']['store_city']),
+                                                'conditions' => array(
+                                                            'Location.city_id' => $this->request->data['Store']['store_city']),
                                                 'fields' => array('id', 'zip_code')));
                     } else {
                         $storeLocation = $this->Location->find('list', array(
-                                                'conditions' => array('Location.city_id' => $this->request->data['Store']['store_city']),
+                                                'conditions' => array(
+                                                            'Location.city_id' => $this->request->data['Store']['store_city']),
                                                 'fields' => array('id', 'area_name')));
                     }
 
@@ -106,9 +109,8 @@ class StoresController extends AppController
                     }
 
                     $latLong = $this->Googlemap->getlatitudeandlongitude($storeAddress);
-                    $storeArrray['Store']['latitude'] = $latLong['lat'];
-                    $storeArrray['Store']['longitude'] = $latLong['long'];
-
+                    $storeArrray['Store']['latitude']  = (!empty($latLong['lat'])) ? $latLong['lat'] : 0;
+                    $storeArrray['Store']['longitude'] = (!empty($latLong['long'])) ? $latLong['long'] : 0;
 
                     $storeArrray['Store']['seo_url'] =
                         $this->Functions->seoUrl($this->request->data['Store']['store_name']);
@@ -223,20 +225,21 @@ class StoresController extends AppController
         if ($this->request->is('post') || $this->request->is('put')) {
             $this->Store->set($this->request->data);
             if($this->Store->validates()) {
-                /*$userData = $this->User->find('first', array(
-                                                'conditions' => array(
-                                                'User.role_id'  => 3,
-                                                'User.username' => $this->request->data['User']['username'],
-                                                'NOT' => array('User.id' =>$this->request->data['User']['id']))));*/
-
                 $store = $this->Store->findById($this->request->data['Store']['id']);
                 $storeEmailCheck = $this->User->find('first', array(
-                    'conditions' => array(
-                        'User.username' => trim($this->request->data['User']['username']),
-                        'NOT' => array('User.id' => $store['User']['id']))));
+                                      'conditions'=>array(
+                                      'User.role_id' => 3,
+                                      'User.username'=>trim($this->request->data['User']['username']),
+                                       'NOT' => array('User.id' => $store['User']['id'],
+                                                        'Store.status' => 3))));
 
+                $CustomerExist = $this->User->find('first', array(
+                                'conditions' => array(
+                                      'User.role_id' => 4,
+                                      'User.username' => trim($this->request->data['User']['username']),
+                                  'NOT' => array('Customer.status' => 3))));
 
-                if (!empty($storeEmailCheck)) {
+                if (!empty($storeEmailCheck) || !empty($CustomerExist)) {
                     $this->Session->setFlash('<p>' . __('User Email Already Exists', true) . '</p>', 'default',
                         array('class' => 'alert alert-danger'));
                 } else {
@@ -260,8 +263,8 @@ class StoresController extends AppController
 
                     $latLong = $this->Googlemap->getlatitudeandlongitude($storeAddress);
 
-                    $storeArrray['Store']['latitude'] = $latLong['lat'];
-                    $storeArrray['Store']['longitude'] = $latLong['long'];
+                    $storeArrray['Store']['latitude']  = (!empty($latLong['lat'])) ? $latLong['lat'] : 0;
+                    $storeArrray['Store']['longitude'] = (!empty($latLong['long'])) ? $latLong['long'] : 0;
                     $storeArrray['Store']['seo_url'] = $this->Functions->seoUrl($this->request->data['Store']['store_name']);
 
                     if ($this->User->save($storeArrray, null, null)) {
@@ -424,12 +427,18 @@ class StoresController extends AppController
             $this->Store->set($this->request->data);
             if($this->Store->validates()) {
                 if (!empty($this->request->data) && $this->Auth->User('role_id') == 3) {
-                    $userData = $this->User->find('first', array(
-                        'conditions' => array(
-                            'User.role_id' => 3,
-                            'User.username' => $this->request->data['User']['username'],
-                            'NOT' => array('User.id' => $this->request->data['User']['id']))));
-                    if (!empty($userData)) {
+                    $storeEmailCheck = $this->User->find('first', array(
+                                    'conditions' => array(
+                                                'User.role_id'  => 3,
+                                                'User.username' => trim($this->request->data['User']['username']),
+                                                'NOT' => array('User.id' =>$this->request->data['User']['id'],
+                                                                'Store.status' => 3))));
+                    $CustomerExist = $this->User->find('first', array(
+                                    'conditions' => array('User.role_id' => 4,
+                                          'User.username' => trim($this->request->data['User']['username']),
+                                      'NOT' => array('Customer.status' => 3))));
+                    
+                    if (!empty($storeEmailCheck) || !empty($CustomerExist)) {
                         $this->Session->setFlash('<p>' . __('User Name Already Exists', true) . '</p>', 'default',
                             array('class' => 'alert alert-danger'));
                     } else {

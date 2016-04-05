@@ -27,6 +27,7 @@
 						<thead>
 							<tr>
 								<th class="no-sort"><?php echo __('Order No', true); ?></th>
+								<th> <?php echo __('Store Name', true); ?></th>
 								<th> <?php echo __('Total Price', true); ?></th>
 								<th> <?php echo __('Payment Type', true); ?></th>
 								<th> <?php echo __('Delivery Date', true); ?></th>
@@ -43,6 +44,7 @@
 		                    	foreach($order_detail as $key => $value){  ?>
 			                    	<tr>
 										<td><?php echo $value['Order']['ref_number'];?></td>
+										<td><?php echo $value['Store']['store_name'];?></td>
 										<td><?php echo $value['Order']['order_grand_total'];?></td>
 										<td><?php echo __($value['Order']['payment_type']);?></td>
 										<td><?php echo $value['Order']['delivery_date'];?></td>

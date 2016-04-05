@@ -296,44 +296,43 @@ jQuery(function() {
 
   var CustomerBookvalidator = jQuery("#EditCustomerAddressBook").validate({
     rules: {
-      "data[CustomerAddressBooks][address_title]": {
+      "data[CustomerAddressBook][address_title]": {
         required: true,
       },
-      "data[CustomerAddressBooks][address_phone]": {
+      "data[CustomerAddressBook][address_phone]": {
         required: true,
         number :true,
       },
-      "data[CustomerAddressBooks][landmark]": {
+      "data[CustomerAddressBook][landmark]": {
         required: true,
-        number:true,
       },
-      "data[CustomerAddressBooks][address]": {
+      "data[CustomerAddressBook][address]": {
         required: true,       
       },
-      "data[CustomerAddressBooks][city_id]": {
+      "data[CustomerAddressBook][city_id]": {
         required: true,
       },
-      "data[CustomerAddressBooks][location_id]": {
+      "data[CustomerAddressBook][location_id]": {
         required: true,
       }
     },
-    messages: { 
+    messages: {
       "data[CustomerAddressBook][address_title]": {
-        required: "Please Enter the address_title",
+        required: "Please Enter the titile",
       },
-      "data[CustomerAddressBooks][address_phone]": {
+      "data[CustomerAddressBook][address_phone]": {
         required: "Please Enter the Phone nmber",
       },
-      "data[CustomerAddressBooks][landmark]": {
+      "data[CustomerAddressBook][landmark]": {
         required: "Please Enter the landmark",
       },
-      "data[CustomerAddressBooks][address]": {
+      "data[CustomerAddressBook][address]": {
         required: "Please Enter the address",
       },
-      "data[CustomerAddressBooks][city_id]": {
+      "data[CustomerAddressBook][city_id]": {
         required: "Please select the city",
       },
-      "data[CustomerAddressBooks][location_id]": {
+      "data[CustomerAddressBook][location_id]": {
         required: "Please select the location",
       }
     }

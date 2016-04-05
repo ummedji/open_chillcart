@@ -146,7 +146,6 @@ class ProductsController extends AppController {
                         $this->ProductImage->save($product_images);
                         $this->ProductImage->id = "";
                     	}
-                    }
                   }
                 }
               }

@@ -39,10 +39,6 @@ class Customer extends Model
                 'rule' => array('email'),
                 'message' => 'Please enter a valid email address'
             ),
-            'uniqueEmailRule' => array(
-                'rule' => 'isUnique',
-                'message' => 'Email already exists'
-            )
         ),
         'password' => array(
             'notEmpty' => array(

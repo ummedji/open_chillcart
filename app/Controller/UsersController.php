@@ -126,7 +126,7 @@ class UsersController extends AppController {
 					   $email->subject($forgetpasswordsubject);
 					   $email->template('register');
 					   $email->emailFormat('html');
-					   $email->viewVars(array('mailContent' => $mailContent,'source'=>$source,'storename'=>$siteName));
+					   $email->viewVars(array('mailContent' => $mailContent,'source'=>$source,'storename'=>$storename));
 
 					   if($email->send()){
 						// Forget Sms
@@ -344,11 +344,15 @@ class UsersController extends AppController {
        		$this->User->invalidFields();
 
        		if($this->Customer->validates()) {
-	          	$user = $this->User->find('first', array(
-	                      'conditions' => array('User.username' => trim($this->request->data['Customer']['customer_email']),
-	                                             'User.role_id' => 4,
-	                              'NOT' => array('Customer.status' => 3))));
-		        if(!empty($user)) {
+	          	$CustomerExist = $this->User->find('first', array(
+                                'conditions' => array('User.role_id' => 4,
+                                      'User.username' => trim($this->request->data['Customer']['customer_email']),
+                                  'NOT' => array('Customer.status' => 3))));
+		        $StoreExists = $this->User->find('first', array(
+		                        'conditions' => array('User.role_id' => 3,
+		                                    'User.username' => trim($this->request->data['Customer']['customer_email']),
+		                                'NOT' => array('Store.status' => 3))));
+		        if (!empty($CustomerExist) || !empty($StoreExists)) {
 		            $this->Session->setFlash('<p>'.__('Email already exists', true).'</p>', 'default', 
 		                                                array('class' => 'alert alert-danger'));
 		        } else {
@@ -411,7 +415,7 @@ class UsersController extends AppController {
 	             	$this->redirect(array('controller' => 'Users','action' => 'customerlogin','customer'=>true));
 	          	}
 			} else {
-				$this->User->validationErrors;
+				$this->Customer->validationErrors;
 			}
        	}
    	}
@@ -500,45 +504,42 @@ class UsersController extends AppController {
 		   	}
 		    $this->User->set($this->request->data);
 		   	if($this->User->validates()) {
+		        $role = array(4);
+				$userData = $this->User->find('first', array(
+									'conditions' =>array(
+												'User.username' => $this->request->data['User']['username'],
+												'Customer.status' => 1,
+												'User.role_id' => 4)));
 
-				if ($this->request->data['User']['username'] != '' && $this->request->data['User']['password'] != '') {
-			        $role = array(4);
+				if(in_array($userData['User']['role_id'], $role)) {
 
-					$userData = $this->User->find('first', array(
-										'conditions' =>array(
-													'User.username' => $this->request->data['User']['username'],
-													'Customer.status' => 1,
-													'User.role_id' => 4)));
-
-					if(in_array($userData['User']['role_id'], $role)) {
-
-						$this->Session->write("preSessionid",$this->Session->id());
-						if ($this->Auth->login()) {
-						 #REmember me            
-							if($this->request->data['User']['rememberMe']==1) {
-							    $this->Cookie->write('rememberMe',$this->request->data['User'],true,"12 months"); 
-							} else {
-							     $this->Cookie->delete('rememberMe');
-							}
-							if($this->Session->read("redirectpage")=='checkout') {
-			                    $this->Session->delete("redirectpage");
-			                    $this->redirect(array('controller' => 'checkouts', 'action' => 'index','customer'=>false));
-			                }
-							$this->redirect(array('controller' => 'customers', 'action' => 'myaccount'));
-
+					$this->Session->write("preSessionid",$this->Session->id());
+					if ($this->Auth->login()) {
+					 #REmember me            
+						if($this->request->data['User']['rememberMe']==1) {
+						    $this->Cookie->write('rememberMe',$this->request->data['User'],true,"12 months"); 
 						} else {
-
-							$this ->Session->setFlash('<p>'.__('Login failed your Username or Password Incorrect', true).'</p>', 'default', 
-												array('class' => 'alert alert-danger'));
-			                $this->redirect(array('controller' => 'users', 'action' => 'customerlogin','customer'=>true));
+						     $this->Cookie->delete('rememberMe');
 						}
+						if($this->Session->read("redirectpage")=='checkout') {
+		                    $this->Session->delete("redirectpage");
+		                    $this->redirect(array('controller' => 'checkouts', 'action' => 'index','customer'=>false));
+		                }
+						$this->redirect(array('controller' => 'customers', 'action' => 'myaccount'));
+
 					} else {
 
-						$this ->Session->setFlash('<p>'.__('Login failed, unauthorized', true).'</p>', 'default', 
-												array('class' => 'alert alert-danger'));
-						$this->redirect(array('controller' => 'users', 'action' => 'customerlogin','customer'=>true));
+						$this ->Session->setFlash('<p>'.__('Login failed your Username or Password Incorrect', true).'</p>', 'default', 
+											array('class' => 'alert alert-danger'));
+		                $this->redirect(array('controller' => 'users', 'action' => 'customerlogin','customer'=>true));
 					}
+				} else {
+
+					$this ->Session->setFlash('<p>'.__('Login failed, unauthorized', true).'</p>', 'default', 
+											array('class' => 'alert alert-danger'));
+					$this->redirect(array('controller' => 'users', 'action' => 'customerlogin','customer'=>true));
 				}
+				
 			} else {
 				$this->User->validationErrors;
 			}

@@ -78,8 +78,7 @@ $(document).ready(function(){
 
 		e.stopPropagation();
 	});
-	
-	
+
 	/* Cart height */
 	var carthei = $(window).height() - ($(".header").outerHeight() +  $(".cart-checkout").outerHeight());
 	var cartheiMob = $(window).height() - ( $(".mobile_cart").outerHeight() );
@@ -92,7 +91,6 @@ $(document).ready(function(){
 	}
 
 	/* add note scirpt */
-
 	$(".add-note").click(function(){
 		$(this).next(".edit-special-instructions").removeClass('hide');
 	});
@@ -170,7 +168,6 @@ $(document).ready(function(){
             return false;
         }
    });
-	
 });
 
 function locationList() {
@@ -284,16 +281,16 @@ function cart() {
 		//var cartheiMob = $(window).height();
 		var cartheiMob = $(window).height() - ( $(".mobile_cart").outerHeight() );
 
-		if( $(window).width() > 767 ) { $(".cart-items").css("height",carthei); }
-		else{
-				$(".cart-items").css({"height":cartheiMob}); 
-			} 
+		if( $(window).width() > 767 ) { 
+			$(".cart-items").css("height",carthei);
+		} else{
+			$(".cart-items").css({"height":cartheiMob}); 
+		}
 	});
 }
 
 var format = function(num){
 	var str = num.toString().replace("Mani", ""), parts = false, output = [], i = 1, formatted = null;
-	//alert(str);
 	if(str.indexOf(".") > 0) {
 		parts = str.split(".");
 		str = parts[0];
@@ -323,7 +320,6 @@ function qtyIncrement(id) {
 		cart();
 	});
 }
-
 
 function qtyDecrement(id) {
 	$.post(rp+'searches/qtyUpdate',{'id':id, 'type':'decrement'}, function(response) {
@@ -498,7 +494,6 @@ $(document).ready(function(){
 $(window).load(function(){
 	var count = 0;
 	fillter();
-
 	function fillter(){
 		count++;
 		var getvalue = $('#check').val();
@@ -615,7 +610,6 @@ function searchProducts() {
 	return false;
 }
 
-
 function productSearch(event) {
 	$('.error').hide();
 	if (event.which == 13 || event.keyCode == 13) {
@@ -643,7 +637,7 @@ function changeCustomerEmail() {
     } else {
 	    var line = 'Are you sure want to change your email if continue your current session will be signout automatically ?';
 	    if (confirm(line)) {
-	        $('#CustomerChangeCustomerEmailForm').submit();
+	        //$('#CustomerChangeCustomerEmailForm').submit();
 	    } else {
 	        return false;
 	    }

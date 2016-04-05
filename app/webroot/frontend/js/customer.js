@@ -21,7 +21,6 @@ function locationFillters() {
 
     })
 }
-
 //City Fillter Process
 function cityFillter() {
     var id = $('#CustomerAddressBookStateIds').val();
@@ -38,8 +37,6 @@ function locationFillter() {
 
     })
 }
-
-
 //customer delete action
 function customerdelete(id, model) {
     $.post(rp+'customer/Customers/deleteaddress',{'id':id,'model':model}, function(response) {
@@ -63,14 +60,17 @@ function deletecard(id) {
 //OrderInvoice Details Print Format 
 function documentPrints() {
     var win = window.open('', 'printwindow');
-    win.document.write('<html><head><title>Print Order Invoice!</title><link rel="stylesheet" type="text/css" href="styles.css"></head><body>');
+    win.document.write('<html><head><title>Print Order Invoice!</title><link rel="stylesheet" type="text/css" href="bootstrap.min.css"><link rel="stylesheet" type="text/css" href="common_new.css"><link rel="stylesheet" type="text/css" href="common.css"></head><body>');
     win.document.write($(".myorderTab").html());
     win.document.write('</body></html>');
     win.print();
-    $('.link').hide();
+    //$('.link').hide();
     $('.footer').hide();
     $('#sidebar').hide();
     win.close();
+    $('.link').show();
+    $('.footer').show();
+    $('#sidebar').show();
 }
 
 function pdfdownload(id) {
@@ -101,16 +101,13 @@ $(document).ready(function () {
         }
 
     });
-
     $("#forgetPage").click(function () {
         $("#forgetsmail").show();
         $("#login").hide();
 
     });
-
     $('#loginPage').click(function () {
         $("#forgetsmail").hide();
         $("#login").show();
     })
-
 });
