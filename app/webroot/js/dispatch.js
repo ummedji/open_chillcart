@@ -1,19 +1,3 @@
-
-/*$(document).ready(function() {
-	trackings();
-	updateOrderMap();
-});*/
-
-
-//Clear Console
-function clearConsole() {
-    if(window.console || window.console.firebug) {
-        //console.clear();
-    }
-}
-
-
-
 //Update map when mouse enter and leave for map
 function updateOrderMap() {
 
@@ -75,7 +59,6 @@ function disclaimOrder(orderId) {
 	});
 }
 
-
 //Assign Order
 function assignOrder(ord, driver) {
 	
@@ -91,7 +74,6 @@ function assignOrder(ord, driver) {
         });
     return false;
 }
-
 
 function viewTrack(ordId) {
 
@@ -139,8 +121,12 @@ function deleteMarkers() {
 
 }
 
-
-
+//Clear Console
+function clearConsole() {
+    if(window.console || window.console.firebug) {
+        //console.clear();
+    }
+}
 
 $('.statusLog').on('click', function() {
     var id = $(this).attr('id');
@@ -154,32 +140,26 @@ $('.statusLog').on('click', function() {
 
 
 $(document).ready(function(){
-	
-
+    /*trackings();
+    updateOrderMap();*/
 	$(".table").on('click','.buttonStatus',function() {
 		if($(this).hasClass('red_bck')){
 			$(this).removeClass('red_bck');
 			$(this).children("i").removeClass('fa-times').addClass("fa-check");
+            $(this).attr("title","active");
 		}
 		else if($(this).hasClass('yellow_bck')){
 			$(this).removeClass('yellow_bck');
 			$(this).children("i").removeClass('fa-exclamation').addClass("fa-check");
+            $(this).attr("title","Pending");
 		}
 		else{
 			$(this).addClass('red_bck');
 			$(this).children("i").removeClass('fa-check').addClass("fa-times");
+            $(this).attr("title","Deactive");
 		}
 
 	});
-
-
-	
-	/*$('#sample_12').DataTable( {
-        "processing": true,
-        "serverSide": true,
-        "ajax": "../server_side/scripts/server_processing.php"
-    } );*/
-
 });
 
 function trackOrder(orderId) {

@@ -35,29 +35,35 @@ class StoreoffersController extends AppController
      */
     public function admin_add()
     {
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->Storeoffer->set($this->request->data);
+            if($this->Storeoffer->validates()) {
+
+                $Storeoffer = $this->Storeoffer->find('all', array(
+                    'conditions' => array(
+                        'Storeoffer.offer_price' =>
+                            trim($this->request->data['Storeoffer']['offer_price']),
+                        'AND' => array('Storeoffer.id' =>
+                            trim($this->request->data['Storeoffer']['store_id'])))
+                ));
+                if (!empty($Storeoffer)) {
+                    $this->Session->setFlash('<p>' . __('Unable to add your Storeoffer', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                } else {
+                    $this->Storeoffer->save($this->request->data, null, null);
+                    $this->Session->setFlash('<p>' . __('Your Storeoffer has been saved', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'Storeoffers', 'action' => 'index'));
+                }
+            } else {
+                $this->Storeoffer->validationErrors;
+            }
+        }
         $Store_list = $this->Store->find('list', array(
             'fields' => array(
                 'Store.id', 'Store.store_name'),
             'conditions' => array('Store.status' => 1)));
         $this->set('Store_list', $Store_list);
-        if ($this->request->data['Storeoffer']['store_id'] != null) {
-            $Storeoffer = $this->Storeoffer->find('all', array(
-                'conditions' => array(
-                    'Storeoffer.offer_price' =>
-                        trim($this->request->data['Storeoffer']['offer_price']),
-                    'AND' => array('Storeoffer.id' =>
-                        trim($this->request->data['Storeoffer']['store_id'])))
-            ));
-            if (!empty($Storeoffer)) {
-                $this->Session->setFlash('<p>' . __('Unable to add your Storeoffer', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
-            } else {
-                $this->Storeoffer->save($this->request->data, null, null);
-                $this->Session->setFlash('<p>' . __('Your Storeoffer has been saved', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'Storeoffers', 'action' => 'index'));
-            }
-        }
     }
 
     /**
@@ -67,22 +73,27 @@ class StoreoffersController extends AppController
      */
     public function admin_edit($id = null)
     {
-        if (!empty($this->request->data['Storeoffer']['offer_price'])) {
-            $Storeoffer = $this->Storeoffer->find('all', array(
-                'conditions' => array(
-                    'Storeoffer.offer_price' =>
-                        trim($this->request->data['Storeoffer']['offer_price']),
-                    'NOT' => array('Storeoffer.id' =>
-                        trim($this->request->data['Storeoffer']['id'])))
-            ));
-            if (!empty($Storeoffer)) {
-                $this->Session->setFlash('<p>' . __('Unable to add your Storeoffer', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->Storeoffer->set($this->request->data);
+            if($this->Storeoffer->validates()) {
+                $Storeoffer = $this->Storeoffer->find('all', array(
+                    'conditions' => array(
+                        'Storeoffer.offer_price' =>
+                            trim($this->request->data['Storeoffer']['offer_price']),
+                        'NOT' => array('Storeoffer.id' =>
+                            trim($this->request->data['Storeoffer']['id'])))
+                ));
+                if (!empty($Storeoffer)) {
+                    $this->Session->setFlash('<p>' . __('Unable to add your Storeoffer', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                } else {
+                    $this->Storeoffer->save($this->request->data, null, null);
+                    $this->Session->setFlash('<p>' . __('Your Storeoffer has been saved', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'Storeoffers', 'action' => 'index'));
+                }
             } else {
-                $this->Storeoffer->save($this->request->data, null, null);
-                $this->Session->setFlash('<p>' . __('Your Storeoffer has been saved', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'Storeoffers', 'action' => 'index'));
+                $this->Storeoffer->validationErrors;
             }
         }
         $Store_list = $this->Store->find('list', array(
@@ -109,22 +120,27 @@ class StoreoffersController extends AppController
     {
         $this->layout = 'assets';
         $id = $this->Auth->User();
-        if ($this->request->data['Storeoffer']['offer_percentage'] != null) {
-            $Storeoffer = $this->Storeoffer->find('all', array(
-                'conditions' => array(
-                    'Storeoffer.offer_price' =>
-                        trim($this->request->data['Storeoffer']['offer_price']),
-                    'AND' => array('Storeoffer.store_id' => trim($id['Store']['id'])))
-            ));
-            if (!empty($Storeoffer)) {
-                $this->Session->setFlash('<p>' . __('Unable to add your Storeoffer', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->Storeoffer->set($this->request->data);
+            if($this->Storeoffer->validates()) {
+                $Storeoffer = $this->Storeoffer->find('all', array(
+                    'conditions' => array(
+                        'Storeoffer.offer_price' =>
+                            trim($this->request->data['Storeoffer']['offer_price']),
+                        'AND' => array('Storeoffer.store_id' => trim($id['Store']['id'])))
+                ));
+                if (!empty($Storeoffer)) {
+                    $this->Session->setFlash('<p>' . __('Unable to add your Storeoffer', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                } else {
+                    $this->request->data['Storeoffer']['store_id'] = $id['Store']['id'];
+                    $this->Storeoffer->save($this->request->data, null, null);
+                    $this->Session->setFlash('<p>' . __('Your Storeoffer has been saved', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'Storeoffers', 'action' => 'index'));
+                }
             } else {
-                $this->request->data['Storeoffer']['store_id'] = $id['Store']['id'];
-                $this->Storeoffer->save($this->request->data, null, null);
-                $this->Session->setFlash('<p>' . __('Your Storeoffer has been saved', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'Storeoffers', 'action' => 'index'));
+                $this->Storeoffer->validationErrors;
             }
         }
     }
@@ -133,30 +149,35 @@ class StoreoffersController extends AppController
     {
         $this->layout = 'assets';
         $ids = $this->Auth->User();
-        if (!empty($this->request->data['Storeoffer']['offer_price'])) {
+         if ($this->request->is('post') || $this->request->is('put')) {
+            $this->Storeoffer->set($this->request->data);
+            if($this->Storeoffer->validates()) {
 
-            $getStoreofferData = $this->Storeoffer->find('first', array(
-                          'conditions' => array('Storeoffer.id' => $this->request->data['Storeoffer']['id'],
-                                      'Storeoffer.store_id' => $this->Auth->User('Store.id'))));
-            if (empty($getStoreofferData)) {
-                $this->render('/Errors/error400');
-            }
+                $getStoreofferData = $this->Storeoffer->find('first', array(
+                              'conditions' => array('Storeoffer.id' => $this->request->data['Storeoffer']['id'],
+                                          'Storeoffer.store_id' => $this->Auth->User('Store.id'))));
+                if (empty($getStoreofferData)) {
+                    $this->render('/Errors/error400');
+                }
 
-            $Storeoffer = $this->Storeoffer->find('first', array(
-                                'conditions' => array(
-                                    'Storeoffer.offer_price' =>
-                                        trim($this->request->data['Storeoffer']['offer_price']),
-                                    'NOT' => array('Storeoffer.id' =>
-                                        trim($this->request->data['Storeoffer']['id'])))
-                            ));
-            if (!empty($Storeoffer)) {
-                $this->Session->setFlash('<p>' . __('Storeoffer price already exists', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
+                $Storeoffer = $this->Storeoffer->find('first', array(
+                                    'conditions' => array(
+                                        'Storeoffer.offer_price' =>
+                                            trim($this->request->data['Storeoffer']['offer_price']),
+                                        'NOT' => array('Storeoffer.id' =>
+                                            trim($this->request->data['Storeoffer']['id'])))
+                                ));
+                if (!empty($Storeoffer)) {
+                    $this->Session->setFlash('<p>' . __('Storeoffer price already exists', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                } else {
+                    $this->Storeoffer->save($this->request->data, null, null);
+                    $this->Session->setFlash('<p>' . __('Your Storeoffer has been saved', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'Storeoffers', 'action' => 'index'));
+                }
             } else {
-                $this->Storeoffer->save($this->request->data, null, null);
-                $this->Session->setFlash('<p>' . __('Your Storeoffer has been saved', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'Storeoffers', 'action' => 'index'));
+                $this->Storeoffer->validationErrors;
             }
         }
 
@@ -168,5 +189,4 @@ class StoreoffersController extends AppController
         }
         $this->request->data = $getStoreofferData;
     }
-
 }

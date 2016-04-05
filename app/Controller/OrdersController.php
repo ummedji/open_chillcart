@@ -172,16 +172,30 @@ class OrdersController extends AppController {
       if (empty($role) || $this->Auth->User('role_id') != 4) {
           $this->redirect(array('controller' => 'searches', 'action' => 'index'));
       }
+
+      if ($this->request->data['Order']['paymentMethod'] != 'cod') {
+          $stripeCard = $this->StripeCustomer->find('first', array(
+                              'conditions' => array(
+                                        'StripeCustomer.id' => $this->request->data['Order']['paymentMethod'],
+                                        'StripeCustomer.customer_id' => $this->Auth->User('Customer.id'))));
+          if (empty($stripeCard)) {
+              $this->redirect(array('controller' => 'searches', 'action' => 'index'));
+          }
+      }
       
       $today= date("m/d/Y");
       $lastsessionid  = $this->Session->read("preSessionid");
       $SessionId = (!empty($lastsessionid)) ? $lastsessionid : $this->Session->id();
 
+      if (!empty($this->request->data['Order']['delivery_id'])) {
+        $customerDetails = $this->CustomerAddressBook->find('first', array(
+                        'conditions' => array(
+                            'CustomerAddressBook.id' => $this->request->data['Order']['delivery_id'],
+                            'CustomerAddressBook.customer_id' => $this->Auth->User('Customer.id'))));
+      }
+      
       foreach ($this->request->data['Order']['timeSlot'] as $key => $value) {
 
-          $customerDetails = $this->CustomerAddressBook->findById($this->request->data['Order']['delivery_id']);
-
-          
           $order['store_id']            = $value['store_id'];
           $order['customer_id']         = $this->Auth->User('Customer.id');
           $order['user_type']           = 'Customer';
@@ -208,8 +222,8 @@ class OrdersController extends AppController {
           }
           
           $sourceLatLong    = $this->Googlemap->getlatitudeandlongitude($storeAddress);
-          $source_lat       = (isset($sourceLatLong['lat'])) ? $sourceLatLong['lat'] : 0;
-          $source_long      = (isset($sourceLatLong['lat'])) ? $sourceLatLong['long'] : 0;
+          $source_lat       = (!empty($sourceLatLong['lat'])) ? $sourceLatLong['lat'] : 0;
+          $source_long      = (!empty($sourceLatLong['long'])) ? $sourceLatLong['long'] : 0;
           
           if ($order['order_type'] != 'Collection') {
 
@@ -230,8 +244,9 @@ class OrdersController extends AppController {
                             $this->siteSetting['Country']['country_name'];
 
             $destinationLatLong = $this->Googlemap->getlatitudeandlongitude($deliveryAddress);
-            $order['destination_latitude']    = (isset($destinationLatLong)) ? $destinationLatLong['lat'] : 0;
-            $order['destination_longitude']   = (isset($destinationLatLong)) ? $destinationLatLong['long'] : 0;
+
+            $order['destination_latitude']    = (!empty($destinationLatLong['lat'])) ? $destinationLatLong['lat'] : 0;
+            $order['destination_longitude']   = (!empty($destinationLatLong['long'])) ? $destinationLatLong['long'] : 0;
           } else {
 
             $order['customer_name']       = $this->Auth->User('Customer.first_name'). ' '.
@@ -265,6 +280,7 @@ class OrdersController extends AppController {
           $deliverDetails = $this->DeliveryTimeSlot->findById($value['time']);
           $total = $this->ShoppingCart->find('all', array(
                   'conditions'=>array('ShoppingCart.session_id' => $SessionId,
+                                      'ShoppingCart.order_id' => 0,
                                       'ShoppingCart.store_id' => $value['store_id']),
                   'fields' => array('SUM(ShoppingCart.product_total_price) AS cartSubTotal')));
 
@@ -301,6 +317,7 @@ class OrdersController extends AppController {
           $this->ShoppingCart->updateAll(
                         array('ShoppingCart.order_id' => $this->Order->id),
                         array('ShoppingCart.session_id' => $SessionId,
+                               'ShoppingCart.order_id' => 0,
                               'ShoppingCart.store_id'   => $value['store_id']));
 
           $cartProducts = $this->ShoppingCart->find('all', array(
@@ -313,9 +330,6 @@ class OrdersController extends AppController {
                                                     0;
               $this->ProductDetail->save($value['ProductDetail']);
           }
-
-          //OrderMail
-          $this->ordermail($this->Order->id);
           $this->Order->id = '';
       }
 
@@ -326,6 +340,10 @@ class OrdersController extends AppController {
               $orderUpdate['id'] = $value;
               $orderUpdate['payment_type'] = 'cod';
               $this->Order->save($orderUpdate);
+              //OrderMail
+              $this->ordermail($value);
+              //OrderSms
+              $this->ordersms($value);
           }
       } else {
 
@@ -365,6 +383,10 @@ class OrdersController extends AppController {
               $orderUpdate['payment_type']    = 'Card';
               $orderUpdate['payment_method']  = 'paid';
               $this->Order->save($orderUpdate);
+              //OrderMail
+              $this->ordermail($value);
+              //OrderSms
+              $this->ordersms($value);
             }
         } else {
 
@@ -375,6 +397,7 @@ class OrdersController extends AppController {
             $orderUpdate['payment_type']  = 'Card';
             $orderUpdate['failed_reason'] = 'Payment failed';
             $this->Order->save($orderUpdate);
+            $this->Session->write('orderFailed', 'failed');
           }
           $this->Session->setFlash(__('Payment failed', true),
                                     'default', array('class' => 'alert alert-danger'));
@@ -382,35 +405,38 @@ class OrdersController extends AppController {
         }
 
       }
-
-      //Order Placed Sms
-      foreach ($orderId as $key => $value) {
-        $orderDetail = $this->Order->findById($value);
-        $customerMessage = 'Thanks for using chillcart service. Your order '.$orderDetail['Order']['ref_number'].' has been placed . Track your order at '.$this->siteUrl.'.  Regards Chillcart';
-        $toCustomerNumber = '+'.$this->siteSetting['Country']['phone_code'].$this->Auth->User('Customer.customer_phone');
-        $customerSms      = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
-
-        $storeMessage  = "Dear ".$orderDetail['Store']['store_name']." you've received a ";
-        $storeMessage .= ($orderDetail['Order']['payment_method'] != 'paid') ? 'COD' : 'PAID';
-        $storeMessage .= 'order '.$orderDetail['Order']['ref_number'].' from '.$orderDetail['Order']['customer_name'];
-
-        if ($orderDetail['Order']['order_type'] == 'Delivery') {
-             $storeMessage .= ','.$orderDetail['Order']['address'].','.$orderDetail['Order']['landmark'].
-                              ','.$orderDetail['Order']['location_name'].','.$orderDetail['Order']['city_name'].
-                              ','.$orderDetail['Order']['city_name'];
-        }
-
-        $storeMessage .= '. '.$orderDetail['Order']['order_type'].' due on '.$orderDetail['Order']['delivery_date'].' at '.$orderDetail['Order']['delivery_time_slot'].'. Thanks Chillcart';
-        $toStoreNumber = '+'.$this->siteSetting['Country']['phone_code'].$orderDetail['Store']['store_phone'];
-        $customerSms   = $this->Twilio->sendSingleSms($toStoreNumber, $storeMessage);
-
-      }
-
       $this->Session->write("preSessionid",'');
       $this->Session->write('orderplaced', 'success');
       $this->redirect(array('controller' => 'searches', 'action' => 'index', 'Thanks'));
-
   }
+
+  //Order Sms
+  public function ordersms($orderId) {
+
+    $orderDetail = $this->Order->findById($orderId);
+    $customerMessage = 'Thanks for using chillcart service. Your order '.$orderDetail['Order']['ref_number'].' has been placed. Track your order at '.$this->siteUrl.'. Regards Chillcart';
+    $toCustomerNumber = '+'.$this->siteSetting['Country']['phone_code'].$this->Auth->User('Customer.customer_phone');
+    $customerSms      = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
+
+    if ($orderDetail['Store']['sms_option'] == 'Yes' && !empty($orderDetail['Store']['sms_phone'])) {
+      $storeMessage  = "Dear ".$orderDetail['Store']['store_name']." you've received a ";
+      $storeMessage .= ($orderDetail['Order']['payment_method'] != 'paid') ? 'COD' : 'PAID';
+      $storeMessage .= ' order '.$orderDetail['Order']['ref_number'].' from '.$orderDetail['Order']['customer_name'];
+
+      if ($orderDetail['Order']['order_type'] == 'Delivery') {
+           $storeMessage .= ','.$orderDetail['Order']['address'].','.$orderDetail['Order']['landmark'].
+                            ','.$orderDetail['Order']['location_name'].','.$orderDetail['Order']['city_name'].
+                            ','.$orderDetail['Order']['city_name'];
+      }
+
+      $storeMessage .= '. '.$orderDetail['Order']['order_type'].' due on '.$orderDetail['Order']['delivery_date'].' at '.$orderDetail['Order']['delivery_time_slot'].'. Thanks Chillcart';
+      $toStoreNumber = '+'.$this->siteSetting['Country']['phone_code'].$orderDetail['Store']['sms_phone'];
+      $customerSms   = $this->Twilio->sendSingleSms($toStoreNumber, $storeMessage);
+    }
+     return true;
+  }
+
+
   public function store_index(){
     $this->layout = 'assets';
     $order_list = $this->Order->find('all', array(
@@ -485,7 +511,7 @@ class OrdersController extends AppController {
   public function store_order() {
     $this->layout = 'assets';
     $id           = $this->Auth->User();
-    $status = array('Delivered','Pending','Failed','Deleted');
+    $statuss = array('Delivered','Pending','Failed','Deleted');
 
     $location = $this->Location->find('list', array(
                                     'fields' => array('id', 'area_name')));
@@ -496,10 +522,11 @@ class OrdersController extends AppController {
     $orderList = $this->Order->find('all', array(
                         'conditions' => array('Order.store_id'=>$id['Store']['id'],
                                               'Order.order_type' => 'Delivery',
-                            'NOT' => array('Order.status' => $status)),
+                            'NOT' => array('Order.status' => $statuss)),
                         'order' => array('Order.id DESC')));
+    $status = array('Failed' => 'Failed', 'Delivered' => 'Delivered');
 
-    $this->set(compact('orderList', 'location', 'city'));
+    $this->set(compact('orderList', 'location', 'city', 'status'));
   }
 
 
@@ -846,24 +873,23 @@ class OrdersController extends AppController {
       $customer_mail = $datas['Order']['customer_email'];
       $customerName  = $datas['Order']['customer_name'];
       $storename     = $datas['Store']['store_name'];
-      $storemailId   = $this->siteSetting['Sitesetting']['admin_email'];
+      $sitemailId    = $this->siteSetting['Sitesetting']['admin_email'];
 
       $mailContent = $customerContent;
       $siteUrl = $this->siteUrl;
 
-      $mailContent = str_replace("{Customer name}", $customerName, $mailContent);
-      $mailContent = str_replace("{source}", $source, $mailContent);
-      $mailContent = str_replace("{Store name}", $storename, $mailContent);
-      $mailContent = str_replace("{orderid}", $datas['Order']['ref_number'], $mailContent);
-      $mailContent = str_replace("{note}", $name, $mailContent);
-      $mailContent = str_replace("{Address}", $Address, $mailContent);
-      $mailContent = str_replace("{SITE_URL}", $siteUrl, $mailContent);
-
+      $mailContent     = str_replace("{Customer name}", $customerName, $mailContent);
+      $mailContent     = str_replace("{source}", $source, $mailContent);
+      $mailContent     = str_replace("{Store name}", $storename, $mailContent);
+      $mailContent     = str_replace("{orderid}", $datas['Order']['ref_number'], $mailContent);
+      $mailContent     = str_replace("{note}", $name, $mailContent);
+      $mailContent     = str_replace("{Address}", $Address, $mailContent);
+      $mailContent     = str_replace("{SITE_URL}", $siteUrl, $mailContent);
       $customerSubject = str_replace("[with Order ID]", $datas['Order']['ref_number'], $customerSubject);
       $customerSubject = str_replace("store name", $storename, $customerSubject);
 
       $email = new CakeEmail();
-      $email->from($storemailId);
+      $email->from($sitemailId);
       $email->to($customer_mail);
       $email->subject($customerSubject);
       $email->template('ordermail');
@@ -873,33 +899,34 @@ class OrdersController extends AppController {
                           'storename' => $storename));
       $email->send();
 
-      $mailContent = $sellerContent;
+      if ($datas['Store']['email_order'] == 'Yes' && !empty($datas['Store']['order_email'])) {
 
-      $mailContent = str_replace("{Customer name}", $customerName, $mailContent);
-      $mailContent = str_replace("{source}", $source, $mailContent);
-      $mailContent = str_replace("{Store name}", $storename, $mailContent);
-      $mailContent = str_replace("{orderid}", $datas['Order']['ref_number'], $mailContent);
-      $mailContent = str_replace("{note}", $name, $mailContent);
-      $mailContent = str_replace("{Address}", $Address, $mailContent);
-      $mailContent = str_replace("{SITE_URL}", $siteUrl, $mailContent);
-      //$mailContent = str_replace("order ID", $datas['Order']['ref_number'], $mailContent);
+        $storemailId = $datas['Store']['order_email'];
 
-      $sellerSubject = str_replace("[ Order ID ]", $datas['Order']['ref_number'], $sellerSubject);
-      $sellerSubject = str_replace("customer name", $customerName, $sellerSubject);
+        $mailContent = $sellerContent;
 
-      $email = new CakeEmail();
-      $email->from($customer_mail); 
-      $email->to($storemailId);
-      $email->subject($sellerSubject);
-      $email->template('ordermail');
-      $email->emailFormat('html');
-      $email->viewVars(array('mailContent' => $mailContent,
-                            'source' => $source,
-                            'storename' => $storename));
-      
-      $email->send();
+        $mailContent   = str_replace("{Customer name}", $customerName, $mailContent);
+        $mailContent   = str_replace("{source}", $source, $mailContent);
+        $mailContent   = str_replace("{Store name}", $storename, $mailContent);
+        $mailContent   = str_replace("{orderid}", $datas['Order']['ref_number'], $mailContent);
+        $mailContent   = str_replace("{note}", $name, $mailContent);
+        $mailContent   = str_replace("{Address}", $Address, $mailContent);
+        $mailContent   = str_replace("{SITE_URL}", $siteUrl, $mailContent);
+        $sellerSubject = str_replace("[ Order ID ]", $datas['Order']['ref_number'], $sellerSubject);
+        $sellerSubject = str_replace("customer name", $customerName, $sellerSubject);
+
+        $email = new CakeEmail();
+        $email->from($customer_mail); 
+        $email->to($storemailId);
+        $email->subject($sellerSubject);
+        $email->template('ordermail');
+        $email->emailFormat('html');
+        $email->viewVars(array('mailContent' => $mailContent,
+                              'source' => $source,
+                              'storename' => $storename));
+        $email->send();
+      }
       return true;
-
     }
 
 }

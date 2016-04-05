@@ -48,7 +48,7 @@
                             
                             	$count = 1;
                                 foreach($order_list as $key => $value) { ?>
-									<tr id="orderList_<?php echo $value['Order']['id']; ?>" class="odd gradeX">
+									<tr id="orderDetails<?php echo $value['Order']['id']; ?>" class="odd gradeX">
 										<td><?php echo $count ;
 											echo $this->Form->input('orderType_'.$value['Order']['id'],
 															array('type'=>'hidden',

@@ -264,17 +264,11 @@
 											}?>
 										</tbody>
 									</table>
-								</div>
-
-								<?php
-									if ($orders_list['Order']['status'] == 'Delivered') {
-
-										if (file_exists(WWW_ROOT.'/OrderProof/Order_signature'.$orders_list['Order']['id'].'.png')) { ?>
-
-											<center><img src="<?php echo $siteUrl; ?>/OrderProof/Order_signature<?php echo $orders_list['Order']['id']; ?>.png"></center> <?php
-										}
-										
-									} ?>
+								</div> <?php
+								if ($orders_list['Order']['status'] == 'Delivered') { ?>
+									<center><img src="<?php echo $cdn.'/OrderProof/Order_signature'.$orders_list['Order']['id'].'.png';?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/No-Signature.jpg"; ?>'"></center>  <?php
+									
+								} ?>
 							</div>
 						</div> 
 					</div>

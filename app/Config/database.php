@@ -37,7 +37,7 @@ class DATABASE_CONFIG
             $this->default['datasource'] = 'Database/Mysql';
         elseif (getenv("APPLICATION_ENV") == "TESTING"):
             $this->default['host'] = 'localhost';
-            $this->default['port'] = '';
+            $this->default['port'] = '3306';
             $this->default['login'] = 'root';
             $this->default['password'] = 'Passw0rd';
             $this->default['database'] = 'chillcartDemo';

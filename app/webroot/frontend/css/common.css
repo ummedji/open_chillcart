@@ -100,7 +100,7 @@ width: 100%;}
 .searchshopList figure:hover .listhead{display:none;}
 
 /* Shop Details Start */
-.detailheader{background: #006400; position: fixed; width: 100%; z-index: 1000;}
+.detailheader{background: #26ec78; position: fixed; width: 100%; z-index: 1000;}
 .navbar-nav > li.menuDropdown{position:static;}
 .detailheader .navbar{margin:0;}
 .header.detailheader .dropdown-menu.shopMenuDropdown{padding:15px; min-width:200px; border-radius:4px!important; width: 100%;}
@@ -606,7 +606,7 @@ margin-bottom: 20px;display: block;overflow: hidden;padding: 13px; cursor: point
 	.indexheader.header .navbar-brand{width:auto;}
 }
 .pointer{cursor: pointer;}
-.form-error{background: url(../images/errorimg.png) no-repeat scroll 5px 3px;padding-left: 23px;color: #f00;font: 15px/18px Lato;margin-top: 5px;text-align: left;display: inline-block;}
+.form-error{/*background: url(../images/errorimg.png) no-repeat scroll 5px 3px;*/padding-left: 23px;color: #f00;font: 15px/18px Lato;margin-top: 5px;text-align: left;display: inline-block;}
 input.error{border-color: color: #f00;}
 label.error {background: url(../images/errorimg.png) no-repeat scroll 5px 3px;padding-left: 23px;color: #f00;font: 14px/18px Lato;margin-top: 5px;text-align: left;}
 .form-control:focus {border-color: #66afe9; outline: 0; -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);   box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);}
@@ -641,7 +641,7 @@ position: absolute;right: 2px;text-align: center;text-transform: uppercase;}
 
 #sync1.owl-carousel .owl-wrapper-outer{text-align: center;max-height: 380px;height: 380px;margin-bottom: 35px; }
 #sync2.owl-carousel .owl-wrapper-outer{ margin-bottom: 15px;text-align: center;}
-#sync1.owl-carousel .owl-wrapper-outer .owl-item .item{ padding: 25px 25px;background: #f7f7f7;border: 3px solid #eee;display: inline-block;max-width: 100%;}
+#sync1.owl-carousel .owl-wrapper-outer .owl-item .item{ padding: 25px 25px;display: inline-block;max-width: 100%;}
 
 .store_slotes{ background: #f7f7f7; margin-bottom: 20px; padding: 15px 0 0 ;border: 1px solid #eee; }
 .store_name{font: 17px/20px FuturaHeavy !important; color: #038F1B; } 
@@ -1138,3 +1138,4 @@ table.dataTable thead .no-sort { background-image: none !important;}
 /*.deliveryCharge option{width:100%;}
 #orderTypeCheck .dropdown-menu > li > a{white-space: normal!important;}
 #orderTypeCheck .bootstrap-select{width:100%!important;}*/
+.error-message{color: #ff0000;}

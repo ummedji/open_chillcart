@@ -635,7 +635,11 @@ class CommonsController extends AppController {
                 $this->redirect(array('controller' => 'brands','action' => 'index','admin'=> true));
             break;
             case 'Category':
-                $this->redirect(array('controller' => 'categories','action' => 'index','admin'=> true));
+                if (isset($this->request->data['categoryType'])) {
+                    $this->redirect(array('controller' => 'categories','action' => 'subCatIndex','admin'=> true));
+                } else {
+                    $this->redirect(array('controller' => 'categories','action' => 'index','admin'=> true));
+                }
             break;
             case 'Store':
                 $this->redirect(array('controller' => 'stores','action' => 'index','admin'=> true));

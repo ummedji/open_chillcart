@@ -41,6 +41,7 @@ class AppController extends Controller
     {
 
         $this->basicSetup();
+        //$this->Session->renew();
 
         if ($this->params['prefix'] === 'admin') {
 

@@ -9,8 +9,8 @@ class CustomersController extends AppController
     public $uses = array('Customer', 'User', 'CustomerAddressBook', 'City',
         'Location', 'State', 'Order', 'ShoppingCart',
         'StripeCustomer', 'Status', 'ProductImage', 'Notification', 'Review');
-    public $components = array('Updown', 'Functions', 'Mpdf', 'CakeS3');
-
+    public $components = array( 'Updown', 'Functions', 'Mpdf', 'CakeS3', 'Session');
+    
     /**
      * CustomersController::admin_index()
      * Admin View CustomerManagement
@@ -31,16 +31,14 @@ class CustomersController extends AppController
      * Admin View Particular Customer Detail
      * @return void
      */
-    public function admin_customerIndex()
+    public function admin_customerIndex($id = null)
     {
-        $ids = $this->params['pass'];
-        $id = $ids[0];
         if ($id == null) {
             $this->redirect(array('controller' => 'Customers', 'action' => 'index'));
         } else {
             $addressbook_list = $this->CustomerAddressBook->find('all', array(
                 'conditions' => array('CustomerAddressBook.customer_id' => $id)));
-            $this->set("addressbook_list", $addressbook_list);
+            $this->set(compact('addressbook_list'));
         }
     }
 
@@ -51,58 +49,66 @@ class CustomersController extends AppController
      */
     public function admin_add()
     {
-        if (!empty($this->request->data['Customer']['customer_email'])) {
-            //$user  = $this->User->findByUsernameAndRoleId($this->request->data['Customer']['customer_email'],4);
+        if($this->request->is('post') || $this->request->is('put')) {
+            $this->Customer->set($this->request->data);
+            if($this->Customer->validates()) {
+                $CustomerExist = $this->User->find('first', array(
+                                'conditions' => array(
+                                      'User.username' => trim($this->request->data['Customer']['customer_email']),
+                                  'NOT' => array('Customer.status' => 3))));
+                $CustomerExists = $this->User->find('first', array(
+                                'conditions' => array(
+                                    'User.username' => trim($this->request->data['Customer']['customer_email']),
+                                'NOT' => array('Store.status' => 3))));
 
-            $user = $this->User->find('first', array(
-                        'conditions' => array('User.username' => trim($this->request->data['Customer']['customer_email']),
-                                    'User.role_id' => 4,
-                                    'NOT' => array('Customer.status' => 3))));
-            if (!empty($user)) {
-                $this->Session->setFlash('<p>' . __('Already Exists Users', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
-            } else {
-                $this->request->data['User']['role_id'] = 4;
-                $this->request->data['User']['username'] = $this->request->data['Customer']['customer_email'];
-                $this->request->data['User']['password'] = $this->Auth->password($this->request->data['User']['password']);
-                $this->User->save($this->request->data['User'], null, null);
-                $this->request->data['Customer']['user_id'] = $this->User->id;
-                $this->Customer->save($this->request->data['Customer'], null, null);
+                if (!empty($CustomerExist) || !empty($CustomerExists)) {
+                    $this->Session->setFlash('<p>' . __('Already Exists Users', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                } else {
+                    $this->request->data['User']['role_id'] = 4;
+                    $this->request->data['User']['username'] = $this->request->data['Customer']['customer_email'];
+                    $this->request->data['User']['password'] = $this->Auth->password($this->request->data['User']['password']);
+                    $this->User->save($this->request->data['User'], null, null);
+                    $this->request->data['Customer']['user_id'] = $this->User->id;
+                    $this->Customer->save($this->request->data['Customer'], null, null);
 
-                //Mail Processing From Admin To Customer
-                $newRegisteration = $this->Notification->find('first', array(
-                    'conditions' => array('Notification.title' => 'Customer activation')));
-                if ($newRegisteration) {
+                    //Mail Processing From Admin To Customer
+                    $newRegisteration = $this->Notification->find('first', array(
+                        'conditions' => array('Notification.title' => 'Customer activation')));
+                    if ($newRegisteration) {
 
-                    $regContent = $newRegisteration['Notification']['content'];
-                    $regsubject = $newRegisteration['Notification']['subject'];
+                        $regContent = $newRegisteration['Notification']['content'];
+                        $regsubject = $newRegisteration['Notification']['subject'];
+                    }
+                    $adminEmail = $this->siteSetting['Sitesetting']['admin_email'];
+
+                    $mailContent = $regContent;
+                    $userID = $this->Customer->id;
+                    $siteUrl = $this->siteUrl;
+                    $activation = $this->siteUrl . '/users/activeLink/' . $userID;
+                    $customerName = $this->request->data['Customer']['first_name'];
+
+                    $store_name = $this->siteSetting['Sitesetting']['site_name'];
+
+                    $mailContent = str_replace("{firstname}", $customerName, $mailContent);
+                    $mailContent = str_replace("{activation}", $activation, $mailContent);
+                    $mailContent = str_replace("{siteUrl}", $siteUrl, $mailContent);
+                    $mailContent = str_replace("{store name}", $store_name, $mailContent);
+                    $email = new CakeEmail();
+                    $email->from($adminEmail);
+                    $email->to($this->request->data['Customer']['customer_email']);
+                    $email->subject($regsubject);
+                    $email->template('register');
+                    $email->emailFormat('html');
+                    $email->viewVars(array('mailContent' => $mailContent, 'source' => $source));
+                    $email->send();
+
+                    $this->Session->setFlash('<p>' . __('Users has been saved', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'Customers', 'action' => 'index'));
                 }
-                $adminEmail = $this->siteSetting['Sitesetting']['admin_email'];
-
-                $mailContent = $regContent;
-                $userID = $this->Customer->id;
-                $siteUrl = $this->siteUrl;
-                $activation = $this->siteUrl . '/users/activeLink/' . $userID;
-                $customerName = $this->request->data['Customer']['first_name'];
-
-                $store_name = $this->siteSetting['Sitesetting']['site_name'];
-
-                $mailContent = str_replace("{firstname}", $customerName, $mailContent);
-                $mailContent = str_replace("{activation}", $activation, $mailContent);
-                $mailContent = str_replace("{siteUrl}", $siteUrl, $mailContent);
-                $mailContent = str_replace("{store name}", $store_name, $mailContent);
-                $email = new CakeEmail();
-                $email->from($adminEmail);
-                $email->to($this->request->data['Customer']['customer_email']);
-                $email->subject($regsubject);
-                $email->template('register');
-                $email->emailFormat('html');
-                $email->viewVars(array('mailContent' => $mailContent, 'source' => $source));
-                $email->send();
-
-                $this->Session->setFlash('<p>' . __('Users has been saved', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'Customers', 'action' => 'index'));
+            } else {
+                $this->Customer->validationErrors;
             }
         }
     }
@@ -115,28 +121,36 @@ class CustomersController extends AppController
      */
     public function admin_edit($id = null)
     {
-        if (!empty($this->request->data['Customer']['first_name'])) {
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->Customer->set($this->request->data);
+            if($this->Customer->validates()) {
 
+                $customer = $this->Customer->findById($this->request->data['Customer']['id']);
+                $customerEmailCheck = $this->User->find('first', array(
+                                'conditions' => array('User.username' => trim($this->request->data['Customer']['customer_email']),
+                                        'NOT' => array('User.id' => $customer['User']['id'],
+                                                        'Customer.status' => 3))));
+                $CustomerExists = $this->User->find('first', array(
+                                'conditions' => array(
+                                        'User.username' => trim($this->request->data['Customer']['customer_email']),
+                                    'NOT' => array('Store.status' => 3))));
+                if(!empty($customerEmailCheck)  || !empty($CustomerExists)) {
 
-            $customer = $this->Customer->findById($this->request->data['Customer']['id']);
-            $customerEmailCheck = $this->User->find('first', array(
-                            'conditions' => array('User.username' => trim($this->request->data['Customer']['customer_email']),
-                                    'NOT' => array('User.id' => $customer['User']['id'],
-                                                    'Customer.status' => 3))));
+                    $this->Session->setFlash('<p>' . __('User Email Already Exists', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                } else {
+                    $customerDetails = $this->Customer->findById($this->request->data['Customer']['id']);
+                    $customerDetails['User']['username'] = trim($this->request->data['Customer']['customer_email']);
 
-            if (!empty($customerEmailCheck)) {
-                $this->Session->setFlash('<p>' . __('User Email Already Exists', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
-            } else {
-                $customerDetails = $this->Customer->findById($this->request->data['Customer']['id']);
-                $customerDetails['User']['username'] = trim($this->request->data['Customer']['customer_email']);
-
-                if ($this->User->save($customerDetails['User'], null, null)) {
-                    $this->Customer->save($this->request->data, null, null);
+                    if ($this->User->save($customerDetails['User'], null, null)) {
+                        $this->Customer->save($this->request->data, null, null);
+                    }
+                    $this->Session->setFlash('<p>' . __('Your Customer has been saved', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'Customers', 'action' => 'index'));
                 }
-                $this->Session->setFlash('<p>' . __('Your Customer has been saved', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'Customers', 'action' => 'index'));
+            } else {
+                $this->Customer->validationErrors;
             }
         }
         $getStateData = $this->Customer->findById($id);
@@ -148,29 +162,32 @@ class CustomersController extends AppController
      * Admin Edit Customer AddressBook
      * @return void
      */
-    public function admin_editAddressBook()
+    public function admin_editAddressBook($id = null)
     {
-        $ids = $this->params['pass'];
-        $id = $ids[0];
-        $country = $this->siteSetting;
-        if (!empty($this->request->data['CustomerAddressBook']['address_title'])) {
-            $address_check = $this->CustomerAddressBook->find('first', array(
-                'conditions' => array(
-                    'CustomerAddressBook.address_title' =>
-                        trim($this->request->data['CustomerAddressBook']['address_title']),
-                    'CustomerAddressBook.customer_id' => $this->request->data['CustomerAddressBook']['ids'],
-                    'NOT' => array('CustomerAddressBook.id' => $this->request->data['CustomerAddressBook']['id']))));
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->CustomerAddressBook->set($this->request->data);
+            if($this->CustomerAddressBook->validates()) {
 
-            if (!empty($address_check)) {
-                $this->Session->setFlash('<p>' . __('Address Book Already Exists', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
+                $address_check = $this->CustomerAddressBook->find('first', array(
+                    'conditions' => array(
+                        'CustomerAddressBook.address_title' =>
+                            trim($this->request->data['CustomerAddressBook']['address_title']),
+                        'CustomerAddressBook.customer_id' => $this->request->data['CustomerAddressBook']['ids'],
+                        'NOT' => array('CustomerAddressBook.id' => $this->request->data['CustomerAddressBook']['id']))));
 
+                if (!empty($address_check)) {
+                    $this->Session->setFlash('<p>' . __('Address Book Already Exists', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+
+                } else {
+
+                    $this->CustomerAddressBook->save($this->request->data, null, null);
+                    $this->Session->setFlash('<p>' . __('Your CustomerAddressBook has been saved', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'Customers', 'action' => 'index'));
+                }
             } else {
-
-                $this->CustomerAddressBook->save($this->request->data, null, null);
-                $this->Session->setFlash('<p>' . __('Your CustomerAddressBook has been saved', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'Customers', 'action' => 'index'));
+                $this->CustomerAddressBook->validationErrors;
             }
         }
 
@@ -207,18 +224,11 @@ class CustomersController extends AppController
     public function customer_myaccount()
     {
         $this->layout = 'frontend';
-        if (!empty($this->request->data['Customer']['first_name'])) {
 
-            $CustomerExist = $this->User->find('first', array(
-                                    'conditions' => array('User.username' => $this->request->data['Customer']['customer_email'],
-                                            'NOT' => array('User.id' => $this->Auth->User('id'),
-                                                            'Customer.status' => 3))));
-            if (!empty($CustomerExist)) {
-                $this->Session->setFlash('<p>' . __('Email Already Exists', true) . '</p>', 'default',
-                                                            array('class' => 'alert alert-danger'));
-                $this->redirect(array('controller' => 'Customers', 'action' => 'myaccount'));
-            } else {
+        if (!empty($this->request->data['Customer']['customer_phone']) && !empty($this->request->data['Customer']['first_name'])) {
 
+            
+            if ($this->Auth->User('role_id') == 4) {
 
                 $this->request->data['User']['id']     = $this->Auth->User('id');
                 $this->request->data['Customer']['id'] = $this->Auth->User('Customer.id');
@@ -236,9 +246,8 @@ class CustomersController extends AppController
                     $this->request->data['Customer']['image'] = $this->request->data['Customer']['org_logo'];
                 }
 
-                $this->request->data['User']['username'] = $this->request->data['Customer']['customer_email'];
-
-                $this->User->save($this->request->data, null, null);
+                /*$this->request->data['User']['username'] = $this->request->data['Customer']['customer_email'];
+                $this->User->save($this->request->data, null, null);*/
                 $this->Customer->save($this->request->data, null, null);
                 $this->Auth->login();
                 $this->Session->setFlash('<p>' . __('Your detail has been updated', true) . '</p>', 'default',
@@ -293,6 +302,113 @@ class CustomersController extends AppController
     }
 
 
+    public function customer_changeCustomerEmail() {
+
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->request->data['Customer']['customer_email'] = trim($this->request->data['Customer']['customer_email']);
+            $this->Customer->set($this->request->data);
+            if($this->Customer->validates()) {
+                $CustomerExist = $this->User->find('first', array(
+                                'conditions' => array(
+                                            'User.username' => trim($this->request->data['Customer']['customer_email']),
+                                        'NOT' => array('Customer.status' => 3))));
+                $CustomerExists = $this->User->find('first', array(
+                                'conditions' => array(
+                                            'User.username' => trim($this->request->data['Customer']['customer_email']),
+                                        'NOT' => array('Store.status' => 3))));
+
+                if (!empty($CustomerExist) || !empty($CustomerExists)) {
+                    
+                    $this->Session->setFlash('<p>' . __('Email Already Exists', true) . '</p>', 'default',
+                                                                array('class' => 'alert alert-danger'));
+                    $this->redirect(array('controller' => 'Customers', 'action' => 'myaccount'));
+                } else {
+
+                    $newEmail = $this->request->data['User']['username'] = $this->request->data['Customer']['customer_email'];
+                    
+                    $this->request->data['User']['id']     = $this->Auth->User('id');
+                    $this->request->data['Customer']['id'] = $this->Auth->User('Customer.id');
+                    $this->request->data['Customer']['status'] = 2;
+
+                    $this->User->save($this->request->data, null, null);
+                    $this->Customer->save($this->request->data, null, null);
+
+
+                    $newChangedUser = $this->Notification->find('first',array(
+                                            'conditions'=>array('Notification.title'=>'Changed new user email')));
+                    if($newChangedUser){
+
+                        $newUserContent = $newChangedUser['Notification']['content'];
+                        $newUsersubject = $newChangedUser['Notification']['subject'];
+                    }
+
+                    $adminEmail   = $this->siteSetting['Sitesetting']['admin_email'];
+                    $source       = $this->siteUrl.'/siteicons/logo.png';
+                    $mailContent  = $newUserContent;
+                    $userID       = $this->Customer->id;
+                    $siteUrl      = $this->siteUrl;
+                    $activation   = $this->siteUrl. '/users/activeLink/'.$userID;
+                    $customerName = $this->Auth->User('Customer.first_name');
+                    $store_name   = $this->siteSetting['Sitesetting']['site_name'];
+
+                    $mailContent  = str_replace("{firstname}", $customerName, $mailContent);
+                    $mailContent  = str_replace("{activation}", $activation, $mailContent);
+                    $mailContent  = str_replace("{SITE_URL}", $siteUrl, $mailContent);
+                    $mailContent  = str_replace("{store name}",$store_name, $mailContent);
+                    
+                    $email        = new CakeEmail();
+                    $email->from($adminEmail);
+                    $email->to($this->request->data['Customer']['customer_email']);
+                    $email->subject($newUsersubject);
+                    $email->template('register');
+                    $email->emailFormat('html');
+                    $email->viewVars(array('mailContent' => $mailContent,
+                                            'source'     => $source,
+                                            'storename'  => $store_name));
+                    $email->send();
+
+                    $oldChangedUser = $this->Notification->find('first',array(
+                                            'conditions'=>array('Notification.title'=>'Changed old user email')));
+                    if($oldChangedUser){
+
+                        $oldUserContent = $oldChangedUser['Notification']['content'];
+                        $oldUsersubject = $oldChangedUser['Notification']['subject'];
+                    }
+
+                    $adminEmail   = $this->siteSetting['Sitesetting']['admin_email'];
+                    $source       = $this->siteUrl.'/siteicons/logo.png';
+                    $mailContent  = $oldUserContent;
+                    $userID       = $this->Customer->id;
+                    $siteUrl      = $this->siteUrl;
+                    $activation   = $this->siteUrl. '/users/activeLink/'.$userID;
+                    $customerName = $this->Auth->User('Customer.first_name');
+                    $store_name   = $this->siteSetting['Sitesetting']['site_name'];
+
+                    $mailContent  = str_replace("{firstname}", $customerName, $mailContent);
+                    $mailContent  = str_replace("{SITE_URL}", $siteUrl, $mailContent);
+                    $mailContent  = str_replace("{store name}",$store_name, $mailContent);
+                    $mailContent  = str_replace("{email}",$newEmail, $mailContent);
+                    $email        = new CakeEmail();
+                    $email->from($adminEmail);
+                    $email->to($this->request->data['Customer']['customer_email']);
+                    $email->subject($oldUsersubject);
+                    $email->template('register');
+                    $email->emailFormat('html');
+                    $email->viewVars(array('mailContent' => $mailContent,
+                                            'source'=>$source,
+                                            'storename' => $store_name));
+                    $email->send();
+
+                    $this->redirect(array('controller' => 'users', 'action' => 'userLogout', 'customer' => true));
+                }
+            } else {
+                $this->Customer->validationErrors;
+            }
+        }
+        $this->redirect(array('controller' => 'Customers', 'action' => 'myaccount'));
+    }
+
+
     public function customer_customerCardAdd()
     {
         $this->layout = 'frontend';
@@ -313,20 +429,24 @@ class CustomersController extends AppController
      * Customer Edit AddressBook
      * @return void
      */
-    public function customer_editaddressbook()
-    {
-        //$this->layout        = 'frontend';
-        if (!empty($this->request->data['CustomerAddressBook']['address_title'])) {
+    public function customer_editaddressbook() {
 
-            $customerAddressBook = $this->CustomerAddressBook->find('first', array(
-                            'conditions' => array('CustomerAddressBook.id' => 
-                                                    $this->request->data['CustomerAddressBook']['id'],
-                                            'CustomerAddressBook.customer_id' => $this->Auth->User('Customer.id'))));
-            if (!empty($customerAddressBook)) {
-                $this->CustomerAddressBook->save($this->request->data, null, null);
-                $this->Session->setFlash('<p>' . __('Your address book has been updated successfully', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'customers', 'action' => 'myaccount'));
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->CustomerAddressBook->set($this->request->data);
+            if($this->CustomerAddressBook->validates()) {
+
+                $customerAddressBook = $this->CustomerAddressBook->find('first', array(
+                                'conditions' => array('CustomerAddressBook.id' => 
+                                                        $this->request->data['CustomerAddressBook']['id'],
+                                                'CustomerAddressBook.customer_id' => $this->Auth->User('Customer.id'))));
+                if (!empty($customerAddressBook)) {
+                    $this->CustomerAddressBook->save($this->request->data, null, null);
+                    $this->Session->setFlash('<p>' . __('Your address book has been updated successfully', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'customers', 'action' => 'myaccount'));
+                }
+            } else {
+                $this->CustomerAddressBook->validationErrors;
             }
         }
         $id = $this->request->data['id'];
@@ -392,28 +512,32 @@ class CustomersController extends AppController
     public function customer_addAddressBook()
     {
 
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->CustomerAddressBook->set($this->request->data);
+            if($this->CustomerAddressBook->validates()) {
 
-        if (!empty($this->request->data['CustomerAddressBook'])) {
+                $address_check = $this->CustomerAddressBook->find('first', array(
+                    'conditions' => array(
+                        'CustomerAddressBook.address_title' =>
+                            trim($this->request->data['CustomerAddressBook']['address_title']),
+                        'CustomerAddressBook.customer_id' => $this->Auth->User('Customer.id')
+                    )));
+                if (!empty($address_check)) {
+                    $this->Session->setFlash('<p>' . __('Address Book Already Exists', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                    $this->redirect(array('controller' => 'Customers', 'action' => 'myaccount'));
+                } else {
 
-            $address_check = $this->CustomerAddressBook->find('first', array(
-                'conditions' => array(
-                    'CustomerAddressBook.address_title' =>
-                        trim($this->request->data['CustomerAddressBook']['address_title']),
-                    'CustomerAddressBook.customer_id' => $this->Auth->User('Customer.id')
-                )));
-            if (!empty($address_check)) {
-                $this->Session->setFlash('<p>' . __('Address Book Already Exists', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
-                $this->redirect(array('controller' => 'Customers', 'action' => 'myaccount'));
+
+                    $this->request->data['CustomerAddressBook']['customer_id'] = $this->Auth->User('Customer.id');
+                    $this->CustomerAddressBook->save($this->request->data['CustomerAddressBook']);
+
+                    $this->Session->setFlash('<p>' . __('Your address book has been added successfully', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'Customers', 'action' => 'myaccount'));
+                }
             } else {
-
-
-                $this->request->data['CustomerAddressBook']['customer_id'] = $this->Auth->User('Customer.id');
-                $this->CustomerAddressBook->save($this->request->data['CustomerAddressBook']);
-
-                $this->Session->setFlash('<p>' . __('Your address book has been added successfully', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'Customers', 'action' => 'myaccount'));
+                $this->CustomerAddressBook->validationErrors;
             }
         }
     }
@@ -728,5 +852,4 @@ class CustomersController extends AppController
         }
         exit();
     }
-
 }

@@ -21,7 +21,6 @@ function locationFillters() {
 
     })
 }
-
 //City Fillter Process
 function cityFillter() {
     var id = $('#CustomerAddressBookStateIds').val();
@@ -38,8 +37,6 @@ function locationFillter() {
 
     })
 }
-
-
 //customer delete action
 function customerdelete(id, model) {
     $.post(rp+'customer/Customers/deleteaddress',{'id':id,'model':model}, function(response) {
@@ -63,14 +60,17 @@ function deletecard(id) {
 //OrderInvoice Details Print Format 
 function documentPrints() {
     var win = window.open('', 'printwindow');
-    win.document.write('<html><head><title>Print Order Invoice!</title><link rel="stylesheet" type="text/css" href="styles.css"></head><body>');
+    win.document.write('<html><head><title>Print Order Invoice!</title><link rel="stylesheet" type="text/css" href="bootstrap.min.css"><link rel="stylesheet" type="text/css" href="common_new.css"><link rel="stylesheet" type="text/css" href="common.css"></head><body>');
     win.document.write($(".myorderTab").html());
     win.document.write('</body></html>');
     win.print();
-    $('.link').hide();
+    //$('.link').hide();
     $('.footer').hide();
     $('#sidebar').hide();
     win.close();
+    $('.link').show();
+    $('.footer').show();
+    $('#sidebar').show();
 }
 
 function pdfdownload(id) {
@@ -83,33 +83,31 @@ function orderid(id) {
 
 }
 $(document).ready(function () {
-
-
     $(".table").on('click', '.buttonStatus', function () {
         if ($(this).hasClass('red_bck')) {
             $(this).removeClass('red_bck');
             $(this).children("i").removeClass('fa-times').addClass("fa-check");
+            $(this).attr("title","active");
         }
         else if ($(this).hasClass('yellow_bck')) {
             $(this).removeClass('yellow_bck');
             $(this).children("i").removeClass('fa-exclamation').addClass("fa-check");
+            $(this).attr("title","Pending");
         }
         else {
             $(this).addClass('red_bck');
             $(this).children("i").removeClass('fa-check').addClass("fa-times");
+            $(this).attr("title","Deactive");
         }
 
     });
-
     $("#forgetPage").click(function () {
         $("#forgetsmail").show();
         $("#login").hide();
 
     });
-
     $('#loginPage').click(function () {
         $("#forgetsmail").hide();
         $("#login").show();
     })
-
 });
