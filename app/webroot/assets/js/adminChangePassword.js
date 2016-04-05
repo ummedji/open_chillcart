@@ -1,4 +1,4 @@
-jQuery(function () {
+/*jQuery(function () {
 
     var login = jQuery("#UserAdminLoginForm").validate({
         rules: {
@@ -45,4 +45,4 @@ jQuery(function () {
             },
         }
     });
-});
+});*/

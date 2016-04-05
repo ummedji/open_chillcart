@@ -43,7 +43,8 @@
 			<ul class="search_bar nav navbar-nav text-center-xs text-center-sm <?php echo ($this->request->params['controller'] == 'searches' && $this->request->params['action'] == 'storeitems') ? '' : 'navbar-right'; ?> "> 
 				<li class="dropdown menuDropdown">
 					<a href="javascript:void(0);" class="dropdown-toggle shopMenu" data-toggle="dropdown">
-						<div class="visible-xs"><?php echo __('Shopping in', true); ?> <?php echo $storeCity[$cityId]. ' '. $storeArea[$areaId]; ?> </div>
+						<div class="visible-xs"><?php echo __('Shopping in', true); ?> <?php echo $storeCity[$cityId]. ' ';
+						echo (!empty($areaId)) ? $storeArea[$areaId] : '';  ?> </div>
 						<span class="mobileStore"><?php echo $storeDetails['Store']['store_name']; ?> <span class="caret"></span></span>
 					</a>
 					<div class="dropdown-menu shopMenuDropdown">
@@ -51,7 +52,8 @@
 						<span class="caret"></span>
 						<div class="detailshopList col-md-12">
 							<h4 class="current-store-area"> <?php echo __('Shopping in', true); ?> - <span> <?php
-							echo $storeCity[$cityId]. ' '. $storeArea[$areaId]; ?> </span> 
+							echo $storeCity[$cityId]. ' ';
+							echo (!empty($areaId)) ? $storeArea[$areaId] : ''; ?> </span> 
 							<a class="pointer" onclick="changeLocation();"> <?php echo __('Change area', true); ?></a></h4>
 							<h3> <?php echo __('Choose a store to shop from', true); ?></h3>
 							<ul class="products search_stores">

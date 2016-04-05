@@ -18,4 +18,31 @@ class Deal extends AppModel
             'foreignKey' => 'store_id',
             'dependent' => true));
 
+    var $validate = array(
+        'store_id' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please select store'
+            )
+        ),
+        'deal_name' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please enter deal name'
+            )
+        ),
+        'main_product' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please select product'
+            )
+        ),
+        'sub_product' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please select product'
+            )
+        )
+    );
+
 }

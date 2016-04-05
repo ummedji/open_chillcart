@@ -118,27 +118,7 @@ jQuery(function() {
 
     }
   });
-
-  /*var paymentAddvalidator = jQuery("#paymentAdminPaymentSettingForm").validate({
-    rules: {
-      "data[payment][url]": {
-        required: true,
-      },
-      "data[payment][account]": {
-        required: true,
-      }
-    },
-    messages: { 
-      "data[payment][url]": {
-        required: "Please Enter Url detail",
-      },
-      "data[payment][account]": {
-        required: "Please Enter the account detail",
-      }
-
-    }
-  });*/
-
+  
   var CategoryAddvalidator = jQuery("#CategoryAdminAddForm").validate({
     rules: {
       "data[Category][category_name]": {
@@ -316,44 +296,43 @@ jQuery(function() {
 
   var CustomerBookvalidator = jQuery("#EditCustomerAddressBook").validate({
     rules: {
-      "data[CustomerAddressBooks][address_title]": {
+      "data[CustomerAddressBook][address_title]": {
         required: true,
       },
-      "data[CustomerAddressBooks][address_phone]": {
+      "data[CustomerAddressBook][address_phone]": {
         required: true,
         number :true,
       },
-      "data[CustomerAddressBooks][landmark]": {
+      "data[CustomerAddressBook][landmark]": {
         required: true,
-        number:true,
       },
-      "data[CustomerAddressBooks][address]": {
+      "data[CustomerAddressBook][address]": {
         required: true,       
       },
-      "data[CustomerAddressBooks][city_id]": {
+      "data[CustomerAddressBook][city_id]": {
         required: true,
       },
-      "data[CustomerAddressBooks][location_id]": {
+      "data[CustomerAddressBook][location_id]": {
         required: true,
       }
     },
-    messages: { 
+    messages: {
       "data[CustomerAddressBook][address_title]": {
-        required: "Please Enter the address_title",
+        required: "Please Enter the titile",
       },
-      "data[CustomerAddressBooks][address_phone]": {
+      "data[CustomerAddressBook][address_phone]": {
         required: "Please Enter the Phone nmber",
       },
-      "data[CustomerAddressBooks][landmark]": {
+      "data[CustomerAddressBook][landmark]": {
         required: "Please Enter the landmark",
       },
-      "data[CustomerAddressBooks][address]": {
+      "data[CustomerAddressBook][address]": {
         required: "Please Enter the address",
       },
-      "data[CustomerAddressBooks][city_id]": {
+      "data[CustomerAddressBook][city_id]": {
         required: "Please select the city",
       },
-      "data[CustomerAddressBooks][location_id]": {
+      "data[CustomerAddressBook][location_id]": {
         required: "Please select the location",
       }
     }
@@ -810,7 +789,7 @@ jQuery(function() {
       },
       "data[User][conformpassword]": {
         required: true,
-        //equalsTo:'#UserPassword',
+        equalTo:'#UserPassword',
       },
       "data[Driver][address]": {
         required: true,
@@ -975,7 +954,7 @@ jQuery(function() {
     },
     messages: { 
       "data[State][state_name]": {
-        required: "Please select the state",
+        required: "Please enter the state name",
       },
       "data[State][country_id]": {
         required: "Please select the Country",
@@ -1098,6 +1077,9 @@ jQuery(function() {
   });
   var CityAddvalidator = jQuery("#CityAdminAddForm").validate({
     rules: {
+      "data[City][country_id]": {
+        required: true,
+      },
       "data[City][state_id]": {
         required: true,
       },
@@ -1106,17 +1088,23 @@ jQuery(function() {
       }
     },
     messages: { 
+      "data[City][country_id]": {
+        required: "Please select the country",
+      },
       "data[City][state_id]": {
         required: "Please select the state",
       },
       "data[City][city_name]": {
-        required: "Please select the City",
+        required: "Please enter the city name",
       }
 
     }
   });
   var CityEditvalidator = jQuery("#CityAdminEditForm").validate({
     rules: {
+      "data[City][country_id]": {
+        required: true,
+      },
       "data[City][state_id]": {
         required: true,
       },
@@ -1125,11 +1113,14 @@ jQuery(function() {
       }
     },
     messages: { 
+      "data[City][country_id]": {
+        required: "Please select the country",
+      },
       "data[City][state_id]": {
         required: "Please select the state",
       },
       "data[City][city_name]": {
-        required: "Please select the City",
+        required: "Please select the city name",
       }
 
     }
@@ -1198,7 +1189,4 @@ jQuery(function() {
       }
     }
   });
-
-
-
 });

@@ -183,7 +183,7 @@ class SearchesController extends AppController {
 		}
 
 		$this->Session->write('Search.city', $cityId);
-		$this->Session->write('Search.area', $areaId);
+		$this->Session->write('Search.area', (isset($areaId)) ? $areaId : '');
 
 		$this->set(compact('storeList', 'orderSuccess'));
 
@@ -494,6 +494,7 @@ class SearchesController extends AppController {
 
 		$id 	= $this->request->data['id'];
 		$model 	= $this->request->data['model'];
+		$stores = array();
 
 		$storeLists = $this->Product->find('all', array(
 								'conditions' => array(

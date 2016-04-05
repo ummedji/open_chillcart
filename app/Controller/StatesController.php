@@ -33,26 +33,29 @@ class StatesController extends AppController
      */
     public function admin_add()
     {
-
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->State->set($this->request->data);
+            if($this->State->validates()) {
+                $State = $this->State->find('first', array(
+                    'conditions' => array('state_name' => trim($this->request->data['State']['state_name']))));
+                if (!empty($State)) {
+                    $this->Session->setFlash('<p>' . __('State already exists', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                } else {
+                    $this->State->save($this->request->data, null, null);
+                    $this->Session->setFlash('<p>' . __('Your State has been saved', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'states', 'action' => 'index'));
+                }
+            } else {
+                $this->State->validationErrors;
+            }
+        }
         $country_list = $this->Country->find('list', array(
             'conditions' => array('Country.status' => 1),
             'fields' => array('Country.id', 'Country.country_name')));
 
         $this->set("country_list", $country_list);
-
-        if ($this->request->is('post')) {
-            $State = $this->State->find('first', array(
-                'conditions' => array('state_name' => trim($this->request->data['State']['state_name']))));
-            if (!empty($State)) {
-                $this->Session->setFlash('<p>' . __('State already exists', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
-            } else {
-                $this->State->save($this->request->data, null, null);
-                $this->Session->setFlash('<p>' . __('Your State has been saved', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'states', 'action' => 'index'));
-            }
-        }
     }
 
     /**
@@ -64,20 +67,25 @@ class StatesController extends AppController
     public function admin_edit($id = null)
     {
 
-        if (!empty($this->request->data['State']['state_name'])) {
-            $State = $this->State->find('first', array(
-                'conditions' => array(
-                    'State.state_name' => $this->request->data['State']['state_name'],
-                    'State.country_id' => $this->request->data['State']['country_id'],
-                    'NOT' => array('State.id' => $this->request->data['State']['id']))));
-            if (!empty($State)) {
-                $this->Session->setFlash('<p>' . __('State already exists', true) . '</p>', 'default',
-                    array('class' => 'alert alert-danger'));
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->State->set($this->request->data);
+            if($this->State->validates()) {
+                $State = $this->State->find('first', array(
+                    'conditions' => array(
+                        'State.state_name' => $this->request->data['State']['state_name'],
+                        'State.country_id' => $this->request->data['State']['country_id'],
+                        'NOT' => array('State.id' => $this->request->data['State']['id']))));
+                if (!empty($State)) {
+                    $this->Session->setFlash('<p>' . __('State already exists', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                } else {
+                    $this->State->save($this->request->data, null, null);
+                    $this->Session->setFlash('<p>' . __('Your State has been saved', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'states', 'action' => 'index'));
+                }
             } else {
-                $this->State->save($this->request->data, null, null);
-                $this->Session->setFlash('<p>' . __('Your State has been saved', true) . '</p>', 'default',
-                    array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'states', 'action' => 'index'));
+                $this->State->validationErrors;
             }
         }
         $getStateData = $this->State->findById($id);

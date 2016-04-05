@@ -187,6 +187,11 @@ function validateStoreAdd() {
             $("#deliveryError").html("Please enter tax");
             $("#StoreTax").focus();
             return false;
+        } else if ((isNaN(StoreTax))) {
+            $("[href=#delivery]").trigger('click');
+            $("#deliveryError").html("Please enter valid tax");
+            $("#StoreTax").focus();
+            return false;
         }
 
     }

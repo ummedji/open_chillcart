@@ -38,7 +38,7 @@
 									<th class="no-sort">S.No</th>
 									<th>Date & Time</th>
 									<th class="maxcolumn no-sort" width="25%">Order Information</th>
-									<th>Restaurant Name</th>
+									<th>Store Name</th>
 									<th>Price</th>
 									<th>Driver Name/ID </th>
 									<th class="no-sort">Status</th>
@@ -60,7 +60,7 @@
 																	array('class' => 'no-padding blue bold'));  ?>
 												<br/> <?php
 
-												$restaurantAddress = $value['Store']['street_address'].', '.
+												$storeAddress = $value['Store']['street_address'].', '.
 																	$location[$value['Store']['store_zip']].', '.
 																	$city[$value['Store']['store_city']].', '.
 																	$states[$value['Store']['store_state']];
@@ -71,7 +71,7 @@
 																	$value['Order']['state_name']; ?>
 
 												<span class="address orange-location"><?php
-													echo stripslashes($restaurantAddress); ?></span></br></br>
+													echo stripslashes($storeAddress); ?></span></br></br>
 												<span class="address blue-location"><?php 
 													echo stripslashes($customerAddress); ?></span>
 											</td>

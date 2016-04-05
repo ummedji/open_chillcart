@@ -200,7 +200,7 @@ class ImgComponent extends Component
         }
 
         $dst = ImageCreateTrueColor($dst_w, $dst_h);
-        $backColor = ImageColorAllocate($dst, 244, 244, 244);
+        $backColor = ImageColorAllocate($dst, 255, 255, 255);
         ImageFilledRectangle($dst, 0, 0, $dst_w, $dst_h, $backColor);
 
         $ext = $this->_image_type_to_extension($type);

@@ -78,33 +78,24 @@ $(document).ready(function(){
 
 		e.stopPropagation();
 	});
-	
-	
+
 	/* Cart height */
 	var carthei = $(window).height() - ($(".header").outerHeight() +  $(".cart-checkout").outerHeight());
 	var cartheiMob = $(window).height() - ( $(".mobile_cart").outerHeight() );
 	//var cartheiMob = $(window).height() ;
 
-	if( $(window).width() > 767 ) { $(".cart-items").css("height",carthei); }
-	else{ 
-			$(".cart-items").css({"height":cartheiMob}); 
-		} 
-
-
-	
-
-	//alert(carthei);
+	if( $(window).width() > 767 ) {
+		$(".cart-items").css("height",carthei);
+	} else{ 
+		$(".cart-items").css({"height":cartheiMob}); 
+	}
 
 	/* add note scirpt */
-
 	$(".add-note").click(function(){
 		$(this).next(".edit-special-instructions").removeClass('hide');
 	});
 
-
-
 	/* Cancel note scirpt */
-
 	$(".cancelinst").click(function(){
 		$(this).parent().addClass('hide');
 	});
@@ -113,10 +104,6 @@ $(document).ready(function(){
 		$(".category_mobile").toggleClass('open');
 	});
 
-
-	
- 
-	
 	//$(".cart-items").click(function(){
 	var windowHeight = $(window).height();
 	
@@ -155,8 +142,6 @@ $(document).ready(function(){
 		
     });
 
-
-
    	$('.intnumber').keypress(function(event) {
     
     	var key = window.event ? event.keyCode : event.which;
@@ -183,7 +168,6 @@ $(document).ready(function(){
             return false;
         }
    });
-	
 });
 
 function locationList() {
@@ -192,7 +176,6 @@ function locationList() {
 		$("#location").html(response);
 	});
 }
-
 
 function productDetails(id) {
 	$.post(rp+'searches/productdetails',{'id':id}, function(response) {
@@ -284,9 +267,6 @@ function description(id) {
 }
 
 function cart() {
-
-	//alert('RR');
-	
 	$.post(rp+'searches/cart',{}, function(response) {
 		var data = response.split("||@@||");
 
@@ -301,16 +281,16 @@ function cart() {
 		//var cartheiMob = $(window).height();
 		var cartheiMob = $(window).height() - ( $(".mobile_cart").outerHeight() );
 
-		if( $(window).width() > 767 ) { $(".cart-items").css("height",carthei); }
-		else{
-				$(".cart-items").css({"height":cartheiMob}); 
-			} 
+		if( $(window).width() > 767 ) { 
+			$(".cart-items").css("height",carthei);
+		} else{
+			$(".cart-items").css({"height":cartheiMob}); 
+		}
 	});
 }
 
 var format = function(num){
 	var str = num.toString().replace("Mani", ""), parts = false, output = [], i = 1, formatted = null;
-	//alert(str);
 	if(str.indexOf(".") > 0) {
 		parts = str.split(".");
 		str = parts[0];
@@ -341,7 +321,6 @@ function qtyIncrement(id) {
 	});
 }
 
-
 function qtyDecrement(id) {
 	$.post(rp+'searches/qtyUpdate',{'id':id, 'type':'decrement'}, function(response) {
 		cart();
@@ -359,7 +338,6 @@ function changeLocation () {
    		return false;
    	}
 }
-
 
 function citiesList() {
 	var id = $('#CustomerAddressBookStateId').val();
@@ -469,9 +447,6 @@ function cancelOrder(id) {
 	$('#OrderId').val(id);
 }
 
-
-
-
 $(document).ready(function(){
 
     $(".searchFilterResults").keyup(function(){
@@ -519,7 +494,6 @@ $(document).ready(function(){
 $(window).load(function(){
 	var count = 0;
 	fillter();
-
 	function fillter(){
 		count++;
 		var getvalue = $('#check').val();
@@ -562,6 +536,28 @@ function dealsProduct(storeId) {
 	);
 }
 
+
+
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1);
+        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+    }
+    return "";
+}
+
+
+
 function searchProducts() {
 	
 	$('.ui-loader').show();
@@ -570,6 +566,8 @@ function searchProducts() {
 	var searchKeyCount = $('#searchKey').val().length;
 	var noresult = 0;
 
+	//var searchProduct = getCookie("searchProduct");
+
 	if (searchKey == '') {
 		$(".searchMenuForm").after('<label class="error">Please enter product name</label>');
 		$('.ui-loader').hide();
@@ -577,39 +575,72 @@ function searchProducts() {
 		$(".searchMenuForm").after('<label class="error">Please enter minimum 3 letters of product name</label>');
 		$('.ui-loader').hide();
 	} else {
-		var countCategory = $('#countCategory').val();
-		count = 0;
-		$("#filtterByCategory").html('');
 
-		for (var i = 0; i < countCategory; i++) {
-			count++;
-			var getvalue = $('#check'+i).val();
-			var splits   = getvalue.split('_');
-			var id		 = splits[0];
-			var storeId  = splits[1];
+		//if (searchProduct != searchKey) {
 
-			$.post(rp+'searches/filtterByCategory', {'id': id,'storeId':storeId, 'count':count, 'searchKey' : searchKey}, function (response) {
-				if (response != '') {
-					noresult = 1;
-					$("#filtterByCategory").append(response);
-					//$('.ui-loader').hide();
-				}
-			});
-		}
+			//setCookie("searchProduct", searchKey, 365);
+			var countCategory = $('#countCategory').val();
+			count = 0;
+			$("#filtterByCategory").html('');
+
+			for (var i = 0; i < countCategory; i++) {
+				count++;
+				var getvalue = $('#check'+i).val();
+				var splits   = getvalue.split('_');
+				var id		 = splits[0];
+				var storeId  = splits[1];
+
+				$.post(rp+'searches/filtterByCategory', {'id': id,'storeId':storeId, 'count':count, 'searchKey' : searchKey}, function (response) {
+					if (response != '') {
+						noresult = 1;
+						$("#filtterByCategory").append(response);
+						//$('.ui-loader').hide();
+					}
+				});
+			}
+		//}
+
+		setTimeout(function(){	
+			if (noresult != 1) {
+				$('#messageError').show();
+			}
+		    $('.ui-loader').hide();
+		},1000);
 	}
-	setTimeout(function(){	
-		if (noresult != 1) {
-			$('#messageError').show();
-		}
-	    $('.ui-loader').hide();
-	},1000);
 	return false;
 }
-
 
 function productSearch(event) {
 	$('.error').hide();
 	if (event.which == 13 || event.keyCode == 13) {
 		searchProducts();
 	}
+}
+
+
+function changeCustomerEmail() {
+
+	var CustomerCustomerEmail = $.trim($("#CustomerCustomerEmail").val());
+	$('#userMailError').html('');
+
+	if(CustomerCustomerEmail == ''){
+        
+		$("#userMailError").html("Please enter email");
+		$("#CustomerCustomerEmail").focus();
+		return false;
+	} else if(!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(CustomerCustomerEmail))){
+
+    	$('#userMailError').html('Please enter the valid email');
+    	$('#CustomerCustomerEmail').focus();
+    	return false;
+
+    } else {
+	    var line = 'Are you sure want to change your email if continue your current session will be signout automatically ?';
+	    if (confirm(line)) {
+	        //$('#CustomerChangeCustomerEmailForm').submit();
+	    } else {
+	        return false;
+	    }
+	}
+	
 }
