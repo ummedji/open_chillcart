@@ -13,7 +13,8 @@
 					<i class="fa fa-angle-right"></i>
 				</li>
 				<li>
-					<a href="#">Order Details <?php echo $orders_list['Order']['ref_number'];?></a>
+					<a href="#">Order Details <?php echo $orders_list['Order']['ref_number'];
+					?></a>
 				</li>
 			</ul>
 		</div>
@@ -21,6 +22,7 @@
 			<div class="col-md-12">
 				<!-- Begin: life time stats -->
 				<div class="portlet light">
+					<div style="display:none;" id="orderMessage" class="alert alert-success"></div>
 					<div class="portlet-title">
 						<div class="caption">
 							<i class="icon-basket font-green-sharp"></i>
@@ -29,8 +31,14 @@
 							<span class="caption-helper">
 							<?php echo $orders_list['Order']['created'];?></span>
 						</div>
-						<div class="actions">
-							<a href="javascript:void(0);" onclick="window.history.go(-1);" class="btn btn-default btn-circle">
+						<div class="actions"><?php
+							if ($orders_list['Order']['payment_type'] == 'Card' && $orders_list['Order']['payment_method'] == 'paid' && $orders_list['Order']['status'] != 'Delivered') { ?>
+								<a href="javascript:void(0);" onclick="refundPayment(<?php echo $orders_list['Order']['id']; ?>);" class="btn btn-default btn-circle">
+									<i class="fa fa-angle-left"></i>
+								<span class="hidden-480">
+								Refund </span> <?php
+							} ?>
+							<a href="<?php echo $siteUrl.'/admin/Orders/reportIndex'; ?>" class="btn btn-default btn-circle">
 							<i class="fa fa-angle-left"></i>
 							<span class="hidden-480">
 							Back </span>
@@ -147,15 +155,25 @@
 												<div class="address-detail">
 													<?php echo $orders_list['Order']['order_type'];?></div>
 											</td>
-										</tr>
-										 <?php
+										</tr> <?php 
+										if (!empty($orders_list['StripeRefund']['refund_amount'])) { ?>
+											<tr>
+												<td valign="top" align="right"><label> Refund Id / Refund Amount</label></td>
+												<td>
+													<div class="address-detail">
+														<?php 
+														echo $orders_list['StripeRefund']['refund_id']. ' / ';
+														echo html_entity_decode($this->Number->currency($orders_list['StripeRefund']['refund_amount'], $siteCurrency)); ?></div>
+												</td>
+											</tr> <?php
+										}
 
 										if ($orders_list['Order']['order_description']) {  ?>
 											<tr>
 												<td valign="top" align="right"><label>Instructions</label></td>
 												<td>
 													<div class="address-detail">
-														<?php echo $orders_list['Order']['order_description'];?></div>	
+														<?php echo $orders_list['Order']['order_description'];?></div>
 												</td>
 											</tr> <?php 
 										} 

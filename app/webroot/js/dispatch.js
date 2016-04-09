@@ -147,19 +147,17 @@ $(document).ready(function(){
 			$(this).removeClass('red_bck');
 			$(this).children("i").removeClass('fa-times').addClass("fa-check");
             $(this).attr("title","active");
-		}
-		else if($(this).hasClass('yellow_bck')){
-			$(this).removeClass('yellow_bck');
-			$(this).children("i").removeClass('fa-exclamation').addClass("fa-check");
+        } else if ($(this).hasClass('yellow_bck')) {
+            $(this).removeClass('yellow_bck');
+            $(this).children("i").removeClass('fa-exclamation').addClass("fa-check");
             $(this).attr("title","Pending");
-		}
-		else{
-			$(this).addClass('red_bck');
-			$(this).children("i").removeClass('fa-check').addClass("fa-times");
+        } else {
+            $(this).addClass('red_bck');
+            $(this).children("i").removeClass('fa-check').addClass("fa-times");
             $(this).attr("title","Deactive");
-		}
+        }
 
-	});
+    });
 });
 
 function trackOrder(orderId) {
@@ -171,4 +169,28 @@ function trackOrder(orderId) {
         $('#reportpopup').modal('show');
     });
     return false;
+}
+
+function refundPayment(orderId) {
+    var check = confirm("Are Sure You Want Refund ?");
+    if($.trim(check) == 'true') {
+        $('.ui-loadercont').show();
+        $.post(rp+'/admin/orders/refund/'+orderId, {'orderId' : orderId, 'Action' : 'OrderStatus'}, function(response) {
+            $('.ui-loadercont').hide();
+            if (response == 'Success') {
+                var message = 'Successfully Refunded';
+                $('#orderMessage').html(message);
+                $('#orderMessage').show();
+                setTimeout(function(){
+                    $('#orderMessage').fadeOut();
+                    location.reload();
+                },3000);
+                
+            } else if (response != '') {
+                alert(response);
+            } else {
+                location.reload();
+            }
+        });
+    }
 }

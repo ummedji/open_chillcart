@@ -47,19 +47,28 @@ class Stripe_Charge extends Stripe_ApiResource
         return self::_scopedSave($class);
     }
 
-    /**
-     * @param array|null $params
-     *
-     * @return Stripe_Charge The refunded charge.
-     */
-    public function refund($params = null)
-    {
-        $requestor = new Stripe_ApiRequestor($this->_apiKey);
-        $url = $this->instanceUrl() . '/refund';
-        list($response, $apiKey) = $requestor->request('post', $url, $params);
-        $this->refreshFrom($response, $apiKey);
-        return $this;
-    }
+  /**
+   * @param array|null $params
+   *
+   * @return Stripe_Charge The refunded charge.
+   */
+  public static function refund($params = null, $apiKey = null)
+  {
+
+    $requestor = new Stripe_ApiRequestor($apiKey);
+    $charge    = $params['refund'];
+
+    $refundAmount['amount'] = $params['amount'];
+    $charge = Stripe_ApiRequestor::utf8($charge);
+    $base   = self::classUrl('Stripe_Charge');
+
+    $chargeExtn = urlencode($charge);
+
+    $url  = "$base/$chargeExtn/refunds";
+    $test = $requestor->request('POST', $url, $refundAmount);
+
+    return $test;
+  }
 
     /**
      * @param array|null $params

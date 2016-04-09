@@ -393,7 +393,9 @@ function changeOrderStatus(orderId) {
 	var reason =  $('#failedReason_'+orderId).val();
 
 	if (reason != '') {
+		$('.ui-loadercont').show();
 		$.post(rp+'/admin/orders/orderStatus',{'orderId':orderId, 'status':'Failed', 'reason':reason}, function(response) {
+			$('.ui-loadercont').hide();
 			$('#orderList_'+orderId).remove();
 			$('#orderMessage').html('This order moves to failed with reason');
 			$('#orderMessage').show();
