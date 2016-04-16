@@ -882,6 +882,7 @@ class OrdersController extends AppController {
       $customerName  = $datas['Order']['customer_name'];
       $storename     = $datas['Store']['store_name'];
       $sitemailId    = $this->siteSetting['Sitesetting']['admin_email'];
+      $siteName      = $this->siteSetting['Sitesetting']['site_name'];
 
       $mailContent = $customerContent;
       $siteUrl = $this->siteUrl;
@@ -931,7 +932,7 @@ class OrdersController extends AppController {
         $email->emailFormat('html');
         $email->viewVars(array('mailContent' => $mailContent,
                               'source' => $source,
-                              'storename' => $storename));
+                              'storename' => $siteName));
         $email->send();
       }
       return true;
@@ -941,7 +942,7 @@ class OrdersController extends AppController {
 
       $orderDetail = $this->Order->find('first', array(
                                     'conditions' => array('Order.id' => $orderId,
-                                                          'StripeRefund.refund_id' => '')));
+                                                          'StripeRefund.id' => '')));
       if (!empty($orderDetail)) {
 
         if (!empty($orderDetail['Order']['transaction_id'])) {
@@ -950,34 +951,89 @@ class OrdersController extends AppController {
               $orderDetail['Order']['payment_method'] == 'paid' &&
               $orderDetail['Order']['status'] != 'Delivered') {
 
-              $data   = array('refund' => $orderDetail['Order']['transaction_id'],
-                              'amount' => $orderDetail['Order']['order_grand_total']*100);
-              $stripeResponse = $this->Stripe->refund($data);
+            $data   = array('refund' => $orderDetail['Order']['transaction_id'],
+                            'amount' => $orderDetail['Order']['order_grand_total']*100);
+            $stripeResponse = $this->Stripe->refund($data);
 
-              if (is_array($stripeResponse)) {
+            if (is_array($stripeResponse)) {
 
-                $stripeRefund['charge_id']     = $stripeResponse[0]['charge'];
-                $stripeRefund['refund_id']     = $stripeResponse[0]['id'];
-                $stripeRefund['refund_amount'] = $stripeResponse[0]['amount']/100;
+              $stripeRefund['charge_id']     = $stripeResponse[0]['charge'];
+              $stripeRefund['refund_id']     = $stripeResponse[0]['id'];
+              $stripeRefund['refund_amount'] = $stripeResponse[0]['amount']/100;
 
-                
-                $stripeRefund['store_id']      = $orderDetail['Order']['store_id'];
-                $stripeRefund['order_id']      = $orderDetail['Order']['id'];
-                $stripeRefund['customer_id']   = $orderDetail['Order']['customer_id'];
+              
+              $stripeRefund['store_id']      = $orderDetail['Order']['store_id'];
+              $stripeRefund['order_id']      = $orderDetail['Order']['id'];
+              $stripeRefund['customer_id']   = $orderDetail['Order']['customer_id'];
 
-                $this->StripeRefund->save($stripeRefund, null, null);
+              $this->StripeRefund->save($stripeRefund, null, null);
 
-                $orderStatusUpdate['Order']['id'] = $orderId;
-                $orderStatusUpdate['Order']['payment_method'] = 'unpaid' ;
+              $orderStatusUpdate['Order']['id'] = $orderId;
+              $orderStatusUpdate['Order']['payment_method'] = 'unpaid' ;
 
 
-                $orderStatusUpdate['Order']['status'] = 'failed';
-                $this->Order->save($orderStatusUpdate);
-                echo 'Success';
+              $orderStatusUpdate['Order']['status'] = 'failed';
+              $this->Order->save($orderStatusUpdate);
 
-              } else {
-                echo $stripeResponse;
+              $source           = $this->siteUrl.'/siteicons/logo.png';
+              $sitemailId       = $this->siteSetting['Sitesetting']['admin_email'];
+              $customerSubject  = 'Order Cancel and Refund';
+              $Currency         = $this->siteSetting['Country']['currency_symbol'];
+              $customer_mail    = $orderDetail['Order']['customer_email'];
+              $storeEmail       = $orderDetail['Store']['order_email'];
+
+
+              $siteName         = $this->siteSetting['Sitesetting']['site_name'];
+
+              $storename        = $orderDetail['Store']['store_name'];
+
+              $mailContent = 'Your order '.$orderDetail['Order']['ref_number'].' has been cancelled and Refund your amount '. $Currency.' '. $stripeRefund['refund_amount'];
+
+              // Customer Refund Sms
+              $customerMessage  = $mailContent. ' Regards Chillcart';
+              $toCustomerNumber = '+'.$this->siteSetting['Country']['phone_code'].$orderDetail['Order']['customer_phone'];
+              $customerSms      = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
+
+              // Customer Refund Mail
+              $email = new CakeEmail();
+              $email->from($sitemailId);
+              $email->to($customer_mail);
+              $email->subject($customerSubject);
+              $email->template('register');
+              $email->emailFormat('html');
+              $email->viewVars(array('mailContent' => $mailContent,
+                                      'source' => $source,
+                                      'storename' => $storename));
+              $email->send();
+
+              $mailContent = 'This order '.$orderDetail['Order']['ref_number'].' has been cancelled and Refund amount '. $Currency.' '. $stripeRefund['refund_amount'];
+
+              if ($orderDetail['Store']['email_order'] == 'Yes' && !empty($orderDetail['Store']['order_email'])) {
+
+                // Store Refund Mail
+                $email = new CakeEmail();
+                $email->from($sitemailId);
+                $email->to($storeEmail);
+                $email->subject($customerSubject);
+                $email->template('register');
+                $email->emailFormat('html');
+                $email->viewVars(array('mailContent' => $mailContent,
+                                        'source' => $source,
+                                        'storename' => $siteName));
+                $email->send();
               }
+
+              // Store Refund Sms
+              if ($orderDetail['Store']['sms_option'] == 'Yes' && !empty($orderDetail['Store']['sms_phone'])) {
+                $storeMessage   = $mailContent. ' Thanks Chillcart';
+                $toStoreNumber  = '+'.$this->siteSetting['Country']['phone_code'].$orderDetail['Store']['sms_phone'];
+                $storeSms       = $this->Twilio->sendSingleSms($toStoreNumber, $storeMessage);
+              }
+              echo 'Success';
+
+            } else {
+              echo $stripeResponse;
+            }
           }
         }
       }

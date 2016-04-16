@@ -33,8 +33,7 @@
 						</div>
 						<div class="actions"><?php
 							if ($orders_list['Order']['payment_type'] == 'Card' && $orders_list['Order']['payment_method'] == 'paid' && $orders_list['Order']['status'] != 'Delivered') { ?>
-								<a href="javascript:void(0);" onclick="refundPayment(<?php echo $orders_list['Order']['id']; ?>);" class="btn btn-default btn-circle">
-									<i class="fa fa-angle-left"></i>
+								<a href="javascript:void(0);" onclick="refundPayment(<?php echo $orders_list['Order']['id']; ?>);" class="btn btn-danger btn-circle">
 								<span class="hidden-480">
 								Refund </span> <?php
 							} ?>
