@@ -11,7 +11,7 @@ class OrdersController extends AppController {
 
   public $uses    = array('Order','ShoppingCart', 'CustomerAddressBook', 'DeliveryTimeSlot',
                           'StripeCustomer', 'Storeoffer', 'Status', 'State', 'City', 'Location',
-                          'Store', 'ProductDetail', 'Orderstatus', 'Notification');
+                          'Store', 'ProductDetail', 'Orderstatus', 'Notification', 'StripeRefund');
 
   public $components = array('Stripe', 'Googlemap', 'AndroidResponse', 'Twilio');
 
@@ -108,7 +108,7 @@ class OrdersController extends AppController {
   //Report Management Process
   public function admin_reportIndex($id = null) {
       $order_list = $this->Order->find('all', array(
-                                  'conditions' => array('Order.status' => 'Delivered'),
+                                  'conditions' => array('Order.status' => array('Delivered', 'Failed')),
                                   'order' => array('Order.id DESC')));
       $this->set(compact('order_list'));     
 
@@ -116,10 +116,9 @@ class OrdersController extends AppController {
   //Admin side ReportManagement Based Order View
   public function admin_reportOrderView($id = null) {
     if (!empty($id)){
-
       $orders_list = $this->Order->find('first', array(
                               'conditions' => array('Order.id' => $id,
-                                                    'Order.status' => 'Delivered')));
+                                                    'Order.status' => array('Delivered', 'Failed'))));
       if (empty($orders_list)) {
           $this->render('/Errors/error400');
       }
@@ -436,12 +435,11 @@ class OrdersController extends AppController {
      return true;
   }
 
-
   public function store_index(){
     $this->layout = 'assets';
     $order_list = $this->Order->find('all', array(
                         'conditions'=>array('Order.store_id' => $this->Auth->User('Store.id'),
-                                            'Order.status' => 'Delivered'),
+                                            'Order.status' => array('Delivered', 'Failed')),
                         'order' => array('Order.id DESC')));
 
     $this->set(compact('order_list'));
@@ -451,7 +449,7 @@ class OrdersController extends AppController {
     if (!empty($id)){
       $orders_list = $this->Order->find('first', array(
                               'conditions' => array('Order.id' => $id,
-                                          'Order.status' => 'Delivered',
+                                          'Order.status' => array('Delivered', 'Failed'),
                                           'Order.store_id' => $this->Auth->User('Store.id'))));
       if (empty($orders_list)) {
           $this->render('/Errors/error400');
@@ -485,7 +483,6 @@ class OrdersController extends AppController {
    public function store_orderView($id = null) {
     $this->layout = 'assets';
     if(!empty($id)){
-
       $order_detail = $this->Order->find('first', array(
                               'conditions' => array('Order.id' => $id,
                                           'Order.store_id' => $this->Auth->User('Store.id'))));
@@ -538,8 +535,19 @@ class OrdersController extends AppController {
     $orderDetail = $this->Order->findById($orderId);
 
     if (isset($this->request->data['reason'])) {
-        $orderStatusUpdate['failed_reason']  = $this->request->data['reason'];
-        $this->Order->save($orderStatusUpdate);
+
+      if (!empty($orderDetail['Order']['transaction_id'])) {
+
+        if ($orderDetail['Order']['payment_type'] == 'Card' &&
+            $orderDetail['Order']['payment_method'] == 'paid') {
+
+              $this->admin_refund($orderId, 'failed');
+        }
+
+      }
+
+      $orderStatusUpdate['failed_reason']  = $this->request->data['reason'];
+      $this->Order->save($orderStatusUpdate);
     }
 
     if ($this->request->data['status'] == 'Delivered') {
@@ -874,6 +882,7 @@ class OrdersController extends AppController {
       $customerName  = $datas['Order']['customer_name'];
       $storename     = $datas['Store']['store_name'];
       $sitemailId    = $this->siteSetting['Sitesetting']['admin_email'];
+      $siteName      = $this->siteSetting['Sitesetting']['site_name'];
 
       $mailContent = $customerContent;
       $siteUrl = $this->siteUrl;
@@ -923,10 +932,116 @@ class OrdersController extends AppController {
         $email->emailFormat('html');
         $email->viewVars(array('mailContent' => $mailContent,
                               'source' => $source,
-                              'storename' => $storename));
+                              'storename' => $siteName));
         $email->send();
       }
       return true;
     }
 
+    public function admin_refund($orderId, $failed = null) {
+
+      $orderDetail = $this->Order->find('first', array(
+                                    'conditions' => array('Order.id' => $orderId,
+                                                          'StripeRefund.id' => '')));
+      if (!empty($orderDetail)) {
+
+        if (!empty($orderDetail['Order']['transaction_id'])) {
+
+          if ($orderDetail['Order']['payment_type'] == 'Card' &&
+              $orderDetail['Order']['payment_method'] == 'paid' &&
+              $orderDetail['Order']['status'] != 'Delivered') {
+
+            $data   = array('refund' => $orderDetail['Order']['transaction_id'],
+                            'amount' => $orderDetail['Order']['order_grand_total']*100);
+            $stripeResponse = $this->Stripe->refund($data);
+
+            if (is_array($stripeResponse)) {
+
+              $stripeRefund['charge_id']     = $stripeResponse[0]['charge'];
+              $stripeRefund['refund_id']     = $stripeResponse[0]['id'];
+              $stripeRefund['refund_amount'] = $stripeResponse[0]['amount']/100;
+
+              
+              $stripeRefund['store_id']      = $orderDetail['Order']['store_id'];
+              $stripeRefund['order_id']      = $orderDetail['Order']['id'];
+              $stripeRefund['customer_id']   = $orderDetail['Order']['customer_id'];
+
+              $this->StripeRefund->save($stripeRefund, null, null);
+
+              $orderStatusUpdate['Order']['id'] = $orderId;
+              $orderStatusUpdate['Order']['payment_method'] = 'unpaid' ;
+
+
+              $orderStatusUpdate['Order']['status'] = 'failed';
+              $this->Order->save($orderStatusUpdate);
+
+              $source           = $this->siteUrl.'/siteicons/logo.png';
+              $sitemailId       = $this->siteSetting['Sitesetting']['admin_email'];
+              $customerSubject  = 'Order Cancel and Refund';
+              $Currency         = $this->siteSetting['Country']['currency_symbol'];
+              $customer_mail    = $orderDetail['Order']['customer_email'];
+              $storeEmail       = $orderDetail['Store']['order_email'];
+
+
+              $siteName         = $this->siteSetting['Sitesetting']['site_name'];
+
+              $storename        = $orderDetail['Store']['store_name'];
+
+              $mailContent = 'Your order '.$orderDetail['Order']['ref_number'].' has been cancelled and Refund your amount '. $Currency.' '. $stripeRefund['refund_amount'];
+
+              // Customer Refund Sms
+              $customerMessage  = $mailContent. ' Regards Chillcart';
+              $toCustomerNumber = '+'.$this->siteSetting['Country']['phone_code'].$orderDetail['Order']['customer_phone'];
+              $customerSms      = $this->Twilio->sendSingleSms($toCustomerNumber, $customerMessage);
+
+              // Customer Refund Mail
+              $email = new CakeEmail();
+              $email->from($sitemailId);
+              $email->to($customer_mail);
+              $email->subject($customerSubject);
+              $email->template('register');
+              $email->emailFormat('html');
+              $email->viewVars(array('mailContent' => $mailContent,
+                                      'source' => $source,
+                                      'storename' => $storename));
+              $email->send();
+
+              $mailContent = 'This order '.$orderDetail['Order']['ref_number'].' has been cancelled and Refund amount '. $Currency.' '. $stripeRefund['refund_amount'];
+
+              if ($orderDetail['Store']['email_order'] == 'Yes' && !empty($orderDetail['Store']['order_email'])) {
+
+                // Store Refund Mail
+                $email = new CakeEmail();
+                $email->from($sitemailId);
+                $email->to($storeEmail);
+                $email->subject($customerSubject);
+                $email->template('register');
+                $email->emailFormat('html');
+                $email->viewVars(array('mailContent' => $mailContent,
+                                        'source' => $source,
+                                        'storename' => $siteName));
+                $email->send();
+              }
+
+              // Store Refund Sms
+              if ($orderDetail['Store']['sms_option'] == 'Yes' && !empty($orderDetail['Store']['sms_phone'])) {
+                $storeMessage   = $mailContent. ' Thanks Chillcart';
+                $toStoreNumber  = '+'.$this->siteSetting['Country']['phone_code'].$orderDetail['Store']['sms_phone'];
+                $storeSms       = $this->Twilio->sendSingleSms($toStoreNumber, $storeMessage);
+              }
+              echo 'Success';
+
+            } else {
+              echo $stripeResponse;
+            }
+          }
+        }
+      }
+
+      if (!empty($failed)) {
+        return true;
+      } else {
+        exit();
+      }
+    }
 }

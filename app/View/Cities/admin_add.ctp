@@ -42,7 +42,7 @@
 															  'class' => 'form-control',
 															  'options'=> array($country_list),
                                                              'onchange' => 'stateFillter();',
-															  'empty' => 'SelectStore',
+															  'empty' => 'Select Country',
 											 				  'label'=> false)); ?>
 											 </div>
 										</div>
@@ -52,7 +52,7 @@
 												echo $this->Form->input('state_id',
 														array('type'  => 'select',
 															  'class' => 'form-control',
-															  'empty' => 'SelectState',
+															  'empty' => 'Select State',
 											 				  'label'=> false)); ?>
 											 </div>
 									</div>

@@ -232,15 +232,16 @@ class CustomersController extends AppController
 
                 $this->request->data['User']['id']     = $this->Auth->User('id');
                 $this->request->data['Customer']['id'] = $this->Auth->User('Customer.id');
-
-
+                
                 if (!empty($this->request->data['Customer']['image']['name'])) {
                     $imagesizedata = getimagesize($this->request->data['Customer']['image']['tmp_name']);
-                    if ($imagesizedata) {
+                    if (!empty($imagesizedata)) {
                         $customerImagePathS3 = 'Customers/';
                         $newName = str_replace(" ", "-", time() . '.' . $this->request->data['Customer']['first_name']);
                         $result = $this->CakeS3->putObject($this->request->data['Customer']['image']['tmp_name'], $customerImagePathS3 . $newName, S3::ACL_PUBLIC_READ);
                         $this->request->data['Customer']['image'] = $newName;
+                    } else {
+                        $this->request->data['Customer']['image'] = $this->request->data['Customer']['org_logo'];
                     }
                 } else {
                     $this->request->data['Customer']['image'] = $this->request->data['Customer']['org_logo'];

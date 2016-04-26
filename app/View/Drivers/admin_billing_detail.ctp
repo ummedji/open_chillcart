@@ -46,6 +46,7 @@
                                                         'autocomplete' => 'off',
                                                         //'value'=> date('Y-m-d', time()),
                                                         'value' => $fromDate,
+                                                        'readonly' => true,
                                                         'label' => false,
                                                         'div' => false));
                                                 echo $this->Form->hidden('id',array(
@@ -57,6 +58,7 @@
                                                         'autocomplete' => 'off',
                                                         //'value'=>date('Y-m-d', time()),
                                                         'value' => $toDate,
+                                                        'readonly' => true,
                                                         'label' => false,
                                                         'div' => false)); ?>
                                             </div>                                        

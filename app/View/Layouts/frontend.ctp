@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<script type="text/javascript">
+			if (top !=self) {
+			   top.location=self.location;
+			}
+		</script>
 
 		<title> <?php 
 
@@ -121,10 +126,10 @@
 
 		$(document).ready(function(){			
 			
-           $(window).trigger('resize');
-		   doResize();
-		   $(window).on('resize', doResize);		   
-		   	
+           	$(window).trigger('resize');
+		   	doResize();
+		   	$(window).on('resize', doResize);		   
+		   	clearConsole();
             
         });
         
@@ -520,9 +525,6 @@
 
 
 		function saveCard () {
-
-			//Stripe.setPublishableKey('pk_test_o2yvGW5u0AxIAazkU7b0JKwr');
-
 			Stripe.setPublishableKey(publishKey);
 
 			var CardName	= $('#CardName').val();
@@ -617,7 +619,7 @@
 			        		$('#UserIndexForm').submit();
 			        	}
 			        } else {
-			        	alert("<?php echo __('Check ur card details'); ?>");
+			        	alert("<?php echo __('Check your card details'); ?>");
 			        }
 				});
 		    	return false;

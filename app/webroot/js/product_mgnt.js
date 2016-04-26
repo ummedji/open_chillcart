@@ -325,6 +325,22 @@ jQuery(document).ready(function() {
            $("#StoreofferFromDate").datepicker("option","maxDate", selected)
         }
 	 });
+
+	$('#DriversFromDate').datepicker({
+        maxDate:0,
+        numberOfMonths: 1,
+        onSelect: function(selected) {
+           $("#DriversToDate").datepicker("option","minDate", selected)
+        }
+	});
+
+	$('#DriversToDate').datepicker({
+        maxDate: 0,
+        numberOfMonths: 1,
+        onSelect: function(selected) {
+           $("#DriversFromDate").datepicker("option","maxDate", selected)
+        }
+	});
 });
 
 function productImageDelete() {
@@ -393,7 +409,9 @@ function changeOrderStatus(orderId) {
 	var reason =  $('#failedReason_'+orderId).val();
 
 	if (reason != '') {
+		$('.ui-loadercont').show();
 		$.post(rp+'/admin/orders/orderStatus',{'orderId':orderId, 'status':'Failed', 'reason':reason}, function(response) {
+			$('.ui-loadercont').hide();
 			$('#orderList_'+orderId).remove();
 			$('#orderMessage').html('This order moves to failed with reason');
 			$('#orderMessage').show();

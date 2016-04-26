@@ -35,6 +35,7 @@
 									<th>Customer Name</th>
 									<th>Price</th>
 									<th>Payment Type</th>
+									<th>Order Status</th>
 									<th>Ordered Date</th>
 									<th>Delivered Date</th>
 									<th>Driver Name / Phone</th>
@@ -44,8 +45,7 @@
 							<tbody><?php 
 							
 										$count = 1;
-								foreach ($order_list as $key => $value) {
-									//echo "<pre>";print_r($value);?>
+								foreach ($order_list as $key => $value) { ?>
 								<tr class="odd gradeX">
 									<td><?php echo $count;?></td>
 									<td><?php
@@ -57,6 +57,7 @@
 									<td><?php echo $value['Order']['customer_name'];?></td>
 									<td><?php echo $value['Order']['order_grand_total'];?></td>
 									<td><?php echo $value['Order']['payment_type'];?></td>
+									<td><?php echo $value['Order']['status'];?></td>
 									<td><?php echo $value['Order']['created'];?></td>
 
 									<td><?php echo $value['Order']['delivery_date']; ?></td>

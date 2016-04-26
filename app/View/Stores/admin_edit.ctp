@@ -33,7 +33,7 @@
 								<li><a href="#shop" data-toggle="tab">Store info</a></li>
 								<li><a href="#delivery" data-toggle="tab">Delivery info</a></li>
 								<li><a href="#order" data-toggle="tab">Order info</a></li>
-								<li><a href="#comission" data-toggle="tab">Comission</a></li>
+								<li><a href="#comission" data-toggle="tab">Commission</a></li>
 								<li><a href="#invoice" data-toggle="tab">Invoice Period</a></li>
 								<li><a href="#MetaTags" data-toggle="tab">Meta Tags</a></li>
 							</ul> 
@@ -133,6 +133,7 @@
 											<div class="col-md-6 col-lg-4"> <?php
 												echo $this->Form->input('store_name',
 										                            array('class' => 'form-control',
+										                            	'value' => htmlspecialchars_decode($this->request->data['Store']['store_name']),
 										                                  'label' => false)); ?>
 											</div>
 										</div>
@@ -533,7 +534,7 @@
 									</div>
 									<div class="form-body">
 										<div class="form-group">
-											<label class="col-md-3 control-label">Meta Discriptions</label>
+											<label class="col-md-3 control-label">Meta Descriptions</label>
 											<div class="col-md-6 col-lg-4"><?php
 
 												echo $this->Form->input('meta_description',

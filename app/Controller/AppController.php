@@ -107,9 +107,10 @@ class AppController extends Controller
         Configure::write('Stripe.TestSecret', $siteDetails['Sitesetting']['stripe_secretkeyTest']);
         Configure::write('Stripe.LiveSecret', $siteDetails['Sitesetting']['stripe_secretkey']);
         Configure::write('Stripe.mode', $siteDetails['Sitesetting']['stripe_mode']);
-	Configure::write('Twilio.AccountSid', $siteDetails['Sitesetting']['sms_id']);
-	Configure::write('Twilio.AuthToken', $siteDetails['Sitesetting']['sms_token']);
-	Configure::write('Twilio.from', $siteDetails['Sitesetting']['sms_source_number']);
+        Configure::write('Stripe.currency', $siteDetails['Country']['currency_code']);
+        Configure::write('Twilio.AccountSid', $siteDetails['Sitesetting']['sms_id']);
+        Configure::write('Twilio.AuthToken', $siteDetails['Sitesetting']['sms_token']);
+        Configure::write('Twilio.from', $siteDetails['Sitesetting']['sms_source_number']);
 
         Configure::write('Hybridauth', array(
                     "Google" => array("enabled" => true,

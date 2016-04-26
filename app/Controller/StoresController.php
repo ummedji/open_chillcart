@@ -209,7 +209,8 @@ class StoresController extends AppController
         $this->set('timeslots', $this->TimeSlot->find('all'));
         //$this->set('invoiceperiod', $this->Store->find('list'));
         $this->set('states', $this->State->find('list', array(
-                                    'conditions' => array('State.status' => 1),
+                                    'conditions' => array('State.status' => 1,
+                                            'State.country_id' => $this->siteSetting['Sitesetting']['site_country']),
                                     'fields' => array('id', 'state_name'))));
         $this->set(compact('storeCity', 'storeLocation'));
     }

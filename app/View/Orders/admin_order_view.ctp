@@ -21,6 +21,7 @@
 			<div class="col-md-12">
 				<!-- Begin: life time stats -->
 				<div class="portlet light">
+					<div style="display:none;" id="orderMessage" class="alert alert-success"></div>
 					<div class="portlet-title">
 						<div class="caption">
 							<i class="icon-basket font-green-sharp"></i>
@@ -29,7 +30,14 @@
 							<span class="caption-helper">
 							<?php echo $order_detail['Order']['created'];?></span>
 						</div>
-						<div class="actions">
+						<div class="actions"> <?php
+
+							if ($order_detail['Order']['payment_type'] == 'Card' && $order_detail['Order']['payment_method'] == 'paid' && $order_detail['Order']['status'] != 'Delivered') { ?>
+								<a href="javascript:void(0);" onclick="refundPayment(<?php echo $order_detail['Order']['id']; ?>);" class="btn btn-danger btn-circle">
+								<span class="hidden-480">
+								Refund </span> <?php
+							} ?>
+
 							<a href="javascript:void(0);" onclick="window.history.go(-1);" class="btn btn-default btn-circle">
 							<i class="fa fa-angle-left"></i>
 							<span class="hidden-480">
@@ -147,6 +155,18 @@
 										</tr>
 
 										<?php
+
+										if (!empty($order_detail['StripeRefund']['refund_amount'])) { ?>
+											<tr>
+												<td valign="top" align="right"><label> Refund Id / Refund Amount</label></td>
+												<td>
+													<div class="address-detail">
+														<?php 
+														echo $order_detail['StripeRefund']['refund_id']. ' / ';
+														echo html_entity_decode($this->Number->currency($order_detail['StripeRefund']['refund_amount'], $siteCurrency)); ?></div>
+												</td>
+											</tr> <?php
+										}
 
 										if ($order_detail['Order']['order_description']) {  ?>
 											<tr>
