@@ -3,47 +3,42 @@
 /* Janakiraman */
 App::uses('AppController', 'Controller');
 App::uses('CakeEmail', 'Network/Email');
-
-class StoreMobileApiController extends AppController
-{
+class StoreMobileApiController extends AppController{
     public $components = array('AndroidResponse', 'Functions', 'Googlemap', 'Twilio');
     public $uses = array('User', 'Order', 'Notification', 'State', 'City', 'Location', 'Store', 'Driver',
                         'DriverTracking');
 
-    public function beforeFilter()
-    {
-
+    public function beforeFilter() {
+        
         $this->Auth->allow('request');
         parent::beforeFilter();
 
         $this->storeState = $this->State->find('list', array(
-            'fields' => array('id', 'state_name')));
+                                                'fields' => array('id', 'state_name')));
         $this->storeCity = $this->City->find('list', array(
-            'fields' => array('City.id', 'City.city_name')));
+                            'fields' => array('City.id', 'City.city_name')));
 
         if ($this->siteSetting['Sitesetting']['search_by'] == 'zip') {
             $this->storeLocation = $this->Location->find('list', array(
-                'fields' => array('id', 'zip_code')));
+                                        'fields' => array('id','zip_code')));
         } else {
             $this->storeLocation = $this->Location->find('list', array(
-                'fields' => array('id', 'area_name')));
+                                        'fields' => array('id','area_name')));
         }
 
         $this->set(compact('storeCity', 'storeArea', 'cityId', 'areaId'));
     }
 
-    public function index()
-    {
+    public function index() {
     }
-
+    
     /**
-     * Request from android
+     * Request from android 
      * @param action
      * @return response->success, response->message
      */
-    public function request()
-    {
-        $this->autoLayout = false;
+    public function request() {
+        $this->autoLayout = false;  
 
         if ($this->request->is('post')) {
             if (empty($this->request->data)) {
@@ -56,29 +51,28 @@ class StoreMobileApiController extends AppController
                     $this->request->data['User']['password'] = $this->request->data['password'];
                     $this->request->data['User']['password'] = AuthComponent::password($this->data['User']['password']);
                     $store = $this->User->find('first', array(
-                        'conditions' => array(
-                            'User.username' => $this->request->data['User']['username'],
-                            'User.password' => $this->request->data['User']['password'])));
-                    if (!empty($store)) {
-                        $getData = $store['Store']['id'];
-                        $store_name = $store['Store']['store_name'];
-                        $user_id = $store['Store']['user_id'];
-                        $this->request->data['Store']['id'] = $getData;
-                        $this->request->data['Store']['device_id'] = $this->request->data['device_id'];
+                                    'conditions' => array(
+                                    'User.username' => $this->request->data['User']['username'],
+                                    'User.password' => $this->request->data['User']['password'])));
+                    if(!empty($store)){
+                        $getData             = $store['Store']['id'];
+                        $store_name          = $store['Store']['store_name'];
+                        $user_id             = $store['Store']['user_id'];
+                        $this->request->data['Store']['id'] =  $getData ;
+                        $this->request->data['Store']['device_id'] = $this->request->data['device_id'] ;
                         $this->request->data['Store']['device_name'] = $this->request->data['device_name'];
                         $this->request->data['Store']['is_logged'] = 1;
                         $this->Store->save($this->request->data['Store']);
                         $response['success'] = '1';
-                        $response['id'] = $getData;
-                        $response['storename'] = $store_name;
+                        $response['id']      = $getData ;
+                        $response['storename']  = $store_name ;
                         $response['message'] = 'Login Sucessfully ';
 
                     } else {
                         $response['success'] = '0';
                         $response['message'] = 'Please Check your user name and password';
                     }
-                    break;
-
+                break;
                 case 'forgotmail':
 
                     $userData = $this->User->find('first', array(
@@ -143,60 +137,60 @@ class StoreMobileApiController extends AppController
                 break;
 
                 case 'StoreDetail':
-                    $id = $this->request->data['user_id'];
+                    $id    = $this->request->data['user_id'];                    
                     $store = $this->Store->find('first', array(
-                        'conditions' => array('Store.id' => $id)));
-                    if (!empty($store)) {
-                        $response['id'] = $store['Store']['id'];
-                        $response['name'] = $store['Store']['contact_name'];
-                        $response['email'] = $store['Store']['contact_email'];
-                        $response['phone'] = $store['Store']['contact_phone'];
+                                    'conditions' => array('Store.id'=>$id)));
+                    if(!empty($store)){
+                        $response['id']          = $store['Store']['id'];
+                        $response['name']        = $store['Store']['contact_name'] ;
+                        $response['email']       = $store['Store']['contact_email'];
+                        $response['phone']       = $store['Store']['contact_phone']; 
                         $response['success'] = '1';
 
                     } else {
                         $response['success'] = '0';
                         $response['message'] = 'Please Check your user name and password';
                     }
-                    break;
+                break; 
                 case 'EditStoreDetail':
-                    if (!empty($this->request->data['user_id'])) {
-                        $this->request->data['Store']['id'] = $this->request->data['user_id'];
-                        $this->request->data['Store']['contact_name'] = $this->request->data['name'];
-                        $this->request->data['Store']['contact_email'] = $this->request->data['email'];
-                        $this->request->data['Store']['contact_phone'] = $this->request->data['phone'];
-                        $this->Store->save($this->request->data['Store']);
-                        $response['success'] = '1';
-                        $response['message'] = 'Profile Updated successfully';
+                        if(!empty($this->request->data['user_id'])) {
+                            $this->request->data['Store']['id']             = $this->request->data['user_id'];
+                            $this->request->data['Store']['contact_name']   = $this->request->data['name'];
+                            $this->request->data['Store']['contact_email']  = $this->request->data['email'];
+                            $this->request->data['Store']['contact_phone']  = $this->request->data['phone'];
+                            $this->Store->save($this->request->data['Store']);
+                            $response['success']                            = '1';
+                            $response['message']                            = 'Profile Updated successfully'; 
 
-                    } else {
-                        $response['success'] = '0';
-                        $response['message'] = 'Please Check your user name and password';
-                    }
-                    break;
+                        } else {
+                            $response['success'] = '0';
+                            $response['message'] = 'Please Check your user name and password';
+                        }
+                break; 
 
 
                 case 'pendingList':
-                    $store_id = $this->request->data['user_id'];
+                    $store_id                = $this->request->data['user_id'];
                     if ($store_id != '') {
                         $store = $this->Store->findById($store_id);
-                        if (!empty($store)) {
+                        if(!empty($store)) {
                             $this->Order->recursive = 0;
                             $order_list = $this->Order->find('all', array(
-                                'conditions' => array('Order.store_id' => $store_id,
-                                    'Order.status' => 'Pending'),
-                                'fields' => array('ref_number', 'customer_name',
-                                    'customer_phone', 'created',
-                                    'order_type', 'delivery_time_slot'),
-                                'order' => array('Order.id DESC')));
+                                                'conditions'=>array('Order.store_id'=>$store_id,
+                                                                    'Order.status' => 'Pending'),
+                                                'fields'=>array('ref_number','customer_name',
+                                                                'customer_phone','created',
+                                                                'order_type', 'delivery_time_slot'),
+                                                'order' => array('Order.id DESC')));
 
                             if (!empty($order_list)) {
                                 foreach ($order_list as $key => $value) {
-                                    $getData[$key]['id'] = $value['Order']['id'];
-                                    $getData[$key]['orderId'] = $value['Order']['ref_number'];
-                                    $getData[$key]['name'] = $value['Order']['customer_name'];
-                                    $getData[$key]['date'] = $value['Order']['created'];
+                                    $getData[$key]['id']        = $value['Order']['id'];                          
+                                    $getData[$key]['orderId']   = $value['Order']['ref_number'];
+                                    $getData[$key]['name']      = $value['Order']['customer_name'];
+                                    $getData[$key]['date']      = $value['Order']['created'];
                                     $getData[$key]['orderType'] = $value['Order']['order_type'];
-                                    $getData[$key]['timeSlot'] = $value['Order']['delivery_time_slot'];
+                                    $getData[$key]['timeSlot']  = $value['Order']['delivery_time_slot'];
                                     $getData[$key]['phonenumber'] = $value['Order']['customer_phone'];
                                 }
 
@@ -215,36 +209,36 @@ class StoreMobileApiController extends AppController
                         $response['success'] = '0';
                         $response['message'] = 'No Record Found';
                     }
-                    break;
+                break;
 
                 case 'acceptList':
-                    $store_id = $this->request->data['user_id'];
+                    $store_id                = $this->request->data['user_id'];
                     if ($store_id != '') {
                         $store = $this->Store->findById($store_id);
-                        if (!empty($store)) {
+                        if(!empty($store)) {
                             $this->Order->recursive = 0;
-                            $status = array('Delivered', 'Pending', 'Failed');
+                            $status = array('Delivered','Pending','Failed');
                             $order_list = $this->Order->find('all', array(
-                                'conditions' => array('Order.store_id' => $store_id,
-                                    'NOT' => array('Order.status' => $status)),
-                                'order' => array('Order.id DESC')));
+                                            'conditions' => array('Order.store_id'=>$store_id,
+                                            'NOT' => array('Order.status' => $status)),
+                                            'order' => array('Order.id DESC')));
                             if (!empty($order_list)) {
-                                foreach ($order_list as $key => $value) {
-                                    $getData[$key]['id'] = $value['Order']['id'];
-                                    $getData[$key]['orderId'] = $value['Order']['ref_number'];
-                                    $getData[$key]['status'] = $value['Order']['status'];
-                                    $getData[$key]['username'] = $value['Order']['customer_name'];
-                                    $getData[$key]['phone'] = $value['Order']['customer_phone'];
-                                    $getData[$key]['date'] = $value['Order']['delivery_date'];
-                                    $getData[$key]['orderType'] = $value['Order']['order_type'];
-                                    $getData[$key]['timeSlot'] = $value['Order']['delivery_time_slot'];
-                                    $getData[$key]['deliverytime'] = $value['Order']['updated'];
-                                    $getData[$key]['deriverId'] = ($value['Driver']['id']) ? $value['Driver']['id'] : '';
-                                    $getData[$key]['deriverName'] = ($value['Driver']['driver_name']) ? $value['Driver']['driver_name'] : '';
+                                foreach ($order_list as $key => $value){
+                                    $getData[$key]['id']        = $value['Order']['id'];            
+                                    $getData[$key]['orderId']   = $value['Order']['ref_number'];
+                                    $getData[$key]['status']    = $value['Order']['status'];
+                                    $getData[$key]['username']  = $value['Order']['customer_name'];
+                                    $getData[$key]['phone']     = $value['Order']['customer_phone'];
+                                    $getData[$key]['date']      = $value['Order']['delivery_date'];
+                                    $getData[$key]['orderType']     = $value['Order']['order_type'];
+                                    $getData[$key]['timeSlot']      = $value['Order']['delivery_time_slot'];
+                                    $getData[$key]['deliverytime']  = $value['Order']['updated'];
+                                    $getData[$key]['deriverId']     = ($value['Driver']['id']) ? $value['Driver']['id'] : '' ;
+                                    $getData[$key]['deriverName']   = ($value['Driver']['driver_name']) ? $value['Driver']['driver_name'] : '';
                                 }
-                                $response['acceptList'] = $getData;
-                                $response['success'] = '1';
-                                $response['message'] = 'Successfully';
+                                 $response['acceptList'] = $getData;
+                                 $response['success'] = '1';
+                                 $response['message'] = 'Successfully';
                             } else {
                                 $response['success'] = '0';
                                 $response['message'] = 'No Record Found';
@@ -257,32 +251,31 @@ class StoreMobileApiController extends AppController
                         $response['success'] = '0';
                         $response['message'] = 'No Record Found';
                     }
-                    break;
+                break;
 
-                case 'orderStatusChange':
-                    $order_id = $this->request->data['order_id'];
-		    $orderDetail = $this->Order->findById($order_id);
+                case 'orderStatusChange':           
+                    $order_id              = $this->request->data['order_id'];
+					$orderDetail = $this->Order->findById($order_id);
                     if ($order_id != '') {
-                        $this->request->data['Order']['id'] = $order_id;
-                        if ($this->request->data['status'] == 'Accept') {
-                            $this->request->data['Order']['id'] = $order_id;
-                            $this->request->data['Order']['status'] = 'Accepted';
+                        $this->request->data['Order']['id']      = $order_id;                       
+                        if($this->request->data['status'] == 'Accept') {
+                             $this->request->data['Order']['id']   = $order_id;  
+                             $this->request->data['Order']['status']  = 'Accepted';
+                             $this->Order->save($this->request->data['Order']);
 
+                        } elseif($this->request->data['status'] == 'Delivered'){
+                            $this->request->data['Order']['id']    = $order_id;
+                            $this->request->data['Order']['status']  = 'Delivered';
+                            $this->request->data['Order']['payment_method']  = 'paid';
                             $this->Order->save($this->request->data['Order']);
 
-                        } elseif ($this->request->data['status'] == 'Delivered') {
-                            $this->request->data['Order']['id'] = $order_id;
-                            $this->request->data['Order']['status'] = 'Delivered';
-                            $this->request->data['Order']['payment_method'] = 'paid';
-                            $this->Order->save($this->request->data['Order']);
-
-                        } else {
-                            $this->request->data['Order']['id'] = $order_id;
-                            $this->request->data['Order']['status'] = 'Failed';
-                            $this->request->data['Order']['failed_reason'] = $this->request->data['cancel_reason'];
+                        }else {
+                            $this->request->data['Order']['id']      = $order_id;  
+                            $this->request->data['Order']['status']  = 'Failed';
+                            $this->request->data['Order']['failed_reason']  = $this->request->data['cancel_reason'] ;
                             $this->Order->save($this->request->data['Order']);
                         }
-			//Cuctomer SMS
+						//Cuctomer SMS
                         $customerMessage  = 'Congratulations! Your order '.$orderDetail['Order']['ref_number'].' succesfully accepted by '.
 						$orderDetail['Store']['store_name'].'. Your order will be delivered by '.
 						$orderDetail['Order']['delivery_date']. ' at '.$orderDetail['Order']['delivery_time_slot'].'. Thanks Chillcart';
@@ -293,93 +286,91 @@ class StoreMobileApiController extends AppController
                     } else {
                         $response['success'] = '0';
                     }
-                    break;
+                break;
                 case 'assignOrder':
 
-                    $orderId = $this->request->data['order_id'];
-                    $driverId = $this->request->data['driver_id'];
-                    $orders = $this->Order->findById($orderId);
-
+                    $orderId   = $this->request->data['order_id'];
+                    $driverId  = $this->request->data['driver_id'];
+                    $orders    = $this->Order->findById($orderId);
 
                     if ($orderId != '' && $driverId != '') {
 
-                        $driverDetails = $this->Driver->find('first', array(
-                            'conditions' => array('Driver.id' => $driverId,
-                                'User.role_id' => '5')));
+                        $driverDetails = $this->Driver->find('first',array(
+                                    'conditions' => array('Driver.id' => $driverId,
+                                                        'User.role_id'=>'5')));
                         if ($this->siteSetting['Sitesetting']['search_by'] == 'zip') {
 
-                            $storeAddress = $orders['Store']['street_address'] . ', ' .
-                                $this->storeCity[$orders['Store']['store_city']] . ', ' .
-                                $this->storeState[$orders['Store']['store_state']] . ' ' .
-                                $this->storeLocation[$orders['Store']['store_zip']] . ', ' .
-                                $this->siteSetting['Country']['country_name'];
+                            $storeAddress = $orders['Store']['street_address'].', '.
+                                                $this->storeCity[$orders['Store']['store_city']].', '.
+                                                $this->storeState[$orders['Store']['store_state']].' '.
+                                                $this->storeLocation[$orders['Store']['store_zip']].', '.
+                                                $this->siteSetting['Country']['country_name'];
 
 
                         } else {
-                            $storeAddress = $orders['Store']['street_address'] . ', ' .
-                                $this->storeLocation[$orders['Store']['store_zip']] . ', ' .
-                                $this->storeCity[$orders['Store']['store_city']] . ', ' .
-                                $this->storeState[$orders['Store']['store_state']] . ', ' .
-                                $this->siteSetting['Country']['country_name'];
+                            $storeAddress = $orders['Store']['street_address'].', '.
+                                                $this->storeLocation[$orders['Store']['store_zip']].', '.
+                                                $this->storeCity[$orders['Store']['store_city']].', '.
+                                                $this->storeState[$orders['Store']['store_state']].', '.
+                                                $this->siteSetting['Country']['country_name'];
                         }
 
 
-                        $orderDetails['paymentType'] = $orders['Order']['payment_type'];
-                        $orderDetails['CustomerName'] = $orders['Order']['customer_name'];
+                        $orderDetails['paymentType']            = $orders['Order']['payment_type'];
+                        $orderDetails['CustomerName']           = $orders['Order']['customer_name'];
 
-                        $orderDetails['StoreName'] = stripslashes($orders['Store']['store_name']);
-                        $orderDetails['SourceAddress'] = $storeAddress;
-                        $orderDetails['SourceLatitude'] = $orders['Order']['source_latitude'];
-                        $orderDetails['SourceLongitude'] = $orders['Order']['source_longitude'];
-                        $orderDetails['DestinationAddress'] = $orders['Order']['address'] . ', ' .
-                            $orders['Order']['location_name'] . ', ' .
-                            $orders['Order']['city_name'] . ', ' .
-                            $orders['Order']['state_name'];
+                        $orderDetails['StoreName']              = stripslashes($orders['Store']['store_name']);
+                        $orderDetails['SourceAddress']          = $storeAddress;
+                        $orderDetails['SourceLatitude']         = $orders['Order']['source_latitude'];
+                        $orderDetails['SourceLongitude']        = $orders['Order']['source_longitude'];
+                        $orderDetails['DestinationAddress']     = $orders['Order']['address'].', '.
+                                                                  $orders['Order']['location_name'].', '.
+                                                                  $orders['Order']['city_name'].', '.
+                                                                  $orders['Order']['state_name'];
 
-                        $orderDetails['LandMark'] = $orders['Order']['landmark'];
-                        $orderDetails['DestinationLatitude'] = $orders['Order']['destination_latitude'];
-                        $orderDetails['DestinationLongitude'] = $orders['Order']['destination_longitude'];
-                        $orderDetails['OrderDate'] = $orders['Order']['delivery_date'];
-                        $orderDetails['OrderTime'] = $orders['Order']['delivery_time_slot'];
-                        $orderDetails['OrderPrice'] = $orders['Order']['order_grand_total'];
-                        $orderDetails['OrderId'] = $orders['Order']['id'];
-                        $orderDetails['OrderGenerateId'] = $orders['Order']['ref_number'];
+                        $orderDetails['LandMark']               = $orders['Order']['landmark'];
+                        $orderDetails['DestinationLatitude']    = $orders['Order']['destination_latitude'];
+                        $orderDetails['DestinationLongitude']   = $orders['Order']['destination_longitude'];
+                        $orderDetails['OrderDate']              = $orders['Order']['delivery_date'];
+                        $orderDetails['OrderTime']              = $orders['Order']['delivery_time_slot'];
+                        $orderDetails['OrderPrice']             = $orders['Order']['order_grand_total'];
+                        $orderDetails['OrderId']                = $orders['Order']['id'];
+                        $orderDetails['OrderGenerateId']        = $orders['Order']['ref_number'];
+                        
+                        $distance                               = $this->Googlemap->getDrivingDistance(
+                                                                    $orderDetails['SourceLatitude'],
+                                                                    $orderDetails['SourceLongitude'],
+                                                                    $orderDetails['DestinationLatitude'],
+                                                                    $orderDetails['DestinationLongitude']);
+                        $orderDetails['Distance']               = $distance['distanceText'];
 
-                        $distance = $this->Googlemap->getDrivingDistance(
-                            $orderDetails['SourceLatitude'],
-                            $orderDetails['SourceLongitude'],
-                            $orderDetails['DestinationLatitude'],
-                            $orderDetails['DestinationLongitude']);
-                        $orderDetails['Distance'] = $distance['distanceText'];
-
-
-                        $count = $this->Order->find('count', array(
-                            'conditions' => array(
-                                'Order.driver_id' => $driverId,
-                                'Order.status' => 'Waiting')));
-
-                        $orderDetails['waitingCount'] = $count + 1;
+                        $count  = $this->Order->find('count', array(
+                                    'conditions' => array(
+                                        'Order.driver_id' => $driverId,
+                                        'Order.status' => 'Waiting')));
+                                    
+                        $orderDetails['waitingCount'] = $count + 1; 
 
 
                         if (!empty($driverDetails)) {
 
-                            $deviceId = $driverDetails['Driver']['device_id'];
+                            $deviceId      = $driverDetails['Driver']['device_id'];
                             $ordDetails = json_encode($orderDetails);
-                            $message = 'New order came - ' . $orders['Order']['ref_number'];
-
+                            $message    = 'New order came - '.$orders['Order']['ref_number'];
+                            
                             $gcm = $this->AndroidResponse->sendOrderByGCM(
-                                array('OrderDetails' => $ordDetails,
-                                    'message' => $message),
-                                $deviceId);
+                                    array('OrderDetails' => $ordDetails,
+                                          'message'      => $message),
+                                            $deviceId);
 
-                            $orderStatus['id'] = $orderId;
-                            $orderStatus['status'] = 'Waiting';
-                            $orderStatus['driver_id'] = $driverId;
-
+                            $orderStatus['id']          = $orderId;
+                            $orderStatus['status']      = 'Waiting';
+                            $orderStatus['driver_id']   = $driverId;
+                            
                             $this->Order->save($orderStatus);
-
+                                          
                             $gcm = json_decode($gcm, true);
-			    // Driver SMS
+			    			// Driver SMS
                             $driverMessage  = 'Dear '.$driverDetails['Driver']['driver_name'].',pick up ';
                             $driverMessage .= ($orders['Order']['payment_method'] != 'paid') ? 'COD' : 'PAID';
                             $driverMessage .= ' order '.$orders['Order']['ref_number'].' from '.$orders['Order']['customer_name'];
@@ -398,142 +389,138 @@ class StoreMobileApiController extends AppController
                     } else {
                         $response['success'] = '0';
                     }
-                    break;
+                 break;
 
-                case 'orderView':
-                    $order_id = $this->request->data['order_id'];
-                    $orderView = array();
+                 case 'orderView':
+                    $order_id              = $this->request->data['order_id'];
+                    $orderView              = array();
                     if ($order_id != '') {
-                        $order_detail = $this->Order->findByRefNumber($order_id);
+                        $order_detail           = $this->Order->findByRefNumber($order_id);
                         $distance = $this->Googlemap->getDrivingDistance(
-                            $order_detail['Order']['source_latitude'],
-                            $order_detail['Order']['source_longitude'],
-                            $order_detail['Order']['destination_latitude'],
-                            $order_detail['Order']['destination_longitude']);
-                        if (!empty($order_detail)) {
-                            foreach ($order_detail['ShoppingCart'] as $key => $value) {
+                                                $order_detail['Order']['source_latitude'],
+                                                $order_detail['Order']['source_longitude'],
+                                                $order_detail['Order']['destination_latitude'],
+                                                $order_detail['Order']['destination_longitude']);
+                        if(!empty($order_detail)) {
+                            foreach($order_detail['ShoppingCart'] as $key => $value) {
                                 $order[$key]['productname'] = $value['product_name'];
                                 $order[$key]['quantity'] = $value['product_quantity'];
                                 $order[$key]['total'] = $value['product_total_price'];
                                 $order[$key]['product_descrption'] = $value['product_description'];
                             }
-                            $orderInfo['tax'] = $order_detail['Order']['tax_amount'];
-                            $orderInfo['sub_tot'] = $order_detail['Order']['order_sub_total'];
-                            $orderInfo['delivery'] = $order_detail['Order']['delivery_charge'];
-                            $orderInfo['grand_tot'] = $order_detail['Order']['order_grand_total'];
-                            $orderInfo['name'] = $order_detail['Order']['order_grand_total'];
-                            $orderInfo['id'] = $order_detail['Order']['id'];
-                            $orderInfo['ref_number'] = $order_detail['Order']['ref_number'];
-                            $orderInfo['paymentStatus'] = $order_detail['Order']['payment_method'];
-                            $orderInfo['orderType'] = $order_detail['Order']['order_type'];
-                            $orderInfo['timeSlot'] = $order_detail['Order']['delivery_time_slot'];
-                            $orderInfo['phone'] = $order_detail['Order']['customer_phone'];
-                            $orderInfo['name'] = $order_detail['Order']['customer_name'];
-                            $orderInfo['mail'] = $order_detail['Order']['customer_email'];
-                            $orderInfo['address'] = $order_detail['Order']['address'] . ',' . $order_detail['Order']['location_name'] . ',' .
-                                $order_detail['Order']['city_name'] . ',' . $order_detail['Order']['state_name'];
-                            $orderInfo['orderdescrption'] = $order_detail['Order']['order_description'];
-                            $orderInfo['DeliveryTime'] = $order_detail['Order']['updated'];
-                            $orderInfo['Distancevalue'] = $distance['distanceText'];
-                            $orderInfo['payment_type'] = $order_detail['Order']['payment_type'];
-                            $orderInfo['offer'] = $order_detail['Order']['offer_amount'];
-
-                            $orderInfo['productdetail'] = $order;
-
-                            $response['success'] = '1';
-                            $response['orderdetail'][] = $orderInfo;
-
-
+                                $orderInfo['tax']            = $order_detail['Order']['tax_amount'];
+                                $orderInfo['sub_tot']        = $order_detail['Order']['order_sub_total'];
+                                $orderInfo['delivery']       = $order_detail['Order']['delivery_charge'];
+                                $orderInfo['grand_tot']      = $order_detail['Order']['order_grand_total'];
+                                $orderInfo['name']           = $order_detail['Order']['order_grand_total'];
+                                $orderInfo['id']             = $order_detail['Order']['id'];
+                                $orderInfo['ref_number']     = $order_detail['Order']['ref_number'];
+                                $orderInfo['paymentStatus']  = $order_detail['Order']['payment_method'];
+                                $orderInfo['orderType']      = $order_detail['Order']['order_type'];
+                                $orderInfo['timeSlot']       = $order_detail['Order']['delivery_time_slot'];
+                                $orderInfo['phone']          = $order_detail['Order']['customer_phone'];
+                                $orderInfo['name']           = $order_detail['Order']['customer_name'];
+                                $orderInfo['mail']           = $order_detail['Order']['customer_email'];
+                                $orderInfo['address']        = $order_detail['Order']['address'].','.$order_detail['Order']['location_name'].','.
+                                                                $order_detail['Order']['city_name'].','.$order_detail['Order']['state_name'];
+                                $orderInfo['orderdescrption']   = $order_detail['Order']['order_description'];
+                                $orderInfo['DeliveryTime']      = $order_detail['Order']['updated'];
+                                $orderInfo['Distancevalue']     = $distance['distanceText'];
+                                $orderInfo['payment_type']      = $order_detail['Order']['payment_type'];
+                                $orderInfo['offer']             = $order_detail['Order']['offer_amount'];
+                               
+                               $orderInfo['productdetail'] = $order;
+                               $response['success'] = '1';
+                               $response['orderdetail'][] = $orderInfo;
                         } else {
                             $response['success'] = '0';
                             $response['message'] = 'No Records Found';
 
                         }
-
                     } else {
                         $response['success'] = '0';
                         $response['message'] = 'No Records Found';
                     }
-                    break;
+                break;
 
                 case 'completedOrderFillter':
-                    $range = array('ThisWeek', 'ThisMonth', 'ThisYear', 'Today');
-                    $this->set('range', $range);
+                    $range = array('ThisWeek','ThisMonth','ThisYear','Today');
+                    $this->set('range',$range);
                     $currentDate = date("Y-m-d 23:59:59");
                     $ts = strtotime($currentDate);
                     $start = (date('w', $ts) == 0) ? $ts : strtotime('last sunday', $ts);
                     $start_date = date('Y-m-d', $start);
                     $end_date = date('Y-m-d', strtotime('next saturday', $start));
-                    $Today = date("Y-m-d");
-                    $yesterdayDate = date("Y-m-d", strtotime("-1 days"));
-                    $thismonth = date('Y-m-d 00:00:01', strtotime("first day of this month"));
+                    $Today= date("Y-m-d");
+                    $yesterdayDate = date("Y-m-d",  strtotime("-1 days"));
+                    $thismonth        = date('Y-m-d 00:00:01', strtotime("first day of this month"));
                     $lastmonth_start = date('Y-m-d 00:00:01', strtotime("-1 months first day of this month"));
-                    $lastmonth_end = date('Y-m-d 23:59:59', strtotime("-1 months last day of this month"));
-                    $thisyear = date('Y') . "-01-01 00:00:01";
+                    $lastmonth_end    = date('Y-m-d 23:59:59', strtotime("-1 months last day of this month"));
+                    $thisyear = date('Y')."-01-01 00:00:01";
                     $lastyear = date('Y', strtotime("-1 year"));
-                    $lastyearStart = $lastyear . "-01-01 00:00:01";
-                    $lastyearEnd = $lastyear . "-12-31 23:59:59";
+                    $lastyearStart=$lastyear."-01-01 00:00:01";
+                    $lastyearEnd=$lastyear."-12-31 23:59:59"; 
                     $from_date = $this->request->data['from'];
-                    $to_date = $this->request->data['to'];
-                    $store_id = $this->request->data['user_id'];
+                    $to_date = $this->request->data['to']; 
+                    $store_id                = $this->request->data['user_id'];
                     if ($store_id != '') {
-                        $today = new DateTime(date('Y-m-d G:i:s'));
+                        $today    = new DateTime(date('Y-m-d G:i:s'));      
                         $first_day_this_month = date('m-01-Y');
-                        $last_day_this_month = date('m-t-Y');
+                        $last_day_this_month  = date('m-t-Y');         
                         $store = $this->Store->findById($store_id);
-                        if ($this->request->data['sortby'] == $range[0]) {
+                        if($this->request->data['sortby'] == $range[0]) {
                             $this->Order->recursive = 0;
                             $order_list = $this->Order->find('all', array(
-                                'conditions' => array('Order.store_id' => $store_id,
-                                    'Order.delivery_date between ? and ?' =>
-                                        array($start_date, $currentDate),
-                                    'Order.status' => 'Delivered'),
-                                'order' => array('Order.id DESC')));
+                                                        'conditions' => array('Order.store_id'=>$store_id,
+                                                        'Order.delivery_date between ? and ?' =>
+                                                        array($start_date, $currentDate),
+                                                        'Order.status' => 'Delivered'),
+                                                        'order' => array('Order.id DESC')));
                             if (!empty($order_list)) {
-                                $this->Order->recursive = 0;
+                                 $this->Order->recursive = 0;
                                 foreach ($order_list as $key => $value) {
                                     $getData[$key]['id'] = $value['Order']['id'];
                                     $getData[$key]['order_id'] = $value['Order']['ref_number'];
                                     $getData[$key]['delivered_date'] = $value['Order']['delivery_date'];
                                     $getData[$key]['total'] = $value['Order']['order_grand_total'];
-                                }
-                                $response['orderDetail'] = $getData;
-                                $response['success'] = '1';
+                                }                                    
+                                    $response['orderDetail'] = $getData;
+                                    $response['success'] = '1';
                             } else {
                                 $response['success'] = '0';
                                 $response['message'] = 'No Record Found';
-                            }
-
+                            } 
+                            
                         } else if ($this->request->data['sortby'] == $range[1]) {
                             $this->Order->recursive = 0;
                             $order_list = $this->Order->find('all', array(
-                                'conditions' => array('Order.store_id' => $store_id,
-                                    'Order.delivery_date between ? and ?' =>
-                                        array($thismonth, $currentDate),
-                                    'Order.status' => 'Delivered'),
-                                'order' => array('Order.id DESC')));
+                                                'conditions' => array('Order.store_id'=>$store_id,
+                                                'Order.delivery_date between ? and ?' =>
+                                                array($thismonth, $currentDate),                                            
+                                                'Order.status' => 'Delivered'),
+                                                'order' => array('Order.id DESC')));
                             if (!empty($order_list)) {
-                                $this->Order->recursive = 0;
+                                 $this->Order->recursive = 0;
                                 foreach ($order_list as $key => $value) {
                                     $getData[$key]['id'] = $value['Order']['id'];
                                     $getData[$key]['order_id'] = $value['Order']['ref_number'];
                                     $getData[$key]['delivered_date'] = $value['Order']['delivery_date'];
                                     $getData[$key]['total'] = $value['Order']['order_grand_total'];
-                                }
-                                $response['orderDetail'] = $getData;
-                                $response['success'] = '1';
+                                }                                    
+                                    $response['orderDetail'] = $getData;
+                                    $response['success'] = '1';
                             } else {
                                 $response['success'] = '0';
                                 $response['message'] = 'No Record Found';
-                            }
-                        } else if ($this->request->data['sortby'] == $range[2]) {
+                            }                 
+                        } else if($this->request->data['sortby'] == $range[2]){
                             $this->Order->recursive = 0;
                             $order_list = $this->Order->find('all', array(
-                                'conditions' => array('Order.store_id' => $store_id,
-                                    'Order.delivery_date between ? and ?' =>
-                                        array($thisyear, $currentDate),
-                                    'Order.status' => 'Delivered'),
-                                'order' => array('Order.id DESC')));
+                                                'conditions' => array('Order.store_id'=>$store_id,
+                                                'Order.delivery_date between ? and ?' =>
+                                                array($thisyear, $currentDate),                                            
+                                                'Order.status' => 'Delivered'),
+                                                'order' => array('Order.id DESC')));
                             if (!empty($order_list)) {
                                 $this->Order->recursive = 0;
                                 foreach ($order_list as $key => $value) {
@@ -541,22 +528,22 @@ class StoreMobileApiController extends AppController
                                     $getData[$key]['order_id'] = $value['Order']['ref_number'];
                                     $getData[$key]['delivered_date'] = $value['Order']['delivery_date'];
                                     $getData[$key]['total'] = $value['Order']['order_grand_total'];
-                                }
-                                $response['orderDetail'] = $getData;
-                                $response['success'] = '1';
+                                }                                   
+                                    $response['orderDetail'] = $getData;
+                                    $response['success'] = '1';
                             } else {
                                 $response['success'] = '0';
                                 $response['message'] = 'No Record Found';
-                            }
-                        } else if ($this->request->data['sortby'] == $range[3]) {
-                            if (!empty($store)) {
+                            }  
+                        } else if($this->request->data['sortby'] == $range[3]){
+                            if(!empty($store)) {
                                 $this->Order->recursive = 0;
                                 $order_list = $this->Order->find('all', array(
-                                    'conditions' => array('Order.store_id' => $store_id,
-                                        'Order.delivery_date' => date('Y-m-d', time()),
-                                        'Order.status' => 'Delivered'),
-                                    'order' => array('Order.id DESC')));
-
+                                                'conditions' => array('Order.store_id'=>$store_id,
+                                                'Order.delivery_date' => date('Y-m-d', time()),                                            
+                                                'Order.status' => 'Delivered'),
+                                                'order' => array('Order.id DESC')));
+                              
                                 if (!empty($order_list)) {
                                     $this->Order->recursive = 0;
                                     foreach ($order_list as $key => $value) {
@@ -578,11 +565,11 @@ class StoreMobileApiController extends AppController
                         } else {
                             $this->Order->recursive = 0;
                             $order_list = $this->Order->find('all', array(
-                                'conditions' => array('Order.store_id' => $store_id,
-                                    'Order.delivery_date between ? and ?' =>
-                                        array($from_date, $to_date),
-                                    'Order.status' => 'Delivered'),
-                                'order' => array('Order.id DESC')));
+                                                'conditions' => array('Order.store_id'=>$store_id,
+                                                'Order.delivery_date between ? and ?' =>
+                                                array($from_date, $to_date),                                            
+                                                'Order.status' => 'Delivered'),
+                                                'order' => array('Order.id DESC')));
                             if (!empty($order_list)) {
                                 $this->Order->recursive = 0;
                                 foreach ($order_list as $key => $value) {
@@ -603,7 +590,7 @@ class StoreMobileApiController extends AppController
                         $response['success'] = '0';
                         $response['message'] = 'No Record Found';
                     }
-                    break;
+                break;
 
                 case 'availableDriver':
                     $store_id = $this->request->data['store_id'];
@@ -612,33 +599,32 @@ class StoreMobileApiController extends AppController
                         $response['success'] = '0';
                         $response['message'] = 'Order already register';
                     } else {
-
                         $drivers = $this->Driver->find('all', array(
-                            'conditions' => array('Vehicle.vehicle_name !=' => '',
-                                'Driver.driver_status' => 'Available',
-                                'Driver.status' => 'Active',
-                                'Driver.store_id' => $store_id),
-                            'group' => array('Driver.id')));
-                        $pickup['Latitude'] = $orderDetails['Store']['latitude'];
-                        $pickup['Longitude'] = $orderDetails['Store']['longitude'];
+                                            'conditions' => array('Vehicle.vehicle_name !=' => '',
+                                                                  'Driver.driver_status' => 'Available',
+                                                                  'Driver.status' => 'Active',
+                                                                'Driver.store_id' => $store_id),
+                                            'group' => array('Driver.id')));
+                        $pickup['Latitude']  = $orderDetails['Store']['latitude'];
+                        $pickup['Longitude'] = $orderDetails['Store']['longitude'];                        
                         if (!empty($drivers)) {
-
+                            
                             foreach ($drivers as $key => $value) {
                                 $distance = $this->Googlemap->getDrivingDistance(
-                                    $value['DriverTracking']['driver_latitude'],
-                                    $value['DriverTracking']['driver_longitude'],
-                                    $pickup['Latitude'],
-                                    $pickup['Longitude']);
+                                                            $value['DriverTracking']['driver_latitude'],
+                                                            $value['DriverTracking']['driver_longitude'],
+                                                            $pickup['Latitude'],
+                                                            $pickup['Longitude']);
                                 //if (!empty($distance)) {
 
-                                    $availDrivers[$key]['id'] = $value['Driver']['id'];
-                                    $availDrivers[$key]['status'] = $value['Driver']['driver_status'];
-                                    $availDrivers[$key]['distance'] = $distance['distanceText'];
-                                    $availDrivers[$key]['reachtime'] = $distance['durationText'];
-                                    $availDrivers[$key]['driver_name'] = $value['Driver']['driver_name'];
-                                    $availDrivers[$key]['driver_phone'] = $value['Driver']['driver_phone'];
-                                    $availDrivers[$key]['vehicle_name'] = $value['Vehicle']['vehicle_name'];
-                                    $availDrivers[$key]['vehicle_model'] = $value['Vehicle']['vehicle_name'];
+                                    $availDrivers[$key]['id']             = $value['Driver']['id'];
+                                    $availDrivers[$key]['status']         = $value['Driver']['driver_status'];
+                                    $availDrivers[$key]['distance']       = $distance['distanceText'];
+                                    $availDrivers[$key]['reachtime']      = $distance['durationText'];
+                                    $availDrivers[$key]['driver_name']    = $value['Driver']['driver_name'];
+                                    $availDrivers[$key]['driver_phone']   = $value['Driver']['driver_phone'];
+                                    $availDrivers[$key]['vehicle_name']   = $value['Vehicle']['vehicle_name'];
+                                    $availDrivers[$key]['vehicle_model']  = $value['Vehicle']['vehicle_name'];
 
                                 //}
 
@@ -649,32 +635,32 @@ class StoreMobileApiController extends AppController
                         } else {
                             $response['success'] = '0';
                             $response['message'] = 'No Records Found';
-                        }
-                    }
-                    break;
+                        }                       
+                    }               
+                break;
 
                 case 'StoreLogout':
-                    $store_id = $this->request->data['user_id'];
+                    $store_id                = $this->request->data['user_id'];
                     if ($store_id != '') {
                         $store = $this->Store->findById($store_id);
-                        if (!empty($store)) {
-                            $this->request->data['Store']['id'] = $this->request->data['user_id'];
-                            $this->request->data['Store']['is_logged'] = 0;
-                            $this->request->data['Store']['device_id'] = '';
-                            $this->Store->save($this->request->data['Store']);
-                            $response['success'] = '1';
-                            $response['message'] = 'logout Successfully';
+                        if(!empty($store)) {
+                             $this->request->data['Store']['id'] = $this->request->data['user_id'] ;
+                             $this->request->data['Store']['is_logged'] = 0;
+                              $this->request->data['Store']['device_id'] = '';
+                             $this->Store->save($this->request->data['Store']);
+                             $response['success'] = '1';
+                             $response['message'] = 'logout Successfully';
 
                         }
                     } else {
                         $response['success'] = '0';
                         $response['message'] = 'Try Again..!';
                     }
-                    break;
+                break;
 
                 case 'changePassword':
-                    $store_id = $this->request->data['userid'];
-                    $newpassword = $this->request->data['newpassword'];
+                    $store_id           = $this->request->data['userid'];
+                    $newpassword        = $this->request->data['newpassword'];
 
                     $oldPassword = $this->Auth->password($this->request->data['oldpassword']);
 
@@ -682,7 +668,7 @@ class StoreMobileApiController extends AppController
 
                         $store = $this->Store->findById($store_id);
 
-                        if ($oldPassword == $store['User']['password']) {
+                        if($oldPassword == $store['User']['password']) {
                             $store['User']['password'] = $this->Auth->password($newpassword);
                             if ($this->User->save($store)) {
                                 $response['success'] = '1';
@@ -696,15 +682,15 @@ class StoreMobileApiController extends AppController
                         $response['success'] = '0';
                         $response['message'] = 'Try Again..!';
                     }
-                    break;
+                break;
             }
         } else {
-            $response['success'] = '0';
-            $response['message'] = 'Incorrect username and password';
+             $response['success'] = '0';
+             $response['message'] = 'Incorrect username and password';
 
 
         }
-        die(json_encode($response));
+         die(json_encode($response));
     }
-
+   
 } 

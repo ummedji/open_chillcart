@@ -33,12 +33,13 @@
 		</div>
 		<div class="form-actions">
 			<label class='checkbox'> <?php
+				echo $this->Form->hidden('token', array('value' => $token));
 				echo $this->Form->input("rememberMe",
 							array("type"=>"checkbox",
 									'label'=>false,
 									'div' =>false));
-				 echo __('Remember me', true); ?> </label> <?php
-	    	echo $this->Form->submit('Login',
+				echo __('Remember me', true); ?> </label> <?php
+	    		echo $this->Form->submit('Login',
 	    				 array('class' => 'btn green-haze pull-right',
 	    				 		'div'=>false)); ?>
 			</button>

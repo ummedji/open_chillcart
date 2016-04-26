@@ -112,6 +112,7 @@
 					                        echo $this->Form->input("Customer.image",
 					                                 				array("label"=>false,
 							                                              "type"=>"file",
+																		  'onchange' => 'showimage(event);',
 							                                              "class"=>"form-control textbox margin-t-15",
 							                                               ));
 

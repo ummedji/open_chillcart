@@ -2,7 +2,7 @@
 function updateOrderMap() {
 
     $.post(rp+'/AjaxAction',{'Action':'orderManage'}, function(response) {
-    	//clearConsole();
+    	clearConsole();
     	response = response.split('@@@@');
         if (response[0] != '') {
             var data    = JSON.parse(response[0]);
@@ -55,7 +55,7 @@ function updateOrderMap() {
 
 function disclaimOrder(orderId) {
 	$.post(rp+'/admin/orders/orderStatus',{'orderId':orderId, 'status':'Accepted'}, function(response) {
-		//clearConsole();
+		clearConsole();
 	});
 }
 
@@ -124,8 +124,12 @@ function deleteMarkers() {
 //Clear Console
 function clearConsole() {
     if(window.console || window.console.firebug) {
-        //console.clear();
+        console.clear();
     }
+
+    setTimeout(function() {
+        clearConsole();
+    }, 1000)
 }
 
 $('.statusLog').on('click', function() {
@@ -147,28 +151,50 @@ $(document).ready(function(){
 			$(this).removeClass('red_bck');
 			$(this).children("i").removeClass('fa-times').addClass("fa-check");
             $(this).attr("title","active");
-		}
-		else if($(this).hasClass('yellow_bck')){
-			$(this).removeClass('yellow_bck');
-			$(this).children("i").removeClass('fa-exclamation').addClass("fa-check");
+        } else if ($(this).hasClass('yellow_bck')) {
+            $(this).removeClass('yellow_bck');
+            $(this).children("i").removeClass('fa-exclamation').addClass("fa-check");
             $(this).attr("title","Pending");
-		}
-		else{
-			$(this).addClass('red_bck');
-			$(this).children("i").removeClass('fa-check').addClass("fa-times");
+        } else {
+            $(this).addClass('red_bck');
+            $(this).children("i").removeClass('fa-check').addClass("fa-times");
             $(this).attr("title","Deactive");
-		}
+        }
 
-	});
+    });
 });
 
 function trackOrder(orderId) {
 	$('.ui-loadercont').show();
     $('#trackingContent').html('');
     $.post(rp+'/AjaxAction/index', {'orderId' : orderId, 'Action' : 'OrderStatus'}, function(response) {
-         $('#trackingContent').html(response);
-         $('.ui-loadercont').hide();
+        $('#trackingContent').html(response);
+        $('.ui-loadercont').hide();
         $('#reportpopup').modal('show');
     });
     return false;
+}
+
+function refundPayment(orderId) {
+    var check = confirm("Are Sure You Want Refund ?");
+    if($.trim(check) == 'true') {
+        $('.ui-loadercont').show();
+        $.post(rp+'/admin/orders/refund/'+orderId, {'orderId' : orderId, 'Action' : 'OrderStatus'}, function(response) {
+            $('.ui-loadercont').hide();
+            if (response == 'Success') {
+                var message = 'Successfully Refunded';
+                $('#orderMessage').html(message);
+                $('#orderMessage').show();
+                setTimeout(function(){
+                    $('#orderMessage').fadeOut();
+                    location.reload();
+                },3000);
+                
+            } else if (response != '') {
+                alert(response);
+            } else {
+                location.reload();
+            }
+        });
+    }
 }

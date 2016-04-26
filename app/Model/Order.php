@@ -13,6 +13,10 @@ class Order extends Model
         'Review' => array(
             'className' => 'Review',
             'foreignKey' => 'order_id',
+            'dependent' => true),
+        'StripeRefund' => array(
+            'className' => 'StripeRefund',
+            'foreignKey' => 'order_id',
             'dependent' => true));
 
     public $belongsTo = array(

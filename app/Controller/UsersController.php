@@ -7,7 +7,9 @@ class UsersController extends AppController {
     public $name = 'Users';
 	var $helpers = array('Html', 'Session', 'Javascript', 'Ajax', 'Common');
 	public $uses = array('User', 'Customer','Notification');
-	public $components = array('Functions', 'Hybridauth', 'Twilio', 'Mailchimp', 'Session');
+	public $components = array('Functions', 'Hybridauth', 'Twilio', 'Mailchimp', 'Session', 'Attempt', 'Nocsrf');
+	public $loginAttemptLimit = 3;
+    public $loginAttemptDuration = '+20 Min';
 	public function beforeFilter() {
 		$this->Auth->allow(array('signup', 'customer_customerLogin','storeLogin',
 								'activeLink', 'logout', 'social_login', 'social_endpoint'));
@@ -147,23 +149,33 @@ class UsersController extends AppController {
 		   	$this->User->set($this->request->data);
 			if($this->User->validates()) {
 
+				$csrfTokens = $this->Session->read('csrfToken');
+	    		if ($this->request->data['User']['token'] != $csrfTokens) {
+	    			$this->redirect(array('controller' => 'users', 'action' => 'storeLogin', 'store' => true));
+	    		}
+
 	            $roles      = array(3);  
 				$userData   = $this->User->findByUsername($this->request->data['User']['username']);
 				if(in_array($userData['User']['role_id'],$roles)) {
-					if ($this->Auth->login()) {
-						#REmember me            
-						if($this->request->data['User']['rememberMe']==1) {
-						    $this->Cookie->write('rememberMe',$this->request->data['User'],true,"12 months"); 
-						} else {
-						     $this->Cookie->delete('rememberMe');
+					if ($this->Attempt->limit('login', $this->loginAttemptLimit)) {
+						if ($this->Auth->login()) {
+							#REmember me            
+							if($this->request->data['User']['rememberMe']==1) {
+							    $this->Cookie->write('rememberMe',$this->request->data['User'],true,"12 months"); 
+							} else {
+							     $this->Cookie->delete('rememberMe');
+							}
+							$this->redirect(array('controller' => 'dashboards', 'action' => 'index', 'store'=>true));
+						} else { 
+							$this->Attempt->fail('login', $this->loginAttemptDuration);
+							$this ->Session->setFlash('<p>'.__('Login failed your Username or Password Incorrect',true).'</p>', 'default', 
+												array('class' => 'alert alert-danger'));
+		                    $this->redirect(array('controller' => 'users', 'action' => 'storeLogin','store'=>true));
 						}
-						$this->redirect(array('controller' => 'dashboards', 'action' => 'index', 'store'=>true));
-					} else { 
-
-						$this ->Session->setFlash('<p>'.__('Login failed your Username or Password Incorrect',true).'</p>', 'default', 
-											array('class' => 'alert alert-danger'));
-	                    $this->redirect(array('controller' => 'users', 'action' => 'storeLogin','store'=>true));
-					 }
+					} else {
+						$this ->Session->setFlash('<p>'.__('Too many failed attempts!', true).'</p>', 'default', 
+												array('class' => 'alert alert-danger'));
+					}
 				} else {
 					$this ->Session->setFlash('<p>'.__('Login failed, unauthorized', true).'</p>', 'default', 
 											array('class' => 'alert alert-danger'));
@@ -174,6 +186,10 @@ class UsersController extends AppController {
 			}
 		}
 		$this->request->data['User']    = $this->Cookie->read('rememberMe');
+
+		$token = $this->Nocsrf->generate('csrf_token');
+    	$this->Session->write('csrfToken', $token);
+    	$this->set(compact('token'));
 		
 		$this->set('title_for_layout', 'Store Admin');
 	}
@@ -504,6 +520,12 @@ class UsersController extends AppController {
 		   	}
 		    $this->User->set($this->request->data);
 		   	if($this->User->validates()) {
+
+		   		$csrfTokens = $this->Session->read('csrfToken');
+	    		if ($this->request->data['User']['token'] != $csrfTokens) {
+	    			$this->redirect(array('controller' => 'users', 'action' => 'customerlogin', 'customer' => true));
+	    		}
+
 		        $role = array(4);
 				$userData = $this->User->find('first', array(
 									'conditions' =>array(
@@ -512,39 +534,44 @@ class UsersController extends AppController {
 												'User.role_id' => 4)));
 
 				if(in_array($userData['User']['role_id'], $role)) {
-
-					$this->Session->write("preSessionid",$this->Session->id());
-					if ($this->Auth->login()) {
-					 #REmember me            
-						if($this->request->data['User']['rememberMe']==1) {
-						    $this->Cookie->write('rememberMe',$this->request->data['User'],true,"12 months"); 
+					if ($this->Attempt->limit('login', $this->loginAttemptLimit)) {
+						$this->Session->write("preSessionid",$this->Session->id());
+						if ($this->Auth->login()) {
+						 #REmember me            
+							if($this->request->data['User']['rememberMe']==1) {
+							    $this->Cookie->write('rememberMe',$this->request->data['User'],true,"12 months"); 
+							} else {
+							     $this->Cookie->delete('rememberMe');
+							}
+							if($this->Session->read("redirectpage")=='checkout') {
+			                    $this->Session->delete("redirectpage");
+			                    $this->redirect(array('controller' => 'checkouts', 'action' => 'index','customer'=>false));
+			                }
+							$this->redirect(array('controller' => 'customers', 'action' => 'myaccount'));
 						} else {
-						     $this->Cookie->delete('rememberMe');
+							$this->Attempt->fail('login', $this->loginAttemptDuration);
+							$this ->Session->setFlash('<p>'.__('Login failed your Username or Password Incorrect', true).'</p>', 'default', 
+												array('class' => 'alert alert-danger'));
+			                $this->redirect(array('controller' => 'users', 'action' => 'customerlogin','customer'=>true));
 						}
-						if($this->Session->read("redirectpage")=='checkout') {
-		                    $this->Session->delete("redirectpage");
-		                    $this->redirect(array('controller' => 'checkouts', 'action' => 'index','customer'=>false));
-		                }
-						$this->redirect(array('controller' => 'customers', 'action' => 'myaccount'));
-
 					} else {
-
-						$this ->Session->setFlash('<p>'.__('Login failed your Username or Password Incorrect', true).'</p>', 'default', 
-											array('class' => 'alert alert-danger'));
-		                $this->redirect(array('controller' => 'users', 'action' => 'customerlogin','customer'=>true));
+						$this ->Session->setFlash('<p>'.__('Too many failed attempts!', true).'</p>', 'default', 
+												array('class' => 'alert alert-danger'));
 					}
 				} else {
-
 					$this ->Session->setFlash('<p>'.__('Login failed, unauthorized', true).'</p>', 'default', 
 											array('class' => 'alert alert-danger'));
 					$this->redirect(array('controller' => 'users', 'action' => 'customerlogin','customer'=>true));
 				}
-				
 			} else {
 				$this->User->validationErrors;
 			}
     	}
+    	$token = $this->Nocsrf->generate('csrf_token');
+    	$this->Session->write('csrfToken', $token);
+    	$this->set(compact('token'));
    	}
+
    	public function store_changePassword(){
 	   	$this->layout = 'assets';
 	   	if($this->request->is('post') || $this->request->is('put') && $this->Auth->User('role_id') == 3) {

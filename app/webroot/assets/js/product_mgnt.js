@@ -1,4 +1,4 @@
-/*jQuery().ready(function () {
+jQuery().ready(function () {
 
     setTimeout(function(){
         $("#flashMessage").hide();
@@ -402,7 +402,7 @@
 
     });
 
-});*/
+});
 function validateStoreEdit() {
     var StoreContactName = $.trim($("#StoreContactName").val());
     var StoreContactPhone = $.trim($("#StoreContactPhone").val());
@@ -888,6 +888,22 @@ $(document).ready(function () {
         numberOfMonths: 1,
         onSelect: function(selected) {
            $("#StoreofferFromDate").datepicker("option","maxDate", selected)
+        }
+    });
+
+    $('#DriversFromDate').datepicker({
+        maxDate:0,
+        numberOfMonths: 1,
+        onSelect: function(selected) {
+           $("#DriversToDate").datepicker("option","minDate", selected)
+        }
+    });
+
+    $('#DriversToDate').datepicker({
+        maxDate: 0,
+        numberOfMonths: 1,
+        onSelect: function(selected) {
+           $("#DriversFromDate").datepicker("option","maxDate", selected)
         }
     });
 

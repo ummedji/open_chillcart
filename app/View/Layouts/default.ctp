@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script type="text/javascript">
+if (top !=self) {
+   top.location=self.location;
+}
+</script>
 <meta charset="utf-8"/>
 <title> <?php echo $title_for_layout; ?> </title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,9 +13,8 @@
 	echo $this->Html->meta('icon', $this->Html->url($siteUrl.'/siteicons/fav.ico')); ?>
 
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css">
-<link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
-
-<?php echo $this->Html->css(
+<link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'> <?php 
+	echo $this->Html->css(
 					array('font-awesome.min',
 							'bootstrap.min',
 							'uniform.default',
@@ -24,7 +28,12 @@
                             'jquery.ui.datepicker',
                             'summernote',                            
                             'common_new',   
-							'default')); ?>
+							'default'));
+	echo $this->Html->script(array('jquery-1.11.0.min',
+									'jquery-migrate-1.2.1.min',
+									'bootstrap.min',
+									'bootstrap-hover-dropdown.min',
+									'jquery.uniform.min')); ?>
 
 
 </head>
@@ -96,11 +105,7 @@ echo $this->element('admin/topheader'); } ?>
     </div>
 	<!-- END FOOTER --> 
 	<?php
-		echo $this->Html->script(array('jquery-1.11.0.min',
-									'jquery-migrate-1.2.1.min',
-									'bootstrap.min',
-									'bootstrap-hover-dropdown.min',
-									'jquery.uniform.min'));
+		
 		if ($this->request->params['controller'] == 'products' && 
 				$this->request->params['action'] == 'admin_index') {
 			
@@ -155,7 +160,7 @@ echo $this->element('admin/topheader'); } ?>
 				jQuery('.login-form').show();
 				jQuery('.forget-form').hide();
 			});
-
+			clearConsole();
 
 		});
 		function doResize()

@@ -71,7 +71,7 @@
 								<tr>
 									<th class="table-checkbox no-sort"><input type="checkbox" class="group-checkable test1" data-set="#sample_1 .checkboxes"/></th>
 									<th>Country Name</th>
-									<th>Corrency Name</th>
+									<th>Currency Name</th>
 									<th>Phone Code</th>
 									<th class="no-sort">Status</th>
 									<th class="no-sort">Action</th>

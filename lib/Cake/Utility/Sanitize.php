@@ -176,7 +176,7 @@ class Sanitize
 
         if (is_array($data)) {
             foreach ($data as $key => $val) {
-                $ignore = array('google_analytics', 'woopra_analytics', 'content');
+                $ignore = array('google_analytics', 'woopra_analytics', 'content', 'msgid', 'msgstr');
                 if (!in_array($key, $ignore)) {
                     $cleanReocrd = Sanitize::clean($val, $options);
                     $replace     = array('\n', '\r', '\t');

@@ -60,26 +60,6 @@ jQuery(function() {
     }
   });
 
-  var paymentAddvalidator = jQuery("#SitesettingAdminPaymentSettingForm").validate({
-    rules: {
-      "data[Sitesetting][stripe_url]": {
-        required: true,
-      },
-      "data[Sitesetting][stripe_ac]": {
-        required: true,
-      }
-    },
-    messages: { 
-      "data[Sitesetting][stripe_url]": {
-        required: "Please Enter Url detail",
-      },
-      "data[Sitesetting][stripe_ac]": {
-        required: "Please Enter the account detail",
-      }
-
-    }
-  });
-
   var UserStoreStoreLoginForm = jQuery("#UserStoreStoreLoginForm").validate({
       rules: {     
           "data[User][username]": {
@@ -244,7 +224,7 @@ jQuery(function() {
         required: "Please Enter the lastname",
       },
       "data[Customer][customer_phone]": {
-        required: "Please Enter the Phone nmber",
+        required: "Please Enter the Phone Number",
       },
       "data[Customer][customer_email]": {
         required: "Please Enter the Email",
@@ -283,7 +263,7 @@ jQuery(function() {
         required: "Please Enter the lastname",
       },
       "data[Customer][customer_phone]": {
-        required: "Please Enter the Phone nmber",
+        required: "Please Enter the Phone Number",
       },
       "data[Customer][customer_email]": {
         required: "Please Enter the Email",
@@ -321,7 +301,7 @@ jQuery(function() {
         required: "Please Enter the titile",
       },
       "data[CustomerAddressBook][address_phone]": {
-        required: "Please Enter the Phone nmber",
+        required: "Please Enter the Phone Number",
       },
       "data[CustomerAddressBook][landmark]": {
         required: "Please Enter the landmark",
@@ -434,14 +414,14 @@ jQuery(function() {
         required: true,
         
       },
-             "data[Voucher][offer_value]": {
+      "data[Voucher][offer_value]": {
         required: true,
-                number:true,
+        number:true,
       },
-            "data[Voucher][from_date]": {
+      "data[Voucher][from_date]": {
         required: true,
       },
-            "data[Voucher][to_date]": {
+      "data[Voucher][to_date]": {
         required: true,
       }
            
@@ -456,30 +436,30 @@ jQuery(function() {
         },
         
     messages: { 
-          "data[Voucher][voucher_code]": {
-            required: "Please Enter Code",
-          },
-          "data[Voucher][type_offer]": {
-           required: "Please Enter offertype",
-            
-          },
-          "data[Voucher][offer_mode]": {
-          required: "Please Enter offermode",
-            
-          },
-                 "data[Voucher][offer_value]": {
-            required: "Please Enter offervalue",
-          },
-                "data[Voucher][from_date]": {
-            required: "Please Enter from_date",
-          },
-                "data[Voucher][to_date]": {
-            required: "Please Enter to_date",
-          }
-            }
+      "data[Voucher][voucher_code]": {
+        required: "Please Enter Code",
+      },
+      "data[Voucher][type_offer]": {
+       required: "Please Enter offertype",
+        
+      },
+      "data[Voucher][offer_mode]": {
+      required: "Please Enter offermode",
+        
+      },
+             "data[Voucher][offer_value]": {
+        required: "Please Enter offervalue",
+      },
+            "data[Voucher][from_date]": {
+        required: "Please Enter from_date",
+      },
+            "data[Voucher][to_date]": {
+        required: "Please Enter to_date",
+      }
+    }
   });
     
-     var VoucherEditvalidator = jQuery("#form-username1").validate({
+  var VoucherEditvalidator = jQuery("#form-username1").validate({
     rules: {
       "data[Voucher][voucher_code]": {
         required: true,
@@ -492,44 +472,44 @@ jQuery(function() {
         required: true,
         
       },
-             "data[Voucher][offer_value]": {
+      "data[Voucher][offer_value]": {
         required: true,
-                number:true,
+        number:true,
       },
-            "data[Voucher][from_date]": {
+      "data[Voucher][from_date]": {
         required: true,
       },
-            "data[Voucher][to_date]": {
+      "data[Voucher][to_date]": {
         required: true,
       }
            
     },
     messages: { 
-          "data[Voucher][voucher_code]": {
-            required: "Please Enter Code",
-          },
-          "data[Voucher][type_offer]": {
-           required: "Please Enter offertype",
-            
-          },
-          "data[Voucher][offer_mode]": {
-          required: "Please Enter offermode",
-            
-          },
-                 "data[Voucher][offer_value]": {
-            required: "Please Enter offervalue",
-          },
-                "data[Voucher][from_date]": {
-            required: "Please Enter from_date",
-          },
-                "data[Voucher][to_date]": {
-            required: "Please Enter to_date",
-          }
-            }
+      "data[Voucher][voucher_code]": {
+        required: "Please Enter Code",
+      },
+      "data[Voucher][type_offer]": {
+       required: "Please Enter offertype",
+        
+      },
+      "data[Voucher][offer_mode]": {
+      required: "Please Enter offermode",
+        
+      },
+             "data[Voucher][offer_value]": {
+        required: "Please Enter offervalue",
+      },
+            "data[Voucher][from_date]": {
+        required: "Please Enter from_date",
+      },
+            "data[Voucher][to_date]": {
+        required: "Please Enter to_date",
+      }
+    }
   });
     
     
-    var StoreofferAdminAddForm = jQuery("#StoreofferAdminAddForm").validate({
+  var StoreofferAdminAddForm = jQuery("#StoreofferAdminAddForm").validate({
     rules: {
       "data[Storeoffer][store_id]": {
         required: true,
@@ -557,7 +537,7 @@ jQuery(function() {
            
     },
     messages: { 
-          "data[Storeoffer][store_id]": {
+      "data[Storeoffer][store_id]": {
         required: "Please select store Name",
       },
       "data[Storeoffer][offer_percentage]": {
@@ -568,10 +548,10 @@ jQuery(function() {
            required: "Please Enter Offer price",
         
       },
-             "data[Storeoffer][from_date]": {
+      "data[Storeoffer][from_date]": {
         required: "Please Enter from_date",
       },
-            "data[Storeoffer][to_date]": {
+      "data[Storeoffer][to_date]": {
         required: "Please Enter to_date",
       }
     }
@@ -579,35 +559,35 @@ jQuery(function() {
   });
     
     
-    var StoreOfferEditvalidator = jQuery("#form-storeofferEdit").validate({
+  var StoreOfferEditvalidator = jQuery("#form-storeofferEdit").validate({
     rules: {
       "data[Storeoffer][store_id]": {
         required: true,
       },
       "data[Storeoffer][offer_percentage]": {
         required: true,
-                number:true,
-                min:1,
-                max:99,
+        number:true,
+        min:1,
+        max:99,
         
       },
       "data[Storeoffer][offer_price]": {
         required: true,
-                number:true,
-                min:1
+        number:true,
+        min:1
         
       },
-             "data[Storeoffer][from_date]": {
+      "data[Storeoffer][from_date]": {
         required: true,
                 
       },
-            "data[Storeoffer][to_date]": {
+      "data[Storeoffer][to_date]": {
         required: true,
       }
            
     },
     messages: { 
-          "data[Storeoffer][store_id]": {
+      "data[Storeoffer][store_id]": {
         required: "Please select store Name",
       },
       "data[Storeoffer][offer_percentage]": {
@@ -618,13 +598,13 @@ jQuery(function() {
            required: "Please Enter Offer price",
         
       },
-             "data[Storeoffer][from_date]": {
+      "data[Storeoffer][from_date]": {
         required: "Please Enter from_date",
       },
-            "data[Storeoffer][to_date]": {
+      "data[Storeoffer][to_date]": {
         required: "Please Enter to_date",
       }
-      }
+    }
            
   });
 
@@ -648,7 +628,7 @@ jQuery(function() {
            
     },
     messages: { 
-          "data[Deal][store_id]": {
+      "data[Deal][store_id]": {
         required: "Please select store",
       },
       "data[Deal][deal_name]": {
@@ -659,10 +639,10 @@ jQuery(function() {
            required: "Please select product",
         
       },
-             "data[Deal][sub_product]": {
+      "data[Deal][sub_product]": {
         required: "Please select product",
       }
-      }
+    }
            
   });
 
@@ -679,14 +659,14 @@ jQuery(function() {
         required: true,
         
       },
-             "data[Deal][sub_product]": {
+      "data[Deal][sub_product]": {
         required: true,
                 
       }
            
     },
     messages: { 
-          "data[Deal][store_id]": {
+      "data[Deal][store_id]": {
         required: "Please select store",
       },
       "data[Deal][deal_name]": {
@@ -697,10 +677,10 @@ jQuery(function() {
            required: "Please select product",
         
       },
-             "data[Deal][sub_product]": {
+      "data[Deal][sub_product]": {
         required: "Please select product",
       }
-      }
+    }
            
   });
 
@@ -717,14 +697,14 @@ jQuery(function() {
            
     },
     messages: { 
-        "data[Newsletter][subject]": {
+      "data[Newsletter][subject]": {
         required: "Please enter subject",
       },
       "data[Newsletter][to]": {
         required: "Please enter to address",
         
       },
-      }
+    }
   });
 
   var changepasswordValidator = jQuery("#userAdminChangePasswordForm").validate({
@@ -740,14 +720,14 @@ jQuery(function() {
            
     },
     messages: { 
-          "data[user][new_pass]": {
+      "data[user][new_pass]": {
         required: "Please Enter password",
       },
       "data[user][confirm_pass]": {
         required: "Please Enter confirmpassword",
         
       }
-      }
+    }
            
   });
 
@@ -762,13 +742,13 @@ jQuery(function() {
            
     },
     messages: { 
-        "data[Newsletter][subject]": {
+      "data[Newsletter][subject]": {
         required: "Please enter subject",
       },
       "data[Newsletter][to]": {
         required: "Please enter to address",
       },
-      }
+    }
   });
 
   var DriverAdminAddForm = jQuery("#DriverAdminAddForm").validate({

@@ -41,6 +41,7 @@ class SearchesController extends AppController {
 	public function index() {
 
 		$this->layout = 'frontend';
+		$cityList = array();
 		
 		if ($this->cityId != '') {
 			
@@ -65,6 +66,9 @@ class SearchesController extends AppController {
 
 			$cityId = $this->request->data['Search']['city'];
 			$areaId = $this->request->data['Search']['area'];
+
+			$this->Session->write('Search.city', $cityId);
+			$this->Session->write('Search.area', (isset($areaId)) ? $areaId : '');
 
 			$cityDetails = $this->City->findById($cityId);
 
@@ -120,6 +124,49 @@ class SearchesController extends AppController {
 		$this->set(compact('cityList'));
 	}
 
+
+	public function storesList($cityId = null, $areaId = null) {
+
+		$stores = array();
+
+		$storeLists = $this->Product->find('all', array(
+							'conditions' => array(
+												'Store.status' => 1,
+												'Store.store_city' => $cityId,
+												'Product.status' => 1,
+												'MainCategory.status' => 1,
+												'SubCategory.status' => 1,
+									'OR' => array('Store.collection' => 'Yes',
+										  	  	   'Store.delivery'	 => 'Yes')),
+							'group' => array('Store.id')));
+
+
+		foreach ($storeLists as $key => $value) {
+
+			if ($value['Store']['collection'] == 'Yes' ||
+				$value['Store']['delivery'] == 'Yes' &&
+				$value['Store']['delivery_option'] == 'Yes') {
+
+				if (!empty($areaId)) {
+					$storeDeliver = $this->DeliveryLocation->find('all', array(
+							'conditions' => array('DeliveryLocation.location_id' => $areaId,
+												  'Location.status' => 1,
+												  'DeliveryLocation.store_id' => $value['Store']['id']),
+							'group' => array('DeliveryLocation.store_id')));
+
+					if (!empty($storeDeliver)) {
+						$stores[] = $value['Store']['id'];
+					} elseif ($value['Store']['collection'] != 'No') {
+						$stores[] = $value['Store']['id'];
+					}
+				} else {
+					$stores[] = $value['Store']['id'];
+				}
+			}
+		}
+		return $stores;
+	}
+
 	public function stores($cityName, $cityId, $areaName, $areaId) {
 
 
@@ -137,27 +184,11 @@ class SearchesController extends AppController {
 			$this->Session->delete('orderFailed');
 		}
 
-		$storeLists = $this->Product->find('all', array(
-							'conditions' => array(
-												'Store.status' => 1,
-												'Store.store_city' => $cityId,
-												'Product.status' => 1,
-												'MainCategory.status' => 1,
-												'SubCategory.status' => 1,
-												//'Store.delivery_option' => 'Yes',
-												//'Brand.status' => 1,
-									'OR' => array('Store.collection' => 'Yes',
-										  	  	   'Store.delivery'	 => 'Yes')),
-							'group' => array('Store.id')));
-
-		foreach ($storeLists as $key => $value) {
-
-			if ($value['Store']['collection'] == 'Yes' ||
-				$value['Store']['delivery'] == 'Yes' &&
-				$value['Store']['delivery_option'] == 'Yes') {
-				$stores[] = $value['Store']['id'];
-			}
+		if ($this->cityId != $cityId || $this->areaId != $areaId) {
+			$this->redirect(array('controller' => 'searches', 'action' => 'index'));
 		}
+
+		$stores = $this->storesList($this->cityId, $this->areaId);
 
 		$this->Store->recursive = 0;
 		$storeList = $this->Store->find('all', array(
@@ -169,10 +200,8 @@ class SearchesController extends AppController {
                               	'conditions'=>array('Review.store_id' => $value['Store']['id']),
 								'fields' => array('SUM(Review.rating) AS rating',
 												'Count(Review.rating) AS ratingCount')));
-
 			$storeList[$key]['Store']['rating'] = (!empty($ratingDetail[0]['ratingCount'])) ? 
 												$ratingDetail[0]['rating']/$ratingDetail[0]['ratingCount'] : 0;
-
 		}
 
 		if (empty($storeList)) {
@@ -182,8 +211,8 @@ class SearchesController extends AppController {
 
 		}
 
-		$this->Session->write('Search.city', $cityId);
-		$this->Session->write('Search.area', (isset($areaId)) ? $areaId : '');
+		/*$this->Session->write('Search.city', $cityId);
+		$this->Session->write('Search.area', (isset($areaId)) ? $areaId : '');*/
 
 		$this->set(compact('storeList', 'orderSuccess'));
 
@@ -193,31 +222,20 @@ class SearchesController extends AppController {
 
 		$this->layout = 'frontend';
 
-
 		$cityId = $this->Session->read('Search.city');
 		$areaId = $this->Session->read('Search.area');
-		$stores = array();
 
-		$storeLists = $this->Product->find('all', array(
-			'conditions' => array(
-				'Store.status' => 1,
-				'Store.store_city' => $cityId,
-				'Product.status' => 1,
-				'MainCategory.status' => 1,
-				'SubCategory.status' => 1,
-				//'Store.delivery_option' => 'Yes',
-				//'Brand.status' => 1,
-				'OR' => array('Store.collection' => 'Yes',
-					'Store.delivery'	 => 'Yes')),
-			'group' => array('Store.id')));
-
-		foreach ($storeLists as $key => $value) {
-			if ($value['Store']['collection'] == 'Yes' ||
-				$value['Store']['delivery'] == 'Yes' &&
-				$value['Store']['delivery_option'] == 'Yes') {
-				$stores[] = $value['Store']['id'];
+		if (isset($cityId) && empty($cityId)) {
+			$storeSession = $this->Store->find('first', array(
+									'conditions' => array('Store.id' => $storeId,
+											  				'Store.status' => 1)));
+			if (!empty($storeSession)) {
+				$this->Session->write('Search.city', $storeSession['Store']['store_city']);
+				$cityId = $this->Session->read('Search.city');
 			}
 		}
+
+		$stores = $this->storesList($cityId, $areaId);
 
 		$this->Store->recursive = 0;
 		$storeList = $this->Store->find('all', array(
@@ -235,6 +253,7 @@ class SearchesController extends AppController {
 
 		$storeDetails = $this->Store->find('first', array(
 									'conditions' => array('Store.id' => $storeId,
+															'Store.store_city' => $cityId,
 											  				'Store.status' => 1)));
 		if (empty($storeDetails)) {
 			$this->redirect(array('controller' => 'searches', 'action' => 'index'));
@@ -408,8 +427,7 @@ class SearchesController extends AppController {
         						'fields' => array('store_id',
         										 'COUNT(ShoppingCart.store_id) AS productCount',
         										 'SUM(ShoppingCart.product_total_price) As productTotal')));
-		
-		//$this->ShoppingCart->recursive = 3;
+
 		$storeCart = $this->ShoppingCart->find('all', array(
 								'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
 								'order' => array('ShoppingCart.store_id')));
@@ -560,7 +578,7 @@ class SearchesController extends AppController {
 	public function storeOffer() {
 
 		$id 	= $this->request->data['id'];
-		$today= date("m/d/Y");
+		$today 	= date("m/d/Y");
 		$storeOffers = $this->Storeoffer->find('first', array(
 							'conditions' => array(
 												'Storeoffer.store_id' => $id,
@@ -601,7 +619,7 @@ class SearchesController extends AppController {
 		} else {
 
 			$subcategory = $this->Category->find('list', array(
-					'conditions' =>array('Category.parent_id' => $id)));
+									'conditions' =>array('Category.parent_id' => $id)));
 			
 			foreach ($subcategory as $key => $value) {
 				$productLists = $this->Product->find('all', array(
