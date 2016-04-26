@@ -34,7 +34,6 @@
                         <tr>
                             <th class="no-sort">S.No</th>
                             <th>Order Id</th>
-                            <th>Store Name</th>
                             <th>Payment Type</th>
                             <th>Price</th>
                             <th class="no-sort">Order Status</th>
@@ -48,7 +47,6 @@
                         <tr id="orderList_<?php echo $value['Order']['id']; ?>" class="odd gradeX">
                             <td><?php echo $count ;?></td>
                             <td><?php echo $value['Order']['ref_number'];?></td>
-                            <td><?php echo $value['Store']['store_name'];?></td>
                             <td><?php echo $value['Order']['payment_type'];?></td>
 
                             <td><?php

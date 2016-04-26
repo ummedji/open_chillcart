@@ -82,6 +82,19 @@ function orderid(id) {
     $('#reviewId').val(id);
 
 }
+
+var showimage = function(event) {
+
+    var files = event.target.files;
+    f = files[0];
+    console.log(f);
+    if (!f.type.match('image.*')) {
+        alert('It is not Image');
+        $('#CustomerImage').val('');
+    }
+};
+
+
 $(document).ready(function () {
     $(".table").on('click', '.buttonStatus', function () {
         if ($(this).hasClass('red_bck')) {
@@ -111,3 +124,13 @@ $(document).ready(function () {
         $("#login").show();
     })
 });
+
+//Clear Console
+function clearConsole() {
+    if(window.console || window.console.firebug) {
+        console.clear();
+    }
+    setTimeout(function() {
+        clearConsole();
+    }, 500)
+}

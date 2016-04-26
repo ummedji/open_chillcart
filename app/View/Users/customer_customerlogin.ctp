@@ -53,6 +53,7 @@
 								</div>
 							</div>
 						</div> <?php
+						echo $this->Form->hidden('token', array('value' => $token));
 					echo $this->Form->end(); ?>
 
 				</div>

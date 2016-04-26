@@ -2,7 +2,7 @@
 function updateOrderMap() {
 
     $.post(rp+'/AjaxAction',{'Action':'orderManage'}, function(response) {
-    	//clearConsole();
+    	clearConsole();
     	response = response.split('@@@@');
         if (response[0] != '') {
             var data    = JSON.parse(response[0]);
@@ -55,7 +55,7 @@ function updateOrderMap() {
 
 function disclaimOrder(orderId) {
 	$.post(rp+'/admin/orders/orderStatus',{'orderId':orderId, 'status':'Accepted'}, function(response) {
-		//clearConsole();
+		clearConsole();
 	});
 }
 
@@ -124,8 +124,12 @@ function deleteMarkers() {
 //Clear Console
 function clearConsole() {
     if(window.console || window.console.firebug) {
-        //console.clear();
+        console.clear();
     }
+
+    setTimeout(function() {
+        clearConsole();
+    }, 1000)
 }
 
 $('.statusLog').on('click', function() {
@@ -164,8 +168,8 @@ function trackOrder(orderId) {
 	$('.ui-loadercont').show();
     $('#trackingContent').html('');
     $.post(rp+'/AjaxAction/index', {'orderId' : orderId, 'Action' : 'OrderStatus'}, function(response) {
-         $('#trackingContent').html(response);
-         $('.ui-loadercont').hide();
+        $('#trackingContent').html(response);
+        $('.ui-loadercont').hide();
         $('#reportpopup').modal('show');
     });
     return false;

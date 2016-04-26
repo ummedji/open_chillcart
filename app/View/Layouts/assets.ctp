@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script type="text/javascript">
+if (top !=self) {
+   top.location=self.location;
+}
+</script>
 <meta charset="utf-8"/>
 <title> <?php echo $title_for_layout; ?> </title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -92,6 +97,7 @@ rel="stylesheet" type="text/css">
 		Metronic.init(); // init metronic core components
 		Layout.init(); // init current layout
 		Demo.init(); // init demo features
+		clearConsole();
 	});
 
 	</script>

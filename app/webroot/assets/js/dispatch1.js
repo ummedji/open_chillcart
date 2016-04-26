@@ -1,4 +1,4 @@
-/*jQuery(document).ready(function () {
+jQuery(document).ready(function () {
     var DriverStoreAddForm = jQuery("#DriverStoreAddForm").validate({
         rules: {
             "data[Driver][driver_name]": {
@@ -168,7 +168,7 @@
         }
     });
 
-});*/
+});
 
 
 //Clear Console
@@ -176,6 +176,9 @@ function clearConsole() {
     if(window.console || window.console.firebug) {
         console.clear();
     }
+    setTimeout(function() {
+        clearConsole();
+    }, 1000)
 }
 
 

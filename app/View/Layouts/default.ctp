@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script type="text/javascript">
+if (top !=self) {
+   top.location=self.location;
+}
+</script>
 <meta charset="utf-8"/>
 <title> <?php echo $title_for_layout; ?> </title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -155,7 +160,7 @@ echo $this->element('admin/topheader'); } ?>
 				jQuery('.login-form').show();
 				jQuery('.forget-form').hide();
 			});
-
+			clearConsole();
 
 		});
 		function doResize()

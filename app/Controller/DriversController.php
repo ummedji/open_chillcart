@@ -100,6 +100,9 @@ class DriversController extends AppController
             }
         }
         $driverDetails = $this->Driver->findById($id);
+        if (empty($driverDetails)) {
+            $this->render('/Errors/error400');
+        }
         $this->request->data = $driverDetails;
     }
 
@@ -109,7 +112,6 @@ class DriversController extends AppController
         if ($this->request->is('post') || $this->request->is('put')) {
             $this->Vehicle->set($this->request->data);
             if($this->Vehicle->validates()) {
-
                 $this->request->data['Vehicle']['driver_id'] = $id;
                 if ($this->Vehicle->save($this->request->data['Vehicle'], null, null)) {
                     $this->Session->setFlash('<p>' . __('Driver Vehicle Added Successfully', true) . '</p>', 'default',
@@ -129,7 +131,6 @@ class DriversController extends AppController
         if ($this->request->is('post') || $this->request->is('put')) {
             $this->Vehicle->set($this->request->data);
             if($this->Vehicle->validates()) {
-
                 if ($this->Vehicle->save($this->request->data['Vehicle'], null, null)) {
                     $this->Session->setFlash('<p>' . __('Driver Vehicle updated Successfully', true) . '</p>', 'default',
                         array('class' => 'alert alert-success'));
@@ -275,8 +276,8 @@ class DriversController extends AppController
             $total_km = $total_km + $value['Order']['distance'];
         }
 
-        $fromDate = ($this->request->data['Drivers']['from_date']) ? $this->request->data['Drivers']['from_date'] : date('m/d/Y', time());
-        $toDate = ($this->request->data['Drivers']['to_date']) ? $this->request->data['Drivers']['to_date'] : date('m/d/Y', time());
+        $fromDate = (isset($this->request->data['Drivers']['from_date'])) ? $this->request->data['Drivers']['from_date'] : date('m/d/Y', time());
+        $toDate = (isset($this->request->data['Drivers']['to_date'])) ? $this->request->data['Drivers']['to_date'] : date('m/d/Y', time());
 
         $this->set(compact('order_detail', 'total_km', 'total_orderprice', 'driverId', 'fromDate', 'toDate'));
 
@@ -364,7 +365,7 @@ class DriversController extends AppController
                 $this->Order->save($orderStatus);
 
                 $gcm = json_decode($gcm, true);
-		 // Driver SMS
+                //Driver SMS
                 $driverMessage  = 'Dear '.$driverDetails['Driver']['driver_name'].',pick up ';
                 $driverMessage .= ($orders['Order']['payment_method'] != 'paid') ? 'COD' : 'PAID';
                 $driverMessage .= ' order '.$orders['Order']['ref_number'].' from '.$orders['Order']['customer_name'];
@@ -372,11 +373,9 @@ class DriversController extends AppController
                                     ','.$orders['Order']['location_name'].','.$orders['Order']['city_name'].
                                     ','.$orders['Order']['city_name'];
                 $driverMessage .= '. '.$orders['Order']['order_type'].' due on '.$orders['Order']['delivery_date'].' at '.
-                                    $orders['Order']['delivery_time_slot'].'. Thanks Chillcart';
+                                    $orders['Order']['delivery_time_slot'].'. Thanks Grocery';
                 $toDriverNumber = '+'.$this->siteSetting['Country']['phone_code'].$driverDetails['Driver']['driver_phone'];
                 $driverSms      = $this->Twilio->sendSingleSms($toDriverNumber, $driverMessage);
-
-
                 echo $gcm['success'];
             } else {
                 die('404');
@@ -537,9 +536,7 @@ class DriversController extends AppController
     public function store_availDriver($orderId)
     {
         $this->layout = 'assets';
-
         $availDrivers = array();
-
         $orderDetails = $this->Order->find('first', array(
                                 'conditions' => array('Order.id' => $orderId,
                                             'Order.store_id' => $this->Auth->User('Store.id'))));

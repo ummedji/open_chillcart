@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<script type="text/javascript">
+			if (top !=self) {
+			   top.location=self.location;
+			}
+		</script>
 
 		<title> <?php 
 
@@ -29,7 +34,7 @@
 		<link rel="stylesheet" href="<?php echo $this->webroot; ?>frontend/css/mobile.css" type="text/css" media="all">
 		<link rel="stylesheet" href="<?php echo $this->webroot; ?>frontend/css/mobile_1.css" type="text/css" media="all">		
 
-		<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,400italic" rel="stylesheet" type="text/css">
+		<link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,400italic" rel="stylesheet" type="text/css">
 
 		 <?php
 
@@ -100,7 +105,7 @@
 
 			idleTimer = null;
 			idleState = false;
-			idleWait = 180000;
+			idleWait = 1800000;
 			$('*').bind('click mousemove keydown scroll', function () {
 				clearTimeout(idleTimer);
 				if (idleState == true) { 
@@ -121,10 +126,10 @@
 
 		$(document).ready(function(){			
 			
-           $(window).trigger('resize');
-		   doResize();
-		   $(window).on('resize', doResize);		   
-		   	
+           	$(window).trigger('resize');
+		   	doResize();
+		   	$(window).on('resize', doResize);		   
+		   	clearConsole();
             
         });
         
@@ -520,9 +525,6 @@
 
 
 		function saveCard () {
-
-			//Stripe.setPublishableKey('pk_test_o2yvGW5u0AxIAazkU7b0JKwr');
-
 			Stripe.setPublishableKey(publishKey);
 
 			var CardName	= $('#CardName').val();
@@ -617,7 +619,7 @@
 			        		$('#UserIndexForm').submit();
 			        	}
 			        } else {
-			        	alert("<?php echo __('Check ur card details'); ?>");
+			        	alert("<?php echo __('Check your card details'); ?>");
 			        }
 				});
 		    	return false;

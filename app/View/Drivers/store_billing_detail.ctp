@@ -38,13 +38,14 @@
                                 <div class="row">
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Date Range <span class="star">*</span></label>
-                                        <div class="col-md-6 col-lg-4">
+                                        <div class="col-md-6 col-lg-3">
                                             <div class="input-group input-medium date-pickers input-daterange" data-date="10/11/2012" data-date-format="mm/dd/yyyy">
                                                 <?php
                                                 echo $this->Form->input('from_date',
                                                     array('class'=>'form-control',
                                                         'autocomplete' => 'off',
                                                         'value' => $fromDate,
+                                                        'readonly' => true,
                                                         'label' => false,
                                                         'div' => false));
                                                 echo $this->Form->hidden('id',array(
@@ -54,16 +55,17 @@
                                                 echo $this->Form->input('to_date',
                                                     array('class'=>'form-control',
                                                         'autocomplete' => 'off',
+                                                        'readonly' => true,
                                                         'value' => $toDate,
                                                         'label' => false,
                                                         'div' => false)); ?>
                                             </div>
                                             <!-- /input-group -->
                                         </div>
-                                        <div class="form-actions">
-                                            <div class="col-md-offset-3 col-md-9"><?php
-                                                echo $this->Form->button(__('<i class="fa fa-search"></i>Filter'),array('class'=>'btn purple'));
-                                                ?>
+                                        <div class="col-md-6 col-lg-2">
+                                            <div class="form-actions"> <?php
+                                                echo $this->Form->button(__('<i class="fa fa-search"></i>Filter'),  array('class'=>'btn purple'));
+                                                    ?>
                                             </div>
                                         </div>
                                     </div>
