@@ -76,7 +76,8 @@ class AppController extends Controller
     public function basicSetup()
     {
 
-        $this->siteUrl = 'https://' . $_SERVER['HTTP_HOST'];
+       // $this->siteUrl = 'https://' . $_SERVER['HTTP_HOST'];
+        $this->siteUrl = 'http://' .$_SERVER['HTTP_HOST']."/open_chillcartv1/trunk";
         $this->set('siteUrl', $this->siteUrl);
 
         $this->siteName = 'https://' . $_SERVER['HTTP_HOST'];

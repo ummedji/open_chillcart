@@ -6,17 +6,14 @@
 			   top.location=self.location;
 			}
 		</script>
-
-		<title> <?php 
-
-			echo (!empty($metaTitle)) ? $metaTitle : $title_for_layout; ?> </title>
-
+		<title><?php 
+		echo (!empty($metaTitle)) ? $metaTitle : $title_for_layout; ?> </title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 		<meta name="description" content="<?php echo $metaDescriptions; ?>" />
 		<meta name="keywords" content="<?php echo $metakeywords; ?>" /> <?php
 		echo $this->Html->meta('icon', $this->Html->url($siteUrl.'/siteicons/fav.ico')); ?>
 
-		<link rel="stylesheet" href="<?php echo $this->webroot; ?>frontend/css/bootstrap.min.css" type="text/css" media="all">
+		<!--<link rel="stylesheet" href="<?php echo $this->webroot; ?>frontend/css/bootstrap.min.css" type="text/css" media="all">
 		<link rel="stylesheet" href="<?php echo $this->webroot; ?>frontend/css/font-awesome.css" type="text/css" media="all">
 		<link rel="stylesheet" href="<?php echo $this->webroot; ?>frontend/css/bootstrap-select.css" type="text/css" media="all">
 		<link rel="stylesheet" href="<?php echo $this->webroot; ?>frontend/css/jquery.mCustomScrollbar.css" type="text/css" media="all">
@@ -34,27 +31,30 @@
 		<link rel="stylesheet" href="<?php echo $this->webroot; ?>frontend/css/mobile.css" type="text/css" media="all">
 		<link rel="stylesheet" href="<?php echo $this->webroot; ?>frontend/css/mobile_1.css" type="text/css" media="all">		
 
-		<link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,400italic" rel="stylesheet" type="text/css">
-
+		<link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,400italic" rel="stylesheet" type="text/css"> -->
+		<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+		<script src="<?php echo $this->webroot; ?>frontend/js/bootstrap.min.js" type="text/javascript"></script>
+		<script src="<?php echo $this->webroot; ?>frontend/js/jquery.stellar.min.js" type="text/javascript"></script>
 		 <?php
 
 		 //echo "<pre>"; print_r($loggedUser);
-	
 	if($this->request->params['controller'] == "searches" &&
 			$this->request->params['action'] == 'index') { ?>
-
 		<link rel="stylesheet" type="text/css" media="all" href="<?php echo $this->webroot; ?>frontend/css/style.css" />
-		<link rel="stylesheet" type="text/css" media="all" href="<?php echo $this->webroot; ?>frontend/css/responsive.css" /><?php
+		<link rel="stylesheet" type="text/css" media="all" href="<?php echo $this->webroot; ?>frontend/css/responsive.css" />
+		<?php /* ?><link rel="stylesheet" type="text/css" media="all" href="<?php echo $this->webroot; ?>frontend/css/style.css" />
+		<link rel="stylesheet" type="text/css" media="all" href="<?php echo $this->webroot; ?>frontend/css/responsive.css" /><?php*/
 	} ?>
 
 	</head>
-	<body onload="$('#thanksmsg').modal('show');">
-
+	<body onload="$('#thanksmsg').modal('show');" class="home">
+	
 	<?php echo $this->element('frontend/topheader'); ?>
 	<?php echo $this->Session->flash(); ?>
-	<div class="middle_height">
+	<!--<div class="middle_height">-->
 	<?php echo $this->fetch('content'); ?>
-	</div>
+	<!--</div>
 	
 	
 
@@ -695,6 +695,6 @@
 			echo '<script>'. $siteSetting['Sitesetting']['woopra_analytics']. '</script>';
 		} ?>
 
-
+	
 	</body>
 </html>

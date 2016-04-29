@@ -1,3 +1,44 @@
+<div class="groceryworks">
+  <section class="container">
+    <div class="features">
+      <div class="clearfix">
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 groceryblock"> <a href="">
+          <div class="greenbg hovereffect">
+            <figure> <img src='<?php echo $siteUrl.'/frontend/images/storesearch.png'; ?>' alt='Store Search' />
+              <figcaption>Store Search</figcaption>
+            </figure>
+          </div>
+          </a> </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 groceryblock"><a href="">
+          <div class="redbg hovereffect">
+            <figure> <img src='<?php echo $siteUrl.'/frontend/images/place-order.png'; ?>' alt='Place Order' />
+              <figcaption>Place Order</figcaption>
+            </figure>
+          </div>
+          </a></div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 groceryblock"><a href="">
+          <div class="yellowbg hovereffect">
+            <figure> <img src='<?php echo $siteUrl.'/frontend/images/schedule-delivery.png'; ?>' alt='Schedule Delivery' />
+              <figcaption>Schedule Delivery</figcaption>
+            </figure>
+          </div>
+          </a></div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 groceryblock"><a href="">
+          <div class="bluebg hovereffect">
+            <figure> <img src='<?php echo $siteUrl.'/frontend/images/order-delivered.png';?>' alt='Get Order Delivered' />
+              <figcaption>Get Order Delivered</figcaption>
+            </figure>
+          </div>
+          </a></div>
+      </div>
+      <div class="grocerydetail">
+        <h2 class="blgrtitle"><span class="blackborder">How</span> <span class="greenborder">Grocery Works</span></h2>
+        <p><span class="rightarrow"></span>Know more about your online grocery shopping and make easy shopping</p>
+      </div>
+    </div>
+  </section>
+</div>
+<!--
 <section id="howItWork">
 	<a id="close"></a>
 	<h2>How Grocery Works</h2>
@@ -46,13 +87,13 @@
 	</div>
 	<div class="clear"></div>
 				<!-- <a href="" id="tryBtn">Try Us Out</a> -->
-</section>
+<!--</section>
 <main>
 	<section id="searchBar">
 		<h3>Your favorite local stores online<h3>
 		<p>Enter your address to order groceries</p> <?php 
 
-		echo $this->Form->create('Search') ;
+		/*echo $this->Form->create('Search') ;
 			if (!empty($cityList)) {
 
 				echo $this->Form->input('city',
@@ -91,9 +132,9 @@
 <div id="video">
 	<p>Watch our video here</p>
 	<div id="vidImg"></div>
-</div>
+</div> */?>
 
-<footer>
+<!--<footer>
 	<ul>
 		<li><a href="">Home</a></li>
 		<li><a href="">About Us</a></li>
@@ -109,9 +150,9 @@
 	<a href="" id="twitter"></a>
 	<a href="" id="gplus"></a>
 	<a href="" id="youtube"></a>
-</footer>
+</footer>-->
 
-
+<?php echo $this->element('frontend/footer'); ?>
 <script type="text/javascript">
 function locationStore () {
 	var city 		= $.trim($("#city").val());

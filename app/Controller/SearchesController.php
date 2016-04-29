@@ -119,8 +119,6 @@ class SearchesController extends AppController {
 				}*/
 			}
 		}
-
-
 		$this->set(compact('cityList'));
 	}
 

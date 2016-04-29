@@ -43,11 +43,11 @@ class DATABASE_CONFIG
             $this->default['database'] = 'chillcartDemo';
             $this->default['datasource'] = 'Database/Mysql';
         else:
-            $this->default['host'] = 'localhost';
+            $this->default['host'] = '192.168.1.245';
             $this->default['persistent'] = false;
-            $this->default['login'] = 'root';
-            $this->default['password'] = '';
-            $this->default['database'] = 'grocery';
+            $this->default['login'] = 'sqlyog';
+            $this->default['password'] = 'sqlyog';
+            $this->default['database'] = 'open_chillcart';
             $this->default['datasource'] = 'Database/Mysql';
         endif;
     }

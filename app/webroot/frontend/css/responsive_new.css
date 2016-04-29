@@ -1,0 +1,107 @@
+@media only screen and (min-width: 1280px) {
+.container {
+	width: 1200px;
+}
+}
+@media only screen and (min-width: 730px) and (max-width: 991px) {
+.bannerform .form-group {
+	width: 35%;
+}
+}
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+.quicklinks h3 {
+	white-space: nowrap;
+}
+}
+@media only screen and (min-width: 618px) and (max-width: 729px) {
+.bannerform .form-group {
+	width: 32%;
+}
+}
+@media only screen and (min-width: 508px) and (max-width: 618px) {
+.bannerform .form-group {
+	margin-right: 1%;
+	width: 30%
+}
+.quicklinks h3 {
+	white-space: nowrap;
+}
+}
+@media only screen and (max-width: 730px) {
+.bannertext {
+	width: 95%;
+}
+}
+@media only screen and (max-width: 767px) {
+.cccontactdet {
+	float: none;
+	margin: 0 auto;
+}
+}
+@media only screen and (max-width: 640px) {
+.cccontactdet {
+	width: 100%;
+	float: none;
+}
+.signupinfo .form-group {
+	width: 100%;
+	
+}
+ .servblock{margin-bottom: 50px;width: 100%;}
+.servblock:last-child {
+	margin-bottom: 0;
+}
+}
+@media only screen and (max-width: 480px) {
+.groceryblock {
+	margin-bottom: 20px;
+	padding-left: 0;
+	padding-right: 0;
+	width: 100%;
+}
+.groceryblock:last-child {
+	margin-bottom: 5px;
+}
+.groceryblock {
+	margin-bottom: 0;
+}
+
+}
+@media only screen and (max-width: 507px) 
+{.bannerform {
+	text-align: center;
+}
+.bannerform button {
+	margin-top: 10px; width:100%;
+}
+.bannerform .form-group {
+	margin-right: 2%;
+	width: 49%;
+}
+.mrnone{margin-right: 0!important;}
+
+}
+
+@media only screen and (min-width: 420px) and (max-width: 480px) {
+.wrapmrgB {
+	padding: 0;
+}
+}
+@media only screen and (max-width: 419px) {
+	.blackborder {
+	margin-bottom: 15px;
+}
+.wrapmrgB {
+	margin-bottom: 20px;
+	padding-left: 0;
+	padding-right: 0;
+	width: 100%;
+}
+.wrapmrgB:last-child {
+	margin-bottom: 5px;
+}
+.milestoneorders {
+	width: 100%
+}
+}
+
