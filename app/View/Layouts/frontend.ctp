@@ -49,23 +49,17 @@
 
 	</head>
 	<body onload="$('#thanksmsg').modal('show');" class="home">
-	
 	<?php echo $this->element('frontend/topheader'); ?>
 	<?php echo $this->Session->flash(); ?>
 	<!--<div class="middle_height">-->
 	<?php echo $this->fetch('content'); ?>
 	<!--</div>
-	
-	
-
-
 	<!-- Page refresh loading image -->
     <div class="ui-loader">
         <div class="spinner">
         	<div class="spinner-icon"></div>
         </div>
     </div>
-
 	<script type="text/javascript" src="https://js.stripe.com/v2/"> </script>
 	
 	<!--<script type="text/javascript" src="<?php echo $this->webroot; ?>frontend/js/jquery-1.11.3.js"></script>-->
@@ -132,7 +126,24 @@
 		   	clearConsole();
             
         });
-        
+        function ajaxpromotionalSignup()
+		{
+			var email = $('#email').val();
+			//var selectedValue = $(this).val();
+				
+			var targeturl = 'searches/ajaxpromotionalSignup';
+			$.ajax({
+			type: 'get',
+			url: targeturl,
+			data: 'email=' + email,
+			accepts: {json: 'application/json'},
+			success: function(response) {
+			var obj = jQuery.parseJSON( response );
+			var status = obj.status;
+			$('#restext').html(obj.msg);
+			}			
+			});
+		}
 		function doResize()
 		{
 			var navbar_height = $(".navbar").height();

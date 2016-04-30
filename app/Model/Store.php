@@ -11,7 +11,6 @@ class Store extends AppModel
         'User' => array('className' => 'User',
             'foreignKey' => 'user_id',
             'dependent' => true));
-
     public $hasMany = array(
         'DeliveryTimeSlot' => array(
             'className' => 'DeliveryTimeSlot',

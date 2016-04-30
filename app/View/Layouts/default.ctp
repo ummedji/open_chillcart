@@ -42,20 +42,15 @@ if (top !=self) {
 <body  class="login">
 <?php }else if(isset($loggedUser['role_id']) && ($loggedUser['role_id'] == 1 || $loggedUser['role_id'] == 2 || $loggedUser['role_id'] == 4)) { ?>
 <body class="page-boxed page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid page-sidebar-closed-hide-logo"> 
-
 <?php } 
-
 if(isset($loggedUser['role_id']) && ($loggedUser['role_id'] == 1)) {
 echo $this->element('admin/topheader'); } ?>
-
-
 <div class="page-container">
 <?php if(empty($loggedUser['role_id'])) {  ?>
 	<div class="logo">
 			<a href="javascript:void();">
 				Grocery
-		</a>
-
+			</a>
 	</div>
 
 <?php

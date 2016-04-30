@@ -31,6 +31,10 @@ Router::connect('/store', array('controller' => 'users', 'action' => 'storeLogin
 Router::connect('/customer', array('controller' => 'users', 'action' => 'customerlogin', 'customer' => true));
 Router::connect('/', array('controller' => 'searches', 'action' => 'index'));
 
+Router::connect('/promotionalsignup', array('controller' => 'searches', 'action' => 'ajaxPromotionalSignup'));
+Router::parseExtensions();
+Router::setExtensions(array('json', 'ajaxpromotionalSignup'));
+
 Router::connect('/signup', array('controller' => 'users', 'action' => 'signup'));
 Router::connect('/customerlogin', array('controller' => 'users', 'action' => 'customerlogin', 'customer' => true));
 

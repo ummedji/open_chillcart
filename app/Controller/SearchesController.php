@@ -11,7 +11,7 @@ class SearchesController extends AppController {
 
 	public $uses = array('City', 'Location', 'Store', 'Product', 'Category',
 						'ProductDetail', 'ShoppingCart', 'Storeoffer', 'Deal',
-						'DeliveryLocation', 'Review');
+						'DeliveryLocation', 'Review', 'Stores', 'Order', 'Proreg');
 
 	public $components = array('Updown');
 
@@ -42,12 +42,17 @@ class SearchesController extends AppController {
 
 		$this->layout = 'frontend';
 		$cityList = array();
-		
+		$groceryStore = $this->getGroceryStores();
+		$OrderCount = $this->getRelatedCount('Order');
+		$StoreCount = $this->getRelatedCount('Stores');
+		$this->set(compact('OrderCount'));
+		$this->set(compact('StoreCount'));
+		$this->set(compact('groceryStore'));
+				
 		if ($this->cityId != '') {
 			
 			$cityDetails = $this->City->findById($this->cityId);
 			if (!empty($this->areaId)) {
-
 				$areaDetails = $this->Location->findById($this->areaId);
 				$this->redirect($this->siteUrl.'/city/'.$cityDetails['City']['city_name'].'/'.
 																$areaDetails['Location']['area_name'].'/'.
@@ -670,5 +675,31 @@ class SearchesController extends AppController {
 			}
 		}
 		$this->set(compact('dealProducts', 'mainCategoryList', 'subCategoryList'));
+	}
+	public function getGroceryStores()
+	{
+		$storeLists = $this->Stores->find('all');
+		return $storeLists;
+	}
+	public function getRelatedCount($tbl)
+	{
+		$count = $this->$tbl->find('count');
+		return $count;
+	}
+	public function ajaxpromotionalSignup()
+	{
+		$this->Proreg->set($this->request->query);
+		$data = $this->Proreg->save();
+		if($data['Proreg']['id'] == '')
+		{
+			$returns['status'] = 0;
+			$returns['msg']= '<span style="color:red;">Email is not valid</span>';
+		}
+		else
+		{
+			$returns['status'] = 1;
+			$returns['msg']= '<span style="color:green;">You are successfully registered</span>';
+		}
+		echo json_encode($returns); exit;
 	}
 }

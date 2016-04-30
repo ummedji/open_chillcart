@@ -38,6 +38,66 @@
     </div>
   </section>
 </div>
+<div class="container cmpnylogo">
+  <div class="mrgTB30">
+    <div class="text-center">
+      <h2 class="blgrtitle"><span class="blackborder">OUR</span> <span class="greenborder">GROCERY STORE</span></h2>
+    </div>
+    <div class="clearfix grocerystorelogo">
+	<?php
+	foreach($groceryStore as $key => $value) { ?>
+	<div class="pull-left"><a href="<?php echo $siteUrl.'/shop/'.$value['Stores']['seo_url'].'/'.$value['Stores']['id'];  ?>"><img alt="<?php echo $value['Stores']['store_name']; ?>" src="<?php echo $cdn.'/storelogos/'.$value['Stores']['store_logo']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/frontend/images/no_store.jpg"; ?>'"> </a></div>
+	<?php } ?>
+      
+    </div>
+  </div>
+</div>
+<div class="highlight-info">
+  <div class="padding_slide1">
+    <div class="container">
+      <div class="text-center">
+        <h2 class="whigrtitle"><span class="whiborder">SOME</span> <span class="greenborder">MILESTONES</span></h2>
+      </div>
+      <div class="clearfix">
+        <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10 milestoneorders"><div class="clearfix mrgT100">
+          <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 servblock">
+            <div class="text-center">
+              <p class="storenum bg-green"><a href=""><?php echo $OrderCount; ?>+</a><span class="middleborder"></span>
+              </p>
+              <p class="ordertext">Orders</p>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 col-lg-offset-4 col-md-offset-4 servblock">
+            <div class="text-center">
+              <p class="storenum bg-blue"><a href=""><?php echo $StoreCount; ?>+</a><span class="middleborder"></span></p>
+              <p class="ordertext">Stores</p>
+            </div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="signupinfo ">
+  <div class="padding_slide2">
+    <div class="container">
+      <div class="text-center">
+        <h2 class="blgrtitle "><span class="blackborder">Sign Up</span> <span class="greenborder">Special Promotions</span></h2>
+      </div>
+      <p class="text-center mrgTB20">Get exclusive deals that you wont find anywhere else straight to your inbox!</p>
+      <div class="clearfix">
+        <div class="form-group">
+          <label class="sr-only">Your Email Here</label>
+          <input type="text" class="form-control emailicon2" id="email" placeholder="Email">
+		  <div id="restext"></div>
+        </div>
+        <div class="text-center">
+          <button type="button" onclick="ajaxpromotionalSignup()" class="btn btn-success ">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <!--
 <section id="howItWork">
 	<a id="close"></a>
