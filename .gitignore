@@ -11,4 +11,5 @@ nbproject
 app/tmp
 *.htaccess
 app/webroot/stores/
-
+app/Config/database.php
+app/Controller/AppController.php
