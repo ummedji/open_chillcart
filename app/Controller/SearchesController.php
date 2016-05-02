@@ -129,7 +129,6 @@ class SearchesController extends AppController {
 
 
 	public function storesList($cityId = null, $areaId = null) {
-
 		$stores = array();
 
 		$storeLists = $this->Product->find('all', array(
@@ -142,21 +141,16 @@ class SearchesController extends AppController {
 									'OR' => array('Store.collection' => 'Yes',
 										  	  	   'Store.delivery'	 => 'Yes')),
 							'group' => array('Store.id')));
-
-
 		foreach ($storeLists as $key => $value) {
-
 			if ($value['Store']['collection'] == 'Yes' ||
 				$value['Store']['delivery'] == 'Yes' &&
 				$value['Store']['delivery_option'] == 'Yes') {
-
 				if (!empty($areaId)) {
 					$storeDeliver = $this->DeliveryLocation->find('all', array(
 							'conditions' => array('DeliveryLocation.location_id' => $areaId,
 												  'Location.status' => 1,
 												  'DeliveryLocation.store_id' => $value['Store']['id']),
 							'group' => array('DeliveryLocation.store_id')));
-
 					if (!empty($storeDeliver)) {
 						$stores[] = $value['Store']['id'];
 					} elseif ($value['Store']['collection'] != 'No') {
@@ -169,7 +163,6 @@ class SearchesController extends AppController {
 		}
 		return $stores;
 	}
-
 	public function stores($cityName, $cityId, $areaName, $areaId) {
 
 
@@ -221,13 +214,11 @@ class SearchesController extends AppController {
 
 	}
 
+		
 	public function storeitems($storename, $storeId) {
-
 		$this->layout = 'frontend';
-
 		$cityId = $this->Session->read('Search.city');
 		$areaId = $this->Session->read('Search.area');
-
 		if (isset($cityId) && empty($cityId)) {
 			$storeSession = $this->Store->find('first', array(
 									'conditions' => array('Store.id' => $storeId,
@@ -237,14 +228,11 @@ class SearchesController extends AppController {
 				$cityId = $this->Session->read('Search.city');
 			}
 		}
-
 		$stores = $this->storesList($cityId, $areaId);
-
 		$this->Store->recursive = 0;
 		$storeList = $this->Store->find('all', array(
 							'conditions' => array('Store.id' => $stores),
 							'group' => array('Store.id')));
-
 		foreach ($storeList as $key => $value) {
 			$ratingDetail = $this->Review->find('first', array(
                               	'conditions'=>array('Review.store_id' => $value['Store']['id']),
@@ -253,7 +241,6 @@ class SearchesController extends AppController {
 			$storeList[$key]['Store']['rating'] = (!empty($ratingDetail[0]['ratingCount'])) ? 
 												$ratingDetail[0]['rating']/$ratingDetail[0]['ratingCount'] : 0;
 		}
-
 		$storeDetails = $this->Store->find('first', array(
 									'conditions' => array('Store.id' => $storeId,
 															'Store.store_city' => $cityId,
@@ -261,11 +248,9 @@ class SearchesController extends AppController {
 		if (empty($storeDetails)) {
 			$this->redirect(array('controller' => 'searches', 'action' => 'index'));
 		}
-
 		if ($storeDetails['Store']['collection'] == 'Yes' ||
 			$storeDetails['Store']['delivery'] == 'Yes' &&
 			$storeDetails['Store']['delivery_option'] == 'Yes') {
-
 			$productList = $this->Product->find('all', array(
 								'conditions' => array('Product.store_id' => $storeId,
 									'Product.status' => 1,
@@ -278,35 +263,27 @@ class SearchesController extends AppController {
 			if (empty($productList)) {
 				$this->redirect(array('controller' => 'searches', 'action' => 'index'));
 			}
-
 			$mainCategory = array();
 			$subCategoryList = array();
-
 			foreach ($productList as $key => $value) {
 				if (!in_array($value['Product']['category_id'], $mainCategory)) {
 					$mainCategory[] = $value['Product']['category_id'];
 				}
-
 				if (!in_array($value['Product']['sub_category_id'], $subCategoryList)) {
 					$subCategoryList[] = $value['Product']['sub_category_id'];
 				}
 			}
-
 			$mainCategoryList = $this->Category->find('all', array(
 				'conditions' => array('Category.status' => 1,
 									'Category.parent_id' => 0,
 					'OR' => array('Category.id' => $mainCategory))));
-
-
 			$this->Deal->recursive = 2;
 			$dealProducts = $this->Deal->find('all', array(
 				'conditions' => array('Deal.store_id' => $storeId,
 					'Deal.status' => 1,
 					'MainProduct.status' => 1,
 				)));
-
 			foreach ($dealProducts as $key => $value) {
-
 				if ($value['MainProduct']['MainCategory']['status'] == 1 &&
 					$value['MainProduct']['SubCategory']['status'] == 1
 					//&& $value['MainProduct']['Brand']['status'] == 1

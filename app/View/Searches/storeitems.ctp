@@ -1,15 +1,151 @@
-<div class="mobile_cart">
+<div id="banner" class="innerbanner">
+  <div class="container">
+    <div class="bannerdesc text-center">
+      <div class="bannertext">
+        <div class="bannercaption">
+          <h1>Categories</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bannerbg"></div>
+</div>
+<section class="container"> </section>
+<div class="innercontentsection">
+  <div class="text-center mrgTB20">
+    <h2 class="blgrtitle "><span class="blackborder">OUR</span> <span class="greenborder">Categories</span></h2>
+  </div>
+  
+  <div class="content">
+    <div class="row categorylist">
+      <div class="col-md-2 col-sm-4">
+        <section class="sky-form mrgB20">
+          <div class="product_right">
+            <h4 class="ribbontag"><span class="ribbon-arrow"></span><?php echo __('Categories', true); ?></h4>
+            <div class="tab1 tabbing">
+              <ul class="place">
+			  <?php $categoryCount = 0;
+			  
+					foreach ($mainCategoryList as $key => $value) { 
+						$categoryCount = $key+1; ?>
+                <li class="sort clearfix">
+				<span class="beverageicon"></span><?php echo $value['Category']['category_name']; ?><span class="glyphicon-plus pull-right"></span>
+					<ul>
+					<?php
+
+								foreach ($value['ChildGroup'] as $keys => $values) {
+									if (in_array($values['id'], $subCategoryList)) { ?>
+									
+						<li class="single-bottom"><a href="javascript:void(0);" onclick="categoriesProduct(<?php echo $values['parent_id'].','.$values['id'].','.$storeId;?>);">
+												<?php echo $values['category_name'];?></a></li>
+						<?php
+									}
+
+								} ?>
+					</ul>
+				</li>
+			  <?php } ?>
+              </ul>
+              
+            </div>
+            
+          </div>
+        </section>
+      </div>
+	  
+	  
+	  
+      <!-- <div class="col-md-10 col-sm-8">
+        <div class="productdiv mrgB20">
+          <div class="row title greenbut">
+            <div class="pull-left">
+              <h4 class="ribbontag"><span class="ribbon-arrow"></span>Beverage</h4>
+            </div>
+            <div class="pull-right">
+              <button class="btn " type="submit">View More</button>
+            </div>
+          </div>
+          <div class="row products padTB20">
+            <div class="col-md-2 col-sm-4 productblock">
+              <div class="product">
+                <div class="image"> <a href="detail.html"> <img class="img-responsive image1" alt="" src="images/product1.png"> </a> <span class="prod-id">2</span> </div>
+                <div class="text">
+                  <h3><a href="#">Cremica Imli Chataka </a></h3>
+                  <p class="prodesc">Sauces & Pickles </p>
+                  <p class="price"> <span class="black-rs-icon"></span> 143.00</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2 col-sm-4 productblock">
+              <div class="product">
+                <div class="image"> <a href="detail.html"> <img class="img-responsive image1" alt="" src="images/product1.png"> </a> <span class="prod-id">2</span> </div>
+                <div class="text">
+                  <h3><a href="#">Cremica Imli Chataka </a></h3>
+                  <p class="prodesc">Sauces & Pickles </p>
+                  <p class="price"> <span class="black-rs-icon"></span> 143.00</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2 col-sm-4 productblock">
+              <div class="product">
+                <div class="image"> <a href="detail.html"> <img class="img-responsive image1" alt="" src="images/product1.png"> </a> <span class="prod-id">2</span> </div>
+                <div class="text">
+                  <h3><a href="#">Cremica Imli Chataka </a></h3>
+                  <p class="prodesc">Sauces & Pickles </p>
+                  <p class="price"> <span class="black-rs-icon"></span> 143.00</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2 col-sm-4 productblock">
+              <div class="product">
+                <div class="image"> <a href="detail.html"> <img class="img-responsive image1" alt="" src="images/product1.png"> </a> <span class="prod-id">2</span> </div>
+                <div class="text">
+                  <h3><a href="#">Cremica Imli Chataka </a></h3>
+                  <p class="prodesc">Sauces & Pickles </p>
+                  <p class="price"> <span class="black-rs-icon"></span> 143.00</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2 col-sm-4 productblock">
+              <div class="product">
+                <div class="image"> <a href="detail.html"> <img class="img-responsive image1" alt="" src="images/product1.png"> </a> <span class="prod-id">2</span> </div>
+                <div class="text">
+                  <h3><a href="#">Cremica Imli Chataka </a></h3>
+                  <p class="prodesc">Sauces & Pickles </p>
+                  <p class="price"> <span class="black-rs-icon"></span> 143.00</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2 col-sm-4 productblock">
+              <div class="product">
+                <div class="image"> <a href="detail.html"> <img class="img-responsive image1" alt="" src="images/product1.png"> </a> <span class="prod-id">2</span> </div>
+                <div class="text">
+                  <h3><a href="#">Cremica Imli Chataka </a></h3>
+                  <p class="prodesc">Sauces & Pickles </p>
+                  <p class="price"> <span class="black-rs-icon"></span> 143.00</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    
+      </div> -->
+    </div>
+  </div>
+</div>
+
+<!--<div class="mobile_cart">
 	<div class="">
 		<span class="pull-left">
 			<div class="mobile_cart_price" href="javascript:void(0);" >
 				
-				<?php echo $siteCurrency; ?><span class="cartTotal">0</span>
+				<?php //echo $siteCurrency; ?><span class="cartTotal">0</span>
 
 				<div class="cart_notification" style="display:none;">
-					<?php echo __('1 Item added to cart successfully.', true); ?>
+					<?php //echo __('1 Item added to cart successfully.', true); ?>
 				</div>
 				<div class="cart_failedNotification" style="display:none;">
-					<?php echo __('Quantity Exceeded..!', true); ?>
+					<?php //echo __('Quantity Exceeded..!', true); ?>
 				</div>
 			</div>
 		</span>
@@ -17,7 +153,7 @@
 			<a class="checkout_arrow view relative" href="javascript:void(0);" ><i class="fa fa-shopping-cart white"></i><span class="price_count" id="cartCount">0</span></a>			
 		</span>
 	</div>	
-</div>
+</div> -->
 
 
 <div class="menuWrapper">
@@ -55,10 +191,8 @@
 								<li>
 									<a href="javascript:void(0);" onclick="categoriesProduct(<?php echo $value['Category']['id'].',0,'.$storeId;?>);"> <span>&rarr;</span> All <?php
 									echo $value['Category']['category_name']; ?> </a> <?php
-
 								foreach ($value['ChildGroup'] as $keys => $values) {
 									if (in_array($values['id'], $subCategoryList)) { ?>
-
 										<li>
 											<a href="javascript:void(0);" onclick="categoriesProduct(<?php echo $values['parent_id'].','.$values['id'].','.$storeId;?>);">
 											<span>&rarr;</span>
@@ -71,7 +205,6 @@
 					}
 					echo $this->Form->hidden('', array('value'=> $categoryCount,
 														'id' => 'countCategory')); ?>
-										
 				</ul>
 			</div>
 		</div>

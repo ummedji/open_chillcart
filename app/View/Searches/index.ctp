@@ -1,3 +1,61 @@
+<div id="banner">
+  <div class="container">
+    <div class="bannerdesc text-center ">
+      <div class="bannertext">
+        <div class="watchvideo"> <a href=""><img src="<?php echo $siteUrl.'/frontend/images/video-bg-img.png'; ?>"/>
+          <div class="videotext">
+            <p>WATCH VIDEO</p>
+          </div></a>
+        </div>
+        <div class="bannercaption">
+          <h1>Your Favorite Local Stores Online</h1>
+          <p>Enter Your Address To Order Groceries</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bannerform">
+    <div class="container">
+      <div class="clearfix">
+  
+  <?php 
+
+		echo $this->Form->create('Search') ;
+			if (!empty($cityList)) {
+
+				echo $this->Form->input('city',	
+							array('type'=>'select',
+							 		'options'=> array($cityList),
+							 		'onchange' => 'locationList();',
+							 		'id' => 'city',
+							 		'empty' => __('Select City'),
+							 		'div' => 'form-group',
+							 		'label'=> false,
+									'class'=>'form-control'));
+			} else {
+				echo $this->Form->input('city',
+							array('type'=>'select',
+							 		'id' => 'city',
+							 		'empty' =>  __('Select City'),
+							 		'div' => 'form-group',
+							 		'label'=> false,
+									'class'=>'form-control'));
+			} 
+
+			echo $this->Form->input('area',
+						array('type'=>'select',
+						 		'id' => 'location',
+						 		'empty' => __('Select Area / Zipcode'),
+						 		'div' => 'form-group mrnone',
+							 		'label'=> false,
+									'class'=>'form-control'));
+
+			echo $this->Form->button(__("Let's go to shop"),
+                              array('onclick' => 'return locationStore();','class'=>'btn btn-green btn-success')); ?>
+  </div>
+	</div>
+	</div>
+</div>
 <div class="groceryworks">
   <section class="container">
     <div class="features">

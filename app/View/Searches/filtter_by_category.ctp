@@ -1,3 +1,27 @@
+<?php //$main = $subCat = $subCatCount = 0;
+//print_r($productList);
+/*
+foreach ($productList as $key => $value) {
+$nextValue = $key+1;  
+if ($value['MainCategory']['id'] != $main) {
+$main = $value['MainCategory']['id']; ?>
+<div class="col-md-10 col-sm-8">
+    <div class="productdiv mrgB20">
+		<div class="row title greenbut">
+            <div class="pull-left" id="<?php echo $value['MainCategory']['category_name']; ?>">
+              <h4 class="ribbontag"><span class="ribbon-arrow"></span> <?php echo $value['MainCategory']['category_name']; ?></h4>
+            </div>
+			<?php } 
+			if($value['SubCategory']['id'] != $subCat) {
+			$subCat = $value['SubCategory']['id']; ?>
+            <div class="pull-right">
+              <button class="btn " type="submit">View More</button>
+            </div>
+			<?php } ?>
+          </div>
+	</div>
+</div>
+<?php }  */?>
 <?php
 $main = $subCat = $subCatCount = 0;
 foreach ($productList as $key => $value) {
@@ -8,7 +32,7 @@ foreach ($productList as $key => $value) {
         <div class="products-category mainCatProduct" id="<?php echo $value['MainCategory']['category_name']; ?>">
         <header class="products-header">
             <h4 class="category-name">
-                <span> <?php echo $value['MainCategory']['category_name']; ?></span>
+                <span><?php echo $value['MainCategory']['category_name']; ?></span>
             </h4>
         </header><?php
     }
@@ -16,7 +40,6 @@ foreach ($productList as $key => $value) {
 
 
 if ($value['SubCategory']['id'] != $subCat) {
-
     $subCat = $value['SubCategory']['id']; ?>
     <h5 id="<?php echo $value['SubCategory']['category_name']; ?>" class="sub_category-name">
         <span><?php echo $value['SubCategory']['category_name']; ?></span>
@@ -126,4 +149,4 @@ if (!isset($productList[$nextValue]['SubCategory']['id']) || $productList[$nextV
         <div class="clr"></div> <?php
     }
 
-} ?>
+} /*?>

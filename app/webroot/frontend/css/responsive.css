@@ -27,16 +27,70 @@
 	white-space: nowrap;
 }
 }
-@media only screen and (max-width: 730px) {
-.bannertext {
-	width: 95%;
-}
-}
+
 @media only screen and (max-width: 767px) {
 .cccontactdet {
 	float: none;
 	margin: 0 auto;
 }
+
+
+.dropdown-menu > ul > li > a {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    color: #333;
+    display: block;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: normal;
+    padding: 15px;
+    text-decoration: none;
+}
+.dropdown-menu > ul {
+    background: rgba(255, 255, 255, 0.95) none repeat scroll 0 0;
+    box-shadow: 0 2px 0.09px rgba(0, 0, 0, 0.15);
+    list-style: outside none none;
+    margin: -5px auto 0;
+    padding: 0 15px;
+}
+.navbar-collapse {
+    background: rgba(28, 28, 25, 0.8) none repeat scroll 0 0;
+    left: 0;
+    margin: 0 !important;
+    position: absolute;
+    top: 69px;transition: all 300ms ease 0s;
+    width: 100%; padding:0; 
+}
+.has-submenu > .productmenu{ width:100%;}
+.has-submenu > .productmenu .toparrow{display:none;}
+#top-bar .main-menu li > a {
+    background: transparent none repeat scroll 0 0;
+    color: #fff;
+    padding: 21px 10px;
+}
+#top-bar{position:relative;}
+.productmenu > ul {
+    padding: 0 !important;
+}
+.main-menu .nav{float:none!important; margin: 0 !important;}
+#top-bar .dropdown-menu > ul {
+    background: rgba(255, 255, 255, 0.95) none repeat scroll 0 0;
+    box-shadow: 0 2px 0.09px rgba(0, 0, 0, 0.15);
+    list-style: outside none none;
+    margin: -5px auto 0;
+    padding: 0 15px;
+}
+#top-bar .dropdown-menu > ul > li > a {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    color: #333;
+    display: block;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: normal;
+    padding: 15px;
+    text-decoration: none;
+}
+
+
 }
 @media only screen and (max-width: 640px) {
 .cccontactdet {

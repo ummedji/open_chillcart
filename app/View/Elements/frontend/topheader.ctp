@@ -17,9 +17,9 @@
 <!-- NEW TEMPLATE START -->
 		<div class="navbar navbar-inverse navbar-fixed-top navtop">
 		<div class="container">
-		  <div class="navbar-header"> <a href="index.html"><img title="CHILLCART" src="<?php echo $siteUrl.'/frontend/images/site-logo.png'; ?>"/></a> </div>
-		  <div class="navbar-collapse collapse">
-		  
+		  <div class="navbar-header"> <a href="index.html"><img title="CHILLCART" src="<?php echo $siteUrl.'/frontend/images/site-logo.png'; ?>"/></a><button class="nav-add navbar-toggle collapsed" type="button"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button> </div>
+		  <div class="navbar-collapse collapse in">
+        <div class="main-menu">
 			<ul class="nav navbar-nav pull-right">
 			<?php if(!empty($loggedCheck) && ($loggedCheck['role_id'] == 4)){ ?>
 			<li><a href="<?php echo $siteUrl.'/customer/customers/myaccount'; ?>"> <?php echo __('My Account', true); ?></a> </li>
@@ -28,73 +28,19 @@
 			<li><a href="<?php echo $siteUrl.'/signup'; ?>"> <?php echo __('Sign Up', true); ?></a></li>
 			<li><a href="<?php echo $siteUrl.'/customerlogin'; ?>"> <?php echo __('Login', true); ?></a></li>
 			<?php } ?>
-			<?php if ($this->request->params['controller'] == 'searches' &&	$this->request->params['action'] == 'index') { ?>
+			<?php if ($this->request->params['controller'] == 'searches' &&
+			($this->request->params['action'] == 'index' || $this->request->params['action'] == 'stores' || $this->request->params['action'] == 'storeitems')) { ?>
 			  <li><a href="">How it Works?</a></li>
 			  <li><a href=""><span class="carticon"></span> 0.00 <span class="droparrow"></span></a></li>
 			 <?php } ?>
 			</ul>
 		  </div>
+		  </div>
+		  </div>
 		</div>
 		</div>
 </header>
-<div id="banner">
-  <div class="container">
-    <div class="bannerdesc text-center ">
-      <div class="bannertext">
-        <div class="watchvideo"> <a href=""><img src="<?php echo $siteUrl.'/frontend/images/video-bg-img.png'; ?>"/>
-          <div class="videotext">
-            <p>WATCH VIDEO</p>
-          </div></a>
-        </div>
-        <div class="bannercaption">
-          <h1>Your Favorite Local Stores Online</h1>
-          <p>Enter Your Address To Order Groceries</p>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="bannerform">
-    <div class="container">
-      <div class="clearfix">
-  
-  <?php 
 
-		echo $this->Form->create('Search') ;
-			if (!empty($cityList)) {
-
-				echo $this->Form->input('city',	
-							array('type'=>'select',
-							 		'options'=> array($cityList),
-							 		'onchange' => 'locationList();',
-							 		'id' => 'city',
-							 		'empty' => __('Select City'),
-							 		'div' => 'form-group',
-							 		'label'=> false,
-									'class'=>'form-control'));
-			} else {
-				echo $this->Form->input('city',
-							array('type'=>'select',
-							 		'id' => 'city',
-							 		'empty' =>  __('Select City'),
-							 		'div' => 'form-group',
-							 		'label'=> false,
-									'class'=>'form-control'));
-			} 
-
-			echo $this->Form->input('area',
-						array('type'=>'select',
-						 		'id' => 'location',
-						 		'empty' => __('Select Area / Zipcode'),
-						 		'div' => 'form-group mrnone',
-							 		'label'=> false,
-									'class'=>'form-control'));
-
-			echo $this->Form->button(__("Let's go to shop"),
-                              array('onclick' => 'return locationStore();','class'=>'btn btn-green btn-success')); ?>
-  </div>
-	</div>
-	</div>
-</div>
 <!-- NEW TEMPLATE END -->
 	<?php /*
 	<div class="container-fluid">
