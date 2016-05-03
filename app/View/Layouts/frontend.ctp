@@ -44,6 +44,7 @@
 		<script src="<?php echo $this->webroot; ?>frontend/js/jquery.stellar.min.js" type="text/javascript"></script>
 		<link rel="stylesheet" type="text/css" media="all" href="<?php echo $this->webroot; ?>frontend/css/style.css" />
 		<link rel="stylesheet" type="text/css" media="all" href="<?php echo $this->webroot; ?>frontend/css/responsive.css" />
+		<link rel="stylesheet" type="text/css" media="all" href="<?php echo $this->webroot; ?>frontend/css/font-awesome.css" />
 		<?php /* ?><link rel="stylesheet" type="text/css" media="all" href="<?php echo $this->webroot; ?>frontend/css/style.css" />
 		<link rel="stylesheet" type="text/css" media="all" href="<?php echo $this->webroot; ?>frontend/css/responsive.css" /><?php*/
 	  } ?>
@@ -85,6 +86,7 @@
 
 
     <script type="text/javascript">
+	
     	var loggedUser = "<?php echo (isset($loggedUser['role_id'])) ? $loggedUser['role_id'] : ''; ?>";
     	
     	if (loggedUser == 4) {
@@ -95,7 +97,17 @@
 		var rp = "<?php echo $siteUrl.'/'; ?>";
 		var publishKey = "<?php echo $publishKey; ?>";
 
-
+		function showsubcat(id)
+		{
+			if($("#subul_"+id).css('display') == 'none')
+			{
+			$("#subul_"+id).show();
+			}
+			else
+			{
+			$("#subul_"+id).hide();
+			}
+		}
 		function sessionCheck() {
 
 			idleTimer = null;

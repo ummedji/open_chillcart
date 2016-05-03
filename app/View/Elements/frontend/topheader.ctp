@@ -31,7 +31,7 @@
 			<?php if ($this->request->params['controller'] == 'searches' &&
 			($this->request->params['action'] == 'index' || $this->request->params['action'] == 'stores' || $this->request->params['action'] == 'storeitems')) { ?>
 			  <li><a href="">How it Works?</a></li>
-			  <li><a href=""><span class="carticon"></span> 0.00 <span class="droparrow"></span></a></li>
+			  <li><a href=""><span class="carticon"></span><span class="cartTotal">0.00</span><span class="droparrow"></span></a></li>
 			 <?php } ?>
 			</ul>
 		  </div>

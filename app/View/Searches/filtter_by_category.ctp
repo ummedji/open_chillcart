@@ -1,28 +1,155 @@
 <?php //$main = $subCat = $subCatCount = 0;
 //print_r($productList);
-/*
+?>
+<!--<div class="col-md-10 col-sm-8">-->
+
+<div class="productdiv mrgB20">
+<?php 
+$ic = 1;
+$main = $subCat = $subCatCount = 0;
 foreach ($productList as $key => $value) {
-$nextValue = $key+1;  
-if ($value['MainCategory']['id'] != $main) {
-$main = $value['MainCategory']['id']; ?>
-<div class="col-md-10 col-sm-8">
-    <div class="productdiv mrgB20">
+	$nextValue = $key+1;
+		
+	
+	//print_r($value['MainCategory']['id']); echo "=>"; echo $main; echo "<br>";
+	if ($value['MainCategory']['id'] != $main) {
+	$main = $value['MainCategory']['id'];		?> 
+	<!--<div class="productdiv mrgB20">-->
 		<div class="row title greenbut">
-            <div class="pull-left" id="<?php echo $value['MainCategory']['category_name']; ?>">
-              <h4 class="ribbontag"><span class="ribbon-arrow"></span> <?php echo $value['MainCategory']['category_name']; ?></h4>
+            <div class="pull-left">
+              <h4 class="ribbontag"><span class="ribbon-arrow"></span><?php echo $value['MainCategory']['category_name']; ?></h4>
             </div>
-			<?php } 
-			if($value['SubCategory']['id'] != $subCat) {
+		<?php } ?>
+			<?php if ($value['SubCategory']['id'] != $subCat) {
 			$subCat = $value['SubCategory']['id']; ?>
-            <div class="pull-right">
-              <button class="btn " type="submit">View More</button>
+			<h5 id="<?php echo $value['SubCategory']['category_name']; ?>" class="sub_category-name">
+			<span><?php echo $value['SubCategory']['category_name']; ?></span>
+		 <?php 
+		if (isset($value['moreProduct'])) { ?>
+			<div class="pull-right">
+              <button class="btn buttonStatus" type="button" onclick="categoriesProduct(<?php echo $value['MainCategory']['id'].','.$value['SubCategory']['id'].','.$value['Store']['id'];?>);">View More</button>
             </div>
-			<?php } ?>
-          </div>
-	</div>
+		<?php } ?> 
+			</h5>
+        </div>
+		<?php /* <div style="margin-top:10px"><?php echo $value['SubCategory']['category_name']; ?></div> */ ?>
+		<div class="row products padTB20 productsCat<?php echo $count; ?>">
+		<?php
+		$subCatCount = $subCatCount+1;
+		} 
+		$imageName = (isset($value['ProductImage'][0]['image_alias'])) ? $value['ProductImage'][0]['image_alias'] : '';
+		$imageSrc = $cdn.'/stores/products/home/'.$imageName;
+		$imageSrc = 'https://dnrskjoxjtgst.cloudfront.net/stores/products/home/'.$imageName;
+        
+		?>
+		<div class="col-md-2 col-sm-4 productblock">
+              <div class="product">
+                <div class="image"> <a href="detail.html"> <img class="img-responsive image1" alt="" src="<?php echo $imageSrc; ?>"> </a> <span class="prod-id">2</span> </div>
+
+                <div class="text">
+                  <h3><a href="#"><?php echo $value['Product']['product_name']; ?> </a></h3>
+                  <p class="prodesc"><?php echo $value['ProductDetail'][0]['sub_name']; ?></p>
+                  <p class="price"><span class="black-rs-icon"></span>
+				  <?php if ($value['Product']['price_option'] != 'single') {  
+                            ?>
+						<ul id="select_product_<?php echo $value['ProductDetail'][0]['id']; ?>" class="select_product_data" >
+                                                    
+                                       <?php
+					foreach ($value['ProductDetail'] as $pr_key => $pr_value) { 
+                                            
+                                                $product_name = $pr_value['sub_name']; 
+                                                
+						//echo $product_name."</br>";
+                                                
+						$quantity = explode(" ",$product_name);
+						$get_key =array_search ('Grams', $quantity);
+						
+						$quantity_value = $quantity[$get_key-1];
+						
+						if ($pr_value['compare_price'] != 0) {
+                                                    ?>
+                                                    
+                                                    <li value="<?php echo $pr_value['id']; ?>"><?php 
+                                                    
+                                                    echo '<del><span class="amount">'.html_entity_decode($this->Number->currency($pr_value['orginal_price'], $siteCurrency)).'</span></del>'." ".html_entity_decode($this->Number->currency($pr_value['compare_price'], $siteCurrency))." / ". $quantity_value."g";
+                                                    
+                                                    ?><i class="fa fa-plus plushide" onclick="addToCart(<?php echo $value['ProductDetail'][0]['id']; ?>);"></i></li>
+                                                  <?php  
+							
+						}
+						else
+						{
+                                                    
+                                                    ?>
+                                                    <li value="<?php echo $pr_value['id']; ?>"><?php 
+                                                    
+                                                    echo html_entity_decode($this->Number->currency($pr_value['orginal_price'], $siteCurrency))." / ".$quantity_value."g";
+                                                    
+                                                    ?><i class="fa fa-plus plushide" onclick="addToCart(<?php echo $value['ProductDetail'][0]['id']; ?>);"></i></li> 
+                                                    <?php
+                                                    
+							
+						}
+                                            
+                                            ?>
+						
+                                        <?php } ?>
+						  
+                                                  
+						</ul>
+                            
+                                        <?php }else{ 
+                                                
+                            
+                                        $product_name = $value['ProductDetail'][0]['sub_name']; 
+						
+						$quantity = explode(" ",$product_name);
+						$get_key =array_search ('Grams', $quantity);
+						
+						$quantity_value = $quantity[$get_key-1];
+						
+						if ($value['ProductDetail'][0]['compare_price'] != 0) {
+							echo '<del><span class="amount">'.html_entity_decode($this->Number->currency($value['ProductDetail'][0]['orginal_price'], $siteCurrency)).'</span></del>'." ".html_entity_decode($this->Number->currency($value['ProductDetail'][0]['compare_price'], $siteCurrency))." / ". $quantity_value."g";
+						}
+						else
+						{
+							echo html_entity_decode($this->Number->currency($value['ProductDetail'][0]['orginal_price'], $siteCurrency))." / ".$quantity_value."g";
+						}
+                            
+                                            
+                                        } ?>
+				  <?php
+                       /* if ($value['ProductDetail'][0]['compare_price'] != 0) {
+                            echo '<del><span class="amount">'. html_entity_decode($this->Number->currency($value['ProductDetail'][0]['orginal_price'], $siteCurrency)).'</span></del>';
+                            echo '<ins class="margin-l-5"><span class="amount">'.html_entity_decode($this->Number->currency($value['ProductDetail'][0]['compare_price'], $siteCurrency)).'</span></ins>';
+                        } else {
+                            echo html_entity_decode($this->Number->currency($value['ProductDetail'][0]['orginal_price'], $siteCurrency));
+                }*/ ?>					
+				</p>
+				<div class="product__detail-action">
+                        <a class="button add_to_cart_button " rel="nofollow" href="javascript:void(0);">
+                                    <div class="add_btn">
+									<i class="fa fa-plus plushide" onclick="addToCart(<?php echo $value['ProductDetail'][0]['id']; ?>);"></i></div>
+                                                        </a>
+                    </div>
+                </div>
+              </div>
+            </div>
+		
+	<?php if (!isset($productList[$nextValue]['SubCategory']['id']) || $productList[$nextValue]['SubCategory']['id'] != $subCat) { ?>
+		</div>	
+    <?php
+	} ?>
+	 <?php
+if (!isset($productList[$nextValue]['MainCategory']['id']) || $productList[$nextValue]['MainCategory']['id'] != $main) { ?>
+    <!--</div>-->
+    <?php
+	}
+	$ic++;
+ } ?>
 </div>
-<?php }  */?>
-<?php
+<?php 
+/*
 $main = $subCat = $subCatCount = 0;
 foreach ($productList as $key => $value) {
 

@@ -27,12 +27,15 @@
 			  <?php $categoryCount = 0;
 			  
 					foreach ($mainCategoryList as $key => $value) { 
-						$categoryCount = $key+1; ?>
+				$categoryCount = $key+1; ?>
                 <li class="sort clearfix">
-				<span class="beverageicon"></span><?php echo $value['Category']['category_name']; ?><span class="glyphicon-plus pull-right"></span>
-					<ul>
+				<span class="beverageicon"></span><?php echo $value['Category']['category_name']; ?><span class="glyphicon-plus pull-right" onclick="showsubcat('<?php echo $value['Category']['id']; ?>');"></span>
+					<ul id="subul_<?php echo $value['Category']['id']; ?>" style="display:none;">
 					<?php
-
+						echo $this->Form->hidden('check' ,array('value'=>$value['Category']['id'].'_'.$storeId,
+						'class'=>'remove_'.$value['Category']['id']));
+						echo $this->Form->hidden('' ,array('value'=>$value['Category']['id'].'_'.$storeId,
+						'id' => 'check'.$key));
 								foreach ($value['ChildGroup'] as $keys => $values) {
 									if (in_array($values['id'], $subCategoryList)) { ?>
 									
@@ -52,8 +55,10 @@
           </div>
         </section>
       </div>
-	  
-	  
+	  <div id="filtterByCategory" class="col-md-10 col-sm-8"></div>
+	  <div id="messageError" style="display:none">
+		<h1><center>There is no product</center></h1>
+	  </div>
 	  
       <!-- <div class="col-md-10 col-sm-8">
         <div class="productdiv mrgB20">
@@ -156,10 +161,10 @@
 </div> -->
 
 
-<div class="menuWrapper">
+<!-- <div class="menuWrapper">
 			
-	<div class="category_mobile">
-		<div class="leftsideBar">
+	<div class="category_mobile"> -->
+		<?php /* <div class="leftsideBar">
 			<div class="leftsideBar_scroller">
 				<a class="close_category" href="javascript:void(0);">X</a>
 				<h1> <?php echo __('List'); ?> </h1>
@@ -207,11 +212,11 @@
 														'id' => 'countCategory')); ?>
 				</ul>
 			</div>
-		</div>
-	</div>
+		</div> */ ?>
+	<!--</div>
 	
 	<div class="rightSideBar">
-		<div id="filtterByCategory"></div>
+		
 		<div id="messageError" style="display:none">
 			<h1><center>There is no product</center></h1>
 		</div>
@@ -231,4 +236,5 @@
 		</div>
 		<div class="modal fade" id="addCartPop"> </div>
 	</div>
-</div>
+</div>-->
+<?php echo $this->element('frontend/footer'); ?>
