@@ -40,7 +40,6 @@
 			($this->request->params['action'] == 'index' || $this->request->params['action'] == 'stores' || $this->request->params['action'] == 'storeitems')) { ?>
 		<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" type="text/css" href="<?php echo $this->webroot; ?>css/bootstrap.min.css">
-		<script src="<?php echo $this->webroot; ?>frontend/js/bootstrap.min.js" type="text/javascript"></script>
 		<script src="<?php echo $this->webroot; ?>frontend/js/jquery.stellar.min.js" type="text/javascript"></script>
 		<link rel="stylesheet" type="text/css" media="all" href="<?php echo $this->webroot; ?>frontend/css/style.css" />
 		<link rel="stylesheet" type="text/css" media="all" href="<?php echo $this->webroot; ?>frontend/css/responsive.css" />

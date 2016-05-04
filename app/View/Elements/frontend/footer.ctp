@@ -7,15 +7,15 @@
           <form>
             <div class="form-group">
               <label class="sr-only">Address</label>
-              <input type="text" placeholder="ABC Town Luten Street" class="contact addressicon">
+              <input type="text" placeholder="ABC Town Luten Street" class="contact addressicon" disabled>
             </div>
             <div class="form-group">
               <label class="sr-only">Contact No.</label>
-              <input type="text" placeholder="+ 9725908113" class="contact phone-icon">
+              <input type="text" placeholder="+ 9725908113" class="contact phone-icon" disabled>
             </div>
             <div class="form-group">
               <label class="sr-only">Email</label>
-              <input type="text" placeholder="support@chillcart.com" class="contact emailicon">
+              <input type="text" placeholder="support@chillcart.com" class="contact emailicon" disabled>
             </div>
           </form>
           <ul class="social-network">
