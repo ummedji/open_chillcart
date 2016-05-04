@@ -80,6 +80,8 @@
     <script type="text/javascript" src="<?php echo $this->webroot; ?>frontend/js/customer.js"></script>
     <script type="text/javascript" src="<?php echo $this->webroot; ?>frontend/js/jquery.validate.min.js"></script>
     <script type="text/javascript" src="<?php echo $this->webroot; ?>frontend/js/jquery.mCustomScrollbar.js"></script>
+    <script type="text/javascript" src="<?php echo $this->webroot; ?>frontend/js/jquery.easing.min.js"></script>
+    <script type="text/javascript" src="<?php echo $this->webroot; ?>frontend/js/scrolling-nav.js"></script>
 
     <script type="text/javascript" src="<?php echo $this->webroot; ?>frontend/js/owl.carousel.min.js"></script>
 
@@ -196,7 +198,8 @@
 			}
 		}
 		jQuery().ready(function() {
-			var signupvalidator = jQuery("#UserSignupForm").validate({
+			
+        /*var signupvalidator = jQuery("#UserSignupForm").validate({
 				rules: {
 				   "data[Customer][first_name]": {
 						required: true,
@@ -250,7 +253,7 @@
 				}
 			});
 
-
+*/
 			
 		    
 		    var loginvalidator = jQuery("#UserCustomerCustomerloginForm").validate({
@@ -700,8 +703,188 @@
 				});
 				
 			});
+                        
+                        $("#how_it_works").on("click",function(){
+                            
+                             $('html,body').animate({
+                                scrollTop: $(".groceryworks").offset().top-100},
+                              'slow');
+                            
+                        });
+                        
+                        
+                        
+                        
+          var loginvalidator = jQuery("#UserLoginForm").validate({
+				rules: {
+					"data[User][username]": {
+						required: true,
+						email :true,
+					},
+		            "data[User][password]": {
+						required: true,
+					}
+				},
+				messages: { 
+					"data[User][username]": {
+						required: "Please enter email",
+						email : "Please enter a valid email address",
+					},
+		            "data[User][password]": {
+						required: "Please enter password",
+					}
+
+				}
+			});
+                        
+                        
+            $("#UserLoginForm").submit(function(e){
+		
+		e.preventDefault();
+		
+		if($("#UserLoginForm").valid()){
+			
+                        var rember_me = 0;
+                        if ($('#remember_me').is(":checked"))
+                        {
+                          $('#remember_me').val(1);
+                        }
+                        
+			var fromdata = $(this).serializeArray();
+                        
+			$.post(rp + 'customerlogin', {data : fromdata}, function (response) {
+				
+                                $("span.success_msg").remove();
+                                
+                                if(response == "unathorized_error"){
+                                    $("div.login_logo h3").after("<span class='success_msg' style='color:red;'>Login failed, unauthorized.</span>");
+                                }
+                                else if(response == "data_incorrect_error"){
+                                    $("div.login_logo h3").after("<span class='success_msg' style='color:red;'>Login failed your Username or Password Incorrect.</span>");
+                                }
+                                else{
+                                    window.location.href = rp+"customer/customers/myaccount";
+                                }
+                                
+				setTimeout(remove_message,2000);
+				
+			});
+                            
+		} else{
+			return false;
+		}
+	});
+          
+                 
+                 
+	var $forgotvalidator =  $("#UserSignupForm").validate({
+				rules: {
+				   "data[Customer][first_name]": {
+						required: true
+					},
+					"data[Customer][last_name]": {
+						required: true
+					},
+		            "data[Customer][customer_email]": {
+						required: true,
+		                email:true
+					},
+		            "data[User][UserPassword_2]": {
+						required: true
+		                
+					},
+		            "data[User][confir_password]": {
+						required: true
+					//	equalTo: '#UserPassword'
+					},
+		            "data[Customer][customer_phone]": {
+						required: true,
+						number : true
+					}
+				},
+				messages: { 
+				  "data[Customer][first_name]": {
+						required: "Please enter firstname",
+					},
+					"data[Customer][last_name]": {
+					required: "Please enter lastname",
+					},
+		            "data[Customer][customer_email]": {
+						required: "Please enter email",
+						email : "Please enter a valid email address",
+					},
+		            "data[User][password]": {
+					 	required: "Please enter password",
+		                
+					},
+		            "data[User][confir_password]": {
+						required: "Please enter confirm password",
+						//equalTo: "Please enter the same value again",		                
+					},
+		            "data[Customer][customer_phone]": {
+						required: "Please enter phone number",
+						number : "Please enter valid phone number",
+
+					}
+
+				}
+			});
+
+	
+	
+	
+	$("#UserSignupForm").submit(function(e){
+		
+		e.preventDefault();
+		
+		
+		if($("#UserSignupForm").valid()){
+			
+			var fromdata = $(this).serializeArray();
+			$.post(rp + 'signup', {data : fromdata}, function (response) {
+				
+                               // alert(response);
+                                if(response == 1){
+				$("div.login_logo h3").after("<span class='success_msg' style='color:green;'>Please check your email and activate your account. </span>");
+				}
+                                else{
+                                    
+                                  $("div.login_logo h3").after("<span class='error_msg' style='color:red;'>Mail not sent. </span>");  
+                                }
+				setTimeout(after_submit_signupform,2000);
+                                
+				return false;
+			});
+			
+		} else{
+			return false;
+		}
+	});
+	
+        
+                 
 
 		});
+                
+                
+function after_submit_signupform(){
+
+	$("#UserSignupForm input#CustomerFirstName").val("");
+	$("#UserSignupForm input#CustomerLastName").val("");
+	$("#UserSignupForm input#CustomerCustomerEmail").val("");
+	$("#UserSignupForm input#UserPassword_2").val("");
+	$("#UserSignupForm input#UserConfirPassword").val("");
+	$("#UserSignupForm input#CustomerCustomerPhone").val("");
+	$("span.success_msg").remove();
+	//alert("here");
+	$("a#modal_submitdata").trigger("click");
+        
+       //  $('#modal').modal('toggle');
+        
+	
+}
+                
+                
 	</script>
 
 	<?php

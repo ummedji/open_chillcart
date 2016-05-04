@@ -29,8 +29,8 @@
 					foreach ($mainCategoryList as $key => $value) { 
 				$categoryCount = $key+1; ?>
                 <li class="sort clearfix">
-				<span class="beverageicon"></span><?php echo $value['Category']['category_name']; ?><span class="glyphicon-plus pull-right" onclick="showsubcat('<?php echo $value['Category']['id']; ?>');"></span>
-					<ul id="subul_<?php echo $value['Category']['id']; ?>" style="display:none;">
+				<span class="beverageicon"></span><?php echo $value['Category']['category_name']; ?><span class="glyphicon-plus pull-right" style="cursor: pointer;" onclick="showsubcat('<?php echo $value['Category']['id']; ?>');"></span>
+					<ul id="subul_<?php echo $value['Category']['id']; ?>" style="display:none;" class="as_categories">
 					<?php
 						echo $this->Form->hidden('check' ,array('value'=>$value['Category']['id'].'_'.$storeId,
 						'class'=>'remove_'.$value['Category']['id']));

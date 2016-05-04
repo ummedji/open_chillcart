@@ -1,0 +1,198 @@
+@media only screen and (min-width: 1280px) {
+.container {
+	width: 1200px;
+}
+}
+@media only screen and (min-width: 730px) and (max-width: 991px) {
+.bannerform .form-group {
+	width: 35%;
+}
+}
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+.quicklinks h3 {
+	white-space: nowrap;
+}
+.hisicon, .proficon, .cardicon, .addricon{ float:left;}
+.TabbedPanelsTab {height:70px;}
+.accounthistory .TabbedPanelsTab > p {
+    padding-bottom: 0;
+}
+
+}
+@media only screen and (min-width: 618px) and (max-width: 729px) {
+.bannerform .form-group {
+	width: 32%;
+}
+}
+@media only screen and (min-width: 508px) and (max-width: 618px) {
+.bannerform .form-group {
+	margin-right: 1%;
+	width: 30%
+}
+.quicklinks h3 {
+	white-space: nowrap;
+}
+}
+@media only screen and (max-width: 991px) {
+.innercontentsection .container {
+    padding: 0;
+}
+}
+@media only screen and (max-width: 767px) {
+.cccontactdet {
+	float: none;
+	margin: 0 auto;
+}
+.add-new-card-popup{width:auto;}
+.css-popup{left:10px; right:10px;}
+.myselection label {
+    padding: 0 0 16px 0;
+}
+.myselection select{margin-bottom: 10px;}
+.officerblock{width:90%;  top: 82px;}
+.TabbedPanelsTab {  border-right: none!important;}
+.officerdet h3 {
+    
+    font-size: 20px;
+}
+.officerdet > p{  font-size: 13px;
+    line-height: normal;
+   }
+.accdet {
+    float: none !important;
+    margin: 0 auto;
+    text-align: center;
+}
+.officerimg{ height: 100px; width:100px; margin-right: 10px;}
+.officerdet {height: 100px;
+    margin-left: 50px;
+    padding: 15px 10px 0 0;
+}
+
+.dropdown-menu > ul > li > a {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    color: #333;
+    display: block;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: normal;
+    padding: 15px;
+    text-decoration: none;
+}
+.dropdown-menu > ul {
+    background: rgba(255, 255, 255, 0.95) none repeat scroll 0 0;
+    box-shadow: 0 2px 0.09px rgba(0, 0, 0, 0.15);
+    list-style: outside none none;
+    margin: -5px auto 0;
+    padding: 0 15px;
+}
+.navbar-collapse {
+    background: rgba(28, 28, 25, 0.8) none repeat scroll 0 0;
+    left: 0;
+    margin: 0 !important;
+    position: absolute;
+    top: 69px;transition: all 300ms ease 0s;
+    width: 100%; padding:0; display:none!important
+}
+.has-submenu > .productmenu{ width:100%;}
+.has-submenu > .productmenu .toparrow{display:none;}
+#top-bar .main-menu li > a {
+    background: transparent none repeat scroll 0 0;
+    color: #fff;
+    padding: 21px 10px;
+}
+#top-bar{position:relative;}
+.productmenu > ul {
+    padding: 0 !important;
+}
+.main-menu .nav{float:none!important; margin: 0 !important;}
+#top-bar .dropdown-menu > ul {
+    background: rgba(255, 255, 255, 0.95) none repeat scroll 0 0;
+    box-shadow: 0 2px 0.09px rgba(0, 0, 0, 0.15);
+    list-style: outside none none;
+    margin: -5px auto 0;
+    padding: 0 15px;
+}
+#top-bar .dropdown-menu > ul > li > a {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    color: #333;
+    display: block;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: normal;
+    padding: 15px;
+    text-decoration: none;
+}
+
+
+}
+@media only screen and (max-width: 640px) {
+.cccontactdet {
+	width: 100%;
+	float: none;
+}
+.signupinfo .form-group {
+	width: 100%;
+	
+}
+ .servblock{margin-bottom: 50px;width: 100%;}
+.servblock:last-child {
+	margin-bottom: 0;
+}
+}
+@media only screen and (max-width: 480px) {
+.groceryblock {
+	margin-bottom: 20px;
+	padding-left: 0;
+	padding-right: 0;
+	width: 100%;
+}
+.groceryblock:last-child {
+	margin-bottom: 5px;
+}
+.groceryblock {
+	margin-bottom: 0;
+}
+
+}
+@media only screen and (max-width: 507px) 
+{.bannerform {
+	text-align: center;
+}
+.bannerform button {
+	margin-top: 10px; width:100%;
+}
+.bannerform .form-group {
+	margin-right: 2%;
+	width: 49%;
+}
+.mrnone{margin-right: 0!important;}
+
+}
+
+@media only screen and (min-width: 420px) and (max-width: 480px) {
+.wrapmrgB {
+	padding: 0;
+}
+}
+@media only screen and (max-width: 419px) {
+	.blackborder {
+	margin-bottom: 15px;
+}
+.wrapmrgB {
+	margin-bottom: 20px;
+	padding-left: 0;
+	padding-right: 0;
+	width: 100%;
+}
+.wrapmrgB:last-child {
+	margin-bottom: 5px;
+}
+.milestoneorders {
+	width: 100%
+}
+
+}
+@media only screen and (max-width: 390px) {
+.addprofblock .btn-success{margin-bottom:10px; margin-right:5px;}
+}

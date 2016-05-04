@@ -17,13 +17,21 @@ foreach ($productList as $key => $value) {
 	<!--<div class="productdiv mrgB20">-->
 		<div class="row title greenbut">
             <div class="pull-left">
-              <h4 class="ribbontag"><span class="ribbon-arrow"></span><?php echo $value['MainCategory']['category_name']; ?></h4>
+              <h4 class="ribbontag"><span class="ribbon-arrow"></span><?php echo $value['MainCategory']['category_name']; ?>
+              <?php if ($value['SubCategory']['id'] != $subCat) {
+			$subCat = $value['SubCategory']['id']; ?>
+              <div class="sub_title">
+                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                <?php echo $value['SubCategory']['category_name']; ?>
+               </div>
+              <?php } ?>
+              </h4>
             </div>
 		<?php } ?>
 			<?php if ($value['SubCategory']['id'] != $subCat) {
 			$subCat = $value['SubCategory']['id']; ?>
 			<h5 id="<?php echo $value['SubCategory']['category_name']; ?>" class="sub_category-name sub_title">
-			<span><i class="fa fa-arrow-right" aria-hidden="true"></i> <?php echo $value['SubCategory']['category_name']; ?></span>
+			<!-- <span><i class="fa fa-arrow-right" aria-hidden="true"></i> <?php //echo $value['SubCategory']['category_name']; ?></span> -->
 		 <?php
 		if (isset($value['moreProduct'])) { ?>
 			<div class="pull-right">

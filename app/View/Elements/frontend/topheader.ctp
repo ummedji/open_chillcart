@@ -25,12 +25,16 @@
 			<li><a href="<?php echo $siteUrl.'/customer/customers/myaccount'; ?>"> <?php echo __('My Account', true); ?></a> </li>
 		    <li> <a href="<?php echo $siteUrl.'/customer/users/userLogout'; ?>"> <?php echo __('Logout', true); ?></a> </li> 
 			<?php } else { ?>
-			<li><a href="<?php echo $siteUrl.'/signup'; ?>"> <?php echo __('Sign Up', true); ?></a></li>
-			<li><a href="<?php echo $siteUrl.'/customerlogin'; ?>"> <?php echo __('Login', true); ?></a></li>
+			<!--<li><a href="<?php // echo $siteUrl.'/signup'; ?>"> <?php //echo __('Sign Up', true); ?></a></li> -->
+                        
+			<!--<li><a href="<?php //echo $siteUrl.'/customerlogin'; ?>"> <?php //echo __('Login', true); ?></a></li> -->
+                        <li><a href="javascript:void(0);" data-toggle="modal" data-target="#demo-2">SIGN UP</a></li>
+                        <li><a href="javascript:void(0);" data-toggle="modal" data-target="#demo-1">Login</a></li>
+                        
 			<?php } ?>
 			<?php if ($this->request->params['controller'] == 'searches' &&
 			($this->request->params['action'] == 'index' || $this->request->params['action'] == 'stores' || $this->request->params['action'] == 'storeitems')) { ?>
-			  <li><a href="">How it Works?</a></li>
+			  <li><a href="javascript:void(0);" id="how_it_works">How it Works?</a></li>
 			  <li><a href=""><span class="carticon"></span><span class="cartTotal">0.00</span><span class="droparrow"></span></a></li>
 			 <?php } ?>
 			</ul>

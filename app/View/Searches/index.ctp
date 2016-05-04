@@ -56,7 +56,7 @@
 	</div>
 	</div>
 </div>
-<div class="groceryworks">
+<div class="groceryworks" id="how_it_work">
   <section class="container">
     <div class="features">
       <div class="clearfix">
@@ -101,7 +101,7 @@
     <div class="text-center">
       <h2 class="blgrtitle"><span class="blackborder">OUR</span> <span class="greenborder">GROCERY STORE</span></h2>
     </div>
-    <div class="clearfix grocerystorelogo">
+    <div class="clearfix grocerystorelogo as_logo_slide">
 	<?php
 	foreach($groceryStore as $key => $value) { ?>
 	<div class="pull-left"><a href="<?php echo $siteUrl.'/shop/'.$value['Stores']['seo_url'].'/'.$value['Stores']['id'];  ?>"><img alt="<?php echo $value['Stores']['store_name']; ?>" src="<?php echo $cdn.'/storelogos/'.$value['Stores']['store_logo']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/frontend/images/no_store.jpg"; ?>'"> </a></div>
