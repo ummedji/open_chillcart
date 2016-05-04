@@ -185,7 +185,17 @@
 			$(".rightSideBar").css({ "margin-top": navbar_height });
 		}
 
-
+		function showLocation()
+		{
+			if(jQuery(".changeloc-popup").css('display') == 'none')
+			{
+			jQuery(".changeloc-popup").show();
+			}
+			else
+			{
+			jQuery(".changeloc-popup").hide();
+			}
+		}
 		jQuery().ready(function() {
 			var signupvalidator = jQuery("#UserSignupForm").validate({
 				rules: {

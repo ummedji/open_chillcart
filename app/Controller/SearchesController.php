@@ -164,8 +164,6 @@ class SearchesController extends AppController {
 		return $stores;
 	}
 	public function stores($cityName, $cityId, $areaName, $areaId) {
-
-
 		$this->layout = 'frontend';
 		$orderSuccess = '';
 		$stores = array();
@@ -206,12 +204,12 @@ class SearchesController extends AppController {
 			$this->redirect(array('controller' => 'searches', 'action' => 'index'));
 
 		}
-
+		$cityList = $this->getCityinfo();
+		
+		//$this->set(compact('cityList'));
 		/*$this->Session->write('Search.city', $cityId);
 		$this->Session->write('Search.area', (isset($areaId)) ? $areaId : '');*/
-
-		$this->set(compact('storeList', 'orderSuccess'));
-
+		$this->set(compact('storeList', 'cityList', 'orderSuccess'));
 	}
 
 		
@@ -678,5 +676,36 @@ class SearchesController extends AppController {
 			$returns['msg']= '<span style="color:green;">You are successfully registered</span>';
 		}
 		echo json_encode($returns); exit;
+	}
+	public function getCityinfo()
+	{
+		$siteCountry = $this->siteSetting['Sitesetting']['site_country'];
+		$cityLists = $this->City->find('list', array(
+								'conditions' => array('City.country_id' => $siteCountry,
+													'City.status' => 1),
+								'fields' => array('City.id', 'City.city_name')));
+		foreach ($cityLists as $key => $value) {
+			$storeDetails = $this->Product->find('first', array(
+									'conditions' => array(
+														'Store.status' => 1,
+														'Store.store_city' => $key,
+														'Product.status' => 1,
+														'MainCategory.status' => 1,
+														'SubCategory.status' => 1,
+														//'Store.delivery_option' => 'Yes',
+														//'Brand.status' => 1,
+										'OR' => array('Store.collection' => 'Yes',
+												  	  'Store.delivery'	 => 'Yes')),
+									));
+			if (!empty($storeDetails)) {
+				$cityList[$key] = $value;
+				/*if ($storeDetails['Store']['collection'] == 'Yes' ||
+					$storeDetails['Store']['delivery'] == 'Yes' &&
+					$storeDetails['Store']['delivery_option'] == 'Yes') {
+					$cityList[$key] = $value;
+				}*/
+			}
+		}
+		return $cityList;
 	}
 }

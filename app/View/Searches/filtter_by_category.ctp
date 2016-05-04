@@ -22,25 +22,26 @@ foreach ($productList as $key => $value) {
 		<?php } ?>
 			<?php if ($value['SubCategory']['id'] != $subCat) {
 			$subCat = $value['SubCategory']['id']; ?>
-			<h5 id="<?php echo $value['SubCategory']['category_name']; ?>" class="sub_category-name">
-			<span><?php echo $value['SubCategory']['category_name']; ?></span>
-		 <?php 
+			<h5 id="<?php echo $value['SubCategory']['category_name']; ?>" class="sub_category-name sub_title">
+			<span><i class="fa fa-arrow-right" aria-hidden="true"></i> <?php echo $value['SubCategory']['category_name']; ?></span>
+		 <?php
 		if (isset($value['moreProduct'])) { ?>
 			<div class="pull-right">
               <button class="btn buttonStatus" type="button" onclick="categoriesProduct(<?php echo $value['MainCategory']['id'].','.$value['SubCategory']['id'].','.$value['Store']['id'];?>);">View More</button>
             </div>
-		<?php } ?> 
+		<?php } ?>
 			</h5>
+			<div class="clearfix"></div>
         </div>
 		<?php /* <div style="margin-top:10px"><?php echo $value['SubCategory']['category_name']; ?></div> */ ?>
 		<div class="row products padTB20 productsCat<?php echo $count; ?>">
 		<?php
 		$subCatCount = $subCatCount+1;
-		} 
+		}
 		$imageName = (isset($value['ProductImage'][0]['image_alias'])) ? $value['ProductImage'][0]['image_alias'] : '';
 		$imageSrc = $cdn.'/stores/products/home/'.$imageName;
 		$imageSrc = 'https://dnrskjoxjtgst.cloudfront.net/stores/products/home/'.$imageName;
-        
+
 		?>
 		<div class="col-md-2 col-sm-4 productblock">
               <div class="product">
@@ -86,23 +87,12 @@ foreach ($productList as $key => $value) {
                                                     echo html_entity_decode($this->Number->currency($pr_value['orginal_price'], $siteCurrency))." / ".$quantity_value."g";
                                                     
                                                     ?><i class="fa fa-plus plushide" onclick="addToCart(<?php echo $value['ProductDetail'][0]['id']; ?>);"></i></li> 
-                                                    <?php
-                                                    
-							
-						}
-                                            
-                                            ?>
-						
-                                        <?php } ?>
-						  
-                                                  
+                                                    <?php }
+                        ?>
+                        <?php } ?>
 						</ul>
-                            
-                                        <?php }else{ 
-                                                
-                            
-                                        $product_name = $value['ProductDetail'][0]['sub_name']; 
-						
+                        <?php }else{ 
+                        $product_name = $value['ProductDetail'][0]['sub_name'];
 						$quantity = explode(" ",$product_name);
 						$get_key =array_search ('Grams', $quantity);
 						
