@@ -92,7 +92,7 @@
     margin: 0 !important;
     position: absolute;
     top: 69px;transition: all 300ms ease 0s;
-    width: 100%; padding:0; display:none;
+    width: 100%; padding:0; display:none!important
 }
 .has-submenu > .productmenu{ width:100%;}
 .has-submenu > .productmenu .toparrow{display:none;}
@@ -196,14 +196,3 @@
 @media only screen and (max-width: 390px) {
 .addprofblock .btn-success{margin-bottom:10px; margin-right:5px;}
 }
-@media only screen and (max-width: 414px) {
-    .as_logo_slide img {
-        max-width: 100%;
-    }
-    .as_logo_slide .pull-left {
-        float: none !important;
-        width: 100%;
-        margin-bottom: 10px;
-    }
-}
-
