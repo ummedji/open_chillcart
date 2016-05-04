@@ -109,8 +109,8 @@
 				?>
 			     
 			<div class="col-md-4 col-sm-6 storebl mrgB20">
-				<div class="flipper"><div class="storeimg"> <a href=""><img src="<?php echo $cdn.'/storelogos/'.$value['Store']['store_logo']; ?>"></a></div>
-				<div class="storefirstbl"> <a href="">
+				<div class="flipper"><div class="storeimg"> <a href="<?php echo $siteUrl.'/shop/'.$value['Store']['seo_url'].'/'.$value['Store']['id']; ?>"><img src="<?php echo $cdn.'/storelogos/'.$value['Store']['store_logo']; ?>"></a></div>
+				<div class="storefirstbl"> <a href="<?php echo $siteUrl.'/shop/'.$value['Store']['seo_url'].'/'.$value['Store']['id']; ?>">
 				<p>ShopEasy</p>
 				<p>Min Order -   5.00</p>
 				<ul class="starcredit">
