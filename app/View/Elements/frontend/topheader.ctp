@@ -30,102 +30,39 @@
 
  		<!--<li><a href="<?php //echo $siteUrl.'/customerlogin'; ?>"> <?php //echo __('Login', true); ?></a></li> -->
                         <li><a href="javascript:void(0);" data-toggle="modal" data-target="#demo-2">SIGN UP</a></li>
-                       <li><a href="javascript:void(0);" data-toggle="modal" data-target="#demo-1">Login</a></li>
+                       <li><a id="login_popup" href="javascript:void(0);" data-toggle="modal" data-target="#demo-1">Login</a></li>
                     
 			<?php } ?>
 
+                       
+                       
 			<?php
-			if(($this->request->params['controller'] == "customers" && $this->request->params['action'] == 'customer_myaccount') || ($this->request->params['controller'] == "searches" && ($this->request->params['action'] == 'index' || $this->request->params['action'] == 'stores' || $this->request->params['action'] == 'storeitems' || $this->request->params['action'] == 'aboutus')))
-			/*if($this->request->params['controller'] == 'searches' &&
-			($this->request->params['action'] == 'index' || $this->request->params['action'] == 'stores' || $this->request->params['action'] == 'storeitems'))*/ { ?>
+                        
+                        /*if($this->request->params['controller'] == 'searches' &&
+			($this->request->params['action'] == 'index' || $this->request->params['action'] == 'stores' || $this->request->params['action'] == 'storeitems'))*/
+                        
+			if(($this->request->params['controller'] == "checkouts" && $this->request->params['action'] == 'index') || ($this->request->params['controller'] == "customers" && $this->request->params['action'] == 'customer_myaccount') || ($this->request->params['controller'] == "searches" && ($this->request->params['action'] == 'index' || $this->request->params['action'] == 'stores' || $this->request->params['action'] == 'storeitems' || $this->request->params['action'] == 'aboutus'))){ ?>
 
 			  <li><a href="javascript:void(0);" id="how_it_works">How it Works?</a></li>
-			 <li class="shopping-cart"><a href=""><span class="carticon"></span><span class="cartTotal">0.00</span><span class="droparrow"></span></a></li>
+			<!-- <li class="shopping-cart"><a href=""><span class="carticon"></span><span class="cartTotal">0.00</span><span class="droparrow"></span></a></li> -->
                           
                           
                           
-                          <li class="has-submenu"><a data-toggle="dropdown" class="dropdown-toggle" href=""><span class="carticon"></span><span class="cartTotal">0.00</span> <span class="droparrow"></span></a>
-          <div class="dropdown-menu productmenu">
+                          <li class="shopping-cart has-submenu"><a data-toggle="dropdown" class="dropdown-toggle" href=""><span class="carticon"></span><span class="cartTotal">0.00</span> <span class="droparrow"></span></a>
+          <div class="dropdown-menu productmenu" style="height: 500px; overflow-y: scroll;"> 
           <span class="toparrow"></span>
           <div class="subnavheading clearfix"><h4 class="pull-left">Total Price</h4> <div class="pull-right"><p><span class="rs-icon"></span><span class="cartTotal">0.00</span></p></div></div>
-          <ul>
+          <ul class="cart_data">
               
-          <?php     $data = $this->requestAction(array('controller' => 'searches', 'action' => 'header_cart')); ?>
-             <?php
-             
-             foreach ($data["storeCart"] as $key => $value) { ?>
-              <li>
-                  <a href="#">
-                      <div class="productblock clearfix">
-                          <div class="prodtag pull-left">
-                              <h2>
-                                  
-                                  <?php
-
-							if ($value['ShoppingCart']['product_quantity'] < $value['ProductDetail']['quantity']) { ?>
-                                                    <a rel="<?php echo $value['ShoppingCart']['product_id']; ?>" class="change-qty qty-inc pointer" onclick="qtyIncrement(<?php echo $value['ShoppingCart']['id']; ?>)" >
-									<span class="up"></span>
-								</a> <?php
-							} else { ?>
-
-								<a class="change-qty qty-inc" >
-									<span class="up"></span>
-								</a> <?php
-							} ?>
-                                  
-                                  <span class="num"><?php echo $value['ShoppingCart']['product_quantity']; ?></span>
-                                  
-                                  
-                                  <?php
-
-							if ($value['ShoppingCart']['product_quantity'] > 1) { ?>
-								<a rel="<?php echo $value['ShoppingCart']['product_id']; ?>" class="change-qty qty-dec pointer" onclick="qtyDecrement(<?php echo $value['ShoppingCart']['id']; ?>)">
-									 <span class="down"></span>
-								</a> <?php
-							} 
-                                                        elseif($value['ShoppingCart']['product_quantity'] == 1){
-                                                            ?>
-                                                        
-                                                        <a rel="<?php echo $value['ShoppingCart']['product_id']; ?>" class="change-qty qty-dec pointer" onclick="deleteCart(<?php echo $value['ShoppingCart']['id']; ?>,<?php echo $value['ShoppingCart']['product_id']; ?>);">
-									 <span class="down"></span>
-								</a>
-                                                        
-                                                        <?php
-                                                        }
-                                                        else { ?>
-								<a class="change-qty qty-dec">
-									 <span class="down"></span>
-								</a> <?php
-
-							} ?>
-                                  
-                              
-                              </h2>
-                          </div>
-                          <div class="prodimg pull-left">
-                              
-                              <?php $imageSrc = 'https://s3.amazonaws.com/'.$siteBucket.'/stores/products/carts/'.$value['ProductDetail']['Product']['ProductImage'][0]['image_alias']; ?>
-                              
-                              <img src="<?php echo $imageSrc; ?>"  alt="<?php echo $value['ShoppingCart']['product_name']; ?>" title="<?php echo $value['ShoppingCart']['product_name']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/no-imge.jpg"; ?>'" />
-                          
-                          </div>
-                          <div class="producttitle pull-left">
-                              <p><?php echo $value['ShoppingCart']['product_name']; ?></p>
-                              <span class="productprize"><span class="black-rs-icon"></span> MRP <?php echo html_entity_decode($this->Number->currency($value['ShoppingCart']['product_total_price'], $siteCurrency)); ?></span></div>
-                      </div>
-                  </a>
-              
-              </li>
-              
-             <?php } ?>
-            
-          </ul> 
-     
-       
-        
-       
-          <div class="text-center"> <button class="btn checkout" type="submit">Checkout</button></div>
+          <?php   //$this->requestAction(array('controller' => 'searches', 'action' => 'header_data_cart'));  ?>
+           
+       <!--   <div class="text-center"> <button class="btn checkout" type="submit">Checkout</button></div>-->
           
+          
+          
+          
+          
+          </ul>
            </div>        
           </li>
                           
@@ -139,16 +76,6 @@
 		</div>
 		</div>
 </header>
-<?php
- //$data = $this->requestAction(array('controller' => 'searches', 'action' => 'header_cart'));
-       
-       //$this->render('TestView/index');
-       
-  //     echo "<pre>";
-       
-  //     print_r($data);die;
-       
-?>
 <!-- NEW TEMPLATE END -->
 <?php /*	 
 	<div class="container-fluid">

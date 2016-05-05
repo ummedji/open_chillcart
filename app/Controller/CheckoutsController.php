@@ -12,7 +12,7 @@ class CheckoutsController extends AppController
 
     public $uses = array('CustomerAddressBook', 'State', 'ShoppingCart', 'DeliveryTimeSlot',
         'StripeCustomer', 'DeliveryLocation', 'Storeoffer', 'City',
-        'Location');
+        'Location','Customers','Countries');
 
     public $components = array('Updown', 'Stripe', 'Functions');
 
@@ -45,7 +45,7 @@ class CheckoutsController extends AppController
 
     public function index()
     {
-
+        
         $minOrderCheck = $this->storeMinOrderCheck();
 
         $this->layout = 'frontend';
@@ -54,6 +54,7 @@ class CheckoutsController extends AppController
                                                     'ShoppingCart.order_id' => 0),
                                 'order' => array('ShoppingCart.store_id'),
                                 'group' => 'ShoppingCart.store_id'));
+        
         if (empty($shopCartDetails) || empty($minOrderCheck)) {
             $this->redirect(array('controller' => 'searches', 'action' => 'index'));
         }
@@ -136,7 +137,28 @@ class CheckoutsController extends AppController
                                                 'CustomerAddressBook.status' => 1)));
         $stripeCards = $this->StripeCustomer->find('all', array(
             'conditions' => array('StripeCustomer.customer_id' => $this->Auth->User('Customer.id'))));
-        $this->set(compact('addresses', 'shopCartDetails', 'storeSlots', 'optionDays', 'stripeCards'));
+        
+        
+        $user_data = $this->Customers->find('all', array(
+                            'conditions' => array('Customers.id' => 
+                                                   $this->Auth->User('Customer.id'))));
+       
+              
+               $customerState = $this->State->find('list', array(
+            'conditions' => array('State.country_id' => $addresses[0]["CustomerAddressBook"]["state_id"]),
+            'fields' => array('id', 'state_name')));
+
+        $customerCity = $this->City->find('list', array(
+             'conditions' => array('City.id' => $addresses[0]["CustomerAddressBook"]["city_id"]),
+            'fields' => array('City.id', 'City.city_name')));
+        
+       // $customerCountry = $this->Countries->find('list', array(
+       //      'conditions' => array('Countries.id' => $addresses[0]["State"]["countrty_id"]),
+       //     'fields' => array('Countries.id', 'Countries.country_name')));
+        
+        $this->set(compact('addresses', 'shopCartDetails', 'storeSlots', 'optionDays', 'stripeCards','customerState','customerCity'));
+        
+        
     }
 
     // Min Order Check

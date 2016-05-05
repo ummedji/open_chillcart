@@ -1,4 +1,398 @@
-<div class="container searchshopContent shopcheckout"> <?php
+<div class="innercontentsection checkoutpage">
+  <div class="container">
+    <div class="content">
+      <div id="Accordion1" class="Accordion checkout_acc" tabindex="0">
+        <div class="AccordionPanel">
+          <div class="AccordionPanelTab">
+            <div class="row checkouttitletab">
+              <div class="selecteddiv"><span class="ok-icon"></span></div>
+              <div class="col-md-4 col-sm-4 titlediv fldiv">1. Login ID </div>
+              <div class="col-md-4 col-sm-4 titlediv">
+                <p>webclues@gmail.com</p>
+              </div>
+              <div class="col-md-4 col-sm-4">
+                <div class="text-right">
+                  <button class="btn addbtn" type="submit">Change Login</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="AccordionPanelContent checkoutcontent">
+            <div class="pad20 login_part">
+                
+                <?php
+                if(!empty($addresses)){
+                    $user_email = $addresses[0]["Customer"]["customer_email"];
+                }else{
+                    $user_email = "";
+                }
+                ?>
+                
+              <p class="emailtext">Logged in as <a href="mailto:<?php echo $user_email; ?>"><?php echo $user_email; ?></a></p>
+              <p class="textnote">Please note that upon clicking "Sign out" you will lose items in your cart and will be redirected to Chilcart home page.</p>
+              <div class="inlinecontent">
+                <a class="btn signoutbut" href="<?php echo $siteUrl.'/customer/users/userLogout'; ?>">Sign Out</a>
+                <p class="signouttext">Continue with checkout</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="AccordionPanel">
+          <div class="AccordionPanelTab">
+            <div class="row checkouttitletab">
+              <div class="selecteddiv"><span class="ok-icon"></span></div>
+              <div class="col-md-4 col-sm-4 titlediv fldiv">2. Delivery Address </div>
+              <div class="col-md-4 col-sm-4 titlediv">
+                <?php
+                    if(!empty($addresses)){
+                        $user_first_name = $addresses[0]["Customer"]["first_name"];
+                        $user_last_name = $addresses[0]["Customer"]["last_name"];
+                        $user_name = $user_first_name." ".$user_last_name;
+                        
+                        $user_phone = $addresses[0]["Customer"]["customer_phone"];
+                        
+                    }else{
+                        $user_name = "";
+                        $user_phone = "";
+                    }
+                ?>
+                <h3><?php echo $user_name; ?><span><?php echo $user_phone; ?></span></h3>
+                
+                <?php
+                
+                if(!empty($addresses)){
+                        $user_address_title = $addresses[0]["CustomerAddressBook"]["address_title"];
+                        $user_address = $addresses[0]["CustomerAddressBook"]["address"];
+                        $user_address_landmark = $addresses[0]["CustomerAddressBook"]["landmark"];
+                        $user_address_city = $customerCity[1];
+                        $user_address_state = $customerState[1];
+                        
+                        $final_address = $user_address_title.", ". $user_address.", ". $user_address_landmark." ". $user_address_city.", ". $user_address_state;
+                        
+                }
+                else{
+                    
+                    $final_address = "";
+                    
+                }
+                ?>
+                
+                <p><?php echo $final_address; ?> </p>
+              </div>
+              <div class="col-md-4 col-sm-4">
+                <div class="text-right">
+                  <button class="btn addbtn" type="submit">Change Address</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="AccordionPanelContent checkoutcontent">
+            <div class="clearfix addrbook padTB20">
+              <div class="col-md-6 col-sm-6 addrbookbl">
+                <div class="addrbg">
+                  <h2><?php echo $user_name; ?></h2>
+                  <div class="row">
+                    <p class="col-md-6"><?php echo $final_address; ?> </p>
+                  </div>
+                </div>
+                <div class="defaddr clearfix">
+                  <div class="row">
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                      <label class="checkbox-inline">
+                        <input type="checkbox" value="option1" id="inlineCheckbox1">
+                        Default Address </label>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                      <p> Delete Address</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-sm-6 addrbookbl">
+                <div class="addrbg">
+                  <h2><?php echo $user_name; ?></h2>
+                  <div class="row">
+                    <p class="col-md-6"><?php echo $final_address; ?> </p>
+                  </div>
+                </div>
+                <div class="defaddr clearfix">
+                  <div class="row">
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                      <label class="checkbox-inline">
+                        <input type="checkbox" value="option1" id="inlineCheckbox1">
+                        Default Address </label>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                      <p> Delete Address</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="text-center padB20"> <a href="" class="addbtn btn"><span class="addriconwt"></span>Add Address</a></div>
+          </div>
+        </div>
+        <div class="AccordionPanel">
+          <div class="AccordionPanelTab">
+            <div class="row checkouttitletab">
+              <div class="selecteddiv"><span class="ok-icon"></span></div>
+              <div class="col-md-12 titlediv fldiv">3. Order Summary 4 items </div>
+            </div>
+          </div>
+          <div class="AccordionPanelContent checkoutcontent">
+            <div class="orderdetails">
+              <div class="clearfix orderheading pad20 mobilehide">
+                <div class="col-md-2 wrap15"></div>
+                <div class="col-md-3">Item</div>
+                <div class="col-md-1 wrap5">Qty</div>
+                <div class="col-md-2 wrap15">Price</div>
+                <div class="col-md-3">Delivery Details</div>
+                <div class="col-md-2 wrap15">Subtotal </div>
+              </div>
+              <div class="clearfix orderdet pad20 ">
+                <div class="col-md-2 col-sm-2 wrap15">
+                  <div class="imgdiv text-center"><img src="images/camera-image.png"></div>
+                </div>
+                <div class="col-md-3 col-sm-10">
+                  <div class="itemdiv">
+                    <p class="itemtitle">Camera</p>
+                    <p>Canon EOS 1200D (Kit with 8 GB Card &amp; Bag EF S18-55 IS II+55-250mm IS II) DSLR Camera</p>
+                    <div class="desktophide itembl">
+                     <p><span class="tl">Qty :</span><span class="qtydiv">1</span></p>
+                     <p><span class="tl">Price :</span><span class="rsdiv">Rs.24999</span></p>
+                      <p><span class="tl">Delivery Detail :</span><span class="delivdet">by Wed, 27th Apr [FREE]</span></p>
+                       <p><span class="tl">Total Price :</span><span class="rsdiv">Rs.24999</span></p>
+                    </div>
+                    
+                  </div>
+                </div>
+                <div class="col-md-1 wrap5 mobilehide">
+                  <p class="qtydiv">1</p>
+                </div>
+                <div class="col-md-2 wrap15 mobilehide">
+                  <p class="rsdiv">Rs.24999</p>
+                </div>
+                <div class="col-md-3 mobilehide">
+                  <p class="delivdet">by Wed, 27th Apr [FREE]</p>
+                </div>
+                <div class="col-md-2 wrap15 mobilehide">
+                  <p class="rsdiv">Rs.24999</p>
+                </div>
+              </div>
+              <div class="clearfix orderdet pad20 ">
+                <div class="col-md-2 col-sm-2 wrap15">
+                  <div class="imgdiv text-center"><img src="images/camera-image.png"></div>
+                </div>
+                <div class="col-md-3 col-sm-10">
+                  <div class="itemdiv">
+                    <p class="itemtitle">Camera</p>
+                    <p>Canon EOS 1200D (Kit with 8 GB Card &amp; Bag EF S18-55 IS II+55-250mm IS II) DSLR Camera</p>
+                    <div class="desktophide itembl">
+                     <p><span class="tl">Qty :</span><span class="qtydiv">1</span></p>
+                     <p><span class="tl">Price :</span><span class="rsdiv">Rs.24999</span></p>
+                      <p><span class="tl">Delivery Detail :</span><span class="delivdet">by Wed, 27th Apr [FREE]</span></p>
+                       <p><span class="tl">Total Price :</span><span class="rsdiv">Rs.24999</span></p>
+                    </div>
+                    
+                  </div>
+                </div>
+                <div class="col-md-1 wrap5 mobilehide">
+                  <p class="qtydiv">1</p>
+                </div>
+                <div class="col-md-2 wrap15 mobilehide">
+                  <p class="rsdiv">Rs.24999</p>
+                </div>
+                <div class="col-md-3 mobilehide">
+                  <p class="delivdet">by Wed, 27th Apr [FREE]</p>
+                </div>
+                <div class="col-md-2 wrap15 mobilehide">
+                  <p class="rsdiv">Rs.24999</p>
+                </div>
+              </div>
+              <div class="pad20">
+                <p class="alerttext">Send Order Confirmation SMS alert to +91 9879431254</p>
+              </div>
+              <div class="padLR20 padB20 clearfix">
+                
+                <div class="pull-right ordersum">
+                  <p class="amountpay">Amount Payable: Rs.41677</p>
+                </div>
+                <div class="pull-left ordersum">
+                  <button type="button" class="btn addbtn">Continue</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="AccordionPanel">
+          <div class="AccordionPanelTab">
+            <div class="row checkouttitletab">
+              <div class="selecteddiv"><span class="ok-icon"></span></div>
+              <div class="col-md-12 titlediv fldiv">4. Payment Method </div>
+            </div>
+          </div>
+          <div class="AccordionPanelContent checkoutcontent">
+            <div class="paymethoddiv">
+              <div class="clearfix">
+                <div class="col-md-9 paymethodlistdiv">
+                  <div id="TabbedPanels1" class="TabbedPanels clearfix">
+                    <ul class="col-md-3 TabbedPanelsTabGroup">
+                      <li class="TabbedPanelsTab" tabindex="0">
+                        <div class="paytypetitle">Credit Card</div>
+                      </li>
+                      <li class="TabbedPanelsTab" tabindex="0">
+                        <div class="paytypetitle">Net Banking</div>
+                      </li>
+                      <li class="TabbedPanelsTab" tabindex="0">
+                        <div class="paytypetitle">EMI</div>
+                      </li>
+                      <li class="TabbedPanelsTab" tabindex="0">
+                        <div class="paytypetitle">Debit Card</div>
+                      </li>
+                      <li class="TabbedPanelsTab" tabindex="0">
+                        <div class="paytypetitle">COD</div>
+                      </li>
+                      <li class="TabbedPanelsTab" tabindex="0">
+                        <div class="paytypetitle">Gift Card</div>
+                      </li>
+                    </ul>
+                    <div class="col-md-9 TabbedPanelsContentGroup">
+                      <div class="TabbedPanelsContent">
+                        <div class="carddetail">
+                          <p class="smalltext">Pay using EMI on Credit Card</p>
+                          <div class="mrgTB20">
+                            <p class="text">Flipcart does not change any processing fee for availing amount in case of any cancallation.</p>
+                          </div>
+                          <div class="form-group">
+                            <label for="exampleInputEmail1">Select Type of Card</label>
+                            <select class="form-control">
+                              <option selected>----Select a Bank----</option>
+                              <option>2</option>
+                              <option>3</option>
+                              <option>4</option>
+                              <option>5</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="TabbedPanelsContent">
+                        <div class="carddetail">
+                          <p class="smalltext">Pay using EMI on Credit Card</p>
+                          <div class="mrgTB20">
+                            <p class="text">Flipcart does not change any processing fee for availing amount in case of any cancallation.</p>
+                          </div>
+                          <div class="form-group">
+                            <label for="exampleInputEmail1">Select Type of Card</label>
+                            <select class="form-control">
+                              <option selected>----Select a Bank----</option>
+                              <option>2</option>
+                              <option>3</option>
+                              <option>4</option>
+                              <option>5</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="TabbedPanelsContent">
+                        <div class="carddetail">
+                          <p class="smalltext">Pay using EMI on Credit Card</p>
+                          <div class="mrgTB20">
+                            <p class="text">Flipcart does not change any processing fee for availing amount in case of any cancallation.</p>
+                          </div>
+                          <div class="form-group">
+                            <label for="exampleInputEmail1">Select Type of Card</label>
+                            <select class="form-control">
+                              <option selected>----Select a Bank----</option>
+                              <option>2</option>
+                              <option>3</option>
+                              <option>4</option>
+                              <option>5</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="TabbedPanelsContent">
+                        <div class="carddetail">
+                          <p class="smalltext">Pay using EMI on Credit Card</p>
+                          <div class="mrgTB20">
+                            <p class="text">Flipcart does not change any processing fee for availing amount in case of any cancallation.</p>
+                          </div>
+                          <div class="form-group">
+                            <label for="exampleInputEmail1">Select Type of Card</label>
+                            <select class="form-control">
+                              <option selected>----Select a Bank----</option>
+                              <option>2</option>
+                              <option>3</option>
+                              <option>4</option>
+                              <option>5</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="TabbedPanelsContent">
+                        <div class="carddetail">
+                          <p class="smalltext">Pay using EMI on Credit Card</p>
+                          <div class="mrgTB20">
+                            <p class="text">Flipcart does not change any processing fee for availing amount in case of any cancallation.</p>
+                          </div>
+                          <div class="form-group">
+                            <label for="exampleInputEmail1">Select Type of Card</label>
+                            <select class="form-control">
+                              <option selected>----Select a Bank----</option>
+                              <option>2</option>
+                              <option>3</option>
+                              <option>4</option>
+                              <option>5</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="TabbedPanelsContent">
+                        <div class="carddetail">
+                          <p class="smalltext">Pay using EMI on Credit Card</p>
+                          <div class="mrgTB20">
+                            <p class="text">Flipcart does not change any processing fee for availing amount in case of any cancallation.</p>
+                          </div>
+                          <div class="form-group">
+                            <label for="exampleInputEmail1">Select Type of Card</label>
+                            <select class="form-control">
+                              <option selected>----Select a Bank----</option>
+                              <option>2</option>
+                              <option>3</option>
+                              <option>4</option>
+                              <option>5</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3 paymethodlistdiv">
+                  <div class="amountdet">
+                    <div class="clearfix totalamtext">
+                      <div class="col-md-6 col-sm-6 col-xs-6">
+                        <p>Total</p>
+                      </div>
+                      <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                        <p>Rs. 41677</p>
+                      </div>
+                    </div>
+                    <div class="clearfix totalamtext bgchange">
+                      <p class="text-right">Amount Payable<span>Rs. 41677</span></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<?php echo $this->element('frontend/footer'); ?>
+<?php /*<div class="container searchshopContent shopcheckout"> <?php
 	echo $this->Form->create('Order', array('controller' => 'checkouts',
 											'action' => 'conformOrder')); ?>
 		<div class="checkout-tabs-bar-block col-md-2">
@@ -628,4 +1022,5 @@ function slotStore (id) {
 	});
 }
 
-</script>
+</script>*/
+?>

@@ -38,7 +38,7 @@
 //if($this->request->params['action'] == 'customer_myaccount') { echo "a";  exit;}
 		 //echo "<pre>"; print_r($loggedUser);
 
-	if(($this->request->params['controller'] == "customers" && $this->request->params['action'] == 'customer_myaccount') || ($this->request->params['controller'] == "searches" && ($this->request->params['action'] == 'index' || $this->request->params['action'] == 'stores' || $this->request->params['action'] == 'storeitems' || $this->request->params['action'] == 'aboutus'))) {  ?>
+	if(($this->request->params['controller'] == "checkouts" && $this->request->params['action'] == 'index') || ($this->request->params['controller'] == "customers" && $this->request->params['action'] == 'customer_myaccount') || ($this->request->params['controller'] == "searches" && ($this->request->params['action'] == 'index' || $this->request->params['action'] == 'stores' || $this->request->params['action'] == 'storeitems' || $this->request->params['action'] == 'aboutus'))) {  ?>
 
 		<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" type="text/css" href="<?php echo $this->webroot; ?>css/bootstrap.min.css">
@@ -146,7 +146,7 @@
            	$(window).trigger('resize');
 		   	doResize();
 		   	$(window).on('resize', doResize);		   
-		   	clearConsole();
+		   //	clearConsole();
             
         });
         function ajaxpromotionalSignup()
@@ -943,7 +943,7 @@
             
        //     alert("HERE");
             
-        var cart = $('.shopping-cart');
+        var cart_data = $('.shopping-cart');
       //  var imgtodrag = $(this).parent('.item').find("img").eq(0);
         
         var imgtodrag = $(this).parent().parent().parent().parent().find("img").eq(0);
@@ -967,17 +967,17 @@
             })
                 .appendTo($('body'))
                 .animate({
-                'top': cart.offset().top + 10,
-                    'left': cart.offset().left + 10,
+                'top': cart_data.offset().top + 10,
+                    'left': cart_data.offset().left + 10,
                     'width': 75,
                     'height': 75
             }, 1000, 'easeInOutExpo');
             
-            setTimeout(function () {
-                cart.effect("shake", {
-                    times: 2
-                }, 200);
-            }, 1500);
+         //   setTimeout(function () {
+           //     cart_data.effect("shake", {
+           //         times: 2
+           //     }, 200);
+          //  }, 1500);
 
             imgclone.animate({
                 'width': 0,
@@ -987,6 +987,31 @@
             });
         }
    });
+       
+       $("body").on("click","a.checkout",function(e){
+       
+        e.preventDefault();
+        
+         var checkout_url = $(this).attr("href");
+                       
+        var split_url = checkout_url.split("=");
+
+        if(split_url[1] == "checkout"){
+
+            $("form#UserLoginForm").attr("action",checkout_url);
+            $("a#login_popup").trigger("click");
+        }
+        else{
+           
+            window.location.href= checkout_url;
+            
+        }
+        
+        
+        
+       
+       
+       });
         
 
 		});

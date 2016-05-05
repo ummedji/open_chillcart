@@ -1,5 +1,5 @@
 <?php //$main = $subCat = $subCatCount = 0;
-//print_r($productList);
+ $shoppin_cart_data = $this->requestAction(array('controller' => 'searches', 'action' => 'header_array_data_cart'));
 ?>
 <!--<div class="col-md-10 col-sm-8">-->
 
@@ -8,6 +8,7 @@
 $ic = 1;
 $main = $subCat = $subCatCount = 0;
 foreach ($productList as $key => $value) {
+    
 	$nextValue = $key+1;
 		
 	
@@ -46,12 +47,32 @@ foreach ($productList as $key => $value) {
 		?>
 		<div class="col-md-2 col-sm-4 productblock">
               <div class="product hr_products">
-                <div class="image"> <a href="detail.html"> <img class="img-responsive image1" alt="" src="<?php echo $imageSrc; ?>"> </a> <span class="prod-id">2</span> </div>
+                <div class="image"> <a href="detail.html"> <img class="img-responsive image1" alt="" src="<?php echo $imageSrc; ?>"> </a> <span class="prod-id" id="cart_prod_num">
+                     <?php 
+                     $count_data = 0;
+                      foreach($shoppin_cart_data as $cart_key=>$cart_data){
+                     
+                     if($value['ProductDetail'][0]['id'] == $cart_data["ShoppingCart"]["product_id"]){
+                         
+                         $count_data = $cart_data["ShoppingCart"]["product_quantity"];
+                         break;
+                     }else{
+                         
+                         $count_data = 0;
+                         
+                     }
+                      }
+                      
+                      echo $count_data;
+                      
+                     ?>   
+                       
+                    </span> </div>
 
                 <div class="text">
                   <h3><a href="#"><?php echo $value['Product']['product_name']; ?> </a></h3>
                   <p class="prodesc"><?php echo $value['ProductDetail'][0]['sub_name']; ?></p>
-                  <p class="price"><span class="black-rs-icon"></span>
+                  <p class="price">
 				  <?php  /*if ($value['Product']['price_option'] != 'single') {  
                             ?>
 						<ul id="select_product_<?php echo $value['ProductDetail'][0]['id']; ?>" class="select_product_data" >
@@ -136,14 +157,19 @@ foreach ($productList as $key => $value) {
                                        <?php
 					foreach ($value['ProductDetail'] as $pr_key => $pr_value) { 
                                             
+                                            if ($value['Product']['price_option'] != 'single') {
                                                 $product_name = $pr_value['sub_name']; 
-                                                
-						//echo $product_name."</br>";
-                                                
 						$quantity = explode(" ",$product_name);
-						$get_key =array_search ('Grams', $quantity);
+						//$get_key =array_search ('Grams', $quantity);
+						$quantity_value = $quantity[1];
+                                                
+                                            }else{
+                                               // $product_name = $value['ProductDetail'][0]['sub_name'];
+						//$quantity = explode(" ",$product_name);
+						//$get_key =array_search ('Grams', $quantity);
 						
-						$quantity_value = $quantity[$get_key-1];
+						$quantity_value = $value['ProductDetail'][0]['sub_name'];;
+                                            }
 						
 						if ($pr_value['compare_price'] != 0) {
                                                     ?>
@@ -155,7 +181,7 @@ foreach ($productList as $key => $value) {
                                                     ?>
                                                         <!--<i class="fa fa-plus plushide" onclick="addToCart(<?php //echo $value['ProductDetail'][0]['id']; ?>);"></i> -->
                                                     <a href="#" class="price_part"><span class="black-rs-icon"></span>
-                                                 <?php echo  html_entity_decode($this->Number->currency($pr_value['compare_price'], $siteCurrency))." <span>/ ". $quantity_value."</span>"; ?>
+                                                 <?php echo $pr_value['compare_price']." <span>/ ". $quantity_value."</span>"; ?>
                                                         
                                                         </a>
                                                     <a href="javascript:void(0);" class="add-to-cart pull-right plus_ii">
@@ -178,7 +204,7 @@ foreach ($productList as $key => $value) {
                                                     <a href="#" class="price_part"><span class="black-rs-icon"></span>
                                                         <?php 
                                                     
-                                                    echo html_entity_decode($this->Number->currency($pr_value['orginal_price'], $siteCurrency))." <span>/ ".$quantity_value."g</span>";
+                                                    echo $pr_value['orginal_price']." <span>/ ".$quantity_value."g</span>";
                                                     
                                                     ?>
                                                      </a>   

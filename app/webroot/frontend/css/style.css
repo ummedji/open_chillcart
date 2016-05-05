@@ -1805,3 +1805,225 @@ ul.detail-action_li {
 ul.select_product_data li { list-style: none;}
 .add_adress_parent .css-popup { left: 0;}
 /*as style*/
+
+/*Checkout CSS*/
+
+
+.checkoutpage {
+    padding-top: 120px;
+}
+.checkout_acc{ overflow: visible!important;}
+.checkout_acc .addbtn {
+    border-radius: 2px;
+    font-size: 13px;
+    padding: 8px 24px;
+}
+.checkout_acc .AccordionPanelTab {
+    background-color: #eaeff1;
+    border-bottom: 1px solid #9aadb4;
+    color: #333!important;
+    padding: 8px 15px;
+}
+.checkouttitletab{position:relative;}
+.ok-icon {
+    background: rgba(0, 0, 0, 0) url("../images/ok-icon.png") no-repeat scroll center center;
+    bottom: 0;
+    display: inline-block;
+    height: 12px;
+    left: 0;
+    margin: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    vertical-align: middle;
+    width: 16px;
+}
+.selecteddiv{ width:33px; height:33px; background-color:#05a6cc; position:absolute;left: -8px;}
+.titlediv {
+    padding: 9px 0 9px 0;
+}
+.fldiv{padding-left:45px;}
+
+.selecteddiv::before {
+    border-color: transparent #007996 transparent transparent;
+    border-style: solid;
+    border-width: 0 8px 8px 0;
+    bottom: -8px;
+    content: "";
+    height: 0;
+    left: 0;
+    position: absolute;
+    width: 0;
+}
+
+.emailtext, .signouttext {
+    color: #666;
+    font-size: 18px;
+    line-height: 30px;
+}
+.signouttext{color: #a3a3a3; display:inline-block; margin-left:15px;}
+.signoutbut {
+    background-color: #fff;
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.3);
+    color: #707070;
+    font-family: 'robotobold';
+    font-size: 16.67px;
+    padding: 6px 24px;
+    text-transform: uppercase;
+}
+
+.textnote {
+    background-color: #fcfcfc;
+    border: 1px solid #f3f3f3;
+    color: #666;
+    display: inline-block;
+    font-size: 14px;
+    margin: 20px;
+    padding: 14px;
+}
+.emailtext > a {
+    color: #3b3b3b;
+}
+.titlediv > h3 {
+    color: #333;padding-bottom: 5px;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+.titlediv > h3 > span {
+    display: inline-block;
+    font-size: 14px;
+    padding-left: 5px;
+}
+.titlediv > p {
+    color: #555;
+    font-size: 14px;
+    line-height: 17px;
+}
+.checkoutcontent {
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important; background:#fff;
+}
+.padB20{padding-bottom:20px;}
+.wrap5 {
+    width: 5%!important;
+}
+.wrap15{ width:15%!important;}
+.orderheading, .orderdet {
+    border-bottom: 1px solid #c5c6c7;
+    color: #777;
+    font-family: "ralewayregular",Helvetica,Arial,sans-serif;
+    font-size: 16px;
+    padding: 12px 0;
+}
+.rsdiv, .delivdet{font-family: 'ralewaybold', Helvetica, Arial, sans-serif;}
+.itemdiv > p {
+    padding: 2px 0;line-height: 18px;
+}
+.qtydiv {
+    background: #f2f2f2 none repeat scroll 0 0;
+    display: inline-block;
+    line-height: 18px !important;
+    padding: 5px 10px !important;
+}
+.orderdetails {
+    padding-top: 12px;
+}
+.alerttext, .amountpay {
+    color: #666666;
+    font-size: 18px; line-height: 22px;	
+}
+.orderdetails .addbtn {
+    padding: 5px 30px;
+}
+.paymethodlistdiv .TabbedPanelsTabGroup {
+    padding: 0; position: static !important;
+}
+.paymethodlistdiv .TabbedPanelsTab {
+    background: #f2f2f2 none repeat scroll 0 0;
+    border-bottom: 1px solid #c9c9c9; border-right:1px solid #c9c9c9;margin-bottom: 2px;
+    display: block !important;
+    width: 100%; position:relative;
+}
+.paymethodlistdiv .TabbedPanelsContentGroup {
+    clear: none; position: static !important;
+}
+.totalamtext span {
+    color: #ea6a6a;
+    display: block;
+    padding-top: 10px;
+}
+.totalamtext {
+    font-family: 'robotoregular';
+    font-size: 18px;background-color: #f2f2f2;
+    border: 1px solid #e6e6e6;
+    padding: 12px 0;
+}
+.bgchange {
+    background-color: #f9f9f9;
+    padding: 12px 15px;
+}
+.totalamtext p {padding-bottom: 5px;
+    color: #333;
+    font-family: helvetica;
+}
+.amountdet {
+    background: #f2f2f2 none repeat scroll 0 0;
+    
+}
+.paytypetitle {
+    color: #333; text-transform: capitalize;
+    font-family: 'robotoregular';
+    font-size: 14px;
+    padding: 10px;
+}
+.paymethodlistdiv .TabbedPanelsTab:last-child {
+    border-right: 1px solid #c9c9c9;
+}
+.smalltext {
+    color: #777;
+    font-size: 11px;
+    padding-bottom: 10px;border-bottom: 1px dotted #ddd;
+}
+.carddetail {
+    padding: 10px;
+}
+.carddetail .text {
+    background-color: #fffed5;
+    color: #333;
+    font-size: 12px;
+    line-height: 18px;
+    padding: 10px;
+}
+.paymethodlistdiv {
+    padding: 0 !important;  position: static !important;
+}
+.carddetail .form-group > label {
+    color: #000;
+    font-size: 14px;
+    padding: 10px 0;
+}
+.paymethodlistdiv .TabbedPanelsTabSelected, .paymethodlistdiv .TabbedPanelsTabHover {
+    background: #4d4d4d none repeat scroll 0 0;
+    color: #fff;
+    margin-top: -2px;
+    padding-top: 2px;
+    position: relative;
+}
+.paymethodlistdiv .TabbedPanelsTabHover .paytypetitle, .paymethodlistdiv .TabbedPanelsTabSelected .paytypetitle{ color:#fff;}
+.paymethodlistdiv .TabbedPanelsTabSelected::after, .paymethodlistdiv .TabbedPanelsTabHover::after {
+    border-color: transparent transparent transparent #4d4d4d;
+    border-style: solid;
+    border-width: 21px 0 21px 18px;
+    content: "";
+    position: absolute;
+    right: -18px;
+    top: 0;
+    z-index: 1; 
+}
+.carddetail select {
+    border-color: #999;
+    border-radius: 2px;
+    color: #333;
+    width: 40%;
+}

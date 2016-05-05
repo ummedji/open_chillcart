@@ -1,5 +1,5 @@
-<div id="banner" class="innerbanner accounthistorybanner">
-  <div class="container">
+<div id="banner" class="innerbanner accounthistorybanner"> 
+  <div class="container"> 
     <div class="bannerdesc text-center">
       <div class="bannertext">
         <div class="bannercaption">
@@ -10,12 +10,19 @@
     <div class="row">
       <div class="col-md-6 col-sm-9">
         <div class="officerblock clearfix">
-          <div class="officerimg pull-left">  <?php  if(!empty($this->request->data['Customer']['image'])) { ?>
+
+          <div class="officerimg pull-left">  <?php  if(!empty($this->request->data['Customer']['image'])) {
+
+
+ ?>
 					                            <img src="<?php echo $cdn.'/Customers/'.$this->request->data['Customer']['image']; ?>" > <?php 
 					                        } else {
 					                                echo "No Image Found";
 					                        } ?></div>
           <div class="officerdet clearfix">
+
+ 
+
             <h3><a href=""><?php 
 			echo $this->request->data['Customer']['first_name'].' '.$this->request->data['Customer']['last_name'];?></a></h3>
             <p>Product and Business Devlopment</p>
@@ -26,6 +33,8 @@
   </div>
   <div class="bannerbg"></div>
 </div>
+
+
 <section class="container"> </section>
 <div class="innercontentsection accountpages">
   <div class="container">
@@ -45,6 +54,9 @@
             <p class="cf"><span class="addricon"></span><?php echo __('ADDRESS BOOK', true); ?></p>
           </li>
         </ul>
+
+
+
         <div class="TabbedPanelsContentGroup">
           <div class="TabbedPanelsContent">
             <div class="acc_his_block">
@@ -154,6 +166,7 @@
                         <div class="input-group-addon"><span class="attachicon"></span></div>
                       </div>
                     </div>
+
                     <div class="form-group">
                       <label class="sr-only" for="exampleInputAmount">Email</label>
                       <div class="input-group">
@@ -320,9 +333,6 @@
     </div>
   </div>
 </div>
-
-
-
 
 
 <!--login-->

@@ -126,11 +126,11 @@ $(document).ready(function () {
 });
 
 //Clear Console
-function clearConsole() {
-    if(window.console || window.console.firebug) {
-        console.clear();
-    }
-    setTimeout(function() {
-        clearConsole();
-    }, 500)
-}
+//function clearConsole() {
+  //  if(window.console || window.console.firebug) {
+  //      console.clear();
+  //  }
+  //  setTimeout(function() {
+   //     clearConsole();
+   // }, 500)
+//}

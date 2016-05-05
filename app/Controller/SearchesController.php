@@ -421,7 +421,7 @@ class SearchesController extends AppController {
 	}
         
         
-        public function header_cart() {
+        public function header_data_cart() {
 
 		$total = $this->ShoppingCart->find('all', array(
 								'conditions'=>array('ShoppingCart.session_id' => $this->SessionId),
@@ -444,16 +444,98 @@ class SearchesController extends AppController {
 								'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
 								'order' => array('ShoppingCart.store_id')));
 
-                $final_array = array();
-                $final_array["total"] = $total;
-                $final_array["storeproduct"] = $storeProduct;
-                $final_array["cartcount"] = $cartCount;
-                $final_array["storecart"] = $storeCart;
                 
-              //  print_r($final_array);
+             $html = "";
                 
-                return $final_array;
+             if(!empty($storeCart)){
+             
+                foreach ($storeCart as $key => $value) {
+                    
                 
+              $html .= '<li>
+                  <a href="#">
+                      <div class="productblock clearfix">
+                          <div class="prodtag pull-left">
+                              <h2>';
+                                  
+                                
+
+							if ($value['ShoppingCart']['product_quantity'] < $value['ProductDetail']['quantity']) { 
+                                                  $html .= '<a rel="'.$value["ShoppingCart"]["product_id"].'" class="change-qty qty-inc pointer" onclick="qtyIncrement('.$value["ShoppingCart"]["id"].','.$value["ShoppingCart"]["product_id"].')" >
+									<span class="up"></span>
+								</a>'; 
+							} else { 
+
+								 $html .= '<a class="change-qty qty-inc" >
+									<span class="up"></span>
+								</a> ';
+							} 
+                                  
+                                 $html .= '<span class="num">'. $value["ShoppingCart"]["product_quantity"].'</span>';
+                                  
+                                 
+							if ($value["ShoppingCart"]["product_quantity"] > 1) { 
+							 $html .= '<a rel="'. $value["ShoppingCart"]["product_id"].'" class="change-qty qty-dec pointer" onclick="qtyDecrement('.$value["ShoppingCart"]["id"].','.$value["ShoppingCart"]["product_id"].')">
+									 <span class="down"></span>
+								</a>'; 
+							} 
+                                                        elseif($value["ShoppingCart"]["product_quantity"] == 1){
+                                                            
+                                                      
+                                                         $html .= '<a rel="'.$value["ShoppingCart"]["product_id"].'" class="change-qty qty-dec pointer" onclick="deleteCart('.$value["ShoppingCart"]["id"].','.$value["ShoppingCart"]["product_id"].');">
+									 <span class="down"></span>
+								</a>';
+                                                      
+                                                        
+                                                        }
+                                                        else { 
+								 $html .= '<a class="change-qty qty-dec">
+									 <span class="down"></span>
+								</a> ';
+
+							} 
+                                 
+                              
+                             $html .= '  </h2>
+                          </div>
+                          <div class="prodimg pull-left">';
+                              
+                             //  $imageSrc = "https://s3.amazonaws.com/".$this->siteBucket."/stores/products/carts/".$value["ProductDetail"]["Product"]["ProductImage"][0]["image_alias"];
+                             
+                    $imageSrc = "https://dnrskjoxjtgst.cloudfront.net/stores/products/home/".$value["ShoppingCart"]["product_image"];
+                             
+                               $html .= '<img src="'.$imageSrc.'"  alt="'.$value["ShoppingCart"]["product_name"].'" title="'.$value["ShoppingCart"]["product_name"].'" onerror="this.onerror=null;this.src='. $siteUrl.'/images/no-imge.jpg" />';
+                           
+                         $html .= ' </div>
+                          <div class="producttitle pull-left">
+                              <p>'. $value["ShoppingCart"]["product_name"].'</p>
+                              <span class="productprize"><span class="black-rs-icon"></span> MRP '. $value["ShoppingCart"]["product_total_price"].'</span></div>
+                      </div>
+                  </a>
+              
+              </li>';
+              
+                     
+                }  
+                
+                
+              //  $html .= 'sdsd'.$loggedUser["role_id"];
+          
+		if ($loggedUser['role_id'] == 4) { 
+			$html .= '<a class="btn checkout" href="'.$this->siteUrl.'/checkouts/index">Checkout </a> ';
+		} else {
+			$html .= '<a class="btn checkout" href="'.$this->siteUrl.'/customer/users/customerlogin?page=checkout">Checkout </a> ';
+		} 
+             }
+             else{
+                
+             $html .= '<div class="cart-checkout">';
+	     $html .= '<a class="btn-checkout">Cart is Empty</a>';
+             $html .= '</div>';
+             }  
+                echo $html;
+                
+                //die;
 		//echo (!empty($cartCount[0]['productCount'])) ? $cartCount[0]['productCount'] : 0;
 		//echo '||@@||';
 		//echo (!empty($total[0][0]['cartTotal'])) ? $total[0][0]['cartTotal'] : 0;
@@ -462,6 +544,142 @@ class SearchesController extends AppController {
 		//$this->set(compact('storeCart','storeProduct', 'cartCount'));
 	}
 
+        
+         public function header_cart() {
+
+		$total = $this->ShoppingCart->find('all', array(
+								'conditions'=>array('ShoppingCart.session_id' => $this->SessionId),
+								'fields' => array('SUM(ShoppingCart.product_total_price) AS cartTotal')));
+
+		$storeProduct = $this->ShoppingCart->find('all',array(
+        						'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
+        						'fields' => array('store_id',
+        										 'COUNT(ShoppingCart.store_id) AS productCount',
+        										 'SUM(ShoppingCart.product_total_price) As productTotal'),
+        						'group'=>array('ShoppingCart.store_id')));
+
+		$cartCount = $this->ShoppingCart->find('first',array(
+        						'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
+        						'fields' => array('store_id',
+        										 'COUNT(ShoppingCart.store_id) AS productCount',
+        										 'SUM(ShoppingCart.product_total_price) As productTotal')));
+
+		$storeCart = $this->ShoppingCart->find('all', array(
+								'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
+								'order' => array('ShoppingCart.store_id')));
+
+                
+             $html = "";
+                
+             if(!empty($storeCart)){
+             
+                foreach ($storeCart as $key => $value) {
+                    
+                
+              $html .= '<li>
+                  <a href="#">
+                      <div class="productblock clearfix">
+                          <div class="prodtag pull-left">
+                              <h2>';
+                                  
+                                
+
+							if ($value['ShoppingCart']['product_quantity'] < $value['ProductDetail']['quantity']) { 
+                                                  $html .= '<a rel="'.$value["ShoppingCart"]["product_id"].'" class="change-qty qty-inc pointer" onclick="qtyIncrement('.$value["ShoppingCart"]["id"].','.$value["ShoppingCart"]["product_id"].')" >
+									<span class="up"></span>
+								</a>'; 
+							} else { 
+
+								 $html .= '<a class="change-qty qty-inc" >
+									<span class="up"></span>
+								</a> ';
+							} 
+                                  
+                                 $html .= '<span class="num">'. $value["ShoppingCart"]["product_quantity"].'</span>';
+                                  
+                                 
+							if ($value["ShoppingCart"]["product_quantity"] > 1) { 
+							 $html .= '<a rel="'. $value["ShoppingCart"]["product_id"].'" class="change-qty qty-dec pointer" onclick="qtyDecrement('.$value["ShoppingCart"]["id"].','.$value["ShoppingCart"]["product_id"].')">
+									 <span class="down"></span>
+								</a>'; 
+							} 
+                                                        elseif($value["ShoppingCart"]["product_quantity"] == 1){
+                                                            
+                                                      
+                                                         $html .= '<a rel="'.$value["ShoppingCart"]["product_id"].'" class="change-qty qty-dec pointer" onclick="deleteCart('.$value["ShoppingCart"]["id"].','.$value["ShoppingCart"]["product_id"].');">
+									 <span class="down"></span>
+								</a>';
+                                                      
+                                                        
+                                                        }
+                                                        else { 
+								 $html .= '<a class="change-qty qty-dec">
+									 <span class="down"></span>
+								</a> ';
+
+							} 
+                                 
+                              
+                             $html .= '  </h2>
+                          </div>
+                          <div class="prodimg pull-left">';
+                              
+                             //  $imageSrc = "https://s3.amazonaws.com/".$this->siteBucket."/stores/products/carts/".$value["ProductDetail"]["Product"]["ProductImage"][0]["image_alias"];
+                             
+                    $imageSrc = "https://dnrskjoxjtgst.cloudfront.net/stores/products/home/".$value["ShoppingCart"]["product_image"];
+                             
+                               $html .= '<img src="'.$imageSrc.'"  alt="'.$value["ShoppingCart"]["product_name"].'" title="'.$value["ShoppingCart"]["product_name"].'" onerror="this.onerror=null;this.src='. $siteUrl.'/images/no-imge.jpg" />';
+                           
+                         $html .= ' </div>
+                          <div class="producttitle pull-left">
+                              <p>'. $value["ShoppingCart"]["product_name"].'</p>
+                              <span class="productprize"><span class="black-rs-icon"></span> MRP '. $value["ShoppingCart"]["product_total_price"].'</span></div>
+                      </div>
+                  </a>
+              
+              </li>';
+              
+                     
+                }  
+                
+                
+             //   $html .= 'sdsd'.$this->Auth->user('role_id');
+          
+		if ($this->Auth->user('role_id') == 4) { 
+			$html .= '<a class="btn checkout" href="'.$this->siteUrl.'/checkouts/index">Checkout </a> ';
+		} else {
+			$html .= '<a class="btn checkout" href="'.$this->siteUrl.'/customer/users/customerlogin?page=checkout">Checkout </a> ';
+		} 
+             }
+             else{
+                
+             $html .= '<div class="cart-checkout">';
+	     $html .= '<a class="btn-checkout">Cart is Empty</a>';
+             $html .= '</div>';
+             }  
+                echo $html;
+                
+                //die;
+		//echo (!empty($cartCount[0]['productCount'])) ? $cartCount[0]['productCount'] : 0;
+		//echo '||@@||';
+		//echo (!empty($total[0][0]['cartTotal'])) ? $total[0][0]['cartTotal'] : 0;
+		//echo '||@@||';
+		//$this->set('cartTotal', $total[0][0]['cartTotal']);
+		//$this->set(compact('storeCart','storeProduct', 'cartCount'));
+	}
+        
+        
+        public function header_array_data_cart() {
+
+		
+		$storeCart = $this->ShoppingCart->find('all', array(
+								'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
+								'order' => array('ShoppingCart.store_id')));
+                
+                return $storeCart;
+
+        }
+        
 
 	public function descriptionAdd() {
 
@@ -665,7 +883,10 @@ class SearchesController extends AppController {
 				}
 			}
 		}
-		$this->set(compact('productList', 'count'));
+                
+                $session_data = $this->SessionId;
+                
+		$this->set(compact('productList', 'count','session_data'));
 	}
 
 	public function dealProducts() {

@@ -208,10 +208,21 @@ function variantDetails() {
 }
 
 function addToCart (id) {
+    
+      //  alert(id);
+        
+       var prod_num_cart = $("ul#select_product_"+id).parent().parent().find("span#cart_prod_num").text();
+       
+       prod_num_cart = parseInt(prod_num_cart)+1;
+       $("ul#select_product_"+id).parent().parent().find("span#cart_prod_num").empty();
+       $("ul#select_product_"+id).parent().parent().find("span#cart_prod_num").text(prod_num_cart);
+    
 	$.post(rp+'searches/cartProduct',{'id':id, 'quantity':'1'}, function(response) {
 
 		if (response == 'Success') {
 			cart();
+                        new_data_cart();
+                        
 			$('.cart_notification').fadeIn();
 			setTimeout(function(){				
 		        $('.cart_notification').fadeOut();
@@ -289,6 +300,17 @@ function cart() {
 	});
 }
 
+function new_data_cart(){
+    
+    $.post(rp+'searches/header_cart', function(response) {
+       
+        $("ul.cart_data").empty();
+        $("ul.cart_data").append(response);
+        
+    });
+    
+}
+
 var format = function(num){
 	var str = num.toString().replace("Mani", ""), parts = false, output = [], i = 1, formatted = null;
 	if(str.indexOf(".") > 0) {
@@ -309,21 +331,47 @@ var format = function(num){
 	return("" + formatted + ((parts) ? "." + parts[1].substr(0, 2) : ""));
 };
 
-function deleteCart(id) {
+function deleteCart(id,row_data) {
+    
+      // var prod_num_cart = $("ul#select_product_"+row_data).parent().parent().find("span#cart_prod_num").text();
+       
+      // prod_num_cart = parseInt(prod_num_cart)+1;
+      // $("ul#select_product_"+row_data).parent().parent().find("span#cart_prod_num").empty();
+       $("ul#select_product_"+row_data).parent().parent().find("span#cart_prod_num").text(0);
+    
+    
 	$.post(rp+'searches/deleteCart',{'id':id}, function(response) {
 		cart();
+                new_data_cart();
 	});
 }
 
-function qtyIncrement(id) {
+function qtyIncrement(id, row_data) {
+    
+    
+       var prod_num_cart = $("ul#select_product_"+row_data).parent().parent().find("span#cart_prod_num").text();
+       
+       prod_num_cart = parseInt(prod_num_cart)+1;
+       $("ul#select_product_"+row_data).parent().parent().find("span#cart_prod_num").empty();
+       $("ul#select_product_"+row_data).parent().parent().find("span#cart_prod_num").text(prod_num_cart);
+    
 	$.post(rp+'searches/qtyUpdate',{'id':id, 'type':'increment'}, function(response) {
 		cart();
+                new_data_cart();
 	});
 }
 
-function qtyDecrement(id) {
+function qtyDecrement(id, row_data) {
+    
+       var prod_num_cart = $("ul#select_product_"+row_data).parent().parent().find("span#cart_prod_num").text();
+       
+       prod_num_cart = parseInt(prod_num_cart)-1;
+       $("ul#select_product_"+row_data).parent().parent().find("span#cart_prod_num").empty();
+       $("ul#select_product_"+row_data).parent().parent().find("span#cart_prod_num").text(prod_num_cart);
+    
 	$.post(rp+'searches/qtyUpdate',{'id':id, 'type':'decrement'}, function(response) {
 		cart();
+                new_data_cart();
 	});
 }
 
@@ -448,6 +496,9 @@ function cancelOrder(id) {
 }
 
 $(document).ready(function(){
+
+    cart();
+    new_data_cart();
 
     $(".searchFilterResults").keyup(function(){
         // Retrieve the input field text and reset the count to zero
