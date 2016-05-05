@@ -297,6 +297,8 @@ class CustomersController extends AppController
         $this->request->data = $getStateData;
         $country = $this->siteSetting;
         $country_id = $country['Sitesetting']['site_country'];
+		
+		
         $state_list = $this->State->find('list', array(
             'conditions' => array('State.country_id' => $country_id),
             'fields' => array('State.id', 'State.state_name')));

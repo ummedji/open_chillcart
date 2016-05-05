@@ -410,12 +410,56 @@ class SearchesController extends AppController {
 								'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
 								'order' => array('ShoppingCart.store_id')));
 
+               
+                
 		echo (!empty($cartCount[0]['productCount'])) ? $cartCount[0]['productCount'] : 0;
 		echo '||@@||';
 		echo (!empty($total[0][0]['cartTotal'])) ? $total[0][0]['cartTotal'] : 0;
 		echo '||@@||';
 		$this->set('cartTotal', $total[0][0]['cartTotal']);
 		$this->set(compact('storeCart','storeProduct', 'cartCount'));
+	}
+        
+        
+        public function header_cart() {
+
+		$total = $this->ShoppingCart->find('all', array(
+								'conditions'=>array('ShoppingCart.session_id' => $this->SessionId),
+								'fields' => array('SUM(ShoppingCart.product_total_price) AS cartTotal')));
+
+		$storeProduct = $this->ShoppingCart->find('all',array(
+        						'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
+        						'fields' => array('store_id',
+        										 'COUNT(ShoppingCart.store_id) AS productCount',
+        										 'SUM(ShoppingCart.product_total_price) As productTotal'),
+        						'group'=>array('ShoppingCart.store_id')));
+
+		$cartCount = $this->ShoppingCart->find('first',array(
+        						'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
+        						'fields' => array('store_id',
+        										 'COUNT(ShoppingCart.store_id) AS productCount',
+        										 'SUM(ShoppingCart.product_total_price) As productTotal')));
+
+		$storeCart = $this->ShoppingCart->find('all', array(
+								'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
+								'order' => array('ShoppingCart.store_id')));
+
+                $final_array = array();
+                $final_array["total"] = $total;
+                $final_array["storeproduct"] = $storeProduct;
+                $final_array["cartcount"] = $cartCount;
+                $final_array["storecart"] = $storeCart;
+                
+              //  print_r($final_array);
+                
+                return $final_array;
+                
+		//echo (!empty($cartCount[0]['productCount'])) ? $cartCount[0]['productCount'] : 0;
+		//echo '||@@||';
+		//echo (!empty($total[0][0]['cartTotal'])) ? $total[0][0]['cartTotal'] : 0;
+		//echo '||@@||';
+		//$this->set('cartTotal', $total[0][0]['cartTotal']);
+		//$this->set(compact('storeCart','storeProduct', 'cartCount'));
 	}
 
 

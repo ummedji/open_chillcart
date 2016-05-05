@@ -10,7 +10,7 @@
     <div class="row">
       <div class="col-md-6 col-sm-9">
         <div class="officerblock clearfix">
-          <div class="officerimg pull-left">  <?php if(!empty($this->request->data['Customer']['image'])) { ?>
+          <div class="officerimg pull-left">  <?php  if(!empty($this->request->data['Customer']['image'])) { ?>
 					                            <img src="<?php echo $cdn.'/Customers/'.$this->request->data['Customer']['image']; ?>" > <?php 
 					                        } else {
 					                                echo "No Image Found";
@@ -33,16 +33,16 @@
       <div id="TabbedPanels1" class="TabbedPanels accounthistory">
         <ul class="TabbedPanelsTabGroup clearfix">
           <li class="TabbedPanelsTab col-md-3 col-sm-3 col-xs-12" tabindex="0">
-            <p class="cf"><span class="hisicon"></span><?php echo __('Order History', true); ?></p>
+            <p class="cf"><span class="hisicon"></span><?php echo __('ORDER HISTORY', true); ?></p>
           </li>
           <li class="TabbedPanelsTab col-md-3 col-sm-3 col-xs-12" tabindex="0">
-            <p class="cf"><span class="proficon"></span><?php echo __('Profile', true); ?></p>
+            <p class="cf"><span class="proficon"></span><?php echo __('PROFILE', true); ?></p>
           </li>
           <li class="TabbedPanelsTab col-md-3 col-sm-3 col-xs-12" tabindex="0">
-            <p class="cf"><span class="cardicon"></span><?php echo __('Password', true); ?></p>
+            <p class="cf"><span class="cardicon"></span><?php echo __('ADD CARD', true); ?></p>
           </li>
           <li class="TabbedPanelsTab col-md-3 col-sm-3 col-xs-12" tabindex="0">
-            <p class="cf"><span class="addricon"></span><?php echo __('Address Book', true); ?></p>
+            <p class="cf"><span class="addricon"></span><?php echo __('ADDRESS BOOK', true); ?></p>
           </li>
         </ul>
         <div class="TabbedPanelsContentGroup">
@@ -51,11 +51,14 @@
               <div class="text-center mrgTB30">
                 <h2 class="blgrtitle "><span class="blackborder">Order</span> <span class="greenborder">History</span></h2>
               </div>
+			  <?php 
+			  $grandtotal=0; 
+			  foreach($order_detail as $key => $value){ $grandtotal += $value['Order']['order_grand_total']; } ?>
               <div class="clearfix pad20">
-                <p class="price pull-right">Total Price:  2641</p>
+                <p class="price pull-right">Total Price:  <?php echo $grandtotal; ?></p>
               </div>
               <div id="Accordion1" class="Accordion" tabindex="0">
-				<?php 
+				<?php			
 				if(!empty($order_detail)) { 
 				foreach($order_detail as $key => $value){
 				?>
@@ -140,7 +143,7 @@
 																		  'placeholder' => 'No file Selected',
 							                                              "class"=>"form-control textbox margin-t-15",
 							                                               ));
-
+											?> <span class="nofiletext">No file Selected</span><?php 
 							                echo $this->Form->input('Customer.org_logo',
 							                            array('class' => 'form-control',
 							                            	  'type' => 'hidden',
@@ -271,7 +274,7 @@
                 </div>
               </div>
 			  <?php } } ?>
-              <div class="text-center pad20"> <a class="addbtn btn" href=""><span class="cardiconwt"></span>Add new card</a></div>
+              <div class="text-center pad20"> <a class="addbtn btn" data-target="#demo-6" data-toggle="modal"><span class="cardiconwt"></span>Add new card</a></div> 
             </div>
           </div>
           <div class="TabbedPanelsContent">
@@ -287,8 +290,8 @@
               <div class="col-md-6 addrbookbl">
               	<div class="addrbg"><h2><?php echo $value['CustomerAddressBook']['address_title']; ?></h2>
               <div class="row"><p class="col-md-6 col-sm-6"><?php echo $value['CustomerAddressBook']['address']; ?><br><?php echo $value['CustomerAddressBook']['landmark']; ?><br>
-			  CITYID-<?php echo $value['Location']['zip_code']; ?><br>
-			  STATEID</p></div></div>
+			  <?php echo $value['City']['city_name'];  ?>-<?php echo $value['Location']['zip_code']; ?><br>
+			  <?php echo $value['State']['state_name'];  ?>-</p></div></div>
 
 				<div class="defaddr clearfix"><div class="row">
                 <div class="col-md-6 col-sm-6 col-xs-6">
@@ -399,8 +402,11 @@
     <!-- <input type="password" class="form-control" placeholder="Pincode"> -->
   </div>
   <div class="form-group">
-    <label class="sr-only">Phone Number</label>
-    <input type="text" class="form-control" placeholder="Phone Number">
+    <label class="sr-only"><?php
+											echo $this->Form->input('address_phone',
+													array('class'=>'form-control',
+															'label'=>false,'placeholder' =>'Phone Number')); ?>
+    <!-- <input type="text" class="form-control" placeholder="Phone Number"> -->
   </div>
   
   <?php echo $this->Form->button(__('Submit'),
@@ -420,6 +426,117 @@
   </div>
 </div>
 <!--login-->
+
+<!----Add Card--->
+<div class="modal fade add_adress_parent" id="demo-6" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="css-popup">
+<div class="add-new-card-popup">
+<div class="text-center mrgTB30">
+                <h2 class="blgrtitle "><span class="blackborder">Add</span> <span class="greenborder">New Card</span></h2>
+              </div>
+              
+              
+              <div class="content-popup">
+              
+             <?php
+				echo $this->Form->create('User',
+							array('class'  => 'form-horizontal paymentTab',
+									'name' => 'StripeForm',
+									'id'   => 'UserIndexForm',
+									"url"=> array("controller" => 'customers',
+                              					 'action' 	   => 'customerCardAdd'))); ?>
+  <div class="form-group">
+    <label class="sr-only"><?php echo __('Name on Card', true); ?></label>
+	<?php echo $this->Form->input("Card.Name",
+									array("type"=>"text",
+											"label"=>false,
+											'data-stripe' => 'name',
+											"class"=>"form-control",
+											'value' => '',
+											'placeholder' => 'Name on Card')); 
+						?>
+    <!-- <input type="email" class="form-control" id="sr-only" placeholder="Name on Card"> -->
+  </div>
+  <div class="form-group">
+    <label class="sr-only"><?php echo __('Card Number', true); ?></label>
+	<?php 
+								echo $this->Form->input("Card.number",
+										array("type"=>"text",
+												"label"=>false,
+												'data-stripe' => 'number',
+												"class"=>"form-control intnumber",
+												'height' => 40,
+												'maxlength' => 16,
+												'value' => '',
+												'placeholder' => 'XXXX-XXXX-XXXX-XXXX')); ?>
+    <!-- <input type="password" class="form-control" placeholder="Card Number"> -->
+  </div>
+  
+  <div class="form-group">
+    <label class="sr-only"><?php echo __('CVV', true); ?></label>
+	<?php 
+									echo $this->Form->input("Card.cvv",	
+										array("type"=>"password",
+												"label"=>false,
+												'data-stripe' => 'cvc',
+												"class"=>"form-control",
+												'value' => '',
+												'placeholder' => 'CVV')); 
+								?>
+   <!--  <input type="password" class="form-control" placeholder="CVV"> -->
+  </div>
+  
+  <div class="myselection"> <div class="form-group row"> <div class="col-md-3 col-sm-3"><label><?php echo __('Expiry Date', true); ?></label></div><div class="col-md-9 col-sm-9"> <div class="row"><div class="col-md-6 col-sm-6">
+  <?php
+									$month  = array("1"=>"Jan",  "2"=>"Feb", "3"=>"Mar",
+													"4"=>"Apr","5"=>"May", "6"=>'Jun',
+													"7"=>"Jul", "8"=>"Aug", "9"=>"Sep",
+													"10"=>"Oct", "11"=>"Nov", "12"=>"Dec");
+									echo $this->Form->input("Card.expmonth",
+								array("type"=>"select",
+										"label"=>false,
+										"options"=>$month,
+										'data-stripe' => 'exp-month',
+										"class"=>"form-control valid")); 
+	?>
+  </div>  <div class="col-md-6  col-sm-6"><?php
+									$curyear    = date("Y");
+									$endyear    = $curyear+20;
+									$years  = array();
+									for($i=$curyear;$i<=$endyear;$i++){
+										
+										$years[$i]=$i;
+												
+									}
+									echo $this->Form->input("Card.expyear",
+											array("type"=>"select",
+													"label"=>false,
+													"options"=>$years,
+													'data-stripe' => 'exp-year',
+													"class"=>"form-control valid")); 
+								?></div></div></div> </div> </div>
+  
+  <p class="text-center"><?php echo __('The card will automatically be stored in your customer profile so that you can check out faster next time.', true); ?></p><?php 
+							echo $this->Form->button(__('Submit'),
+								array("label"=>false,
+										"id"=>"stripebtn",
+										"class"=>"btn addbtn mrgTB20",
+										'onclick' => 'return saveCard();',
+										"type"=>'submit')); 
+						?>
+<?php echo $this->Form->end(); ?>
+              
+              </div>
+
+</div>
+
+</div>
+    </div>
+  </div>
+</div>
+<!---Add Card-->
 
 
 <?php echo $this->element('frontend/footer'); ?>

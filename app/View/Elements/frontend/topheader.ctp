@@ -48,29 +48,79 @@
           <div class="dropdown-menu productmenu">
           <span class="toparrow"></span>
           <div class="subnavheading clearfix"><h4 class="pull-left">Total Price</h4> <div class="pull-right"><p><span class="rs-icon"></span><span class="cartTotal">0.00</span></p></div></div>
-       <!--   <ul>
+          <ul>
               
+          <?php     $data = $this->requestAction(array('controller' => 'searches', 'action' => 'header_cart')); ?>
+             <?php
+             
+             foreach ($data["storeCart"] as $key => $value) { ?>
               <li>
                   <a href="#">
                       <div class="productblock clearfix">
                           <div class="prodtag pull-left">
-                              <h2><span class="up"></span><span class="num">2</span><span class="down"></span></h2>
+                              <h2>
+                                  
+                                  <?php
+
+							if ($value['ShoppingCart']['product_quantity'] < $value['ProductDetail']['quantity']) { ?>
+                                                    <a rel="<?php echo $value['ShoppingCart']['product_id']; ?>" class="change-qty qty-inc pointer" onclick="qtyIncrement(<?php echo $value['ShoppingCart']['id']; ?>)" >
+									<span class="up"></span>
+								</a> <?php
+							} else { ?>
+
+								<a class="change-qty qty-inc" >
+									<span class="up"></span>
+								</a> <?php
+							} ?>
+                                  
+                                  <span class="num"><?php echo $value['ShoppingCart']['product_quantity']; ?></span>
+                                  
+                                  
+                                  <?php
+
+							if ($value['ShoppingCart']['product_quantity'] > 1) { ?>
+								<a rel="<?php echo $value['ShoppingCart']['product_id']; ?>" class="change-qty qty-dec pointer" onclick="qtyDecrement(<?php echo $value['ShoppingCart']['id']; ?>)">
+									 <span class="down"></span>
+								</a> <?php
+							} 
+                                                        elseif($value['ShoppingCart']['product_quantity'] == 1){
+                                                            ?>
+                                                        
+                                                        <a rel="<?php echo $value['ShoppingCart']['product_id']; ?>" class="change-qty qty-dec pointer" onclick="deleteCart(<?php echo $value['ShoppingCart']['id']; ?>,<?php echo $value['ShoppingCart']['product_id']; ?>);">
+									 <span class="down"></span>
+								</a>
+                                                        
+                                                        <?php
+                                                        }
+                                                        else { ?>
+								<a class="change-qty qty-dec">
+									 <span class="down"></span>
+								</a> <?php
+
+							} ?>
+                                  
+                              
+                              </h2>
                           </div>
-                          <div class="prodimg pull-left"><img src="images/product.png" /></div>
+                          <div class="prodimg pull-left">
+                              
+                              <?php $imageSrc = 'https://s3.amazonaws.com/'.$siteBucket.'/stores/products/carts/'.$value['ProductDetail']['Product']['ProductImage'][0]['image_alias']; ?>
+                              
+                              <img src="<?php echo $imageSrc; ?>"  alt="<?php echo $value['ShoppingCart']['product_name']; ?>" title="<?php echo $value['ShoppingCart']['product_name']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/no-imge.jpg"; ?>'" />
+                          
+                          </div>
                           <div class="producttitle pull-left">
-                              <p>Cremica Dip - Chilli Garlic</p>
-                              <span class="productprize"><span class="black-rs-icon"></span> MRP 112</span></div>
+                              <p><?php echo $value['ShoppingCart']['product_name']; ?></p>
+                              <span class="productprize"><span class="black-rs-icon"></span> MRP <?php echo html_entity_decode($this->Number->currency($value['ShoppingCart']['product_total_price'], $siteCurrency)); ?></span></div>
                       </div>
                   </a>
               
               </li>
+              
+             <?php } ?>
             
-          </ul> -->
-       <?php
-       //echo "<pre>";
-       //print_r($this);
-       //die;
-     //  echo $this->fetch('Searches/cart'); ?>
+          </ul> 
+     
        
         
        
@@ -89,7 +139,16 @@
 		</div>
 		</div>
 </header>
-
+<?php
+ //$data = $this->requestAction(array('controller' => 'searches', 'action' => 'header_cart'));
+       
+       //$this->render('TestView/index');
+       
+  //     echo "<pre>";
+       
+  //     print_r($data);die;
+       
+?>
 <!-- NEW TEMPLATE END -->
 <?php /*	 
 	<div class="container-fluid">
