@@ -1,0 +1,20 @@
+
+
+.CollapsiblePanelTab {
+	border-bottom: 1px solid #dedede;
+    cursor: pointer;
+	
+	-moz-user-select: none;
+	-khtml-user-select: none;
+}
+
+.CollapsiblePanelContent {
+	margin: 0px;
+	padding: 0px;
+}
+
+
+.CollapsiblePanelTab a {
+	color: black;
+	text-decoration: none;
+}

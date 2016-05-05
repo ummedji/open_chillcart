@@ -92,7 +92,8 @@
     margin: 0 !important;
     position: absolute;
     top: 69px;transition: all 300ms ease 0s;
-    width: 100%; padding:0; display:none!important
+    width: 100%; padding:0;
+    /*display:none!important*/
 }
 .has-submenu > .productmenu{ width:100%;}
 .has-submenu > .productmenu .toparrow{display:none;}

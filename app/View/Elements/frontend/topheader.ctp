@@ -15,27 +15,72 @@
  } ?>
 <header>
 <!-- NEW TEMPLATE START -->
-		<div class="navbar navbar-inverse navbar-fixed-top navtop">
+		<div class="navbar navbar-inverse navbar-fixed-top navtop" >
 		<div class="container">
-		  <div class="navbar-header"> <a href="index.html"><img title="CHILLCART" src="<?php echo $siteUrl.'/frontend/images/site-logo.png'; ?>"/></a><button class="nav-add navbar-toggle collapsed" type="button"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button> </div>
-		  <div class="navbar-collapse collapse in">
+		  <div class="navbar-header"> <a href="index.html"><img title="CHILLCART" src="<?php echo $siteUrl.'/frontend/images/site-logo.png'; ?>"/></a><button class="nav-add navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#nave_respo" aria-expanded="true" aria-controls="navbar"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button> </div>
+		  <div class="navbar-collapse collapse in" id="nave_respo">
         <div class="main-menu">
 			<ul class="nav navbar-nav pull-right">
 			<?php if(!empty($loggedCheck) && ($loggedCheck['role_id'] == 4)){ ?>
 			<li><a href="<?php echo $siteUrl.'/customer/customers/myaccount'; ?>"> <?php echo __('My Account', true); ?></a> </li>
-		    <li> <a href="<?php echo $siteUrl.'/customer/users/userLogout'; ?>"> <?php echo __('Logout', true); ?></a> </li> 
+		    <li> <a href="<?php echo $siteUrl.'/customer/users/userLogout'; ?>"> <?php echo __('Logout', true); ?></a> </li>
 			<?php } else { ?>
-			<!--<li><a href="<?php // echo $siteUrl.'/signup'; ?>"> <?php //echo __('Sign Up', true); ?></a></li> -->
-                        
-			<!--<li><a href="<?php //echo $siteUrl.'/customerlogin'; ?>"> <?php //echo __('Login', true); ?></a></li> -->
+			
+                        <!--<li><a href="<?php // echo $siteUrl.'/signup'; ?>"> <?php //echo __('Sign Up', true); ?></a></li> -->
+
+ 		<!--<li><a href="<?php //echo $siteUrl.'/customerlogin'; ?>"> <?php //echo __('Login', true); ?></a></li> -->
                         <li><a href="javascript:void(0);" data-toggle="modal" data-target="#demo-2">SIGN UP</a></li>
-                        <li><a href="javascript:void(0);" data-toggle="modal" data-target="#demo-1">Login</a></li>
-                        
+                       <li><a href="javascript:void(0);" data-toggle="modal" data-target="#demo-1">Login</a></li>
+                    
 			<?php } ?>
-			<?php if ($this->request->params['controller'] == 'searches' &&
-			($this->request->params['action'] == 'index' || $this->request->params['action'] == 'stores' || $this->request->params['action'] == 'storeitems')) { ?>
+
+			<?php
+			if(($this->request->params['controller'] == "customers" && $this->request->params['action'] == 'customer_myaccount') || ($this->request->params['controller'] == "searches" && ($this->request->params['action'] == 'index' || $this->request->params['action'] == 'stores' || $this->request->params['action'] == 'storeitems' || $this->request->params['action'] == 'aboutus')))
+			/*if($this->request->params['controller'] == 'searches' &&
+			($this->request->params['action'] == 'index' || $this->request->params['action'] == 'stores' || $this->request->params['action'] == 'storeitems'))*/ { ?>
+
 			  <li><a href="javascript:void(0);" id="how_it_works">How it Works?</a></li>
-			  <li><a href=""><span class="carticon"></span><span class="cartTotal">0.00</span><span class="droparrow"></span></a></li>
+			 <li class="shopping-cart"><a href=""><span class="carticon"></span><span class="cartTotal">0.00</span><span class="droparrow"></span></a></li>
+                          
+                          
+                          
+                          <li class="has-submenu"><a data-toggle="dropdown" class="dropdown-toggle" href=""><span class="carticon"></span><span class="cartTotal">0.00</span> <span class="droparrow"></span></a>
+          <div class="dropdown-menu productmenu">
+          <span class="toparrow"></span>
+          <div class="subnavheading clearfix"><h4 class="pull-left">Total Price</h4> <div class="pull-right"><p><span class="rs-icon"></span><span class="cartTotal">0.00</span></p></div></div>
+       <!--   <ul>
+              
+              <li>
+                  <a href="#">
+                      <div class="productblock clearfix">
+                          <div class="prodtag pull-left">
+                              <h2><span class="up"></span><span class="num">2</span><span class="down"></span></h2>
+                          </div>
+                          <div class="prodimg pull-left"><img src="images/product.png" /></div>
+                          <div class="producttitle pull-left">
+                              <p>Cremica Dip - Chilli Garlic</p>
+                              <span class="productprize"><span class="black-rs-icon"></span> MRP 112</span></div>
+                      </div>
+                  </a>
+              
+              </li>
+            
+          </ul> -->
+       <?php
+       //echo "<pre>";
+       //print_r($this);
+       //die;
+     //  echo $this->fetch('Searches/cart'); ?>
+       
+        
+       
+          <div class="text-center"> <button class="btn checkout" type="submit">Checkout</button></div>
+          
+           </div>        
+          </li>
+                          
+                          
+                          
 			 <?php } ?>
 			</ul>
 		  </div>
@@ -46,7 +91,7 @@
 </header>
 
 <!-- NEW TEMPLATE END -->
-	<?php /*
+<?php /*	 
 	<div class="container-fluid">
 		<nav class="navbar navbar-default" role="navigation">
 			<div class="navbar-header">
@@ -199,4 +244,5 @@
 		</div>
 </header>
 </div>
-*/?>
+
+*/ ?>

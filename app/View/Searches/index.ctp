@@ -2,7 +2,7 @@
   <div class="container">
     <div class="bannerdesc text-center ">
       <div class="bannertext">
-        <div class="watchvideo"> <a href=""><img src="<?php echo $siteUrl.'/frontend/images/video-bg-img.png'; ?>"/>
+        <div class="watchvideo"> <a href="#" data-toggle="modal" data-target="#demo-3"><img src="<?php echo $siteUrl.'/frontend/images/video-bg-img.png'; ?>"/>
           <div class="videotext">
             <p>WATCH VIDEO</p>
           </div></a>

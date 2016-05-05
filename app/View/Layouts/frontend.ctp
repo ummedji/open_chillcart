@@ -34,16 +34,20 @@
 		<link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,400italic" rel="stylesheet" type="text/css"> -->
 		
 		 <?php
-
+//print_r($this->request->params);
+//if($this->request->params['action'] == 'customer_myaccount') { echo "a";  exit;}
 		 //echo "<pre>"; print_r($loggedUser);
-	if($this->request->params['controller'] == "searches" &&
-			($this->request->params['action'] == 'index' || $this->request->params['action'] == 'stores' || $this->request->params['action'] == 'storeitems')) { ?>
+
+	if(($this->request->params['controller'] == "customers" && $this->request->params['action'] == 'customer_myaccount') || ($this->request->params['controller'] == "searches" && ($this->request->params['action'] == 'index' || $this->request->params['action'] == 'stores' || $this->request->params['action'] == 'storeitems' || $this->request->params['action'] == 'aboutus'))) {  ?>
+
 		<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" type="text/css" href="<?php echo $this->webroot; ?>css/bootstrap.min.css">
-		<script src="<?php echo $this->webroot; ?>frontend/js/jquery.stellar.min.js" type="text/javascript"></script>
+		
 		<link rel="stylesheet" type="text/css" media="all" href="<?php echo $this->webroot; ?>frontend/css/style.css" />
 		<link rel="stylesheet" type="text/css" media="all" href="<?php echo $this->webroot; ?>frontend/css/responsive.css" />
 		<link rel="stylesheet" type="text/css" media="all" href="<?php echo $this->webroot; ?>frontend/css/font-awesome.css" />
+		<link href="<?php echo $this->webroot; ?>frontend/css/SpryAssets/SpryTabbedPanels.css" rel="stylesheet" type="text/css">
+		<link href="<?php echo $this->webroot; ?>frontend/css/SpryAssets/SpryAccordion.css" rel="stylesheet" type="text/css">
 		<?php /* ?><link rel="stylesheet" type="text/css" media="all" href="<?php echo $this->webroot; ?>frontend/css/style.css" />
 		<link rel="stylesheet" type="text/css" media="all" href="<?php echo $this->webroot; ?>frontend/css/responsive.css" /><?php*/
 	  } ?>
@@ -84,7 +88,12 @@
     <script type="text/javascript" src="<?php echo $this->webroot; ?>frontend/js/scrolling-nav.js"></script>
 
     <script type="text/javascript" src="<?php echo $this->webroot; ?>frontend/js/owl.carousel.min.js"></script>
+	<script src="<?php echo $this->webroot; ?>frontend/js/jquery.stellar.min.js" type="text/javascript"></script>
+	<script src="<?php echo $this->webroot; ?>frontend/css/SpryAssets/SpryTabbedPanels.js" type="text/javascript"></script>
+	<script src="<?php echo $this->webroot; ?>frontend/css/SpryAssets/SpryAccordion.js" type="text/javascript"></script>
 
+
+    <script type="text/javascript" src="<?php echo $this->webroot; ?>frontend/js/prefixfree.min.js"></script>
 
     <script type="text/javascript">
 	
@@ -144,7 +153,7 @@
 		{
 			var email = $('#email').val();
 			//var selectedValue = $(this).val();
-				
+			alert(email);	
 			var targeturl = 'searches/ajaxpromotionalSignup';
 			$.ajax({
 			type: 'get',
@@ -862,7 +871,123 @@
 	});
 	
         
-                 
+        
+                
+        var loginForgetmailvalidator = jQuery("#forgetmail").validate({
+                    rules: {
+                            "data[Users][email]": {
+                                    required: true,
+                                    email :true,
+                            }
+                    },
+                    messages: {
+                            "data[Users][email]": {
+                                    required: "Please enter email.",
+                                    email : "Please enter a valid email address.",
+                            }
+                    }
+            }); 
+        
+        
+        $("#forgetmail").submit(function(e){
+		
+		e.preventDefault();
+                
+		if($("#forgetmail").valid()){
+			
+			var fromdata = $(this).serializeArray();
+                        
+			$.post(rp + 'customerlogin', {data : fromdata}, function (response) {
+				
+                                remove_message();
+                                if(response == "not_registered_error"){
+				$("div.login_logo h3").after("<span class='success_msg' style='color:red;'>You are not register customer.</span>"); 
+                                }
+                                else if(response == "not_send_mail"){
+                                    $("div.login_logo h3").after("<span class='success_msg' style='color:red;'>Email has been not sent.</span>"); 
+                                }
+                                else if(response == "success_msg"){
+                                    $("div.login_logo h3").after("<span class='success_msg' style='color:green;'>Email has been sent successfully.</span>"); 
+                                    window.location.href = rp;
+                                }
+				
+				setTimeout(remove_message,2000);
+				
+			});
+			
+		} else{
+			return false;
+		}
+	});
+        
+        
+        
+            $("#forgot_password").on("click",function(){
+	
+		$("div#loginform").css("display","none");
+		$("div#forgotform").css("display","block");
+		
+	});
+	
+	$(".login").on("click",function(){
+	
+		$("div#loginform").css("display","block");
+		$("div#forgotform").css("display","none");
+		
+	});     
+        
+        
+        $('body').on('click', 'a.add-to-cart', function(e) {
+       
+            e.preventDefault();
+            
+       //     alert("HERE");
+            
+        var cart = $('.shopping-cart');
+      //  var imgtodrag = $(this).parent('.item').find("img").eq(0);
+        
+        var imgtodrag = $(this).parent().parent().parent().parent().find("img").eq(0);
+        
+     //   alert(imgtodrag);
+        
+     //   return false;
+        
+        if (imgtodrag) {
+            var imgclone = imgtodrag.clone()
+                .offset({
+                top: imgtodrag.offset().top,
+                left: imgtodrag.offset().left
+            })
+                .css({
+                'opacity': '0.5',
+                    'position': 'absolute',
+                    'height': '150px',
+                    'width': '150px',
+                    'z-index': '100'
+            })
+                .appendTo($('body'))
+                .animate({
+                'top': cart.offset().top + 10,
+                    'left': cart.offset().left + 10,
+                    'width': 75,
+                    'height': 75
+            }, 1000, 'easeInOutExpo');
+            
+            setTimeout(function () {
+                cart.effect("shake", {
+                    times: 2
+                }, 200);
+            }, 1500);
+
+            imgclone.animate({
+                'width': 0,
+                    'height': 0
+            }, function () {
+                $(this).detach()
+            });
+        }
+   });
+        
 
 		});
                 
@@ -910,6 +1035,10 @@ function after_submit_signupform(){
 		if (!empty($siteSetting['Sitesetting']['woopra_analytics'])) {
 			echo '<script>'. $siteSetting['Sitesetting']['woopra_analytics']. '</script>';
 		} ?>
+<script type="text/javascript">
+var TabbedPanels1 = new Spry.Widget.TabbedPanels("TabbedPanels1");
+var Accordion1 = new Spry.Widget.Accordion("Accordion1");
+</script>
 
 	
 	</body>

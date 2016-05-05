@@ -1,0 +1,47 @@
+
+.Accordion {
+	font-family:Helvetica, Arial, sans-serif;
+	overflow: hidden;
+}
+
+.AccordionPanel {
+	margin-bottom:1px;
+	padding: 0;
+}
+
+.AccordionPanelTab {
+	 background-color: #88be4c;
+    color: #fff;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 15px;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+}
+
+.AccordionPanelContent {
+	overflow: auto;
+	margin: 0px;
+	padding: 0px;
+	
+}
+
+.AccordionPanelTabHover {
+	color: #fff;
+}
+.AccordionPanelOpen .AccordionPanelTabHover {
+	color: #fff;
+}
+
+@media print {
+
+  .Accordion {
+  overflow: visible !important;
+  }
+  
+  .AccordionPanelContent {
+  display: block !important;
+  overflow: visible !important;
+  height: auto !important;
+  }
+}

@@ -281,6 +281,7 @@ class CustomersController extends AppController
         }
         $ids = $this->Auth->User();
         $getStateData = $this->User->findById($ids['id']);
+		
         $order_detail = $this->Order->find('all', array(
             'conditions' => array('Order.customer_id' => $ids['Customer']['id'],
                 'NOT' => array('Order.status' => 'Deleted')),
@@ -570,6 +571,7 @@ class CustomersController extends AppController
         $order_detail = $this->Order->find('first', array(
                             'conditions' => array('Order.id' => $id,
                                         'Order.customer_id' => $this->Auth->User('Customer.id'))));
+										
         if (!empty($order_detail)) {
             $this->set(compact('order_detail'));
         } else {

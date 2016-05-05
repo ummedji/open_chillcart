@@ -183,7 +183,7 @@
         <div class="col-md-12 login_bottom">
           <div class="row">
             <div class="col-md-6 col-sm-6 text-center resp_space">Don't have an account? <a href="#" data-toggle="modal" data-target="#demo-2" data-dismiss="modal">Sign up</a></div>
-            <div class="col-md-6 col-sm-6 text-center resp_space">Forgot your password? <a href="#">Reset it</a></div>
+            <div class="col-md-6 col-sm-6 text-center resp_space">Forgot your password? <a href="#" data-toggle="modal" data-target="#demo-4" data-dismiss="modal">Reset it</a></div>
           </div>
         </div>
         <div class="clearfix"></div>
@@ -311,3 +311,80 @@
   </div>
 </div>
 <!--sign up-->
+
+<!--watchvideo-->
+<div class="modal fade login_popup" id="demo-3" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+<iframe width="100%" height="315" src="https://www.youtube.com/embed/yAoLSRbwxL8" frameborder="0" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+<!--watchvideo-->
+
+<!--forgot pass-->
+<div class="modal fade login_popup" id="demo-4" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <img src="<?php echo $siteUrl.'/frontend/images/login_icon.png'; ?>" class="img-responsive" alt="">
+        <div class="clearfix"></div>
+        <h3><span class="white_tl">Forgot</span><span class="green_tl">Password</span></h3>
+      </div>
+
+       <?php //echo $this->Form->create('User', array('class' => 'login-form')); ?>
+
+       <?php
+                    echo $this->Form->create('User', array('class' => 'login-form','url'=>'/customerlogin','id'=>'UserLoginForm'));
+               ?>
+
+
+      <div class="modal-body">
+        <div class="col-md-12 log_fields">
+          <div class="form-group">
+            <div class="input-group">
+             <!-- <input type="email" class="form-control" placeholder="Email Address" value="" /> -->
+
+                <?php
+			echo $this->Form->input('username',
+					array('label' => false,
+                                            'placeholder' => __('Enter Email ID'),
+					    'class'=>'form-control',
+					    'autocomplete' => 'off',
+                                            'div' => false)); ?>
+
+            </div>
+            <div class="clearfix"></div>
+          </div>
+
+          <div class="form-group">
+            <div class="input-group">
+              <input type="submit" class="form-control" value="Send Password" />
+
+              <?php //echo $this->Form->submit(__('Login'));?>
+
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+
+          <?php echo $this->Form->end(); ?>
+
+
+
+
+
+
+
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--forgot pass-->

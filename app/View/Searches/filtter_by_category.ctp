@@ -3,7 +3,7 @@
 ?>
 <!--<div class="col-md-10 col-sm-8">-->
 
-<div class="productdiv mrgB20">
+<div class="productdiv mrgB20 mr_top_20">
 <?php 
 $ic = 1;
 $main = $subCat = $subCatCount = 0;
@@ -18,21 +18,14 @@ foreach ($productList as $key => $value) {
 		<div class="row title greenbut">
             <div class="pull-left">
               <h4 class="ribbontag"><span class="ribbon-arrow"></span><?php echo $value['MainCategory']['category_name']; ?>
-              <?php if ($value['SubCategory']['id'] != $subCat) {
-			$subCat = $value['SubCategory']['id']; ?>
-              <div class="sub_title">
-                <i class="fa fa-arrow-right" aria-hidden="true"></i>
-                <?php echo $value['SubCategory']['category_name']; ?>
-               </div>
-              <?php } ?>
+              
               </h4>
             </div>
 		<?php } ?>
 			<?php if ($value['SubCategory']['id'] != $subCat) {
 			$subCat = $value['SubCategory']['id']; ?>
 			<h5 id="<?php echo $value['SubCategory']['category_name']; ?>" class="sub_category-name sub_title">
-			<!-- <span><i class="fa fa-arrow-right" aria-hidden="true"></i> <?php //echo $value['SubCategory']['category_name']; ?></span> -->
-		 <?php
+		 <span><i class="fa fa-arrow-right" aria-hidden="true"></i> <?php echo $value['SubCategory']['category_name']; ?></span> 		 <?php
 		if (isset($value['moreProduct'])) { ?>
 			<div class="pull-right">
               <button class="btn buttonStatus" type="button" onclick="categoriesProduct(<?php echo $value['MainCategory']['id'].','.$value['SubCategory']['id'].','.$value['Store']['id'];?>);">View More</button>
@@ -52,14 +45,14 @@ foreach ($productList as $key => $value) {
 
 		?>
 		<div class="col-md-2 col-sm-4 productblock">
-              <div class="product">
+              <div class="product hr_products">
                 <div class="image"> <a href="detail.html"> <img class="img-responsive image1" alt="" src="<?php echo $imageSrc; ?>"> </a> <span class="prod-id">2</span> </div>
 
                 <div class="text">
                   <h3><a href="#"><?php echo $value['Product']['product_name']; ?> </a></h3>
                   <p class="prodesc"><?php echo $value['ProductDetail'][0]['sub_name']; ?></p>
                   <p class="price"><span class="black-rs-icon"></span>
-				  <?php if ($value['Product']['price_option'] != 'single') {  
+				  <?php  /*if ($value['Product']['price_option'] != 'single') {  
                             ?>
 						<ul id="select_product_<?php echo $value['ProductDetail'][0]['id']; ?>" class="select_product_data" >
                                                     
@@ -97,7 +90,7 @@ foreach ($productList as $key => $value) {
                                                     ?><i class="fa fa-plus plushide" onclick="addToCart(<?php echo $value['ProductDetail'][0]['id']; ?>);"></i></li> 
                                                     <?php }
                         ?>
-                        <?php } ?>
+                        <?php }  ?>
 						</ul>
                         <?php }else{ 
                         $product_name = $value['ProductDetail'][0]['sub_name'];
@@ -115,7 +108,7 @@ foreach ($productList as $key => $value) {
 						}
                             
                                             
-                                        } ?>
+                                        } */ ?>
 				  <?php
                        /* if ($value['ProductDetail'][0]['compare_price'] != 0) {
                             echo '<del><span class="amount">'. html_entity_decode($this->Number->currency($value['ProductDetail'][0]['orginal_price'], $siteCurrency)).'</span></del>';
@@ -124,14 +117,85 @@ foreach ($productList as $key => $value) {
                             echo html_entity_decode($this->Number->currency($value['ProductDetail'][0]['orginal_price'], $siteCurrency));
                 }*/ ?>					
 				</p>
-				<div class="product__detail-action">
-                        <a class="button add_to_cart_button " rel="nofollow" href="javascript:void(0);">
-                                    <div class="add_btn">
-									<i class="fa fa-plus plushide" onclick="addToCart(<?php echo $value['ProductDetail'][0]['id']; ?>);"></i></div>
-                                                        </a>
-                    </div>
+				<div class="clearfix"></div>
                 </div>
+                <div class="product__detail-action">
+                           <!--      <ul class="detail-action_li">
+                                    <li>
+                                        <a href="#" class="price_part pull-left"><i class="fa fa-inr" aria-hidden="true"></i> 50.00<span>/1kg</span</a>
+                                        <a href="#" class="pull-right plus_ii"><i class="fa fa-plus plushide" onclick="addToCart(<?php echo $value['ProductDetail'][0]['id']; ?>);"></i></a>
+                                    <div class="clearfix"></div>
+                                    </li>
+                                 </ul>
+                    -->
+                    
+                  
+                  
+                  <ul id="select_product_<?php echo $value['ProductDetail'][0]['id']; ?>" class="detail-action_li select_product_data" >
+                                                    
+                                       <?php
+					foreach ($value['ProductDetail'] as $pr_key => $pr_value) { 
+                                            
+                                                $product_name = $pr_value['sub_name']; 
+                                                
+						//echo $product_name."</br>";
+                                                
+						$quantity = explode(" ",$product_name);
+						$get_key =array_search ('Grams', $quantity);
+						
+						$quantity_value = $quantity[$get_key-1];
+						
+						if ($pr_value['compare_price'] != 0) {
+                                                    ?>
+                                                    
+                                                    <li value="<?php echo $pr_value['id']; ?>"><?php 
+                                                    
+                                                //    echo '<del><span class="amount">'.html_entity_decode($this->Number->currency($pr_value['orginal_price'], $siteCurrency)).'</span></del>'." ".html_entity_decode($this->Number->currency($pr_value['compare_price'], $siteCurrency))." / ". $quantity_value."g";
+                                                    
+                                                    ?>
+                                                        <!--<i class="fa fa-plus plushide" onclick="addToCart(<?php //echo $value['ProductDetail'][0]['id']; ?>);"></i> -->
+                                                    <a href="#" class="price_part"><span class="black-rs-icon"></span>
+                                                 <?php echo  html_entity_decode($this->Number->currency($pr_value['compare_price'], $siteCurrency))." <span>/ ". $quantity_value."</span>"; ?>
+                                                        
+                                                        </a>
+                                                    <a href="javascript:void(0);" class="add-to-cart pull-right plus_ii">
+                                                        
+                                                      <i class="fa fa-plus plushide" onclick="addToCart(<?php echo $pr_value['id']; ?>);"></i> 
+                                                    
+                                                    </a>
+                                                    
+                                                    
+                                                    </li>
+                                                  <?php  
+							
+						}
+						else
+						{
+                                                    
+                                                    ?>
+                                                    <li value="<?php echo $pr_value['id']; ?>">
+                                                        
+                                                    <a href="#" class="price_part"><span class="black-rs-icon"></span>
+                                                        <?php 
+                                                    
+                                                    echo html_entity_decode($this->Number->currency($pr_value['orginal_price'], $siteCurrency))." <span>/ ".$quantity_value."g</span>";
+                                                    
+                                                    ?>
+                                                     </a>   
+                                                        
+                                                     <a href="javascript:void(0);" class="add-to-cart pull-right plus_ii">   <i class="fa fa-plus plushide" onclick="addToCart(<?php echo $pr_value['id']; ?>);"></i>
+                                                     </a>
+                                                     
+                                                     </li> 
+                                                    <?php }
+                        ?>
+                        <?php } ?>
+						</ul>
+                
+                    
+                              </div>
               </div>
+
             </div>
 		
 	<?php if (!isset($productList[$nextValue]['SubCategory']['id']) || $productList[$nextValue]['SubCategory']['id'] != $subCat) { ?>

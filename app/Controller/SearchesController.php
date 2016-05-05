@@ -706,6 +706,13 @@ class SearchesController extends AppController {
 				}*/
 			}
 		}
-		return $cityList;
+	
+                return $cityList;
 	}
+        
+        public function aboutus(){
+            $this->layout = 'frontend';
+             $this->set('aboutus');
+        }
+        
 }
