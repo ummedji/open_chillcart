@@ -361,7 +361,7 @@
 				}
 			});
 
-			var AddAdressBookvalidator = jQuery("#AddCustomerAddressBook_Order").validate({
+			var AddAdressBookvalidator = jQuery("#AddCustomerAddressBook").validate({
 				rules: {
 					"data[CustomerAddressBook][address_title]": {
 						required: true,

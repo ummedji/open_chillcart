@@ -350,7 +350,7 @@
               <div class="content-popup">
               
 <?php echo $this->Form->create("CustomerAddressBook",
-						array("id"=>'AddCustomerAddressBook_Order',
+						array("id"=>'AddCustomerAddressBook_Order123',
 							  "url"=>array("controller"=>'customers','action'=>'addAddressBook')));?>
   <div class="form-group">
     <label class="sr-only"><?php echo __('Address Title', true); ?></label>
