@@ -1,4 +1,6 @@
-
+<?php
+	echo $this->Form->create('Order', array('controller' => 'checkouts',
+											'action' => 'conformOrder')); ?>
 <div class="innercontentsection checkoutpage">
   <div class="container">
     <div class="content">
@@ -104,36 +106,20 @@
 			        						<input type="radio" <?php if($keys == 0){echo "checked=\"checked\"";} ?> name="data[Order][delivery_id]" value="<?php echo $values['CustomerAddressBook']['id']; ?>" />	 
 			        						
                                                                                        <div class="addrbg">
-                  <h2><?php echo $user_name; ?></h2>
+                  <h2><?php echo $values['CustomerAddressBook']['address_title']; ?></h2>
                   <div class="row">
-                    <p class="col-md-6"><?php echo $final_address; ?> </p>
-                  </div>
-                </div>
-                                                                                       
-			        							<p class="font-new color_new"> <?php echo $values['CustomerAddressBook']['address_title']; ?></p> <?php
+                    <p class="col-md-6"><?php
 			        								   echo '<p>'.$values['CustomerAddressBook']['address'].' ,'.
 			        										'<p>'.$values['CustomerAddressBook']['landmark'].' ,</p>'.
 			        										'<p>'.$customerArea[$values['CustomerAddressBook']['location_id']].' ,'.
 			        											  $customerCity[$values['CustomerAddressBook']['city_id']].' ,</p>'.
 			        										'<p>'.$customerState[$values['CustomerAddressBook']['state_id']].' - '.
 			        											  $customerAreaCode[$values['CustomerAddressBook']['location_id']].'</p>';
-			        							 ?>
-
-			        						
-			        						<!-- <span class="edit_options">
-			        							<a href="#"><i class="fa fa-pencil"></i></a>
-			        							<a href="#"><i class="fa fa-times"></i></a>
-			        						</span> -->
-											
-			        					</label>
-		        					</div>
-		        					<?php } ?>
-                
-                
-                
-              
-               
-                <div class="defaddr clearfix">
+			        							 ?></p>
+                  </div>
+                </div>
+                               
+<div class="defaddr clearfix">
                   <div class="row">
                     <div class="col-md-6 col-sm-6 col-xs-6">
                       <label class="checkbox-inline">
@@ -144,10 +130,27 @@
                       <p> Delete Address</p>
                     </div>
                   </div>
-                </div>
-              </div>
+                </div>                                                                                       
+                                                                                       
+			        						
+			        						<!-- <span class="edit_options">
+			        							<a href="#"><i class="fa fa-pencil"></i></a>
+			        							<a href="#"><i class="fa fa-times"></i></a>
+			        						</span> -->
+											
+			        					
+		        					</div>
+		        					<?php } ?>
+                
+                
+                
+              
+               
+               
               
             </div>
+              
+              
             <div class="text-center padB20"> <a data-target="#demo-10" data-toggle="modal" href="javascript:void(0);" class="addbtn btn"><span class="addriconwt"></span>Add Address</a></div>
           </div>
         </div>
@@ -331,6 +334,175 @@
                      
                       </div>
                       
+                        
+                        <div id="orderTypeCheck" class="contain clearfix"> <?php 
+							foreach ($storeSlots as $keyss => $valuess) { 
+								//echo "<pre>"; print_r($valuess);
+								?>
+								<div class="store_slotes">
+									<div class="row">
+										<div class="col-md-12 text-center">
+											<span class="switch_buton margin-b-20"> <?php
+
+												$option1 = array('Collection' 	=> '');
+												$option2 = array('Delivery' 	=> ''); 
+
+												if ($valuess['delivery'] == 'Yes' && $valuess['collection'] == 'Yes') { ?>
+
+												
+													<label> <?php
+
+			                                          	echo $this->Form->radio('order_type'.$valuess['store_id'],$option1,
+		                                          							array('checked'=>$option1,
+		                                          								'label'=>false,
+		                                          								'legend'=>false,
+		                                          								'name' => 'data[Order][timeSlot]['.$keyss.'][orderType]',
+		                                          								'onclick'=>'slotStore('.$valuess['store_id'].')',
+		                                          								'hiddenField'=>false)); ?>
+		                                          								<span><?php echo __('Collection'); ?></span>
+		                                            </label>
+		                                            <label>  <?php 
+			                                           	echo $this->Form->radio('order_type'.$valuess['store_id'],$option2,
+			                                       							array('checked'=>$option2,
+			                                       								'label'=>false,
+			                                       								'legend'=>false,
+			                                       								'name' => 'data[Order][timeSlot]['.$keyss.'][orderType]',
+			                                       								'onclick'=>'slotStore('.$valuess['store_id'].')',
+			                                       								'checked' => 'checked',
+			                                       								'hiddenField'=>false)); ?>
+			                                       								<span><?php echo __('Delivery'); ?></span>
+					                                </label>
+					                           
+
+				                                <?php
+
+				                            } elseif ($valuess['collection'] == 'Yes') { ?>
+				                            	
+					                            	<label> <?php
+
+			                                          	echo $this->Form->radio('order_type'.$valuess['store_id'],$option1,
+		                                          							array('checked'=>$option1,
+		                                          								'label'=>false,
+		                                          								'legend'=>false,
+		                                          								'checked' => 'checked',
+		                                          								'name' => 'data[Order][timeSlot]['.$keyss.'][orderType]',
+		                                          								'onclick'=>'slotStore('.$valuess['store_id'].')',
+		                                          								'hiddenField'=>false)); ?> 
+		                                          								<span><?php echo __('Collection'); ?></span>
+		                                            </label> <?php
+		                                        } elseif ($valuess['delivery'] == 'Yes') { ?>
+
+		                                        	<label>  <?php 
+			                                           	echo $this->Form->radio('order_type'.$valuess['store_id'],$option2,
+			                                       							array('checked'=>$option2,
+			                                       								'label'=>false,
+			                                       								'legend'=>false,
+			                                       								'name' => 'data[Order][timeSlot]['.$keyss.'][orderType]',
+			                                       								'onclick'=>'slotStore('.$valuess['store_id'].')',
+			                                       								'checked' => 'checked',
+			                                       								'hiddenField'=>false)); ?>  
+			                                       								<span><?php echo __('Delivery'); ?></span>
+					                                </label> 
+					                           
+					                            <?php
+				                            } ?>
+				                            
+				                            </span>
+										</div>
+										<div class="col-md-6">
+
+											<div class="form-group clearfix">
+												<label class="control-label col-md-12 text-left store_name"> <?php 
+											echo $valuess['store_name']; ?> </label> 
+
+											
+			                                
+												<div class="col-md-12"> <?php
+
+													echo $this->Form->input('dateType',
+																array('type'=>'select',
+																		'id' => 'dateType'.$valuess['store_id'],
+																 		'class'=>'form-control',
+																 		'name' => 'data[Order][timeSlot]['.$keyss.'][type]',
+																 		'options'=> array($optionDays),
+																 		'onchange' => 'slotStore('.$valuess['store_id'].')',
+																 		'label'=> false)); ?>
+												</div>
+											</div>
+
+										</div>
+										<div class="col-md-6">
+											<div class="form-group clearfix">
+
+												<div class="control-label col-md-12 text-left">
+													<span id="orderType_<?php echo $valuess['store_id']; ?>"> <?php
+														if ($valuess['delivery'] == 'Yes' && $valuess['collection'] == 'Yes') {
+															//echo __('Delivery');
+															echo 'Delivery';
+														} elseif ($valuess['collection'] == 'Yes') {
+															//echo __('Collection');
+															echo 'Collection';
+														} elseif ($valuess['delivery'] == 'Yes') { 
+															//echo __('Delivery');
+															echo 'Delivery';
+														} ?>  
+													</span> <?php echo __('Time'); ?>
+
+
+												</div>
+
+												<div class="col-md-12">
+													<?php
+
+														if (!empty($valuess['timeslates'])) {
+															$setUp = array('type'=>'select',
+																			'id' => 'timeslot'.$valuess['store_id'],
+																	 		'class'=>'form-control deliveryCharge',
+																	 		'options'=> array($valuess['timeslates']),
+																	 		'name' => 'data[Order][timeSlot]['.$keyss.'][time]',
+																	 		'empty' => __('Select Time'),
+																	 		'label'=> false,
+																	 		'div' => false);
+														} else {
+															$setUp = array('type'=>'select',
+																			'id' => 'timeslot'.$valuess['store_id'],
+																	 		'class'=>'form-control deliveryCharge',
+																	 		'name' => 'data[Order][timeSlot]['.$keyss.'][time]',
+																	 		'empty' => __('Select Time'),
+																	 		'label'=> false,
+																	 		'div' => false);
+													} ?>
+
+													
+
+												<?php
+
+													echo $this->Form->input('timeSlates',$setUp);
+
+													echo $this->Form->input('stores',
+																array('type' => 'hidden',
+																	  'name' => 'data[Order][timeSlot]['.$keyss.'][store_id]',
+																	  'value' => $valuess['store_id'])); ?>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								 <?php
+							} ?>
+
+
+						</div>	
+                        
+                        
+                        
+                        <?php
+									echo $this->Form->input('order_description',
+														array('class' => 'form-control address-customer-notes',
+															  'placeholder' => __('Eg: Door bell is broken, please knock.'),
+															  'label'=>false,
+															  'rows' => 2)); ?>
+                        
                     </div>
                   </div>
                 </div>
@@ -348,8 +520,12 @@
                       <p class="text-right">Amount Payable<span>Rs. <?php echo round($total[0][0]["cartTotal"],2); ?></span></p>
                     </div>
                     <div class="clearfix pay_button">
-                        <a href="#">Pay Now</a>
+                        <button class="btn btn-primary pull-right" type="submit">Pay Now</button>
                     </div>
+                    
+                      <?php
+	echo $this->Form->end(); ?>
+                      
                   </div>
                 </div>
               </div>

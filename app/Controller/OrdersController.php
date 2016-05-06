@@ -166,7 +166,7 @@ class OrdersController extends AppController {
 
   //Confirm Order Process
   public function conformOrder() {
-
+      
       $role = $this->Auth->User('role_id');
       if (empty($role) || $this->Auth->User('role_id') != 4) {
           $this->redirect(array('controller' => 'searches', 'action' => 'index'));
@@ -193,12 +193,15 @@ class OrdersController extends AppController {
                             'CustomerAddressBook.customer_id' => $this->Auth->User('Customer.id'))));
       }
       
+      
+     
       foreach ($this->request->data['Order']['timeSlot'] as $key => $value) {
 
           $order['store_id']            = $value['store_id'];
           $order['customer_id']         = $this->Auth->User('Customer.id');
           $order['user_type']           = 'Customer';
-          $order['order_description']   = $this->request->data['Order']['order_description'];
+        //  $order['order_description']   = $this->request->data['Order']['order_description'];
+          $order['order_description']   = "";
           $order['delivery_date']       = ($value['type'] == 'Today') ? date("Y-m-d") : date("Y-m-d", time()+86400);
           $order['order_type']          = $value['orderType'];
 
@@ -219,6 +222,8 @@ class OrdersController extends AppController {
                       $this->storeState[$storeDetails['Store']['store_state']].', '.
                       $this->siteSetting['Country']['country_name'];
           }
+          
+          
           
           $sourceLatLong    = $this->Googlemap->getlatitudeandlongitude($storeAddress);
           $source_lat       = (!empty($sourceLatLong['lat'])) ? $sourceLatLong['lat'] : 0;
@@ -262,6 +267,8 @@ class OrdersController extends AppController {
             $order['destination_longitude']   = $source_long;
           }
 
+          
+          
 
           $destination_lat  = $order['destination_latitude'];
           $destination_long = $order['destination_longitude'];
@@ -295,11 +302,25 @@ class OrdersController extends AppController {
                                             
           $order['order_grand_total']   = $order['order_sub_total'] + $order['delivery_charge'] + $order['tax_amount'] - $order['offer_amount'];
 
+        //  echo "<pre>";
+        //  print_r($order);
+          
           $this->Order->save($order, null, null);
+          
+        //  echo "<pre>";
+        //  $log = $this->Model->getDataSource()->getLog(false, false);
+        //  debug($log);
+       //   print_r($this);die;
+          
           $update['ref_number'] = '#GNC00'.$this->Order->id;
           $orderId[]    = $update['id'] = $this->Order->id;
           $this->Order->save($update);
 
+          
+          
+          
+          
+          
           $storeDetails = $this->Store->findById($value['store_id']);
 
           // Store Owner Message
@@ -332,7 +353,8 @@ class OrdersController extends AppController {
           $this->Order->id = '';
       }
 
-
+      
+      
       if ($this->request->data['Order']['paymentMethod'] == 'cod') {
 
           foreach ($orderId as $key => $value) {
@@ -344,6 +366,9 @@ class OrdersController extends AppController {
               //OrderSms
               $this->ordersms($value);
           }
+          
+          echo "1";die;
+          
       } else {
 
         $id = $this->request->data['Order']['paymentMethod'];
@@ -387,6 +412,9 @@ class OrdersController extends AppController {
               //OrderSms
               $this->ordersms($value);
             }
+            
+             echo "3";die;
+            
         } else {
 
           foreach ($orderId as $key => $value) {
@@ -400,10 +428,20 @@ class OrdersController extends AppController {
           }
           $this->Session->setFlash(__('Payment failed', true),
                                     'default', array('class' => 'alert alert-danger'));
+          
+           echo "4";die;
+          
           $this->redirect(array('controller' => 'searches', 'action' => 'index', 'Failed'));
+          
+          
         }
 
+        
+         echo "2";die;
       }
+      
+      echo "fgdg";die;
+      
       $this->Session->write("preSessionid",'');
       $this->Session->write('orderplaced', 'success');
       $this->redirect(array('controller' => 'searches', 'action' => 'index', 'Thanks'));
