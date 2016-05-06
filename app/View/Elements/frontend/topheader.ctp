@@ -47,20 +47,31 @@
 			<!-- <li class="shopping-cart"><a href=""><span class="carticon"></span><span class="cartTotal">0.00</span><span class="droparrow"></span></a></li> -->
             <?php } ?>
 		  <li class="shopping-cart has-submenu"><a data-toggle="dropdown" class="dropdown-toggle" href=""><span class="carticon"></span><span class="cartTotal">0.00</span> <span class="droparrow"></span></a>
-          <div class="dropdown-menu productmenu" style="height: 500px; overflow-y: scroll;"> 
+          <div class="dropdown-menu productmenu top_cart_arrow">
           <span class="toparrow"></span>
+          <div class="scroll_area">
           <div class="subnavheading clearfix"><h4 class="pull-left">Total Price</h4> <div class="pull-right"><p><span class="rs-icon"></span><span class="cartTotal">0.00</span></p></div></div>
-          <ul class="cart_data">
-              
-          <?php   //$this->requestAction(array('controller' => 'searches', 'action' => 'header_data_cart'));  ?>
-           
-       <!--   <div class="text-center"> <button class="btn checkout" type="submit">Checkout</button></div>-->
-          
-          
-          
-          
-          
-          </ul>
+                    <ul class="cart_data" style="height: 300px; overflow-y: scroll;">
+
+                    <?php   //$this->requestAction(array('controller' => 'searches', 'action' => 'header_data_cart'));  ?>
+
+                 <!--   <div class="text-center"> <button class="btn checkout" type="submit">Checkout</button></div>-->
+
+
+
+
+
+                    </ul>
+          <?php if(!empty($loggedCheck) && ($loggedCheck['role_id'] == 4)){ ?>
+                    <div class="text-center"> <!--button type="submit" class="btn checkout">Checkout</button>-->
+                        <a class="btn checkout" href="<?php echo $siteUrl; ?>/checkouts/index">Checkout </a>
+                    </div>
+                    <?php } else { ?>
+                    <div class="text-center"> <a class="btn checkout" href="<?php echo $siteUrl; ?>/customer/users/customerlogin?page=checkout">Checkout </a>
+		<?php } ?>
+                    <div class="clearfix"></div>
+
+          </div>
            </div>        
           </li>
                           

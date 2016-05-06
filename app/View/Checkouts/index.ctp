@@ -34,7 +34,7 @@
               <p class="emailtext">Logged in as <a href="mailto:<?php echo $user_email; ?>"><?php echo $user_email; ?></a></p>
               <p class="textnote">Please note that upon clicking "Sign out" you will lose items in your cart and will be redirected to Chilcart home page.</p>
               <div class="inlinecontent">
-                <a class="btn signoutbut" href="<?php echo $siteUrl.'/customer/users/userLogout'; ?>">Sign Out</a>
+                  <a class="btn signoutbut" href="<?php echo $siteUrl; ?>/customer/users/userLogout">Sign Out</a>
                 <p class="signouttext">Continue with checkout</p>
               </div>
             </div>
@@ -139,7 +139,7 @@
           <div class="AccordionPanelTab" data-toggle="collapse" data-parent="#accordion" href="#collapse3">
             <div class="row checkouttitletab">
               <div class="selecteddiv"><span class="ok-icon"></span></div>
-              <div class="col-md-12 titlediv fldiv">3. Order Summary 4 items </div>
+              <div class="col-md-12 titlediv fldiv">3. Order Summary <?php if($cartCount[0]["productCount"] != ""){ echo $cartCount[0]["productCount"]; } ?> items </div>
             </div>
           </div>
           <div class="panel-collapse collapse" id="collapse3">
@@ -152,66 +152,65 @@
                 <div class="col-md-3">Delivery Details</div>
                 <div class="col-md-2 wrap15">Subtotal </div>
               </div>
-              <div class="clearfix orderdet pad20 ">
+                
+                
+               <?php
+                
+               
+               if(!empty($storeCart)){
+                    foreach($storeCart as $key => $value){
+                    
+                  
+                    
+              ?> 
+               
+                 <div class="clearfix orderdet pad20 ">
                 <div class="col-md-2 col-sm-2 wrap15">
-                  <div class="imgdiv text-center"><img src="images/camera-image.png"></div>
-                </div>
-                <div class="col-md-3 col-sm-10">
+                  <div class="imgdiv text-center">
+                      <?php
+                      $imageSrc = "https://dnrskjoxjtgst.cloudfront.net/stores/products/home/".$value["ShoppingCart"]["product_image"];
+                      ?>
+                      
+                       <img style="max-height:150px;" src="<?php echo $imageSrc; ?>"  alt='<?php echo $value["ShoppingCart"]["product_name"]; ?>' title='<?php echo $value["ShoppingCart"]["product_name"]; ?>' onerror="this.onerror=null;this.src=<?php echo $siteUrl; ?>/images/no-imge.jpg" />
+                      
+                   </div>
+                 </div>
+                     
+                 <div class="col-md-3 col-sm-10">
                   <div class="itemdiv">
                     <p class="itemtitle">Camera</p>
-                    <p>Canon EOS 1200D (Kit with 8 GB Card &amp; Bag EF S18-55 IS II+55-250mm IS II) DSLR Camera</p>
+                    <p><?php echo $value["ShoppingCart"]["product_name"]; ?></p>
                     <div class="desktophide itembl">
-                     <p><span class="tl">Qty :</span><span class="qtydiv">1</span></p>
-                     <p><span class="tl">Price :</span><span class="rsdiv">Rs.24999</span></p>
+                     <p><span class="tl">Qty :</span><span class="qtydiv"><?php echo  $value["ShoppingCart"]["product_quantity"]; ?></span></p>
+                     <p><span class="tl">Price :</span><span class="rsdiv">Rs.<?php echo $value["ShoppingCart"]["product_total_price"]; ?></span></p>
                       <p><span class="tl">Delivery Detail :</span><span class="delivdet">by Wed, 27th Apr [FREE]</span></p>
-                       <p><span class="tl">Total Price :</span><span class="rsdiv">Rs.24999</span></p>
+                       <p><span class="tl">Total Price :</span><span class="rsdiv">Rs. <?php echo $value["ShoppingCart"]["product_total_price"]; ?></span></p>
                     </div>
                     
                   </div>
                 </div>
-                <div class="col-md-1 wrap5 mobilehide">
-                  <p class="qtydiv">1</p>
+                     
+                   <div class="col-md-1 wrap5 mobilehide">
+                  <p class="qtydiv"><?php echo  $value["ShoppingCart"]["product_quantity"]; ?></p>
                 </div>
                 <div class="col-md-2 wrap15 mobilehide">
-                  <p class="rsdiv">Rs.24999</p>
+                  <p class="rsdiv">Rs.<?php echo $value["ShoppingCart"]["product_total_price"]; ?></p>
                 </div>
                 <div class="col-md-3 mobilehide">
                   <p class="delivdet">by Wed, 27th Apr [FREE]</p>
                 </div>
                 <div class="col-md-2 wrap15 mobilehide">
-                  <p class="rsdiv">Rs.24999</p>
+                  <p class="rsdiv">Rs. <?php echo $value["ShoppingCart"]["product_total_price"]; ?></p>
                 </div>
-              </div>
-              <div class="clearfix orderdet pad20 ">
-                <div class="col-md-2 col-sm-2 wrap15">
-                  <div class="imgdiv text-center"><img src="images/camera-image.png"></div>
+                     
+                     
                 </div>
-                <div class="col-md-3 col-sm-10">
-                  <div class="itemdiv">
-                    <p class="itemtitle">Camera</p>
-                    <p>Canon EOS 1200D (Kit with 8 GB Card &amp; Bag EF S18-55 IS II+55-250mm IS II) DSLR Camera</p>
-                    <div class="desktophide itembl">
-                     <p><span class="tl">Qty :</span><span class="qtydiv">1</span></p>
-                     <p><span class="tl">Price :</span><span class="rsdiv">Rs.24999</span></p>
-                      <p><span class="tl">Delivery Detail :</span><span class="delivdet">by Wed, 27th Apr [FREE]</span></p>
-                       <p><span class="tl">Total Price :</span><span class="rsdiv">Rs.24999</span></p>
-                    </div>
-                    
-                  </div>
-                </div>
-                <div class="col-md-1 wrap5 mobilehide">
-                  <p class="qtydiv">1</p>
-                </div>
-                <div class="col-md-2 wrap15 mobilehide">
-                  <p class="rsdiv">Rs.24999</p>
-                </div>
-                <div class="col-md-3 mobilehide">
-                  <p class="delivdet">by Wed, 27th Apr [FREE]</p>
-                </div>
-                <div class="col-md-2 wrap15 mobilehide">
-                  <p class="rsdiv">Rs.24999</p>
-                </div>
-              </div>
+               
+             <?php
+                }
+             }
+                ?>
+                
               <div class="pad20">
                 <p class="alerttext">Send Order Confirmation SMS alert to +91 9879431254</p>
               </div>
@@ -237,30 +236,30 @@
           <div class="panel-collapse collapse" id="collapse4">
             <div class="paymethoddiv">
               <div class="clearfix">
-                <div class="col-md-9 paymethodlistdiv">
+                <div class="col-md-9 paymethodlistdiv as_fade_in">
                   <div id="TabbedPanels1" class="TabbedPanels clearfix">
                     <ul class="col-md-3 TabbedPanelsTabGroup">
                       <li class="TabbedPanelsTab" tabindex="0">
-                        <div class="paytypetitle">Credit Card</div>
+                        <div class="paytypetitle" data-toggle="tab" href="#cart1">Credit Card</div>
                       </li>
                       <li class="TabbedPanelsTab" tabindex="0">
-                        <div class="paytypetitle">Net Banking</div>
+                        <div class="paytypetitle" data-toggle="tab" href="#cart2">Net Banking</div>
                       </li>
                       <li class="TabbedPanelsTab" tabindex="0">
-                        <div class="paytypetitle">EMI</div>
+                        <div class="paytypetitle" data-toggle="tab" href="#cart3">EMI</div>
                       </li>
                       <li class="TabbedPanelsTab" tabindex="0">
-                        <div class="paytypetitle">Debit Card</div>
+                        <div class="paytypetitle" data-toggle="tab" href="#cart4">Debit Card</div>
                       </li>
                       <li class="TabbedPanelsTab" tabindex="0">
-                        <div class="paytypetitle">COD</div>
+                        <div class="paytypetitle" data-toggle="tab" href="#cart5">COD</div>
                       </li>
                       <li class="TabbedPanelsTab" tabindex="0">
-                        <div class="paytypetitle">Gift Card</div>
+                        <div class="paytypetitle" data-toggle="tab" href="#cart6">Gift Card</div>
                       </li>
                     </ul>
                     <div class="col-md-9 TabbedPanelsContentGroup">
-                      <div class="TabbedPanelsContent">
+                      <div id="cart1" class="tab-pane fade in">
                         <div class="carddetail">
                           <p class="smalltext">Pay using EMI on Credit Card</p>
                           <div class="mrgTB20">
@@ -278,7 +277,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="TabbedPanelsContent">
+                      <div id="cart2" class="tab-pane fade">
                         <div class="carddetail">
                           <p class="smalltext">Pay using EMI on Credit Card</p>
                           <div class="mrgTB20">
@@ -296,7 +295,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="TabbedPanelsContent">
+                      <div id="cart3" class="tab-pane fade">
                         <div class="carddetail">
                           <p class="smalltext">Pay using EMI on Credit Card</p>
                           <div class="mrgTB20">
@@ -314,7 +313,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="TabbedPanelsContent">
+                      <div id="cart4" class="tab-pane fade">
                         <div class="carddetail">
                           <p class="smalltext">Pay using EMI on Credit Card</p>
                           <div class="mrgTB20">
@@ -332,7 +331,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="TabbedPanelsContent">
+                      <div id="cart5" class="tab-pane fade">
                         <div class="carddetail">
                           <p class="smalltext">Pay using EMI on Credit Card</p>
                           <div class="mrgTB20">
@@ -350,7 +349,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="TabbedPanelsContent">
+                      <div id="cart6" class="tab-pane fade">
                         <div class="carddetail">
                           <p class="smalltext">Pay using EMI on Credit Card</p>
                           <div class="mrgTB20">
@@ -383,6 +382,9 @@
                     </div>
                     <div class="clearfix totalamtext bgchange">
                       <p class="text-right">Amount Payable<span>Rs. 41677</span></p>
+                    </div>
+                    <div class="clearfix pay_button">
+                        <a href="#">Pay Now</a>
                     </div>
                   </div>
                 </div>

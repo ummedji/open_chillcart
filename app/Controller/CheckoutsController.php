@@ -55,6 +55,8 @@ class CheckoutsController extends AppController
                                 'order' => array('ShoppingCart.store_id'),
                                 'group' => 'ShoppingCart.store_id'));
         
+        
+        
         if (empty($shopCartDetails) || empty($minOrderCheck)) {
             $this->redirect(array('controller' => 'searches', 'action' => 'index'));
         }
@@ -152,11 +154,34 @@ class CheckoutsController extends AppController
              'conditions' => array('City.id' => $addresses[0]["CustomerAddressBook"]["city_id"]),
             'fields' => array('City.id', 'City.city_name')));
         
+        
+        $total = $this->ShoppingCart->find('all', array(
+								'conditions'=>array('ShoppingCart.session_id' => $this->SessionId),
+								'fields' => array('SUM(ShoppingCart.product_total_price) AS cartTotal')));
+
+	$storeProduct = $this->ShoppingCart->find('all',array(
+        						'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
+        						'fields' => array('store_id',
+        										 'COUNT(ShoppingCart.store_id) AS productCount',
+        										 'SUM(ShoppingCart.product_total_price) As productTotal'),
+        						'group'=>array('ShoppingCart.store_id')));
+
+	$cartCount = $this->ShoppingCart->find('first',array(
+        						'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
+        						'fields' => array('store_id',
+        										 'COUNT(ShoppingCart.store_id) AS productCount',
+        										 'SUM(ShoppingCart.product_total_price) As productTotal')));
+
+	$storeCart = $this->ShoppingCart->find('all', array(
+								'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
+								'order' => array('ShoppingCart.store_id')));
+        
+       
        // $customerCountry = $this->Countries->find('list', array(
        //      'conditions' => array('Countries.id' => $addresses[0]["State"]["countrty_id"]),
        //     'fields' => array('Countries.id', 'Countries.country_name')));
         
-        $this->set(compact('addresses', 'shopCartDetails', 'storeSlots', 'optionDays', 'stripeCards','customerState','customerCity'));
+        $this->set(compact('addresses', 'shopCartDetails', 'storeSlots', 'optionDays', 'stripeCards','customerState','customerCity','cartCount','storeCart'));
         
         
     }

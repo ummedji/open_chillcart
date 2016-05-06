@@ -1064,6 +1064,14 @@ function after_submit_signupform(){
 var TabbedPanels1 = new Spry.Widget.TabbedPanels("TabbedPanels1");
 var Accordion1 = new Spry.Widget.Accordion("Accordion1");
 </script>
+<script>
+$(document).ready(function(){
+    $('.close_pop_btn a').click(function(){
+        $('.changeloc-popup').hide();
+   });
+
+});
+</script>
 
 	
 	</body>

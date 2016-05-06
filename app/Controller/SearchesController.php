@@ -548,11 +548,11 @@ class SearchesController extends AppController {
                 
               //  $html .= 'sdsd'.$loggedUser["role_id"];
           
-		if ($loggedUser['role_id'] == 4) { 
-			$html .= '<a class="btn checkout" href="'.$this->siteUrl.'/checkouts/index">Checkout </a> ';
-		} else {
-			$html .= '<a class="btn checkout" href="'.$this->siteUrl.'/customer/users/customerlogin?page=checkout">Checkout </a> ';
-		} 
+		//if ($loggedUser['role_id'] == 4) { 
+		//	$html .= '<a class="btn checkout" href="'.$this->siteUrl.'/checkouts/index">Checkout </a> ';
+		//} else {
+		//	$html .= '<a class="btn checkout" href="'.$this->siteUrl.'/customer/users/customerlogin?page=checkout">Checkout </a> ';
+		//} 
              }
              else{
                 
@@ -672,11 +672,11 @@ class SearchesController extends AppController {
                 
              //   $html .= 'sdsd'.$this->Auth->user('role_id');
           
-		if ($this->Auth->user('role_id') == 4) { 
-			$html .= '<a class="btn checkout" href="'.$this->siteUrl.'/checkouts/index">Checkout </a> ';
-		} else {
-			$html .= '<a class="btn checkout" href="'.$this->siteUrl.'/customer/users/customerlogin?page=checkout">Checkout </a> ';
-		} 
+		//if ($this->Auth->user('role_id') == 4) { 
+		//	$html .= '<a class="btn checkout" href="'.$this->siteUrl.'/checkouts/index">Checkout </a> ';
+		//} else {
+		//	$html .= '<a class="btn checkout" href="'.$this->siteUrl.'/customer/users/customerlogin?page=checkout">Checkout </a> ';
+		//} 
              }
              else{
                 
