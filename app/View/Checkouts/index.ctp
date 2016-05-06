@@ -13,8 +13,8 @@
               <div class="col-md-4 col-sm-4 titlediv">
                   
                    <?php
-                   echo "<pre>";
-                   print_r($addresses);
+                  // echo "<pre>";
+                  // print_r($addresses);
                    
                 if(!empty($addresses)){
                     $user_email = $addresses[0]["Customer"]["customer_email"];
