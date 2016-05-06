@@ -367,7 +367,7 @@ class OrdersController extends AppController {
               $this->ordersms($value);
           }
           
-          echo "1";die;
+         
           
       } else {
 
@@ -413,7 +413,7 @@ class OrdersController extends AppController {
               $this->ordersms($value);
             }
             
-             echo "3";die;
+           
             
         } else {
 
@@ -429,7 +429,7 @@ class OrdersController extends AppController {
           $this->Session->setFlash(__('Payment failed', true),
                                     'default', array('class' => 'alert alert-danger'));
           
-           echo "4";die;
+           
           
           $this->redirect(array('controller' => 'searches', 'action' => 'index', 'Failed'));
           
@@ -437,10 +437,9 @@ class OrdersController extends AppController {
         }
 
         
-         echo "2";die;
+        
       }
       
-      echo "fgdg";die;
       
       $this->Session->write("preSessionid",'');
       $this->Session->write('orderplaced', 'success');
