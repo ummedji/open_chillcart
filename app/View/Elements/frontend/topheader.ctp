@@ -17,7 +17,7 @@
 <!-- NEW TEMPLATE START -->
 		<div class="navbar navbar-inverse navbar-fixed-top navtop" >
 		<div class="container">
-		  <div class="navbar-header"> <a href="index.html"><img title="CHILLCART" src="<?php echo $siteUrl.'/frontend/images/site-logo.png'; ?>"/></a><button class="nav-add navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#nave_respo" aria-expanded="true" aria-controls="navbar"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button> </div>
+		  <div class="navbar-header"> <a href="<?php echo $siteUrl; ?>"><img title="CHILLCART" src="<?php echo $siteUrl.'/frontend/images/site-logo.png'; ?>"/></a><button class="nav-add navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#nave_respo" aria-expanded="true" aria-controls="navbar"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button> </div>
 		  <div class="navbar-collapse collapse in" id="nave_respo">
         <div class="main-menu">
 			<ul class="nav navbar-nav pull-right">
@@ -41,14 +41,12 @@
                         /*if($this->request->params['controller'] == 'searches' &&
 			($this->request->params['action'] == 'index' || $this->request->params['action'] == 'stores' || $this->request->params['action'] == 'storeitems'))*/
                         
-			if(($this->request->params['controller'] == "checkouts" && $this->request->params['action'] == 'index') || ($this->request->params['controller'] == "customers" && $this->request->params['action'] == 'customer_myaccount') || ($this->request->params['controller'] == "searches" && ($this->request->params['action'] == 'index' || $this->request->params['action'] == 'stores' || $this->request->params['action'] == 'storeitems' || $this->request->params['action'] == 'aboutus'))){ ?>
-
-			  <li><a href="javascript:void(0);" id="how_it_works">How it Works?</a></li>
+			if(($this->request->params['controller'] == "checkouts" && $this->request->params['action'] == 'index') || ($this->request->params['controller'] == "customers" && $this->request->params['action'] == 'customer_myaccount') || ($this->request->params['controller'] == "searches" && ($this->request->params['action'] == 'index' || $this->request->params['action'] == 'stores' || $this->request->params['action'] == 'storeitems' || $this->request->params['action'] == 'aboutus'))){ 
+			if($this->request->params['action'] == 'index') { ?>
+			<li><a href="javascript:void(0);" id="how_it_works">How it Works?</a></li>
 			<!-- <li class="shopping-cart"><a href=""><span class="carticon"></span><span class="cartTotal">0.00</span><span class="droparrow"></span></a></li> -->
-                          
-                          
-                          
-                          <li class="shopping-cart has-submenu"><a data-toggle="dropdown" class="dropdown-toggle" href=""><span class="carticon"></span><span class="cartTotal">0.00</span> <span class="droparrow"></span></a>
+            <?php } ?>
+		  <li class="shopping-cart has-submenu"><a data-toggle="dropdown" class="dropdown-toggle" href=""><span class="carticon"></span><span class="cartTotal">0.00</span> <span class="droparrow"></span></a>
           <div class="dropdown-menu productmenu" style="height: 500px; overflow-y: scroll;"> 
           <span class="toparrow"></span>
           <div class="subnavheading clearfix"><h4 class="pull-left">Total Price</h4> <div class="pull-right"><p><span class="rs-icon"></span><span class="cartTotal">0.00</span></p></div></div>

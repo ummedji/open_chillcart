@@ -137,7 +137,7 @@
               <div class="text-center mrgTB30">
                 <h2 class="blgrtitle "><span class="blackborder">MY</span> <span class="greenborder">Profile</span></h2>
               </div>
-			  <?php echo $this->Form->create('Customer', array('class' => 'login-form','type'=>'file')); ?>
+			  <?php echo $this->Form->create('customer', array('class' => 'login-form','type'=>'file')); ?>
               <div class="clearfix addprofblock">
                 <div class="clearfix">
                   <div class="col-md-6 profinfo">
@@ -273,17 +273,17 @@
                 <h2 class="blgrtitle "><span class="blackborder">My</span> <span class="greenborder">saved Card</span></h2>
               </div>
               <div class="clearfix padLR20">
-                <p class="removeiconbl pull-right">Edit / Remove <span class="removeicon"></span></p>
+                <p class="removeiconbl pull-right">Remove <span class="removeicon"></span></p>
               </div>
 			  <?php 
 			  if(!empty($Stripe_detail)){
 			  foreach ($Stripe_detail as $key => $value) { ?>
               <div class="clearfix savedcardblock" id="<?php echo "card".$value['StripeCustomer']['id'];?>">
                 <div class="img pull-left"><img style="height:24px;" alt="cod_icon" src="<?php echo $siteUrl.'/frontend/images/debit_card.png'; ?>">
-													</div>
+				</div>
                 <div class="cardinfo clearfix">
                   <h4>XXXX XXXX XXXX <?php echo $value['StripeCustomer']['card_number'] ;?></h4>
-                  <p><?php echo $value['StripeCustomer']['customer_name'] ;?><!-- Allahabad Bank Debit Card --> <a href="">[Edit]</a><a class="delete_card" href="javascript:void(0)" onclick="deletecard(<?php echo $value['StripeCustomer']['id']; ?>)">x</a></p>
+                  <p><?php echo $value['StripeCustomer']['customer_name'] ;?><!-- Allahabad Bank Debit Card --><a class="delete_card" href="javascript:void(0)" onclick="deletecard(<?php echo $value['StripeCustomer']['id']; ?>)"><span class="removeicon"></span></a></p>
                 </div>
               </div>
 			  <?php } } ?>
@@ -310,7 +310,8 @@
                 <div class="col-md-6 col-sm-6 col-xs-6">
                  <label class="checkbox-inline">
                       <input type="checkbox" id="inlineCheckbox1" value="option1">
-                      Default Address </label>
+                      Default Address <a href="javascript:void(0);"  id="edit" 
+		                                            onclick="customerAddressBookEdit(<?php echo $value['CustomerAddressBook']['id'];?>)"><i class="fa fa-edit"></i></a> </label>
                 
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
@@ -350,7 +351,7 @@
               
 <?php echo $this->Form->create("CustomerAddressBook",
 						array("id"=>'AddCustomerAddressBook',
-							  "url"=>array("controller"=>'Customers','action'=>'addAddressBook')));?>
+							  "url"=>array("controller"=>'customers','action'=>'addAddressBook')));?>
   <div class="form-group">
     <label class="sr-only"><?php echo __('Address Title', true); ?></label>
 	<?php echo $this->Form->input('address_title',array('class'=>'form-control','label'=>false,'placeholder' =>'Address Title')); ?>
@@ -545,6 +546,9 @@
 </div>
     </div>
   </div>
+</div>
+<div class="modal fade" id="editBookAddress">
+
 </div>
 <!---Add Card-->
 

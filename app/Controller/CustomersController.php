@@ -22,7 +22,6 @@ class CustomersController extends AppController
         $Customer_list = $this->Customer->find('all', array(
             'conditions' => array('Customer.status !=' => 3),
             'order' => array('Customer.id DESC')));
-
         $this->set(compact('Customer_list'));
     }
 
@@ -253,7 +252,7 @@ class CustomersController extends AppController
                 $this->Auth->login();
                 $this->Session->setFlash('<p>' . __('Your detail has been updated', true) . '</p>', 'default',
                                                                     array('class' => 'alert alert-success'));
-                $this->redirect(array('controller' => 'Customers', 'action' => 'myaccount'));
+                $this->redirect(array('controller' => 'customers', 'action' => 'myaccount'));
             }
         }
         if (!empty($this->request->data['review']['rating'])) {
@@ -275,7 +274,7 @@ class CustomersController extends AppController
             } else {
                 $this->Session->setFlash('<p>' . __('Review Already Exsits', true) . '</p>', 'default',
                     array('class' => 'alert alert-danger'));
-                $this->redirect(array('controller' => 'Customers', 'action' => 'myaccount'));
+                $this->redirect(array('controller' => 'customers', 'action' => 'myaccount'));
 
             }
         }

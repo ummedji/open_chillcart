@@ -1,14 +1,23 @@
 <div class="innercontentsection checkoutpage">
   <div class="container">
     <div class="content">
-      <div id="Accordion1" class="Accordion checkout_acc" tabindex="0">
-        <div class="AccordionPanel">
-          <div class="AccordionPanelTab">
+      <div id="accordion" class="Accordion checkout_acc" tabindex="0">
+        <div class="panel panel-default">
+          <div class="AccordionPanelTab" data-toggle="collapse" data-parent="#accordion" href="#collapse1">
             <div class="row checkouttitletab">
               <div class="selecteddiv"><span class="ok-icon"></span></div>
               <div class="col-md-4 col-sm-4 titlediv fldiv">1. Login ID </div>
               <div class="col-md-4 col-sm-4 titlediv">
-                <p>webclues@gmail.com</p>
+                  
+                   <?php
+                if(!empty($addresses)){
+                    $user_email = $addresses[0]["Customer"]["customer_email"];
+                }else{
+                    $user_email = "";
+                }
+                ?>
+                  
+                <p><?php echo $user_email; ?></p>
               </div>
               <div class="col-md-4 col-sm-4">
                 <div class="text-right">
@@ -17,16 +26,10 @@
               </div>
             </div>
           </div>
-          <div class="AccordionPanelContent checkoutcontent">
+          <div class="panel-collapse collapse in" id="collapse1">
             <div class="pad20 login_part">
                 
-                <?php
-                if(!empty($addresses)){
-                    $user_email = $addresses[0]["Customer"]["customer_email"];
-                }else{
-                    $user_email = "";
-                }
-                ?>
+               
                 
               <p class="emailtext">Logged in as <a href="mailto:<?php echo $user_email; ?>"><?php echo $user_email; ?></a></p>
               <p class="textnote">Please note that upon clicking "Sign out" you will lose items in your cart and will be redirected to Chilcart home page.</p>
@@ -37,8 +40,8 @@
             </div>
           </div>
         </div>
-        <div class="AccordionPanel">
-          <div class="AccordionPanelTab">
+        <div class="panel panel-default">
+          <div class="AccordionPanelTab" data-toggle="collapse" data-parent="#accordion" href="#collapse2">
             <div class="row checkouttitletab">
               <div class="selecteddiv"><span class="ok-icon"></span></div>
               <div class="col-md-4 col-sm-4 titlediv fldiv">2. Delivery Address </div>
@@ -86,7 +89,7 @@
               </div>
             </div>
           </div>
-          <div class="AccordionPanelContent checkoutcontent">
+          <div class="panel-collapse collapse" id="collapse2">
             <div class="clearfix addrbook padTB20">
               <div class="col-md-6 col-sm-6 addrbookbl">
                 <div class="addrbg">
@@ -129,17 +132,17 @@
                 </div>
               </div>
             </div>
-            <div class="text-center padB20"> <a href="" class="addbtn btn"><span class="addriconwt"></span>Add Address</a></div>
+            <div class="text-center padB20"> <a data-target="#demo-10" data-toggle="modal" href="javascript:void(0);" class="addbtn btn"><span class="addriconwt"></span>Add Address</a></div>
           </div>
         </div>
-        <div class="AccordionPanel">
-          <div class="AccordionPanelTab">
+        <div class="panel panel-default">
+          <div class="AccordionPanelTab" data-toggle="collapse" data-parent="#accordion" href="#collapse3">
             <div class="row checkouttitletab">
               <div class="selecteddiv"><span class="ok-icon"></span></div>
               <div class="col-md-12 titlediv fldiv">3. Order Summary 4 items </div>
             </div>
           </div>
-          <div class="AccordionPanelContent checkoutcontent">
+          <div class="panel-collapse collapse" id="collapse3">
             <div class="orderdetails">
               <div class="clearfix orderheading pad20 mobilehide">
                 <div class="col-md-2 wrap15"></div>
@@ -224,14 +227,14 @@
             </div>
           </div>
         </div>
-        <div class="AccordionPanel">
-          <div class="AccordionPanelTab">
+        <div class="panel panel-default">
+          <div class="AccordionPanelTab" data-toggle="collapse" data-parent="#accordion" href="#collapse4">
             <div class="row checkouttitletab">
               <div class="selecteddiv"><span class="ok-icon"></span></div>
               <div class="col-md-12 titlediv fldiv">4. Payment Method </div>
             </div>
           </div>
-          <div class="AccordionPanelContent checkoutcontent">
+          <div class="panel-collapse collapse" id="collapse4">
             <div class="paymethoddiv">
               <div class="clearfix">
                 <div class="col-md-9 paymethodlistdiv">
@@ -391,7 +394,111 @@
     </div>
   </div>
 </div>
+
+<!--ADD ADDRESS-->
+
+<div class="modal fade add_adress_parent" id="demo-10" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="css-popup" >
+<div class="add-new-card-popup">
+<div class="text-center mrgTB30">
+                <h2 class="blgrtitle "><span class="blackborder">Add</span> <span class="greenborder">New Address</span></h2>
+              </div>
+              
+              
+              <div class="content-popup">
+              
+<?php echo $this->Form->create("CustomerAddressBook",
+						array("id"=>'AddCustomerAddressBook',
+							  "url"=>array("controller"=>'Customers','action'=>'addAddressBook')));?>
+  <div class="form-group">
+    <label class="sr-only"><?php echo __('Address Title', true); ?></label>
+	<?php echo $this->Form->input('address_title',array('class'=>'form-control','label'=>false,'placeholder' =>'Address Title')); ?>
+    <!-- <input type="email" class="form-control" id="sr-only" placeholder="Address Title"> -->
+  </div>
+  <div class="form-group">
+    <label class="sr-only"><?php echo __('Street Address', true); ?></label>
+	<?php
+											echo $this->Form->input('address',
+													array('class'=>'form-control',
+															'type' => 'text',
+															'label'=>false,'placeholder' =>'Street Address')); ?>
+    <!-- <input type="password" class="form-control" placeholder="Street Address"> -->
+  </div>
+  
+  <div class="form-group">
+    <label class="sr-only"><?php echo __('Landmark', true); ?></label>
+	<?php
+											echo $this->Form->input('landmark',
+													array('class'=>'form-control',
+															'label'=>false,'placeholder' =>'Landmark')); ?>
+    <!-- <input type="password" class="form-control" placeholder="Landmark"> -->
+  </div>
+  <div class="form-group">
+    <label class="sr-only">Country</label>
+    <input type="text" class="form-control" placeholder="Country">
+  </div>
+  <div class="form-group">
+    <label class="sr-only"><?php echo __('State', true); ?></label>
+	<?php
+											echo $this->Form->input('state_id',
+												array('type'  => 'select',
+													  'class' => 'form-control',
+													  'options'=> array($state_list),
+                                                      'onchange' => 'cityFillters();',
+													  'empty' => __('Select State'),
+									 				  'label'=> false,'placeholder' =>'State')); ?>
+    <!-- <input type="password" class="form-control" placeholder="State"> -->
+  </div>
+  <div class="form-group">
+    <label class="sr-only"><?php echo __('city', true); ?></label>
+	<?php
+											echo $this->Form->input('city_id',
+												array('type'  => 'select',
+													  'class' => 'form-control',
+                                                      'onchange' => 'locationFillters();',
+													  'empty' => __('Select City'),
+									 				  'label'=> false,'placeholder' =>'City')); ?>
+    <!-- <input type="password" class="form-control" placeholder="City"> -->
+  </div>
+  <div class="form-group">
+    <label class="sr-only"><?php echo __('Area/zipcode', true); ?></label>
+	<?php
+										echo $this->Form->input('location_id',
+												array('type'  => 'select',
+													  'class' => 'form-control',
+													  'empty' => __('Select Area/Zip'),
+									 				  'label'=> false,'placeholder' =>'Pincode'));  ?>
+    <!-- <input type="password" class="form-control" placeholder="Pincode"> -->
+  </div>
+  <div class="form-group">
+    <label class="sr-only"><?php
+											echo $this->Form->input('address_phone',
+													array('class'=>'form-control',
+															'label'=>false,'placeholder' =>'Phone Number')); ?>
+    <!-- <input type="text" class="form-control" placeholder="Phone Number"> -->
+  </div>
+  
+  <?php echo $this->Form->button(__('Submit'),
+									array("label"=>false,
+											"class"=>"btn btn-primary",
+											'onclick' => 'return addAddressCheck();',
+											"type"=>'submit')); ?>
+ 
+  <!-- <button type="submit" class="btn addbtn mrgTB20">Submit</button> -->
+<?php echo $this->Form->end(); ?>
+              </div>
+
+</div>
+
+</div>
+    </div>
+  </div>
+</div>
+
 <?php echo $this->element('frontend/footer'); ?>
+
 <?php /*<div class="container searchshopContent shopcheckout"> <?php
 	echo $this->Form->create('Order', array('controller' => 'checkouts',
 											'action' => 'conformOrder')); ?>

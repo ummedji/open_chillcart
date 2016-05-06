@@ -22,19 +22,17 @@
 	
     <div class="content">
 			<div class="changelocblock">
-			<div class="changlocinnbl"> <a class="btn addbtn changlocbtn" onclick="showLocation()">change location</a>
+			<div class="changlocinnbl"><a class="btn addbtn changlocbtn" onclick="showLocation()">change location</a>
 			<div class="changeloc-popup">
 			<h2>change location</h2>
 			<div class="locfield pad20">
 			<div class="form-group">
 			<label class="sr-only">City</label>
 			<?php
-			print_r($cityList);
 			if (!empty($cityList)) {
 				echo $this->Form->create('Search',array(
     'url' => array('controller' => 'searches', 'action' => 'index'))) ;
-	
-				echo $this->Form->input('city',	
+				echo $this->Form->input('city_cust',	
 							array('type'=>'select',
 							 		'options'=> array($cityList),
 							 		'onchange' => 'locationList();',
@@ -44,7 +42,7 @@
 							 		'label'=> false,
 									'class'=>'form-control'));
 			} else {
-				echo $this->Form->input('city',
+				echo $this->Form->input('city_cust',
 							array('type'=>'select',
 							 		'id' => 'city',
 							 		'empty' =>  __('Select City'),
@@ -52,7 +50,7 @@
 							 		'label'=> false,
 									'class'=>'form-control'));
 			}
-				echo $this->Form->input('area',
+				echo $this->Form->input('area_cust',
 						array('type'=>'select',
 						 		'id' => 'location',
 						 		'empty' => __('Select Area / Zipcode'),
@@ -61,7 +59,6 @@
 									'class'=>'form-control'));
 				echo $this->Form->button(__("Let's go to shop"),
                               array('onclick' => 'return locationStore();','class'=>'btn btn-green btn-success addbtn'));
-
 			?>
 			<!-- <select class="form-control">
 			<option selected="">Select City</option>
@@ -71,27 +68,8 @@
 			<option>5</option>
 			</select> -->
 			</div>
-			<div class="form-group">
-			<label class="sr-only">Area</label>
-			<?php 
-			echo $this->Form->input('area',
-						array('type'=>'select',
-						 		'id' => 'location',
-						 		'empty' => __('Select Area / Zipcode'),
-						 		'div' => 'form-group mrnone',
-							 		'label'=> false,
-									'class'=>'form-control'));
-			?>
-			<!-- <select class="form-control">
-			<option selected="">Select Area</option>
-			<option>2</option>
-			<option>3</option>
-			<option>4</option>
-			<option>5</option>
-			</select> -->
-			</div>
-			<div class="text-center"><?php echo $this->Form->button(__("Let's go to shop"),
-                              array('onclick' => 'return locationStore();','class'=>'btn btn-green btn-success addbtn')); ?> </div>
+			
+			
 			</div>
 			</div>
 			</div>

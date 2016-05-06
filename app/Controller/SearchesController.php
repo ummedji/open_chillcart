@@ -39,7 +39,7 @@ class SearchesController extends AppController {
 	}
 
 	public function index() {
-
+		
 		$this->layout = 'frontend';
 		$cityList = array();
 		$groceryStore = $this->getGroceryStores();
@@ -48,9 +48,26 @@ class SearchesController extends AppController {
 		$this->set(compact('OrderCount'));
 		$this->set(compact('StoreCount'));
 		$this->set(compact('groceryStore'));
+		
+		if(isset($_POST['data']['Search']['city_cust']) && isset($_POST['data']['Search']['area_cust']))
+		{ 
+			$cityDetails = $this->City->findById($_POST['data']['Search']['city_cust']);
+			if (!empty($_POST['data']['Search']['area_cust'])) {
 				
+				$areaDetails = $this->Location->findById($_POST['data']['Search']['area_cust']);
+				$this->redirect($this->siteUrl.'/city/'.$cityDetails['City']['city_name'].'/'.
+																$areaDetails['Location']['area_name'].'/'.
+																$_POST['data']['Search']['city_cust'].'/'.
+																$_POST['data']['Search']['area_cust']);
+			} else {
+				$this->redirect($this->siteUrl.'/city/'.$cityDetails['City']['city_name'].'/'.
+																$_POST['data']['Search']['city_cust']);
+			}
+			$this->redirect(array('controller' => 'searches', 'action' => 'stores', $_POST['data']['Search']['city_cust'], $_POST['data']['Search']['area_cust']));
+		}
+		else
+		{
 		if ($this->cityId != '') {
-			
 			$cityDetails = $this->City->findById($this->cityId);
 			if (!empty($this->areaId)) {
 				$areaDetails = $this->Location->findById($this->areaId);
@@ -62,9 +79,10 @@ class SearchesController extends AppController {
 				$this->redirect($this->siteUrl.'/city/'.$cityDetails['City']['city_name'].'/'.
 																$this->cityId);
 			}
+			
 			$this->redirect(array('controller' => 'searches', 'action' => 'stores', $this->cityId, $this->areaId));
 		}
-
+		}
 		$this->changeLocation();
 
 		if (!empty($this->request->data['Search']['city'])) {
@@ -80,7 +98,6 @@ class SearchesController extends AppController {
 			if (!empty($areaId)) {
 
 				$areaDetails = $this->Location->findById($areaId);
-
 				$this->redirect($this->siteUrl.'/city/'.$cityDetails['City']['city_name'].'/'.
 																$areaDetails['Location']['area_name'].'/'.
 																$cityId.'/'.
@@ -217,16 +234,25 @@ class SearchesController extends AppController {
 		$this->layout = 'frontend';
 		$cityId = $this->Session->read('Search.city');
 		$areaId = $this->Session->read('Search.area');
-		if (isset($cityId) && empty($cityId)) {
+                
+              //  if (isset($cityId) && empty($cityId)) {
+                    
+                
+		if (empty($cityId)) {
+                    
+                   
 			$storeSession = $this->Store->find('first', array(
 									'conditions' => array('Store.id' => $storeId,
 											  				'Store.status' => 1)));
+                      
+                        
 			if (!empty($storeSession)) {
 				$this->Session->write('Search.city', $storeSession['Store']['store_city']);
 				$cityId = $this->Session->read('Search.city');
 			}
 		}
 		$stores = $this->storesList($cityId, $areaId);
+                
 		$this->Store->recursive = 0;
 		$storeList = $this->Store->find('all', array(
 							'conditions' => array('Store.id' => $stores),
@@ -243,7 +269,8 @@ class SearchesController extends AppController {
 									'conditions' => array('Store.id' => $storeId,
 															'Store.store_city' => $cityId,
 											  				'Store.status' => 1)));
-		if (empty($storeDetails)) {
+		
+                if (empty($storeDetails)) {
 			$this->redirect(array('controller' => 'searches', 'action' => 'index'));
 		}
 		if ($storeDetails['Store']['collection'] == 'Yes' ||
