@@ -49,16 +49,20 @@ class SearchesController extends AppController {
 		$this->set(compact('StoreCount'));
 		$this->set(compact('groceryStore'));
 		
-		if(isset($_POST['data']['Search']['city_cust']) && isset($_POST['data']['Search']['area_cust']))
+		/*if(isset($_POST['data']['Search']['city_cust']) && isset($_POST['data']['Search']['area_cust']))
 		{ 
 			$cityDetails = $this->City->findById($_POST['data']['Search']['city_cust']);
 			if (!empty($_POST['data']['Search']['area_cust'])) {
-				
 				$areaDetails = $this->Location->findById($_POST['data']['Search']['area_cust']);
-				$this->redirect($this->siteUrl.'/city/'.$cityDetails['City']['city_name'].'/'.
+				/* echo $this->siteUrl.'/city/'.$cityDetails['City']['city_name'].'/'.
+																$areaDetails['Location']['area_name'].'/'.
+																$_POST['data']['Search']['city_cust'].'/'.
+																$_POST['data']['Search']['area_cust']; exit; */
+				/*$this->redirect($this->siteUrl.'/city/'.$cityDetails['City']['city_name'].'/'.
 																$areaDetails['Location']['area_name'].'/'.
 																$_POST['data']['Search']['city_cust'].'/'.
 																$_POST['data']['Search']['area_cust']);
+				exit;
 			} else {
 				$this->redirect($this->siteUrl.'/city/'.$cityDetails['City']['city_name'].'/'.
 																$_POST['data']['Search']['city_cust']);
@@ -66,7 +70,8 @@ class SearchesController extends AppController {
 			$this->redirect(array('controller' => 'searches', 'action' => 'stores', $_POST['data']['Search']['city_cust'], $_POST['data']['Search']['area_cust']));
 		}
 		else
-		{
+		{*/
+	
 		if ($this->cityId != '') {
 			$cityDetails = $this->City->findById($this->cityId);
 			if (!empty($this->areaId)) {
@@ -82,7 +87,7 @@ class SearchesController extends AppController {
 			
 			$this->redirect(array('controller' => 'searches', 'action' => 'stores', $this->cityId, $this->areaId));
 		}
-		}
+		//}
 		$this->changeLocation();
 
 		if (!empty($this->request->data['Search']['city'])) {
@@ -322,8 +327,8 @@ class SearchesController extends AppController {
 		$metakeywords       = $storeDetails['Store']['meta_keywords'];
 		$metaDescriptions   = $storeDetails['Store']['meta_description'];
 
-
-		$this->set(compact('storeList', 'productList', 'storeDetails', 'mainCategoryList',
+		$cityList = $this->getCityinfo();	
+		$this->set(compact('storeList', 'cityList', 'productList', 'storeDetails', 'mainCategoryList',
 					'subCategoryList', 'storeId', 'dealProduct', 'metaTitle',
 					'metakeywords', 'metaDescriptions'));
 
@@ -755,7 +760,7 @@ class SearchesController extends AppController {
 
 
 	public function changeLocation() {
-
+		
 		$location 	= (isset($this->request->data['location'])) ? $this->request->data['location'] : '';
 
 		$this->ShoppingCart->deleteAll(array("session_id"=> $this->SessionId,
@@ -765,15 +770,17 @@ class SearchesController extends AppController {
 
 		session_regenerate_id();
 
-		if (!empty($location)) {
+		 if (!empty($location)) {
+			 
 			$this->Session->write("Search.city",'');
 			$this->Session->write("Search.area",'');
+			echo "success";
 			exit();
 		}
-		return 1;
+		return 1; 
 		
 	}
-
+	
 
 	public function locations() {
 

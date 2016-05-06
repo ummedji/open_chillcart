@@ -31,9 +31,8 @@
 			<label class="sr-only">City</label>
 			<?php
 			if (!empty($cityList)) {
-				echo $this->Form->create('Search',array(
-    'url' => array('controller' => 'searches', 'action' => 'index'))) ;
-				echo $this->Form->input('city_cust',	
+				echo $this->Form->create('Search',array("id"=>'ChangeLocationToNew')) ;
+				echo $this->Form->input('city',	
 							array('type'=>'select',
 							 		'options'=> array($cityList),
 							 		'onchange' => 'locationList();',
@@ -43,7 +42,7 @@
 							 		'label'=> false,
 									'class'=>'form-control'));
 			} else {
-				echo $this->Form->input('city_cust',
+				echo $this->Form->input('city',
 							array('type'=>'select',
 							 		'id' => 'city',
 							 		'empty' =>  __('Select City'),
@@ -51,15 +50,22 @@
 							 		'label'=> false,
 									'class'=>'form-control'));
 			}
-				echo $this->Form->input('area_cust',
+				echo $this->Form->input('area',
 						array('type'=>'select',
 						 		'id' => 'location',
 						 		'empty' => __('Select Area / Zipcode'),
 						 		'div' => 'form-group mrnone',
 							 		'label'=> false,
 									'class'=>'form-control'));
-				echo $this->Form->button(__("Let's go to shop"),
-                              array('onclick' => 'return locationStore();','class'=>'btn btn-green btn-success addbtn'));
+									
+								echo $this->Form->button(__("Let's go to shop"),
+									array("label"=>false,
+											"class"=>"btn btn-green btn-success addbtn",
+											'onclick' => 'return removeOldLocation();',
+											"type"=>'button')); 
+				echo $this->Form->end();					
+				/*echo $this->Form->button(__("Let's go to shop"),
+                              array('onclick' => 'return removeOldLocation();','class'=>'btn btn-green btn-success addbtn'));*/
 			?>
 			<!-- <select class="form-control">
 			<option selected="">Select City</option>
@@ -91,7 +97,13 @@
 				<div class="flipper"><div class="storeimg"> <a href="<?php echo $siteUrl.'/shop/'.$value['Store']['seo_url'].'/'.$value['Store']['id']; ?>"><img src="<?php echo $cdn.'/storelogos/'.$value['Store']['store_logo']; ?>"></a></div>
 				<div class="storefirstbl"> <a href="<?php echo $siteUrl.'/shop/'.$value['Store']['seo_url'].'/'.$value['Store']['id']; ?>">
 				<p>ShopEasy</p>
-				<p>Min Order -   5.00</p>
+				<p>
+				<?php
+				if($value['Store']['minimum_order'] != 0) {
+					echo __('Min Order').' - '. $this->Number->currency($value['Store']['minimum_order'], $siteCurrency);
+				} 
+				?>
+				</p>
 				<ul class="starcredit">
 				<li><span class="staricon"></span></li>
 				<li><span class="staricon"></span></li>

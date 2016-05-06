@@ -387,6 +387,27 @@ function changeLocation () {
    	}
 }
 
+function removeOldLocation() {
+	   		$.post(rp+'searches/changeLocation',{'location':'location'}, function(response) { 
+			$('#ChangeLocationToNew').attr('action',rp+'searches/index');	
+			$('#ChangeLocationToNew').submit();	
+			});
+			
+}
+function makeDefaultAdd(data,id)
+{
+	$('.addrbook').find('input[type=checkbox]:checked').removeAttr('checked');
+	$(data).attr('checked','checked');
+	if(data.checked){
+		$.post(rp+'/customers/makedefaultaddress',{'id':id}, function(response) { 
+			if(response == 'success'){   }
+		});
+	}
+	else
+	{
+	}
+	
+}
 function citiesList() {
 	var id = $('#CustomerAddressBookStateId').val();
 	$.post(rp+'/stores/locations',{'id':id, 'model':'City'}, function(response) {

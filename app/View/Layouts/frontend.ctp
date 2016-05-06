@@ -361,7 +361,7 @@
 				}
 			});
 
-			var AddAdressBookvalidator = jQuery("#AddCustomerAddressBook").validate({
+			var AddAdressBookvalidator = jQuery("#AddCustomerAddressBook_Order").validate({
 				rules: {
 					"data[CustomerAddressBook][address_title]": {
 						required: true,
@@ -537,13 +537,13 @@
 				$.post(rp+'customer/customers/editaddresschecking',{'title':title}, function(response) {
 
 					if($.trim(response) == 'success'){
-						$("#AddCustomerAddressBook").submit();
+						$("#AddCustomerAddressBook_Order").submit();
 					} else {
 						$('.checkAdderorr').html("<?php echo __('Addressbook title already exists'); ?>");
 						return false;
 					}
 				});
-				return false;
+				//return false;
 			}
 		}
 

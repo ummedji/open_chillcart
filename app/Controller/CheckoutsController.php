@@ -181,7 +181,7 @@ class CheckoutsController extends AppController
        //      'conditions' => array('Countries.id' => $addresses[0]["State"]["countrty_id"]),
        //     'fields' => array('Countries.id', 'Countries.country_name')));
         
-        $this->set(compact('addresses', 'shopCartDetails', 'storeSlots', 'optionDays', 'stripeCards','customerState','customerCity','cartCount','storeCart'));
+        $this->set(compact('addresses', 'shopCartDetails', 'storeSlots', 'optionDays', 'stripeCards','customerState','customerCity','cartCount','storeCart','total'));
         
         
     }

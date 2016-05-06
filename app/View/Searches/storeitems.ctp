@@ -17,6 +17,66 @@
   </div>
   
   <div class="content">
+  <div class="changelocblock">
+			<div class="changlocinnbl"><a class="btn addbtn changlocbtn" onclick="showLocation()">change location</a>
+			<div class="changeloc-popup">
+			<h2>change location</h2>
+			<div class="locfield pad20">
+			<div class="form-group">
+			<label class="sr-only">City</label>
+			<?php
+			
+			if (!empty($cityList)){
+				echo $this->Form->create('Search',array("id"=>'ChangeLocationToNew')) ;
+				echo $this->Form->input('city',	
+							array('type'=>'select',
+							 		'options'=> array($cityList),
+							 		'onchange' => 'locationList();',
+							 		'id' => 'city',
+							 		'empty' => __('Select City'),
+							 		'div' => 'form-group',
+							 		'label'=> false,
+									'class'=>'form-control'));
+			} else {
+				echo $this->Form->input('city',
+							array('type'=>'select',
+							 		'id' => 'city',
+							 		'empty' =>  __('Select City'),
+							 		'div' => 'form-group',
+							 		'label'=> false,
+									'class'=>'form-control'));
+			}
+				echo $this->Form->input('area',
+						array('type'=>'select',
+						 		'id' => 'location',
+						 		'empty' => __('Select Area / Zipcode'),
+						 		'div' => 'form-group mrnone',
+							 		'label'=> false,
+									'class'=>'form-control'));
+									
+								echo $this->Form->button(__("Let's go to shop"),
+									array("label"=>false,
+											"class"=>"btn btn-green btn-success addbtn",
+											'onclick' => 'return removeOldLocation();',
+											"type"=>'button')); 
+				echo $this->Form->end();					
+				/*echo $this->Form->button(__("Let's go to shop"),
+                              array('onclick' => 'return removeOldLocation();','class'=>'btn btn-green btn-success addbtn'));*/
+			?>
+			<!-- <select class="form-control">
+			<option selected="">Select City</option>
+			<option>2</option>
+			<option>3</option>
+			<option>4</option>
+			<option>5</option>
+			</select> -->
+			</div>
+			
+			
+			</div>
+			</div>
+			</div>
+			</div>
     <div class="row categorylist">
       <div class="col-md-2 col-sm-4">
         <section class="sky-form mrgB20">

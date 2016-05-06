@@ -514,7 +514,6 @@ class CustomersController extends AppController
      */
     public function customer_addAddressBook()
     {
-
         if ($this->request->is('post') || $this->request->is('put')) {
             $this->CustomerAddressBook->set($this->request->data);
             if($this->CustomerAddressBook->validates()) {
@@ -528,7 +527,7 @@ class CustomersController extends AppController
                 if (!empty($address_check)) {
                     $this->Session->setFlash('<p>' . __('Address Book Already Exists', true) . '</p>', 'default',
                         array('class' => 'alert alert-danger'));
-                    $this->redirect(array('controller' => 'Customers', 'action' => 'myaccount'));
+                    $this->redirect(array('controller' => 'customers', 'action' => 'myaccount'));
                 } else {
 
 
@@ -537,7 +536,7 @@ class CustomersController extends AppController
 
                     $this->Session->setFlash('<p>' . __('Your address book has been added successfully', true) . '</p>', 'default',
                         array('class' => 'alert alert-success'));
-                    $this->redirect(array('controller' => 'Customers', 'action' => 'myaccount'));
+                    $this->redirect(array('controller' => 'customers', 'action' => 'myaccount'));
                 }
             } else {
                 $this->CustomerAddressBook->validationErrors;
@@ -856,4 +855,15 @@ class CustomersController extends AppController
         }
         exit();
     }
+	public function makedefaultaddress()
+	{
+		$loginUser = $this->Auth->user();
+		$customer_id = $loginUser['Customer']['id'];
+		$this->CustomerAddressBook->updateAll(array('def_add' => "0"),array(customer_id));
+		$this->CustomerAddressBook->id = $_POST['id'];
+		if($this->CustomerAddressBook->saveField('def_add', '1'))
+		{
+			echo "success";
+		}else { echo "failed";  } exit;
+	}
 }

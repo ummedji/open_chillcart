@@ -149,7 +149,7 @@
                 <div class="col-md-3">Item</div>
                 <div class="col-md-1 wrap5">Qty</div>
                 <div class="col-md-2 wrap15">Price</div>
-                <div class="col-md-3">Delivery Details</div>
+               <div class="col-md-3">Delivery Details</div>
                 <div class="col-md-2 wrap15">Subtotal </div>
               </div>
                 
@@ -178,26 +178,33 @@
                      
                  <div class="col-md-3 col-sm-10">
                   <div class="itemdiv">
-                    <p class="itemtitle">Camera</p>
-                    <p><?php echo $value["ShoppingCart"]["product_name"]; ?></p>
+                  
+                    <p class="itemtitle"><?php echo $value["ShoppingCart"]["product_name"]; ?></p>
                     <div class="desktophide itembl">
-                     <p><span class="tl">Qty :</span><span class="qtydiv"><?php echo  $value["ShoppingCart"]["product_quantity"]; ?></span></p>
+                  <!--  <p><span class="tl">Qty :</span><span class="qtydiv"><?php echo  $value["ShoppingCart"]["product_quantity"]; ?></span></p>
                      <p><span class="tl">Price :</span><span class="rsdiv">Rs.<?php echo $value["ShoppingCart"]["product_total_price"]; ?></span></p>
-                      <p><span class="tl">Delivery Detail :</span><span class="delivdet">by Wed, 27th Apr [FREE]</span></p>
-                       <p><span class="tl">Total Price :</span><span class="rsdiv">Rs. <?php echo $value["ShoppingCart"]["product_total_price"]; ?></span></p>
+                      <p><span class="tl">Delivery Detail :</span><span class="delivdet">by Wed, 27th Apr [FREE]</span></p> 
+                       <p><span class="tl">Total Price :</span><span class="rsdiv">Rs. <?php echo $value["ShoppingCart"]["product_total_price"]; ?></span></p>-->
                     </div>
                     
                   </div>
                 </div>
                      
                    <div class="col-md-1 wrap5 mobilehide">
+                       
+                       <?php
+                       
+                       $single_price = $value["ShoppingCart"]["product_total_price"]/$value["ShoppingCart"]["product_quantity"];
+                       
+                       ?>
+                       
                   <p class="qtydiv"><?php echo  $value["ShoppingCart"]["product_quantity"]; ?></p>
                 </div>
                 <div class="col-md-2 wrap15 mobilehide">
-                  <p class="rsdiv">Rs.<?php echo $value["ShoppingCart"]["product_total_price"]; ?></p>
+                  <p class="rsdiv">Rs.<?php echo $single_price; ?></p>
                 </div>
                 <div class="col-md-3 mobilehide">
-                  <p class="delivdet">by Wed, 27th Apr [FREE]</p>
+             <!--     <p class="delivdet">by Wed, 27th Apr [FREE]</p> -->
                 </div>
                 <div class="col-md-2 wrap15 mobilehide">
                   <p class="rsdiv">Rs. <?php echo $value["ShoppingCart"]["product_total_price"]; ?></p>
@@ -212,12 +219,12 @@
                 ?>
                 
               <div class="pad20">
-                <p class="alerttext">Send Order Confirmation SMS alert to +91 9879431254</p>
+                <p class="alerttext">Send Order Confirmation SMS alert to <?php echo $user_phone; ?></p>
               </div>
               <div class="padLR20 padB20 clearfix">
                 
                 <div class="pull-right ordersum">
-                  <p class="amountpay">Amount Payable: Rs.41677</p>
+                  <p class="amountpay">Amount Payable: Rs.<?php echo round($total[0][0]["cartTotal"],2); ?></p>
                 </div>
                 <div class="pull-left ordersum">
                   <button type="button" class="btn addbtn">Continue</button>
@@ -240,23 +247,12 @@
                   <div id="TabbedPanels1" class="TabbedPanels clearfix">
                     <ul class="col-md-3 TabbedPanelsTabGroup">
                       <li class="TabbedPanelsTab" tabindex="0">
-                        <div class="paytypetitle" data-toggle="tab" href="#cart1">Credit Card</div>
+                        <div class="paytypetitle" data-toggle="tab" href="#cart1">Cash On Delivery</div>
                       </li>
                       <li class="TabbedPanelsTab" tabindex="0">
-                        <div class="paytypetitle" data-toggle="tab" href="#cart2">Net Banking</div>
+                        <div class="paytypetitle" data-toggle="tab" href="#cart2">Saved Card</div>
                       </li>
-                      <li class="TabbedPanelsTab" tabindex="0">
-                        <div class="paytypetitle" data-toggle="tab" href="#cart3">EMI</div>
-                      </li>
-                      <li class="TabbedPanelsTab" tabindex="0">
-                        <div class="paytypetitle" data-toggle="tab" href="#cart4">Debit Card</div>
-                      </li>
-                      <li class="TabbedPanelsTab" tabindex="0">
-                        <div class="paytypetitle" data-toggle="tab" href="#cart5">COD</div>
-                      </li>
-                      <li class="TabbedPanelsTab" tabindex="0">
-                        <div class="paytypetitle" data-toggle="tab" href="#cart6">Gift Card</div>
-                      </li>
+                      
                     </ul>
                     <div class="col-md-9 TabbedPanelsContentGroup">
                       <div id="cart1" class="tab-pane fade in">
@@ -295,78 +291,8 @@
                           </div>
                         </div>
                       </div>
-                      <div id="cart3" class="tab-pane fade">
-                        <div class="carddetail">
-                          <p class="smalltext">Pay using EMI on Credit Card</p>
-                          <div class="mrgTB20">
-                            <p class="text">Flipcart does not change any processing fee for availing amount in case of any cancallation.</p>
-                          </div>
-                          <div class="form-group">
-                            <label for="exampleInputEmail1">Select Type of Card</label>
-                            <select class="form-control">
-                              <option selected>----Select a Bank----</option>
-                              <option>2</option>
-                              <option>3</option>
-                              <option>4</option>
-                              <option>5</option>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-                      <div id="cart4" class="tab-pane fade">
-                        <div class="carddetail">
-                          <p class="smalltext">Pay using EMI on Credit Card</p>
-                          <div class="mrgTB20">
-                            <p class="text">Flipcart does not change any processing fee for availing amount in case of any cancallation.</p>
-                          </div>
-                          <div class="form-group">
-                            <label for="exampleInputEmail1">Select Type of Card</label>
-                            <select class="form-control">
-                              <option selected>----Select a Bank----</option>
-                              <option>2</option>
-                              <option>3</option>
-                              <option>4</option>
-                              <option>5</option>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-                      <div id="cart5" class="tab-pane fade">
-                        <div class="carddetail">
-                          <p class="smalltext">Pay using EMI on Credit Card</p>
-                          <div class="mrgTB20">
-                            <p class="text">Flipcart does not change any processing fee for availing amount in case of any cancallation.</p>
-                          </div>
-                          <div class="form-group">
-                            <label for="exampleInputEmail1">Select Type of Card</label>
-                            <select class="form-control">
-                              <option selected>----Select a Bank----</option>
-                              <option>2</option>
-                              <option>3</option>
-                              <option>4</option>
-                              <option>5</option>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-                      <div id="cart6" class="tab-pane fade">
-                        <div class="carddetail">
-                          <p class="smalltext">Pay using EMI on Credit Card</p>
-                          <div class="mrgTB20">
-                            <p class="text">Flipcart does not change any processing fee for availing amount in case of any cancallation.</p>
-                          </div>
-                          <div class="form-group">
-                            <label for="exampleInputEmail1">Select Type of Card</label>
-                            <select class="form-control">
-                              <option selected>----Select a Bank----</option>
-                              <option>2</option>
-                              <option>3</option>
-                              <option>4</option>
-                              <option>5</option>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
+                     
+                      
                     </div>
                   </div>
                 </div>
@@ -377,11 +303,11 @@
                         <p>Total</p>
                       </div>
                       <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                        <p>Rs. 41677</p>
+                        <p>Rs. <?php echo round($total[0][0]["cartTotal"],2); ?></p>
                       </div>
                     </div>
                     <div class="clearfix totalamtext bgchange">
-                      <p class="text-right">Amount Payable<span>Rs. 41677</span></p>
+                      <p class="text-right">Amount Payable<span>Rs. <?php echo round($total[0][0]["cartTotal"],2); ?></span></p>
                     </div>
                     <div class="clearfix pay_button">
                         <a href="#">Pay Now</a>

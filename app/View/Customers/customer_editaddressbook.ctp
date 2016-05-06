@@ -9,7 +9,7 @@
 		<?php
         echo $this->Form->create("CustomerAddressBook",
                                     array("id"=>'EditCustomerAddressBook',
-                                          "url"=>array("controller"=>'Customers','action'=>'editAddressBook')));?>
+                                          "url"=>array("controller"=>'customers','action'=>'editAddressBook')));?>
 		<div class="form-group">
 		<label class="sr-only"><?php echo __('Address Title', true); ?></label>
 		<?php

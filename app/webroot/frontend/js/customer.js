@@ -84,7 +84,6 @@ function orderid(id) {
 }
 
 var showimage = function(event) {
-
     var files = event.target.files;
     f = files[0];
     console.log(f);

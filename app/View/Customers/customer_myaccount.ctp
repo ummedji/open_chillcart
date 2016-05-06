@@ -299,23 +299,23 @@
               <div class="clearfix addrbook">
               <?php 
 				if (!empty($addressBook)) {
-					foreach($addressBook as $key => $value) { ?>
-              <div class="col-md-6 addrbookbl">
+				foreach($addressBook as $key => $value) { ?>
+              <div class="col-md-6 addrbookbl" id="record<?php echo $value['CustomerAddressBook']['id'];?>">
               	<div class="addrbg"><h2><?php echo $value['CustomerAddressBook']['address_title']; ?></h2>
               <div class="row"><p class="col-md-6 col-sm-6"><?php echo $value['CustomerAddressBook']['address']; ?><br><?php echo $value['CustomerAddressBook']['landmark']; ?><br>
 			  <?php echo $value['City']['city_name'];  ?>-<?php echo $value['Location']['zip_code']; ?><br>
 			  <?php echo $value['State']['state_name'];  ?>-</p></div></div>
-
+<?php if($value['CustomerAddressBook']['def_add']) { $check = "checked=checked"; } else { $check = ''; } ?>
 				<div class="defaddr clearfix"><div class="row">
                 <div class="col-md-6 col-sm-6 col-xs-6">
                  <label class="checkbox-inline">
-                      <input type="checkbox" id="inlineCheckbox1" value="option1">
+                      <input type="checkbox" class="allcheck" id="inlineCheckbox<?php  echo $value['CustomerAddressBook']['id']; ?>" value="option1" onclick="makeDefaultAdd(this,'<?php  echo $value['CustomerAddressBook']['id']; ?>')" <?php echo $check; ?>>
                       Default Address <a href="javascript:void(0);"  id="edit" 
 		                                            onclick="customerAddressBookEdit(<?php echo $value['CustomerAddressBook']['id'];?>)"><i class="fa fa-edit"></i></a> </label>
                 
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                 <p> Delete Address</p>
+                 <a href="javascript:void(0);" onclick="customerdelete(<?php echo $value['CustomerAddressBook']['id'];?>,'customeraddress')"><p> Delete Address</p></a>
                 
                 </div>
                 
@@ -350,7 +350,7 @@
               <div class="content-popup">
               
 <?php echo $this->Form->create("CustomerAddressBook",
-						array("id"=>'AddCustomerAddressBook',
+						array("id"=>'AddCustomerAddressBook_Order',
 							  "url"=>array("controller"=>'customers','action'=>'addAddressBook')));?>
   <div class="form-group">
     <label class="sr-only"><?php echo __('Address Title', true); ?></label>
