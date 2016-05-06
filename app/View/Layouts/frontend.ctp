@@ -536,7 +536,7 @@
 			if (title != '') {
 				$.post(rp+'customer/customers/editaddresschecking',{'title':title}, function(response) {
 
-					if($.trim(response) == 'success'){
+					if($.trim(response) == 'success'){   
 						$("#AddCustomerAddressBook_Order").submit();
 					} else {
 						$('.checkAdderorr').html("<?php echo __('Addressbook title already exists'); ?>");

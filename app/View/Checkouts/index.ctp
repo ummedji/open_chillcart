@@ -247,51 +247,62 @@
                   <div id="TabbedPanels1" class="TabbedPanels clearfix">
                     <ul class="col-md-3 TabbedPanelsTabGroup">
                       <li class="TabbedPanelsTab" tabindex="0">
-                        <div class="paytypetitle" data-toggle="tab" href="#cart1">Cash On Delivery</div>
+                        <div class="paytypetitle" data-toggle="tab" href="#cart1">Payment</div>
                       </li>
-                      <li class="TabbedPanelsTab" tabindex="0">
-                        <div class="paytypetitle" data-toggle="tab" href="#cart2">Saved Card</div>
-                      </li>
+                      
                       
                     </ul>
                     <div class="col-md-9 TabbedPanelsContentGroup">
                       <div id="cart1" class="tab-pane fade in">
                         <div class="carddetail">
-                          <p class="smalltext">Pay using EMI on Credit Card</p>
+                          
+                             <div class="row">
+                                    <div class="col-md-12"><div class="cardDetailHead">Cash on delivery</div></div>
+                                  <div class="col-md-4">
+                                            <label class="editpayment active">
+                                                    <img style="height:24px;" alt="cod_icon" title="cod_icon" src="https://testing.chillcart.ie/frontend/images/cod_icon.png">
+                                            <input type="radio" name="data[Order][paymentMethod]" value="cod" checked="checked">
+                                                    <span class="editAdd ">Cash on delivery</span>
+                                    </label> 
+                                 </div>
+                            </div>
+                            
                           <div class="mrgTB20">
-                            <p class="text">Flipcart does not change any processing fee for availing amount in case of any cancallation.</p>
+                            
                           </div>
                           <div class="form-group">
-                            <label for="exampleInputEmail1">Select Type of Card</label>
-                            <select class="form-control">
-                              <option selected>----Select a Bank----</option>
-                              <option>2</option>
-                              <option>3</option>
-                              <option>4</option>
-                              <option>5</option>
-                            </select>
+                            
+                              <div class="col-md-12">
+                    <div class="cardDetailHead">Saved Card Details			        					<span class="pull-right">
+                                    <a class="addnewAdrr" data-toggle="modal" data-target="#addpayment" href="javascript:void(0);">
+                                            <i class="fa fa-plus"></i> &nbsp;Add Card											</a>
+                            </span>
+                    </div>
+
+            </div>
+                              
                           </div>
+                            
+                            
+                            <div class="col-md-4 col-xs-12">
+                                    <label class="editpayment">
+                                    <input type="radio" name="data[Order][paymentMethod]" value="59">
+                                    <div class="card_info">
+                                            <span class="editAdd contain truncate">
+                                                    <img style="height:24px;" alt="cod_icon" title="cod_icon" src="https://testing.chillcart.ie/&#9;frontend/images/debit_card.png">
+                                                    test				        							</span>
+                                            <p class="margin-t-20">XXXX XXXX XXXX 1111 </p>	        							
+                                    </div>  
+                            </label>
+                    </div>
+                            
+                            
                         </div>
-                      </div>
-                      <div id="cart2" class="tab-pane fade">
-                        <div class="carddetail">
-                          <p class="smalltext">Pay using EMI on Credit Card</p>
-                          <div class="mrgTB20">
-                            <p class="text">Flipcart does not change any processing fee for availing amount in case of any cancallation.</p>
-                          </div>
-                          <div class="form-group">
-                            <label for="exampleInputEmail1">Select Type of Card</label>
-                            <select class="form-control">
-                              <option selected>----Select a Bank----</option>
-                              <option>2</option>
-                              <option>3</option>
-                              <option>4</option>
-                              <option>5</option>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
                      
+                     
+                     
+                     
+                      </div>
                       
                     </div>
                   </div>
