@@ -1,3 +1,4 @@
+
 <div class="innercontentsection checkoutpage">
   <div class="container">
     <div class="content">
@@ -261,6 +262,7 @@
                                   <div class="col-md-4">
                                             <label class="editpayment active">
                                                     <img style="height:24px;" alt="cod_icon" title="cod_icon" src="https://testing.chillcart.ie/frontend/images/cod_icon.png">
+                                                    
                                             <input type="radio" name="data[Order][paymentMethod]" value="cod" checked="checked">
                                                     <span class="editAdd ">Cash on delivery</span>
                                     </label> 
@@ -285,15 +287,25 @@
                             
                             
                             <div class="col-md-4 col-xs-12">
-                                    <label class="editpayment">
-                                    <input type="radio" name="data[Order][paymentMethod]" value="59">
-                                    <div class="card_info">
-                                            <span class="editAdd contain truncate">
-                                                    <img style="height:24px;" alt="cod_icon" title="cod_icon" src="https://testing.chillcart.ie/&#9;frontend/images/debit_card.png">
-                                                    test				        							</span>
-                                            <p class="margin-t-20">XXXX XXXX XXXX 1111 </p>	        							
-                                    </div>  
-                            </label>
+                                   
+                                
+                                <?php
+
+									foreach ($stripeCards as $key => $card) { ?>
+										<div class="col-md-4 col-xs-12">
+											<label class="editpayment">
+				        						<input type="radio" name="data[Order][paymentMethod]" value="<?php echo $card['StripeCustomer']['id']; ?>" />
+				        						<div class="card_info">
+				        							<span class="editAdd contain truncate">
+				        								<img style="height:24px;" alt="cod_icon" title="cod_icon" src="<?php echo $siteUrl.'/	frontend/images/debit_card.png'; ?>">
+				        								<?php echo $card['StripeCustomer']['customer_name']; ?>
+				        							</span>
+				        							<p class="margin-t-20">XXXX XXXX XXXX <?php echo $card['StripeCustomer']['card_number']; ?> </p>	        							
+				        						</div>  
+				        					</label>
+				        				</div>
+				        			<?php } ?>
+                                
                     </div>
                             
                             

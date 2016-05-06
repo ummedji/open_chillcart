@@ -1,4 +1,4 @@
-<div class="modal-dialog modal-md add_adress_parent" >
+<div class="modal-dialog modal-md add_adress_parentvvvv" >
 	<div class="modal-content">
 		<div class="css-popup">
 		<div class="add-new-card-popup">
@@ -39,10 +39,10 @@
 										'label'=>false,'placeholder'=>"Landmark")); ?>
 		<!-- <input type="password" class="form-control" placeholder="Landmark"> -->
 		</div>
-		<div class="form-group">
+		<!-- <div class="form-group">
 		<label class="sr-only">Country</label>
-		<input type="password" class="form-control" placeholder="Country">
-		</div>
+		<input type="text" class="form-control" placeholder="Country" value="">
+		</div> -->
 		
 
 		<div class="form-group">

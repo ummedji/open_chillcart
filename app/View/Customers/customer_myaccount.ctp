@@ -16,8 +16,8 @@
 
  ?>
 					                            <img src="<?php echo $cdn.'/Customers/'.$this->request->data['Customer']['image']; ?>" > <?php 
-					                        } else {
-					                                echo "No Image Found";
+					                        } else { ?>
+					                                <img src="https://u.o0bc.com/avatars/stock/_no-user-image.gif"><?php //echo "No Image Found";
 					                        } ?></div>
           <div class="officerdet clearfix">
 
@@ -273,13 +273,13 @@
                 <h2 class="blgrtitle "><span class="blackborder">My</span> <span class="greenborder">saved Card</span></h2>
               </div>
               <div class="clearfix padLR20">
-                <p class="removeiconbl pull-right">Remove <span class="removeicon"></span></p>
+               <!--  <p class="removeiconbl pull-right">Remove <span class="removeicon"></span></p> -->
               </div>
 			  <?php 
 			  if(!empty($Stripe_detail)){
 			  foreach ($Stripe_detail as $key => $value) { ?>
               <div class="clearfix savedcardblock" id="<?php echo "card".$value['StripeCustomer']['id'];?>">
-                <div class="img pull-left"><img style="height:24px;" alt="cod_icon" src="<?php echo $siteUrl.'/frontend/images/debit_card.png'; ?>">
+                <div class="img pull-left"><img alt="cod_icon" src="<?php echo $siteUrl.'/frontend/images/visa-card.png'; ?>">
 				</div>
                 <div class="cardinfo clearfix">
                   <h4>XXXX XXXX XXXX <?php echo $value['StripeCustomer']['card_number'] ;?></h4>
@@ -311,11 +311,11 @@
                  <label class="checkbox-inline">
                       <input type="checkbox" class="allcheck" id="inlineCheckbox<?php  echo $value['CustomerAddressBook']['id']; ?>" value="option1" onclick="makeDefaultAdd(this,'<?php  echo $value['CustomerAddressBook']['id']; ?>')" <?php echo $check; ?>>
                       Default Address <a href="javascript:void(0);"  id="edit" 
-		                                            onclick="customerAddressBookEdit(<?php echo $value['CustomerAddressBook']['id'];?>)"><i class="fa fa-edit"></i></a> </label>
+		                                            onclick="customerAddressBookEdit(<?php echo $value['CustomerAddressBook']['id'];?>)" style="color:white;"><i class="fa fa-edit"></i></a> </label>
                 
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                 <a href="javascript:void(0);" onclick="customerdelete(<?php echo $value['CustomerAddressBook']['id'];?>,'customeraddress')"><p> Delete Address</p></a>
+                 <a href="javascript:void(0);" onclick="customerdelete(<?php echo $value['CustomerAddressBook']['id'];?>,'customeraddress')" style="color:white;"><p> Delete Address</p></a>
                 
                 </div>
                 
@@ -375,10 +375,10 @@
 															'label'=>false,'placeholder' =>'Landmark')); ?>
     <!-- <input type="password" class="form-control" placeholder="Landmark"> -->
   </div>
-  <div class="form-group">
+  <!-- <div class="form-group">
     <label class="sr-only">Country</label>
     <input type="text" class="form-control" placeholder="Country">
-  </div>
+  </div> -->
   <div class="form-group">
     <label class="sr-only"><?php echo __('State', true); ?></label>
 	<?php
@@ -419,7 +419,16 @@
 															'label'=>false,'placeholder' =>'Phone Number')); ?>
     <!-- <input type="text" class="form-control" placeholder="Phone Number"> -->
   </div>
-  
+  <div class="form-group">
+		<label class="sr-only"><?php echo __('Address Phone', true); ?></label>
+		<?php
+						echo $this->Form->input('address_phone',
+								array('class'=>'form-control',
+									'id'=>'phone',
+									'type'=>'text',
+										'label'=>false,'placeholder'=>"Phone Number")); ?>
+		<!-- <input type="password" class="form-control" placeholder="Phone Number"> -->
+		</div>
   <?php echo $this->Form->button(__('Submit'),
 									array("label"=>false,
 											"class"=>"btn btn-primary",
