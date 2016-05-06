@@ -92,13 +92,47 @@
           </div>
           <div class="panel-collapse collapse" id="collapse2">
             <div class="clearfix addrbook padTB20">
-              <div class="col-md-6 col-sm-6 addrbookbl">
-                <div class="addrbg">
+                
+               
+                <?php foreach ($addresses as $keys => $values) {
+									//echo "<pre>"; print_r($values);
+									?>
+									
+									<div class="col-md-6 col-sm-6 addrbookbl">
+										<label class="editAdrr <?php echo ($keys == 0) ? "active" : ''; ?>">
+
+			        						<input type="radio" <?php if($keys == 0){echo "checked=\"checked\"";} ?> name="data[Order][delivery_id]" value="<?php echo $values['CustomerAddressBook']['id']; ?>" />	 
+			        						
+                                                                                       <div class="addrbg">
                   <h2><?php echo $user_name; ?></h2>
                   <div class="row">
                     <p class="col-md-6"><?php echo $final_address; ?> </p>
                   </div>
                 </div>
+                                                                                       
+			        							<p class="font-new color_new"> <?php echo $values['CustomerAddressBook']['address_title']; ?></p> <?php
+			        								   echo '<p>'.$values['CustomerAddressBook']['address'].' ,'.
+			        										'<p>'.$values['CustomerAddressBook']['landmark'].' ,</p>'.
+			        										'<p>'.$customerArea[$values['CustomerAddressBook']['location_id']].' ,'.
+			        											  $customerCity[$values['CustomerAddressBook']['city_id']].' ,</p>'.
+			        										'<p>'.$customerState[$values['CustomerAddressBook']['state_id']].' - '.
+			        											  $customerAreaCode[$values['CustomerAddressBook']['location_id']].'</p>';
+			        							 ?>
+
+			        						
+			        						<!-- <span class="edit_options">
+			        							<a href="#"><i class="fa fa-pencil"></i></a>
+			        							<a href="#"><i class="fa fa-times"></i></a>
+			        						</span> -->
+											
+			        					</label>
+		        					</div>
+		        					<?php } ?>
+                
+                
+                
+              
+               
                 <div class="defaddr clearfix">
                   <div class="row">
                     <div class="col-md-6 col-sm-6 col-xs-6">
@@ -112,26 +146,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-md-6 col-sm-6 addrbookbl">
-                <div class="addrbg">
-                  <h2><?php echo $user_name; ?></h2>
-                  <div class="row">
-                    <p class="col-md-6"><?php echo $final_address; ?> </p>
-                  </div>
-                </div>
-                <div class="defaddr clearfix">
-                  <div class="row">
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                      <label class="checkbox-inline">
-                        <input type="checkbox" value="option1" id="inlineCheckbox1">
-                        Default Address </label>
-                    </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                      <p> Delete Address</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              
             </div>
             <div class="text-center padB20"> <a data-target="#demo-10" data-toggle="modal" href="javascript:void(0);" class="addbtn btn"><span class="addriconwt"></span>Add Address</a></div>
           </div>

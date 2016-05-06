@@ -100,7 +100,6 @@
 		<?php			echo $this->Form->button(__('Submit'),
 								array("label"=>false,
 										"class"=>"btn btn-primary",
-										'onclick' => 'return validateAddress();',
 										"type"=>'submit'));  
 		echo $this->Form->end(); ?>
 
