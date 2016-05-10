@@ -1,3 +1,4 @@
+
 <div id="banner">
   <div class="container">
     <div class="bannerdesc text-center ">
@@ -120,14 +121,14 @@
         <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10 milestoneorders"><div class="clearfix mrgT100">
           <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 servblock">
             <div class="text-center">
-              <p class="storenum bg-green"><a href=""><?php echo $OrderCount; ?>+</a><span class="middleborder"></span>
+              <p class="storenum bg-green"><a href=""><span id="count-orders"></span><span>+</span></a><span class="middleborder"></span>
               </p>
               <p class="ordertext">Orders</p>
             </div>
           </div>
           <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 col-lg-offset-4 col-md-offset-4 servblock">
             <div class="text-center">
-              <p class="storenum bg-blue"><a href=""><?php echo $StoreCount; ?>+</a><span class="middleborder"></span></p>
+              <p class="storenum bg-blue"><a href=""><span id="count-stores"></span><span>+</span></a><span class="middleborder"></span></p>
               <p class="ordertext">Stores</p>
             </div>
           </div>

@@ -53,12 +53,12 @@
               <div class="col-md-4 col-sm-4 titlediv fldiv">2. Delivery Address </div>
               <div class="col-md-4 col-sm-4 titlediv">
                 <?php
-                    if(!empty($addresses)){
-                        $user_first_name = $addresses[0]["Customer"]["first_name"];
-                        $user_last_name = $addresses[0]["Customer"]["last_name"];
+                    if(!empty($def_addresses)){
+                        $user_first_name = $def_addresses[0]["Customer"]["first_name"];
+                        $user_last_name = $def_addresses[0]["Customer"]["last_name"];
                         $user_name = $user_first_name." ".$user_last_name;
                         
-                        $user_phone = $addresses[0]["Customer"]["customer_phone"];
+                        $user_phone = $def_addresses[0]["Customer"]["customer_phone"];
                         
                     }else{
                         $user_name = "";
@@ -69,10 +69,10 @@
                 
                 <?php
                 
-                if(!empty($addresses)){
-                        $user_address_title = $addresses[0]["CustomerAddressBook"]["address_title"];
-                        $user_address = $addresses[0]["CustomerAddressBook"]["address"];
-                        $user_address_landmark = $addresses[0]["CustomerAddressBook"]["landmark"];
+                if(!empty($def_addresses)){
+                        $user_address_title = $def_addresses[0]["CustomerAddressBook"]["address_title"];
+                        $user_address = $def_addresses[0]["CustomerAddressBook"]["address"];
+                        $user_address_landmark = $def_addresses[0]["CustomerAddressBook"]["landmark"];
                         $user_address_city = $customerCity[1];
                         $user_address_state = $customerState[1];
                         

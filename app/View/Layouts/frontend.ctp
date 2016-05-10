@@ -70,6 +70,7 @@
 	<!--<script type="text/javascript" src="<?php echo $this->webroot; ?>frontend/js/jquery-1.11.3.js"></script>-->
 
 	<script type="text/javascript" src="<?php echo $this->webroot; ?>frontend/js/jquery-1.11.0.min.js"></script>	
+	
 
 	<script type="text/javascript" src="<?php echo $this->webroot; ?>frontend/js/jquery-migrate-1.2.1.min.js"></script>
 
@@ -91,8 +92,7 @@
 	<script src="<?php echo $this->webroot; ?>frontend/js/jquery.stellar.min.js" type="text/javascript"></script>
 	<script src="<?php echo $this->webroot; ?>frontend/css/SpryAssets/SpryTabbedPanels.js" type="text/javascript"></script>
 	<script src="<?php echo $this->webroot; ?>frontend/css/SpryAssets/SpryAccordion.js" type="text/javascript"></script>
-
-
+	<script src="<?php echo $this->webroot; ?>frontend/js/jQuerySimpleCounter.js" type="text/javascript"></script>
     <script type="text/javascript" src="<?php echo $this->webroot; ?>frontend/js/prefixfree.min.js"></script>
 
     <script type="text/javascript">
@@ -1105,7 +1105,18 @@ function after_submit_signupform(){
                 
                 
 	</script>
-
+<script type="text/javascript">
+	$('#count-orders').jQuerySimpleCounter({
+			start:  0,
+	        end:    <?php echo $OrderCount; ?>,
+			duration: 4000
+		});
+		$('#count-stores').jQuerySimpleCounter({
+			start:  0,
+	        end:    <?php echo $StoreCount; ?>,
+			duration: 4000
+		});
+	</script>
 	<?php
 		if ($this->request->params['controller'] == 'searches' &&
 			$this->request->params['action'] == 'storeitems') {

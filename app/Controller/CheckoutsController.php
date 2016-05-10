@@ -131,6 +131,15 @@ class CheckoutsController extends AppController
                             'conditions' => array('CustomerAddressBook.customer_id' => 
                                                     $this->Auth->User('Customer.id'),
                                                 'CustomerAddressBook.status' => 1)));
+												
+		$def_addresses = $this->CustomerAddressBook->find('all', array(
+                            'conditions' => array('CustomerAddressBook.customer_id' => 
+                                                    $this->Auth->User('Customer.id'),
+                                                'CustomerAddressBook.def_add' => 1)));
+		
+		
+		
+		
         $stripeCards = $this->StripeCustomer->find('all', array(
             'conditions' => array('StripeCustomer.customer_id' => $this->Auth->User('Customer.id'))));
         $user_data = $this->Customers->find('all', array(
@@ -173,7 +182,7 @@ class CheckoutsController extends AppController
 		$state_list = $this->State->find('list', array(
             'conditions' => array('State.country_id' => $country_id),
             'fields' => array('State.id', 'State.state_name')));
-        $this->set(compact('addresses', 'shopCartDetails', 'storeSlots', 'optionDays', 'stripeCards','customerState','customerCity','cartCount','storeCart','total','state_list'));
+        $this->set(compact('addresses', 'def_addresses', 'shopCartDetails', 'storeSlots', 'optionDays', 'stripeCards','customerState','customerCity','cartCount','storeCart','total','state_list'));
         
         
     }
