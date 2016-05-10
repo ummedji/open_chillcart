@@ -45,22 +45,16 @@ class CheckoutsController extends AppController
 
     public function index()
     {
-        
         $minOrderCheck = $this->storeMinOrderCheck();
-
         $this->layout = 'frontend';
         $shopCartDetails = $this->ShoppingCart->find('all', array(
                                 'conditions' => array('ShoppingCart.session_id' => $this->SessionId,
                                                     'ShoppingCart.order_id' => 0),
                                 'order' => array('ShoppingCart.store_id'),
                                 'group' => 'ShoppingCart.store_id'));
-        
-        
-        
-        if (empty($shopCartDetails) || empty($minOrderCheck)) {
+		if (empty($shopCartDetails) || empty($minOrderCheck)) {
             $this->redirect(array('controller' => 'searches', 'action' => 'index'));
         }
-
         foreach ($shopCartDetails as $keys => $values) {
             $storeSlots[$keys]['store_name'] = $values['Store']['store_name'];
             $storeSlots[$keys]['store_id']   = $values['Store']['id'];
@@ -139,21 +133,15 @@ class CheckoutsController extends AppController
                                                 'CustomerAddressBook.status' => 1)));
         $stripeCards = $this->StripeCustomer->find('all', array(
             'conditions' => array('StripeCustomer.customer_id' => $this->Auth->User('Customer.id'))));
-        
-        
         $user_data = $this->Customers->find('all', array(
                             'conditions' => array('Customers.id' => 
                                                    $this->Auth->User('Customer.id'))));
-       
-              
-               $customerState = $this->State->find('list', array(
+        $customerState = $this->State->find('list', array(
             'conditions' => array('State.country_id' => $addresses[0]["CustomerAddressBook"]["state_id"]),
             'fields' => array('id', 'state_name')));
-
         $customerCity = $this->City->find('list', array(
              'conditions' => array('City.id' => $addresses[0]["CustomerAddressBook"]["city_id"]),
             'fields' => array('City.id', 'City.city_name')));
-        
         
         $total = $this->ShoppingCart->find('all', array(
 								'conditions'=>array('ShoppingCart.session_id' => $this->SessionId),
@@ -180,12 +168,45 @@ class CheckoutsController extends AppController
        // $customerCountry = $this->Countries->find('list', array(
        //      'conditions' => array('Countries.id' => $addresses[0]["State"]["countrty_id"]),
        //     'fields' => array('Countries.id', 'Countries.country_name')));
-        
-        $this->set(compact('addresses', 'shopCartDetails', 'storeSlots', 'optionDays', 'stripeCards','customerState','customerCity','cartCount','storeCart','total'));
+        $country = $this->siteSetting;
+        $country_id = $country['Sitesetting']['site_country'];
+		$state_list = $this->State->find('list', array(
+            'conditions' => array('State.country_id' => $country_id),
+            'fields' => array('State.id', 'State.state_name')));
+        $this->set(compact('addresses', 'shopCartDetails', 'storeSlots', 'optionDays', 'stripeCards','customerState','customerCity','cartCount','storeCart','total','state_list'));
         
         
     }
+	 public function addAddressBook()
+    {
+        if ($this->request->is('post') || $this->request->is('put')) {
+			//print_r($this->request->data); exit;
+            $this->CustomerAddressBook->set($this->request->data);
+            if($this->CustomerAddressBook->validates()) {
 
+                $address_check = $this->CustomerAddressBook->find('first', array(
+                    'conditions' => array(
+                        'CustomerAddressBook.address_title' =>
+                            trim($this->request->data['CustomerAddressBook']['address_title']),
+                        'CustomerAddressBook.customer_id' => $this->Auth->User('Customer.id')
+                    )));
+                if (!empty($address_check)) {
+                    $this->Session->setFlash('<p>' . __('Address Book Already Exists', true) . '</p>', 'default',
+                        array('class' => 'alert alert-danger'));
+                    $this->redirect(array('controller' => 'checkouts', 'action' => 'index'));
+                } else {
+					$this->request->data['CustomerAddressBook']['customer_id'] = $this->Auth->User('Customer.id');
+                    $this->CustomerAddressBook->save($this->request->data['CustomerAddressBook']);
+
+                    $this->Session->setFlash('<p>' . __('Your address book has been added successfully', true) . '</p>', 'default',
+                        array('class' => 'alert alert-success'));
+                    $this->redirect(array('controller' => 'checkouts', 'action' => 'index'));
+                }
+            } else {
+                $this->CustomerAddressBook->validationErrors;
+            }
+        }
+    }
     // Min Order Check
     public function storeMinOrderCheck() {
 

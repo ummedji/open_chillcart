@@ -103,7 +103,7 @@
 									//echo "<pre>"; print_r($values);
 									?>
 									
-									<div class="col-md-6 col-sm-6 addrbookbl">
+									<div class="col-md-6 col-sm-6 addrbookbl" id="record<?php echo $values['CustomerAddressBook']['id'];?>">
 										<label class="editAdrr <?php echo ($keys == 0) ? "active" : ''; ?>">
 
 			        						<input type="radio" <?php if($keys == 0){echo "checked=\"checked\"";} ?> name="data[Order][delivery_id]" value="<?php echo $values['CustomerAddressBook']['id']; ?>" />	 
@@ -111,26 +111,30 @@
                                                                                        <div class="addrbg">
                   <h2><?php echo $values['CustomerAddressBook']['address_title']; ?></h2>
                   <div class="row">
-                    <p class="col-md-6"><?php
-			        								   echo '<p>'.$values['CustomerAddressBook']['address'].' ,'.
+				  
+                   <?php
+			        								   echo '<p>'.$values['CustomerAddressBook']['address'].' ,</p>'.
 			        										'<p>'.$values['CustomerAddressBook']['landmark'].' ,</p>'.
 			        										'<p>'.$customerArea[$values['CustomerAddressBook']['location_id']].' ,'.
 			        											  $customerCity[$values['CustomerAddressBook']['city_id']].' ,</p>'.
-			        										'<p>'.$customerState[$values['CustomerAddressBook']['state_id']].' - '.
+			        										'<p>'.$state_list[$values['CustomerAddressBook']['state_id']].' - '.
 			        											  $customerAreaCode[$values['CustomerAddressBook']['location_id']].'</p>';
-			        							 ?></p>
+			        							 ?>
                   </div>
                 </div>
-                               
+           <?php if($values['CustomerAddressBook']['def_add']) { $check = "checked=checked"; } else { $check = ''; } ?>                    
 <div class="defaddr clearfix">
                   <div class="row">
                     <div class="col-md-6 col-sm-6 col-xs-6">
                       <label class="checkbox-inline">
-                        <input type="checkbox" value="option1" id="inlineCheckbox1">
+					  
+						<input type="checkbox" class="allcheck" id="inlineCheckbox<?php  echo $values['CustomerAddressBook']['id']; ?>" value="option1" onclick="makeDefaultAdd(this,'<?php  echo $values['CustomerAddressBook']['id']; ?>')" <?php echo $check; ?>>
+					  
+                       <!-- <input type="checkbox" value="option1" id="inlineCheckbox1">-->
                         Default Address </label>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                      <p> Delete Address</p>
+                      <a href="javascript:void(0);" onclick="customerdelete(<?php echo $values['CustomerAddressBook']['id'];?>,'customeraddress')" style="color:white;"><p> Delete Address</p></a>
                     </div>
                   </div>
                 </div>                                                                                       
@@ -545,7 +549,7 @@
 <div class="modal fade add_adress_parent" id="demo-10" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="css-popup" >
+       <div class="css-popup" >
 <div class="add-new-card-popup">
 <div class="text-center mrgTB30">
                 <h2 class="blgrtitle "><span class="blackborder">Add</span> <span class="greenborder">New Address</span></h2>
@@ -555,8 +559,8 @@
               <div class="content-popup">
               
 <?php echo $this->Form->create("CustomerAddressBook",
-						array("id"=>'AddCustomerAddressBook',
-							  "url"=>array("controller"=>'Customers','action'=>'addAddressBook')));?>
+						array("id"=>'AddCustomerAddressBookCheckout',
+							  "url"=>array("controller"=>'checkouts','action'=>'addAddressBook')));?>
   <div class="form-group">
     <label class="sr-only"><?php echo __('Address Title', true); ?></label>
 	<?php echo $this->Form->input('address_title',array('class'=>'form-control','label'=>false,'placeholder' =>'Address Title')); ?>
@@ -580,10 +584,10 @@
 															'label'=>false,'placeholder' =>'Landmark')); ?>
     <!-- <input type="password" class="form-control" placeholder="Landmark"> -->
   </div>
-  <div class="form-group">
+  <!-- <div class="form-group">
     <label class="sr-only">Country</label>
     <input type="text" class="form-control" placeholder="Country">
-  </div>
+  </div> -->
   <div class="form-group">
     <label class="sr-only"><?php echo __('State', true); ?></label>
 	<?php
@@ -617,20 +621,28 @@
 									 				  'label'=> false,'placeholder' =>'Pincode'));  ?>
     <!-- <input type="password" class="form-control" placeholder="Pincode"> -->
   </div>
+ 
   <div class="form-group">
-    <label class="sr-only"><?php
-											echo $this->Form->input('address_phone',
-													array('class'=>'form-control',
-															'label'=>false,'placeholder' =>'Phone Number')); ?>
-    <!-- <input type="text" class="form-control" placeholder="Phone Number"> -->
-  </div>
-  
+		<label class="sr-only"><?php echo __('Address Phone', true); ?></label>
+		<?php
+						echo $this->Form->input('address_phone',
+								array('class'=>'form-control',
+									'id'=>'phone',
+									'type'=>'text',
+										'label'=>false,'placeholder'=>"Phone Number")); 
+										echo $this->Form->input('status',
+							                            array('class' => 'form-control',
+							                            	  'type' => 'hidden',
+							                                  'label' => false,
+							                                  'value' => 1));?>
+		<!-- <input type="password" class="form-control" placeholder="Phone Number"> -->
+		</div>
   <?php echo $this->Form->button(__('Submit'),
 									array("label"=>false,
 											"class"=>"btn btn-primary",
-											'onclick' => 'return addAddressCheck();',
-											"type"=>'submit')); ?>
- 
+											'onclick' => 'return addAddressCheckCheckout();',
+											"type"=>'submit')); 
+		 ?>
   <!-- <button type="submit" class="btn addbtn mrgTB20">Submit</button> -->
 <?php echo $this->Form->end(); ?>
               </div>

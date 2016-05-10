@@ -480,7 +480,6 @@ class CustomersController extends AppController
 
         $title = $this->request->data['title'];
         $ids = (isset($this->request->data['id'])) ? $this->request->data['id'] : 0;
-
         if (!empty($title)) {
             $address_check = $this->CustomerAddressBook->find('first', array(
                 'conditions' => array(
@@ -515,9 +514,9 @@ class CustomersController extends AppController
     public function customer_addAddressBook()
     {
         if ($this->request->is('post') || $this->request->is('put')) {
+			//print_r($this->request->data); exit;
             $this->CustomerAddressBook->set($this->request->data);
             if($this->CustomerAddressBook->validates()) {
-
                 $address_check = $this->CustomerAddressBook->find('first', array(
                     'conditions' => array(
                         'CustomerAddressBook.address_title' =>
@@ -799,12 +798,14 @@ class CustomersController extends AppController
     public function customer_deleteaddress($id = null)
     {
         $id = $this->request->data['id'];
+	
         if (!empty($id)) {
             $customerAddressBook = $this->CustomerAddressBook->find('first', array(
                             'conditions' => array('CustomerAddressBook.id' => $id,
                                         'CustomerAddressBook.customer_id' => $this->Auth->User('Customer.id'))));
-
+										
             if (!empty($customerAddressBook)) {
+				
                 $this->CustomerAddressBook->delete($id);
                 echo "sucess";
             }

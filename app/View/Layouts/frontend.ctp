@@ -207,7 +207,6 @@
 			}
 		}
 		jQuery().ready(function() {
-			
         /*var signupvalidator = jQuery("#UserSignupForm").validate({
 				rules: {
 				   "data[Customer][first_name]": {
@@ -361,7 +360,58 @@
 				}
 			});
 
-			var AddAdressBookvalidator = jQuery("#AddCustomerAddressBook").validate({
+			var AddAdressBookvalidator = jQuery("#AddCustomerAddressBook_Ordercustomer").validate({
+				rules: {
+					"data[CustomerAddressBook][address_title]": {
+						required: true,
+					},
+		            "data[CustomerAddressBook][address]": {
+						required: true,
+					},
+		            "data[CustomerAddressBook][address_phone]": {
+						required: true,
+		                number:true,
+					},
+		            "data[CustomerAddressBook][landmark]": {
+						required: true,
+					},
+		            "data[CustomerAddressBook][state_id]": {
+						required: true,
+					},
+		             "data[CustomerAddressBook][city_id]": {
+						required: true,
+					},
+		             "data[CustomerAddressBook][location_id]": {
+						required: true,
+					}
+				},
+				messages: { 
+					"data[CustomerAddressBook][address_title]": {
+						required: "<?php echo __('Please enter tittle'); ?>",
+					},
+		            "data[CustomerAddressBook][address]": {
+						required: "<?php echo __('Please enter street address'); ?>",
+					},
+		            "data[CustomerAddressBook][address_phone]": {
+						required: "<?php echo __('Please enter phone number'); ?>",
+					},
+		            "data[CustomerAddressBook][landmark]": {
+						required: "<?php echo __('Please enter landmark'); ?>",
+					},
+		             "data[CustomerAddressBook][state_id]": {
+						required: "<?php echo __('Please select state'); ?>",
+					},
+		             "data[CustomerAddressBook][city_id]": {
+						required: "<?php echo __('Please select city'); ?>",
+					},
+		             "data[CustomerAddressBook][location_id]": {
+						required: "<?php echo __('Please select location'); ?>",
+					}
+
+				}
+			});
+		    
+		    var AddAdressBookvalidator = jQuery("#AddCustomerAddressBookCheckout").validate({
 				rules: {
 					"data[CustomerAddressBook][address_title]": {
 						required: true,
@@ -410,9 +460,7 @@
 					}
 
 				}
-			});
-		    
-		    	
+			});	
 		    
 		    var EditAdressBookvalidator = jQuery("#EditCustomerAddressBook").validate({
 				rules: {
@@ -537,7 +585,28 @@
 				$.post(rp+'customer/customers/editaddresschecking',{'title':title}, function(response) {
 
 					if($.trim(response) == 'success'){   
-						$("#AddCustomerAddressBook_Order").submit();
+						$("#AddCustomerAddressBook_Ordercustomer").submit();
+					} else {
+						$('.checkAdderorr').html("<?php echo __('Addressbook title already exists'); ?>");
+						return false;
+					}
+				});
+				//return false;
+			}
+		}
+		
+		function addAddressCheckCheckout () {
+
+			var title     = $('#CustomerAddressBookAddressTitle').val();
+
+			$('.checkAdderorr').show();
+			$('.checkAdderorr').html('');
+
+			if (title != '') {
+				$.post(rp+'customer/customers/editaddresschecking',{'title':title}, function(response) {
+
+					if($.trim(response) == 'success'){   
+						$("#AddCustomerAddressBookCheckout").submit();
 					} else {
 						$('.checkAdderorr').html("<?php echo __('Addressbook title already exists'); ?>");
 						return false;

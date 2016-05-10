@@ -31,8 +31,7 @@ class CustomerAddressBook extends Model
         'address' => array(
             'notEmpty' => array(
                 'rule' => 'notEmpty',
-                'message' => 'Please enter street address
-'
+                'message' => 'Please enter street address'
             )
         ),
         'customer_phone' => array(

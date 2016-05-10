@@ -350,7 +350,7 @@
               <div class="content-popup">
               
 <?php echo $this->Form->create("CustomerAddressBook",
-						array("id"=>'AddCustomerAddressBook_Order123',
+						array("id"=>'AddCustomerAddressBook_Ordercustomer',
 							  "url"=>array("controller"=>'customers','action'=>'addAddressBook')));?>
   <div class="form-group">
     <label class="sr-only"><?php echo __('Address Title', true); ?></label>
@@ -412,13 +412,7 @@
 									 				  'label'=> false,'placeholder' =>'Pincode'));  ?>
     <!-- <input type="password" class="form-control" placeholder="Pincode"> -->
   </div>
-  <div class="form-group">
-    <label class="sr-only"><?php
-											echo $this->Form->input('address_phone',
-													array('class'=>'form-control',
-															'label'=>false,'placeholder' =>'Phone Number')); ?>
-    <!-- <input type="text" class="form-control" placeholder="Phone Number"> -->
-  </div>
+  
   <div class="form-group">
 		<label class="sr-only"><?php echo __('Address Phone', true); ?></label>
 		<?php
@@ -426,15 +420,20 @@
 								array('class'=>'form-control',
 									'id'=>'phone',
 									'type'=>'text',
-										'label'=>false,'placeholder'=>"Phone Number")); ?>
+										'label'=>false,'placeholder'=>"Phone Number")); 
+										echo $this->Form->input('status',
+							                            array('class' => 'form-control',
+							                            	  'type' => 'hidden',
+							                                  'label' => false,
+							                                  'value' => 1));?>
 		<!-- <input type="password" class="form-control" placeholder="Phone Number"> -->
 		</div>
   <?php echo $this->Form->button(__('Submit'),
 									array("label"=>false,
 											"class"=>"btn btn-primary",
 											'onclick' => 'return addAddressCheck();',
-											"type"=>'submit')); ?>
- 
+											"type"=>'submit')); 
+		 ?>
   <!-- <button type="submit" class="btn addbtn mrgTB20">Submit</button> -->
 <?php echo $this->Form->end(); ?>
               </div>
