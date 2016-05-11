@@ -61,7 +61,7 @@
   <section class="container">
     <div class="features">
       <div class="clearfix">
-        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 groceryblock"> <a href="">
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 groceryblock" style="z-index:1;"> <a href="">
           <div class="greenbg hovereffect">
             <figure> <img src='<?php echo $siteUrl.'/frontend/images/storesearch.png'; ?>' alt='Store Search' />
               <figcaption>Store Search</figcaption>

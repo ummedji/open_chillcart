@@ -105,11 +105,10 @@
 				?>
 				</p>
 				<ul class="starcredit">
+				<?php for($star=1;$star<=$value['Store']['minimum_order'];$star++) { ?>
 				<li><span class="staricon"></span></li>
-				<li><span class="staricon"></span></li>
-				<li><span class="staricon"></span></li>
-				<li><span class="staricon"></span></li>
-				<li><span class="staricon"></span></li>
+				<?php } ?>
+				
 				</ul>
 				</a> </div></div>
 			</div>

@@ -192,8 +192,6 @@ class OrdersController extends AppController {
                             'CustomerAddressBook.id' => $this->request->data['Order']['delivery_id'],
                             'CustomerAddressBook.customer_id' => $this->Auth->User('Customer.id'))));
       }
-      
-      
      
       foreach ($this->request->data['Order']['timeSlot'] as $key => $value) {
 
@@ -223,12 +221,10 @@ class OrdersController extends AppController {
                       $this->siteSetting['Country']['country_name'];
           }
           
-          
-          
           $sourceLatLong    = $this->Googlemap->getlatitudeandlongitude($storeAddress);
           $source_lat       = (!empty($sourceLatLong['lat'])) ? $sourceLatLong['lat'] : 0;
           $source_long      = (!empty($sourceLatLong['long'])) ? $sourceLatLong['long'] : 0;
-          
+        
           if ($order['order_type'] != 'Collection') {
 
             $order['customer_name']       = $customerDetails['Customer']['first_name']. ' '.
@@ -240,7 +236,7 @@ class OrdersController extends AppController {
             $order['state_name']          = $customerDetails['State']['state_name'];
             $order['city_name']           = $customerDetails['City']['city_name'];
             $order['location_name']       = $customerDetails['Location']['area_name'];
-
+			
             $deliveryAddress =  $order['address'].', '.
                             $order['location_name'].', '.
                             $order['city_name'].', '.

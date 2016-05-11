@@ -1,7 +1,8 @@
 <?php
+
 /* janakiraman */
 App::uses('AppController', 'Controller');
-
+App::uses('File', 'Utility');
 class CategoriesController extends AppController
 {
     public $helpers = array('Html', 'Form', 'Session', 'Javascript');
@@ -30,7 +31,6 @@ class CategoriesController extends AppController
      */
     public function admin_add()
     {
-
         if ($this->request->is('post')) {
             $this->Category->set($this->request->data);
             if($this->Category->validates()) {

@@ -29,7 +29,7 @@
 						<div class="tools"></div>
 					</div>
 					<div class="portlet-body form"><?php 
-								echo $this->Form->create('Category',array('class'=>"form-horizontal"));
+								echo $this->Form->create('Category',array('class'=>"form-horizontal",'type'=>'file'));
 									?>			
 							<div class="form-body">
 								<div class="form-group">
@@ -38,9 +38,17 @@
 													echo $this->Form->input('category_name',
 															array('class'=>'form-control',
 																	'label'=>false)); ?>
-										</div>
+									</div>
 								</div>
 							</div>
+							<!-- <div class="form-body">
+								<div class="form-group">
+									<label class="col-md-3 control-label">Category Icon <span class="star">*</span></label>
+									<div class="col-md-6 col-lg-4">
+									<?php //echo $this->Form->input('category_icon', array('type' => 'file'),array('class'=>'form-control','label'=>false));?>
+									</div>
+								</div>
+							</div> -->
 							<div class="form-actions">
 								<div class="row">
 									<div class="col-md-offset-3 col-md-9"><?php

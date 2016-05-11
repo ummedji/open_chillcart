@@ -79,12 +79,9 @@
                   <div class="AccordionPanelContent">
                     <div class="acchist_acc pad20">
                       <div class="row">
-                        <div class="col-md-2 col-sm-12 img ">
-                          <div class="text-center"><img src="images/acc-history.png" /></div>
-                        </div>
-                        <div class="col-md-10 col-sm-12">
+                        <div class="col-md-12 col-sm-12">
                           <div class="row">
-                            <div class="col-md-5 col-sm-6 accdet">
+                            <div class="col-md-6 col-sm-6 accdet">
                               <div class="mrgT10">
                                 <p><span><?php echo __('Payment Type', true); ?> :</span> <?php echo __($value['Order']['payment_type']);?></p>
                                 <p><span><?php echo __('Delivery Date', true); ?> :</span> <?php echo $value['Order']['delivery_date'];?></p>
@@ -104,7 +101,7 @@
 											}	?></p>
                               </div>
                             </div>
-                            <div class="col-md-5 col-sm-6 accdet">
+                            <div class="col-md-6 col-sm-6 accdet">
                               <div class="mrgT10">
                                 <p><span><?php echo __('Order At', true); ?> :</span> <?php echo $value['Order']['created'];?></p>
                                 <p><span><?php echo __('Status', true); ?> :</span> <?php echo __($value['Order']['status']);?></p>

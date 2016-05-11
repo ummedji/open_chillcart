@@ -20,6 +20,7 @@
   <div class="changelocblock">
 			<div class="changlocinnbl"><a class="btn addbtn changlocbtn" onclick="showLocation()">change location</a>
 			<div class="changeloc-popup">
+			<!--<div class="close_pop_btn"><a href="#"><i aria-hidden="true" class="fa fa-times-circle"></i></a></div>-->
 			<h2>change location</h2>
 			<div class="locfield pad20">
 			<div class="form-group">
@@ -89,7 +90,7 @@
 					foreach ($mainCategoryList as $key => $value) { 
 				$categoryCount = $key+1; ?>
                 <li class="sort clearfix">
-				<span class="beverageicon"></span><?php echo $value['Category']['category_name']; ?><span class="glyphicon-plus pull-right" style="cursor: pointer;" onclick="showsubcat('<?php echo $value['Category']['id']; ?>');"></span>
+				<span class="beverageicon"></span><?php echo $value['Category']['category_name']; ?><span class="glyphicon-plus pull-right" style="cursor: pointer;" onclick="showsubcat('<?php echo $value['Category']['id']; ?>',this);"></span>
 					<ul id="subul_<?php echo $value['Category']['id']; ?>" style="display:none;" class="as_categories">
 					<?php
 						echo $this->Form->hidden('check' ,array('value'=>$value['Category']['id'].'_'.$storeId,

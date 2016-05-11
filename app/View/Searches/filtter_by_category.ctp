@@ -46,6 +46,7 @@ foreach ($productList as $key => $value) {
 
 		?>
 		<div class="col-md-2 col-sm-4 productblock">
+		<div class="row">
               <div class="product hr_products">
                 <div class="image"> <a href="detail.html"> <img class="img-responsive image1" alt="" src="<?php echo $imageSrc; ?>"> </a> <span class="prod-id" id="cart_prod_num">
                      <?php 
@@ -70,7 +71,7 @@ foreach ($productList as $key => $value) {
                     </span> </div>
 
                 <div class="text">
-                  <h3><a href="#"><?php echo $value['Product']['product_name']; ?> </a></h3>
+                  <h3><a href="#"><?php echo substr($value['Product']['product_name'],0,15); //echo $value['Product']['product_name']; ?> </a></h3>
                   <p class="prodesc"><?php echo $value['ProductDetail'][0]['sub_name']; ?></p>
                   <p class="price">
 				  <?php  /*if ($value['Product']['price_option'] != 'single') {  
@@ -221,7 +222,7 @@ foreach ($productList as $key => $value) {
                     
                               </div>
               </div>
-
+				</div>
             </div>
 		
 	<?php if (!isset($productList[$nextValue]['SubCategory']['id']) || $productList[$nextValue]['SubCategory']['id'] != $subCat) { ?>

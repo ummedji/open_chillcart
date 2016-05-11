@@ -124,7 +124,7 @@ header .navbar-inverse {
 }
 .bannerform {
 	background: url(../images/bg1.png) repeat center center;
-	bottom: 92px;
+	bottom: 175px;
 	-webkit-padding-before:15px !important;
 	-webkit-padding-after:15px !important;
 	-webkit-padding-end:15px !important;
@@ -525,7 +525,7 @@ figcaption {
 	background-color: #fff;
 
 	-webkit-margin-top: -51px;
-	padding: 70px 0 35px;
+	padding: 35px 0 35px;
 	transform: skewY(-3deg);
 	-ms-transform: skewY(-3deg); /* IE 9 */
 	-webkit-transform: skewY(-3deg);
@@ -542,6 +542,7 @@ figcaption {
 	transform: skewY(3deg);
 	-ms-transform: skewY(3deg); /* IE 9 */
 	-webkit-transform: skewY(3deg);
+	z-index:0;
 }
 .grocerydetail > p {
 	color: #838282;
@@ -1297,7 +1298,7 @@ display: inline-block;
 .changelocblock {
 	position: fixed;
 	right: 0;
-	top: 330px;
+	top: 250px;
 	z-index: 1;
 }
 .changlocinnbl {
@@ -1320,35 +1321,36 @@ display: inline-block;
     height: 0;
     position: absolute;
     right: 0;
-    top: -20px;
+    top: -19px;
     width: 0;
 }
 .locfield {background-color: rgba(0, 0, 0, 0.65);}
 .changlocbtn {
- 
-    border-radius: 0;
+ border-radius: 0;
     font-family: robotoregular;
-    font-size: 22px;
-    padding: 5px 12px;
+    font-size: 20px;
+    padding: 0 12px;
     position: relative;
-    right: -92px;
+    right: -90px;
     transform: rotate(-90deg);
 
 }
 .changlocbtn::before {
     border-color: #8dc442 transparent transparent;
     border-style: solid;
-    border-width: 20px 223px 0 0;
-    content: '';
+    border-width: 20px 207px 0 0;
+    content: "";
     display: block;
+    font-size: 16px;
     height: 0;
     left: 0;
     position: absolute;
-    top: -20px;
+    top: -19px;
     transform: rotate(180deg);
     width: 0;
 }
-/* .changlocbtn:hover, .changlocbtn:focus, .changlocbtn:active{background-color:#8dc442!important; box-shadow:none; } */
+.changlocbtn:hover:before { border-color: rgba(98,172,66,1) transparent transparent;}
+.changlocbtn:hover, .changlocbtn:focus, .changlocbtn:active{background-color: rgba(98,172,66,1) !important; box-shadow:none; } 
 .changeloc-popup {
 	position: absolute;
 	right: 0; display:none;
@@ -1755,10 +1757,12 @@ display: inline-block;
 }
 .sub_title{
 	display: block;
-	margin-left: 10px;
-	font-size: 14px;
-	font-weight: normal;
-	font-family: 'ralewaymedium';
+    float: left;
+    font-family: "ralewaymedium";
+    font-size: 14px;
+    font-weight: normal;
+    margin-left: 10px;
+    width: 100%;
 }
 .categorylist .glyphicon-minus {
 	color: rgb(136, 190, 76);
@@ -1804,7 +1808,7 @@ ul.as_categories li {
 	background-color: #ededed;
 }
 .productblock .product__detail-action {
-	display: none;
+	
 	position: relative;
 	bottom: 0px;
 	left: 0;
@@ -1823,8 +1827,8 @@ ul.as_categories li {
 ul.detail-action_li {
 	margin: 0;
 	padding: 0;
-	position: absolute;
-	z-index: 99999;
+	position: relative;
+	/* z-index: 99999; */
 	width: 100%;
 	height: 100%;
 	left: 0;
@@ -1833,7 +1837,7 @@ ul.detail-action_li {
 .detail-action_li li {
 	margin: 0;
 	list-style: none;
-	display: block;
+	/* display: block; */
 	border-top: solid 1px #ccc;
 	border-bottom: solid 1px #ccc;
 	background-color: #e6e5e5;

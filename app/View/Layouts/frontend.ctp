@@ -107,14 +107,18 @@
 		var rp = "<?php echo $siteUrl.'/'; ?>";
 		var publishKey = "<?php echo $publishKey; ?>";
 
-		function showsubcat(id)
+		function showsubcat(id,data)
 		{
 			if($("#subul_"+id).css('display') == 'none')
 			{
+			$(data).removeClass('glyphicon-plus');
+			$(data).addClass('glyphicon-minus');
 			$("#subul_"+id).show();
 			}
 			else
 			{
+			$(data).removeClass('glyphicon-minus');
+			$(data).addClass('glyphicon-plus');
 			$("#subul_"+id).hide();
 			}
 		}
@@ -149,6 +153,21 @@
 		   //	clearConsole();
             
         });
+		$('.changelocblock').on('click', function(e) {
+		e.stopPropagation();
+		});
+
+		$("body").click(function(event) {
+			$('.changeloc-popup').hide();
+			//$('.changelocblock').hide();
+		// Do whatever you want; the event that'd fire if the "special" element has been clicked on has been cancelled.
+		});
+		$("body").click(function(event) {
+			console.log(event.target.class);
+		if (event.target.class == "changeloc-popup") {
+		alert('on class');
+		}
+		});
         function ajaxpromotionalSignup()
 		{
 			var email = $('#email').val();
@@ -1007,6 +1026,7 @@
         
         
         $('body').on('click', 'a.add-to-cart', function(e) {
+			alert('aaas');
        
             e.preventDefault();
             
