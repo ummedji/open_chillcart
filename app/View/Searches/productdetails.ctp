@@ -14,47 +14,24 @@
 				?>	
 			</h4>
 		</div>
-		
 		<div class="modal-body menuInner clearfix">
-
 			<div class="col-md-8"> 
-
-				 <?php $imageOne = $siteUrl.'/stores/'.$productDetails['Product']['store_id'].'/products/home/'.$productDetails['ProductImage'][0]['image_alias']; ?>
-				 
-				<div id="sync1" class="owl-carousel">
-					<!-- <div class="item"><img src="<?php echo $imageOne;?>" alt="detailImage" title="detailImage"></div> -->
-
-					<?php					
-					foreach ($productDetails['ProductImage'] as $key => $value) { 
-						$imageSrc = $cdn.'/stores/products/original/'.$value['image_alias']; ?>
-						<div class="item" >
-							<img src="<?php echo $imageSrc;?>" alt="<?php echo $productDetails['Product']['product_name']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/no-imge.jpg"; ?>'">
-						</div> <?php
-					} ?> 					
-				</div>
-				<div class="col-md-10 col-md-offset-1">
-					<div id="sync2" class="owl-carousel">
-		                <?php
-						foreach ($productDetails['ProductImage'] as $key => $value) { 
-							$imageSrc = $cdn.'/stores/products/original/'.$value['image_alias']; ?>
-							<div class="item" >
-								<img src="<?php echo $imageSrc;?>" alt="<?php echo $productDetails['Product']['product_name']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/images/no-imge.jpg"; ?>'">
-							</div> <?php
-						} ?>               
-		            </div>
-		        </div>
-
-				
+			<div class="imagdiv">
+				<?php					
+				foreach ($productDetails['ProductImage'] as $key => $value) {
+				$imageName = (isset($value['image_alias'])) ? $value['image_alias'] : '';
+		$imageSrc = $cdn.'/stores/products/home/'.$imageName;
+		$imageSrc = 'https://dnrskjoxjtgst.cloudfront.net/stores/products/home/'.$imageName;  ?>
+				<span><img src="<?php echo $imageSrc;?>" alt="<?php echo $productDetails['Product']['product_name']; ?>"></span>
+				<?php } ?>
 			</div>
-
-
+			</div>
 			<div class="col-md-4 detailPopCont">
-
 					<?php
 					if ($productDetails['Product']['price_option'] != 'single') {  ?>
 						<div class="varient_height">
 							<select class="form-control margin-t-15" id="productVariant" onchange="variantDetails();"> <?php
-								foreach ($productDetails['ProductDetail'] as $key => $value) { ?>
+								foreach($productDetails['ProductDetail'] as $key => $value) { ?>
 									<option value="<?php echo $value['id']; ?>"><?php echo $value['sub_name']; ?></option> <?php
 								} ?>
 							</select>

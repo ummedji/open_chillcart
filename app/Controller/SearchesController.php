@@ -480,13 +480,14 @@ class SearchesController extends AppController {
              $html = "";
                 
              if(!empty($storeCart)){
-             
+				
                 foreach ($storeCart as $key => $value) {
                     
                 
               $html .= '<li>
                   <a href="#">
                       <div class="productblock clearfix">
+					  <h5 proid="'.$value['ProductDetail']['product_id'].'" style="display:none;"></h5>
                           <div class="prodtag pull-left">
                               <h2>';
                                   
@@ -604,13 +605,11 @@ class SearchesController extends AppController {
              $html = "";
                 
              if(!empty($storeCart)){
-             
                 foreach ($storeCart as $key => $value) {
-                    
-                
               $html .= '<li>
                   <a href="#">
                       <div class="productblock clearfix">
+					  <h5 proid="'.$value['ProductDetail']['product_id'].'" style="display:none;"></h5>
                           <div class="prodtag pull-left">
                               <h2>';
                                   
@@ -962,17 +961,29 @@ class SearchesController extends AppController {
 	}
 	public function ajaxpromotionalSignup()
 	{
+		$data = $this->request->query;
+		$ProList = $this->Proreg->find('list', array(
+								'conditions' => array('Proreg.email' => $data['email']),
+								'fields' => array('Proreg.id')));
+		if(count($ProList) > 0)
+		{
+			$returns['status'] = 0;
+			$returns['msg']= '<span style="color:red;">Email alredy Exist.</span>';
+		}
+		else
+		{
 		$this->Proreg->set($this->request->query);
 		$data = $this->Proreg->save();
 		if($data['Proreg']['id'] == '')
 		{
 			$returns['status'] = 0;
-			$returns['msg']= '<span style="color:red;">Email is not valid</span>';
+			$returns['msg']= '<span style="color:red;">Email is not valid.</span>';
 		}
 		else
 		{
 			$returns['status'] = 1;
-			$returns['msg']= '<span style="color:green;">You are successfully registered</span>';
+			$returns['msg']= '<span style="color:green;">You are successfully registered.</span>';
+		}
 		}
 		echo json_encode($returns); exit;
 	}

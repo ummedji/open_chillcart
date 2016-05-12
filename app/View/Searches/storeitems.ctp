@@ -199,7 +199,7 @@
     </div>
   </div>
 </div>
-
+<div class="modal fade" id="addCartPop"> </div>
 <!--<div class="mobile_cart">
 	<div class="">
 		<span class="pull-left">

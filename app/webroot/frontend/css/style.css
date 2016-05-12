@@ -809,6 +809,7 @@ figcaption {
 	padding: 15px 10px 0px 5px;
 	color: #3e3b3b;
 	font-size: 16.67px; list-style:none;
+	font-family : arial;
 }
 .tabbing {
     border-bottom: 1px solid #dedede;
@@ -1780,6 +1781,7 @@ display: inline-block;
 	float: left;
 	margin: 12px 0;
 	color: #88be4c;
+	font-weight : bold;
 }
 .sub_title span i { margin-right: 5px;}
 .sub_title .btn { margin-top: 4px;}
@@ -2099,4 +2101,8 @@ ul.select_product_data li { list-style: none;}
     border-radius: 2px;
     color: #333;
     width: 40%;
+}
+.addcart_popup_head
+{
+	float:left;
 }

@@ -172,7 +172,6 @@
 		{
 			var email = $('#email').val();
 			//var selectedValue = $(this).val();
-			alert(email);	
 			var targeturl = 'searches/ajaxpromotionalSignup';
 			$.ajax({
 			type: 'get',
@@ -1024,14 +1023,52 @@
 		
 	});     
         
-        
+        $('body').on('click', 'span.down', function(e) { 
+		
+		var destinationdiv = $(this).parent().parent().parent().parent().find("h5").eq(0);
+		
+			e.preventDefault();
+			var cart_data = $('#img_'+destinationdiv.attr('proid'));
+			var imgtodrag = $(this).parent().parent().parent().parent().find("img").eq(0);
+			 if (imgtodrag) {
+            var imgclone = imgtodrag.clone()
+                .offset({
+                top: imgtodrag.offset().top,
+                left: imgtodrag.offset().left
+            })
+                .css({
+                'opacity': '0.5',
+                    'position': 'absolute',
+                    'height': '150px',
+                    'width': '150px',
+                    'z-index': '100'
+            })
+                .appendTo($('body'))
+                .animate({
+                'top': cart_data.offset().top + 10,
+                    'left': cart_data.offset().left + 10,
+                    'width': 75,
+                    'height': 75
+            }, 1000, 'easeInOutExpo');
+            
+         //   setTimeout(function () {
+           //     cart_data.effect("shake", {
+           //         times: 2
+           //     }, 200);
+          //  }, 1500);
+
+            imgclone.animate({
+                'width': 0,
+                    'height': 0
+            }, function () {
+                $(this).detach()
+            });
+        }
+			
+		});
         $('body').on('click', 'a.add-to-cart', function(e) {
-			alert('aaas');
-       
-            e.preventDefault();
-            
+			e.preventDefault();
        //     alert("HERE");
-            
         var cart_data = $('.shopping-cart');
       //  var imgtodrag = $(this).parent('.item').find("img").eq(0);
         

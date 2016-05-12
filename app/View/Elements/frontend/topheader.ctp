@@ -41,11 +41,12 @@
                         /*if($this->request->params['controller'] == 'searches' &&
 			($this->request->params['action'] == 'index' || $this->request->params['action'] == 'stores' || $this->request->params['action'] == 'storeitems'))*/
                         
-			if(($this->request->params['controller'] == "checkouts" && $this->request->params['action'] == 'index') || ($this->request->params['controller'] == "customers" && $this->request->params['action'] == 'customer_myaccount') || ($this->request->params['controller'] == "searches" && ($this->request->params['action'] == 'index' || $this->request->params['action'] == 'stores' || $this->request->params['action'] == 'storeitems' || $this->request->params['action'] == 'aboutus'))){ 
+			if(($this->request->params['controller'] == "checkouts" && $this->request->params['action'] == 'index') || ($this->request->params['controller'] == "customers" && $this->request->params['action'] == 'customer_myaccount') || ($this->request->params['controller'] == "searches" && ($this->request->params['action'] == 'index' || $this->request->params['action'] == 'stores' || $this->request->params['action'] == 'storeitems' || $this->request->params['action'] == 'aboutus'))){  
 			if($this->request->params['action'] == 'index') { ?>
 			<li><a href="javascript:void(0);" id="how_it_works">How it Works?</a></li>
 			<!-- <li class="shopping-cart"><a href=""><span class="carticon"></span><span class="cartTotal">0.00</span><span class="droparrow"></span></a></li> -->
             <?php } ?>
+			<?php if($this->request->params['controller'] == "searches" && $this->request->params['action'] == 'storeitems')  {  ?>
 		  <li class="shopping-cart has-submenu"><a data-toggle="dropdown" class="dropdown-toggle" href=""><span class="carticon"></span><span class="cartTotal">0.00</span> <span class="droparrow"></span></a>
           <div class="dropdown-menu productmenu top_cart_arrow">
           <span class="toparrow"></span>
@@ -75,7 +76,7 @@
            </div>        
           </li>
                           
-                          
+          <?php } ?>                
                           
 			 <?php } ?>
 			</ul>
