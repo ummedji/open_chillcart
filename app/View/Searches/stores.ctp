@@ -24,13 +24,14 @@
 			<div class="changelocblock">
 			<div class="changlocinnbl"><a class="btn addbtn changlocbtn" onclick="showLocation()">change location</a>
 			<div class="changeloc-popup">
-			<div class="close_pop_btn"><a href="#"><i class="fa fa-times-circle" aria-hidden="true"></i></a></div>
+			<!--<div class="close_pop_btn"><a href="#"><i aria-hidden="true" class="fa fa-times-circle"></i></a></div>-->
 			<h2>change location</h2>
 			<div class="locfield pad20">
 			<div class="form-group">
 			<label class="sr-only">City</label>
 			<?php
-			if (!empty($cityList)) {
+			
+			if (!empty($cityList)){
 				echo $this->Form->create('Search',array("id"=>'ChangeLocationToNew')) ;
 				echo $this->Form->input('city',	
 							array('type'=>'select',
@@ -75,8 +76,6 @@
 			<option>5</option>
 			</select> -->
 			</div>
-			
-			
 			</div>
 			</div>
 			</div>

@@ -71,7 +71,7 @@ foreach ($productList as $key => $value) {
                     </span> </div>
 
                 <div class="text">
-                  <h3><a href="#"><?php echo substr($value['Product']['product_name'],0,15); //echo $value['Product']['product_name']; ?> </a></h3>
+                  <h3><a onclick="productDetails(<?php echo $value['Product']['id']; ?>);"><?php echo substr($value['Product']['product_name'],0,15); //echo $value['Product']['product_name']; ?> </a></h3>
                   <p class="prodesc"><?php echo $value['ProductDetail'][0]['sub_name']; ?></p>
                   <p class="price">
 				  <?php  /*if ($value['Product']['price_option'] != 'single') {  

@@ -159,15 +159,11 @@
 
 		$("body").click(function(event) {
 			$('.changeloc-popup').hide();
+			$('.changlocbtn').show();
 			//$('.changelocblock').hide();
 		// Do whatever you want; the event that'd fire if the "special" element has been clicked on has been cancelled.
 		});
-		$("body").click(function(event) {
-			console.log(event.target.class);
-		if (event.target.class == "changeloc-popup") {
-		alert('on class');
-		}
-		});
+		
         function ajaxpromotionalSignup()
 		{
 			var email = $('#email').val();
@@ -218,10 +214,12 @@
 			if(jQuery(".changeloc-popup").css('display') == 'none')
 			{
 			jQuery(".changeloc-popup").show();
+			$('.changlocbtn').hide();
 			}
 			else
 			{
 			jQuery(".changeloc-popup").hide();
+			$('.changlocbtn').show();
 			}
 		}
 		jQuery().ready(function() {
