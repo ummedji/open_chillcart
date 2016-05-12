@@ -365,7 +365,7 @@ class SearchesController extends AppController {
 		$shopCart = $this->ShoppingCart->find('first', array(
 									'conditions' => array('ShoppingCart.session_id' => $this->SessionId,
 														  'ShoppingCart.product_id' => $id)));
-		print_R($productDetails); EXIT;												 
+														 
 		if (empty($shopCart)) {
 
 			if ($quantity <= $productDetails['ProductDetail']['quantity']) {
@@ -396,7 +396,7 @@ class SearchesController extends AppController {
 				$shoppingCart['store_id']			 = $productDetails['Product']['store_id'];
 				$shoppingCart['sub_category_name'] 	 = $productDetails['Product']['SubCategory']['category_name'];
 				$shoppingCart['product_total_price'] = $shoppingCart['product_price'] * $quantity;
-
+				PRINT_R($shoppingCart); EXIT;
 				if ($this->ShoppingCart->save($shoppingCart, null, null)) {
 					echo 'Success';
 				}
