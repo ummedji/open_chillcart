@@ -396,7 +396,7 @@ class SearchesController extends AppController {
 				$shoppingCart['store_id']			 = $productDetails['Product']['store_id'];
 				$shoppingCart['sub_category_name'] 	 = $productDetails['Product']['SubCategory']['category_name'];
 				$shoppingCart['product_total_price'] = $shoppingCart['product_price'] * $quantity;
-
+				print_r($shoppingCart);exit;
 				if ($this->ShoppingCart->save($shoppingCart, null, null)) {
 					echo 'Success';
 				}
@@ -410,7 +410,7 @@ class SearchesController extends AppController {
 				$shoppingCart = $shopCart;
 				$shoppingCart['ShoppingCart']['product_quantity'] 	 = $productQuantity;
 				$shoppingCart['ShoppingCart']['product_total_price'] = $shoppingCart['ShoppingCart']['product_price'] * $productQuantity;
-
+				print_r($shoppingCart);exit;
 				if ($this->ShoppingCart->save($shoppingCart, null, null)) {
 					echo 'Success';
 				}
