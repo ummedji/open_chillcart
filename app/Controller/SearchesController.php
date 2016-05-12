@@ -387,7 +387,7 @@ class SearchesController extends AppController {
 																'[Deal :: '.$deal['SubProduct']['product_name'].']' :
 																$productDetails['Product']['product_name'].' :: '.
 																$productDetails['ProductDetail']['sub_name'];
-echo "Aaa"; exit;
+
 				$shoppingCart['product_price'] 		 = (!empty($productDetails['ProductDetail']['compare_price'])) ? 
 																$productDetails['ProductDetail']['compare_price'] :
 																$productDetails['ProductDetail']['orginal_price'] ;
@@ -396,7 +396,6 @@ echo "Aaa"; exit;
 				$shoppingCart['store_id']			 = $productDetails['Product']['store_id'];
 				$shoppingCart['sub_category_name'] 	 = $productDetails['Product']['SubCategory']['category_name'];
 				$shoppingCart['product_total_price'] = $shoppingCart['product_price'] * $quantity;
-				PRINT_R($shoppingCart); EXIT;
 				if ($this->ShoppingCart->save($shoppingCart, null, null)) {
 					echo 'Success';
 				}
