@@ -387,7 +387,7 @@ class SearchesController extends AppController {
 																'[Deal :: '.$deal['SubProduct']['product_name'].']' :
 																$productDetails['Product']['product_name'].' :: '.
 																$productDetails['ProductDetail']['sub_name'];
-
+echo "Aaa"; exit;
 				$shoppingCart['product_price'] 		 = (!empty($productDetails['ProductDetail']['compare_price'])) ? 
 																$productDetails['ProductDetail']['compare_price'] :
 																$productDetails['ProductDetail']['orginal_price'] ;
