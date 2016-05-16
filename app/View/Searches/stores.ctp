@@ -118,6 +118,8 @@
     border-right-color: #d6e9c6;
     border-top-color: #d6e9c6;
     color: #3c763d;
+    text-align: center;
+    font-size: 34px !important;
 }
 .alert {
     -moz-border-bottom-colors: none;
