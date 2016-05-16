@@ -269,7 +269,7 @@
 			</div>
 			</div>
 			<div class="row storelist">
-			<div class="col-md-9 col-sm-12 floatnone mrgauto">
+			<div class="col-md-12 col-sm-12 floatnone mrgauto text-center as_col_md">
 			<div class="clearfix">
 				<?php
 				$i = 1;
@@ -280,7 +280,7 @@
 				}
 				?>
 			     
-			<div class="col-md-4 col-sm-6 storebl mrgB20">
+			<div class="col-md-3 col-sm-6 storebl mrgB20">
 				<div class="flipper"><div class="storeimg"> <a href="<?php echo $siteUrl.'/shop/'.$value['Store']['seo_url'].'/'.$value['Store']['id']; ?>"><img src="<?php echo $cdn.'/storelogos/'.$value['Store']['store_logo']; ?>"></a></div>
 				<div class="storefirstbl"> <a href="<?php echo $siteUrl.'/shop/'.$value['Store']['seo_url'].'/'.$value['Store']['id']; ?>">
 				<p>ShopEasy</p>

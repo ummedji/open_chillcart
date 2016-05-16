@@ -591,6 +591,11 @@ function categoriesProduct(id, subId, storeId) {
 	$('#messageError').hide();
 	$.post(rp+'searches/filtterByCategory', {'id': id,'storeId':storeId, 'subId' : subId, 'count': 1}, 
 		function (response) {
+                        
+                         $('html,body').animate({
+                           scrollTop: $(".innercontentsection").offset().top-100},
+                         'slow');
+                        
 			$("#filtterByCategory").html('');
 			$("#filtterByCategory").append(response);
 		}

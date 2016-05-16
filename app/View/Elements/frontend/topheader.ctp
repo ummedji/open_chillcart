@@ -18,6 +18,87 @@
 		<div class="navbar navbar-inverse navbar-fixed-top navtop" >
 		<div class="container">
 		  <div class="navbar-header"> <a href="<?php echo $siteUrl; ?>"><img title="CHILLCART" src="<?php echo $siteUrl.'/frontend/images/site-logo.png'; ?>"/></a><button class="nav-add navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#nave_respo" aria-expanded="true" aria-controls="navbar"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button> </div>
+                  
+                  
+               
+                  <?php if ($this->request->params['controller'] == 'searches' && $this->request->params['action'] == 'storeitems') { ?>
+			<ul class="custome_searchbar_nv search_bar nav navbar-nav text-center-xs text-center-sm <?php echo ($this->request->params['controller'] == 'searches' && $this->request->params['action'] == 'storeitems') ? '' : 'navbar-right'; ?> ">
+				<li class="dropdown menuDropdown">
+					<a href="javascript:void(0);" class="dropdown-toggle shopMenu as-shopMenu" data-toggle="dropdown">
+						<div class="visible-xs"><?php echo __('Shopping in', true); ?> <?php echo $storeCity[$cityId]. ' ';
+						echo (!empty($areaId)) ? $storeArea[$areaId] : '';  ?> </div>
+						<span class="mobileStore"><?php echo $storeDetails['Store']['store_name']; ?> <span class="arrow_sl"><img src="<?php echo $siteUrl.'/frontend/images/select_arrow.png'; ?>"/></span></span>
+						<!--<span class="mobileStore"><?php echo $storeDetails['Store']['store_name']; ?> <span class="caret"></span></span>-->
+
+					</a>
+					<div class="dropdown-menu shopMenuDropdown shp-shopMenuDropdown">
+						<!--<a class="menuclose_mobile" href="javascript:void(0);">x</a>-->
+						<!--<span class="caret"></span>-->
+						<div class="detailshopList col-md-12 detailshopList_parent">
+							<h4 class="current-store-area"> <?php echo __('Shopping in', true); ?> - <span> <?php
+							echo $storeCity[$cityId]. ' ';
+							echo (!empty($areaId)) ? $storeArea[$areaId] : ''; ?> </span> 
+							<a class="pointer" onclick="changeLocation();"> <?php echo __('Change area', true); ?></a></h4>
+							<h3> <?php echo __('Choose a store to shop from', true); ?></h3>
+							<ul class="products search_stores pro-search_stores">
+							<?php
+							foreach ($storeList as $key => $value) { ?>
+								<li class="product">
+									<div class="product__inner">
+										<figure class="product__image" >
+												<a href="<?php echo $siteUrl.'/shop/'.$value['Store']['seo_url'].'/'.$value['Store']['id'];  ?>">
+											   <!--  <span class="discount_image"><span>17% OFF</span></span> -->
+
+											   <img alt="<?php echo $value['Store']['store_name']; ?>" class="img-responsive" src="<?php echo $cdn.'/storelogos/'.$value['Store']['store_logo']; ?>" onerror="this.onerror=null;this.src='<?php echo $siteUrl."/frontend/images/no_store.jpg"; ?>'">
+											   
+												<figcaption>
+													<div class="product-addon">
+														<span class="yith-wcqv-button" href="<?php echo $siteUrl.'/shop/'.$value['Store']['seo_url'].'/'.$value['Store']['id'];  ?>"><span></span><i class="fa fa-check"></i></span>
+													</div>
+												</figcaption>
+											</a>
+										</figure>
+										<div class="product__detail">
+											<div class="top-section">
+												<h2 class="product__detail-title"><a href="javascript:void(0);"><?php echo $value['Store']['store_name']; ?></a></h2>
+												<div class="product__detail-category">
+													<a rel="tag" href="javascript:void(0);"><?php
+														if ($value['Store']['minimum_order'] != 0) {
+															echo __('Min Order').' - '.$this->Number->currency($value['Store']['minimum_order'], $siteCurrency);
+														} ?>
+													</a> <?php
+													$ratio = $value['Store']['rating'] * 20;?>
+													<span class="review_rating_outer">
+														<span class="review_rating_grey"></span>
+														<span class="review_rating_green" style="width:<?php echo $ratio;?>%;"></span>
+													</span> 
+												</div>
+
+												<div class="clear"></div>				               
+											</div>				            
+										</div>
+									</div>
+								</li>
+
+								<?php
+							} ?>
+							
+							</ul>
+						</div>
+					</div>
+				</li>	
+				<li class="searchMenuFormList as-searchMenuFormList">
+					<div class="searchMenuForm">
+						<input type="search" onkeypress="productSearch(event);" id="searchKey" class="searchInput" placeholder="<?php echo __("I'm looking for...", true); ?>" >
+						<a href="javascript:;" class="searchMenuFormClick as-searchMenuFormClick" onclick="searchProducts();"><img src="<?php echo $siteUrl.'/frontend/images/search_icon.png'; ?>"/></a>
+					</div>
+				</li>
+			</ul>
+			<?php // searchFilterResults
+			} ?>
+                  
+                  
+                  
 		  <div class="navbar-collapse collapse in" id="nave_respo">
         <div class="main-menu">
 			<ul class="nav navbar-nav pull-right">
