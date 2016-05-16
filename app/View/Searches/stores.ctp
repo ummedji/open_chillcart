@@ -5,6 +5,7 @@
     .modal-header {
     
     background-color: #2088b2;
+    text-align: center;
 	}
 	
 	.h2, h2 {
@@ -54,7 +55,7 @@
     font-feature-settings: normal;
     font-kerning: auto;
     font-language-override: normal;
-    font-size: 34px;
+    font-size: 34px !important;
     font-size-adjust: none;
     font-stretch: normal;
     font-style: normal;
@@ -72,7 +73,7 @@
     margin-right: 0;
     margin-top: 0;
     padding-bottom: 20px;
-    text-align: center;
+    text-align: center !important;
 }
 .no-padding {
     padding-bottom: 0 !important;
