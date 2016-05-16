@@ -204,12 +204,15 @@ class SearchesController extends AppController {
 			$this->redirect(array('controller' => 'searches', 'action' => 'index'));
 		}
 
+                
 		$stores = $this->storesList($this->cityId, $this->areaId);
 
+                
 		$this->Store->recursive = 0;
 		$storeList = $this->Store->find('all', array(
 							'conditions' => array('Store.id' => $stores),
 							'group' => array('Store.id')));
+                
 
 		foreach ($storeList as $key => $value) {
 			$ratingDetail = $this->Review->find('first', array(

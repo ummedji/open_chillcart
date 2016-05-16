@@ -15,6 +15,30 @@
 <section class="container"> </section>
 <div class="innercontentsection">
   <div class="container">
+      
+      
+      <?php if ($orderSuccess == 'success') {?>
+		<div class="modal fade" id="thanksmsg"> 
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header menuCartHeader clearfix">
+						<button type="button" class="close" data-dismiss="modal">
+							<span aria-hidden="true">&times;</span>
+						</button>
+							<h2> <?php echo __('Thank You'); ?></h2>
+					</div>
+					<div class="modal-body menuInner clearfix">
+						<div class="alert alert-success">
+							<h1 class="no-border no-margin no-padding"><?php 
+								echo __('Your Order Placed Successfully', true); ?></h1>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	<?php } ?> 
+      
+      
     <div class="text-center mrgTB20">
       <h2 class="blgrtitle "><span class="blackborder">OUR</span> <span class="greenborder"><?php echo __('Gorcery store', true); ?></span></h2>
     </div>
