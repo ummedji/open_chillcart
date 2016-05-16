@@ -275,8 +275,8 @@
 				$i = 1;
 				foreach($storeList as $key => $value) {
 				if($i%3 == 0) {
-				echo "</div>"; // close div if it's not the first
-				echo "<div class='row storelist'>";
+				//echo "</div>"; // close div if it's not the first
+				//echo "<div class='row storelist'>";
 				}
 				?>
 			     
