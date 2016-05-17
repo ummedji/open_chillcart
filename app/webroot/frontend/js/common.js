@@ -655,9 +655,12 @@ function searchProducts() {
 
 		//if (searchProduct != searchKey) {
 
+		
+		
 			//setCookie("searchProduct", searchKey, 365);
 			var countCategory = $('#countCategory').val();
 			count = 0;
+			
 			$("#filtterByCategory").html('');
 
 			for (var i = 0; i < countCategory; i++) {

@@ -543,7 +543,10 @@ class SearchesController extends AppController {
                          $html .= ' </div>
                           <div class="producttitle pull-left">
                               <p>'. $value["ShoppingCart"]["product_name"].'</p>
-                              <span class="productprize"><span class="black-rs-icon"></span> MRP '. $value["ShoppingCart"]["product_total_price"].'</span></div>
+                                  
+                            
+
+                              <span class="productprize"> '.html_entity_decode('&euro;').' '. $value["ShoppingCart"]["product_total_price"].'</span></div>
                       </div>
                   </a>
               
@@ -665,7 +668,8 @@ class SearchesController extends AppController {
                          $html .= ' </div>
                           <div class="producttitle pull-left">
                               <p>'. $value["ShoppingCart"]["product_name"].'</p>
-                              <span class="productprize"><span class="black-rs-icon"></span> MRP '. $value["ShoppingCart"]["product_total_price"].'</span></div>
+                                  
+                              <span class="productprize">'.html_entity_decode('&euro;').' '. $value["ShoppingCart"]["product_total_price"].'</span></div>
                       </div>
                   </a>
               

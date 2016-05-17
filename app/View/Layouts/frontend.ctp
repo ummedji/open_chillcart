@@ -94,6 +94,7 @@
 	<script src="<?php echo $this->webroot; ?>frontend/css/SpryAssets/SpryAccordion.js" type="text/javascript"></script>
 	<script src="<?php echo $this->webroot; ?>frontend/js/jQuerySimpleCounter.js" type="text/javascript"></script>
     <script type="text/javascript" src="<?php echo $this->webroot; ?>frontend/js/prefixfree.min.js"></script>
+    <script type="text/javascript" src="<?php echo $this->webroot; ?>frontend/js/index.js"></script>
 
     <script type="text/javascript">
 	
@@ -727,17 +728,22 @@
 						
 		        		$("#stripebtn").attr('disabled','disabled');
 
-		        		var checkMe = $('#checkout').val();
 
+		        		var checkMe = $('#checkout').val();
+                                        
+                                       
 		        		if (checkMe == 'checkout') {
 
 		        			var formData = ($("#UserIndexForm").serialize());
 			        		$.post(rp+'/checkouts/customerCardAdd/',{'formData':formData}, function(res) {
 
-					            $('#addpayment').modal('hide');
+					            $('#demo-15').modal('hide');
 
 					            $.post(rp+'/checkouts/paymentCard/', function(respon) {
-					            	$('#payment').html(respon);
+					            	//$('#payment').html(respon);
+                                                        $('.card_details_sp').html(respon);
+                                                        
+                                                        
 						        });
 
 						        $.post(rp+'/checkouts/cardAdd/', function(response) {
@@ -1203,6 +1209,29 @@ var Accordion1 = new Spry.Widget.Accordion("Accordion1");
 $(document).ready(function(){
     $('.close_pop_btn a').click(function(){
         $('.changeloc-popup').hide();
+   });
+   
+  /*
+   $(window).scroll(function() {    
+    var scroll = $(window).scrollTop();
+
+   // alert(scroll);
+
+    if (scroll >= 400) {
+       // console.log(scroll);
+        $("div.categorylist div.sidebar_categorylist").removeClass("remove_sticky_sidebar");
+        $("div.categorylist div.sidebar_categorylist").addClass("sticky_sidebar");
+    } else {
+        $("div.categorylist div.sidebar_categorylist").removeClass("sticky_sidebar");
+        $("div.categorylist div.sidebar_categorylist").addClass("remove_sticky_sidebar");
+    }
+});
+   */
+   $('#st_nave').affix({
+       offset: {
+         top: $('.innercontentsection').offset().top,
+         bottom: ($('footer').outerHeight(true) + $('footer').outerHeight(true)) + -350
+       }
    });
 
 });

@@ -79,8 +79,8 @@
 			</div>
 			</div>
     <div class="row categorylist">
-      <div class="col-md-2 col-sm-4">
-        <section class="sky-form mrgB20">
+      <div class="col-md-2 col-sm-4 scrollspy">
+        <section id="st_nave" class="sky-form mrgB20" data-spy="affix">
           <div class="product_right">
             <h4 class="ribbontag"><span class="ribbon-arrow"></span><?php echo __('Categories', true); ?></h4>
             <div class="tab1 tabbing">
@@ -108,7 +108,9 @@
 								} ?>
 					</ul>
 				</li>
-			  <?php } ?>
+			  <?php } 
+                          echo $this->Form->hidden('', array('value'=> $categoryCount,'id' => 'countCategory'));
+                          ?>
               </ul>
               
             </div>

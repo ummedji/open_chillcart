@@ -181,8 +181,11 @@ foreach ($productList as $key => $value) {
                                                     
                                                     ?>
                                                         <!--<i class="fa fa-plus plushide" onclick="addToCart(<?php //echo $value['ProductDetail'][0]['id']; ?>);"></i> -->
-                                                    <a href="#" class="price_part"><span class="black-rs-icon"></span>
-                                                 <?php echo $pr_value['compare_price']." <span>/ ". $quantity_value."</span>"; ?>
+                                                    <a href="#" class="price_part">
+                                                        
+                                                        
+                                                        
+                                                 <?php echo html_entity_decode($this->Number->currency($pr_value['compare_price'], $siteCurrency))." <span>/ ". $quantity_value."</span>"; ?>
                                                         
                                                         </a>
                                                     <a href="javascript:void(0);" class="add-to-cart pull-right plus_ii">
@@ -202,10 +205,12 @@ foreach ($productList as $key => $value) {
                                                     ?>
                                                     <li value="<?php echo $pr_value['id']; ?>">
                                                         
-                                                    <a href="#" class="price_part"><span class="black-rs-icon"></span>
+                                                    <a href="#" class="price_part">
                                                         <?php 
                                                     
-                                                    echo $pr_value['orginal_price']." <span>/ ".$quantity_value."g</span>";
+                                                       
+                                                        
+                                                    echo  html_entity_decode($this->Number->currency($pr_value['orginal_price'], $siteCurrency))." <span>/ ".$quantity_value."g</span>";
                                                     
                                                     ?>
                                                      </a>   

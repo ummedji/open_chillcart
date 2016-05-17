@@ -31,7 +31,7 @@
 						<!--<span class="mobileStore"><?php echo $storeDetails['Store']['store_name']; ?> <span class="caret"></span></span>-->
 
 					</a>
-					<div class="dropdown-menu shopMenuDropdown shp-shopMenuDropdown">
+					<div class="dropdown-menu shopMenuDropdown shp-shopMenuDropdown resp-shopMenuDropdown">
 						<!--<a class="menuclose_mobile" href="javascript:void(0);">x</a>-->
 						<!--<span class="caret"></span>-->
 						<div class="detailshopList col-md-12 detailshopList_parent">
@@ -43,7 +43,7 @@
 							<ul class="products search_stores pro-search_stores">
 							<?php
 							foreach ($storeList as $key => $value) { ?>
-								<li class="product">
+								<li class="product product-par">
 									<div class="product__inner">
 										<figure class="product__image" >
 												<a href="<?php echo $siteUrl.'/shop/'.$value['Store']['seo_url'].'/'.$value['Store']['id'];  ?>">
@@ -58,7 +58,7 @@
 												</figcaption>
 											</a>
 										</figure>
-										<div class="product__detail">
+										<div class="product__detail product__detail_parent">
 											<div class="top-section">
 												<h2 class="product__detail-title"><a href="javascript:void(0);"><?php echo $value['Store']['store_name']; ?></a></h2>
 												<div class="product__detail-category">
@@ -101,7 +101,16 @@
                   
 		  <div class="navbar-collapse collapse in" id="nave_respo">
         <div class="main-menu">
-			<ul class="nav navbar-nav pull-right">
+            
+                <?php if(!empty($loggedCheck) && ($loggedCheck['role_id'] == 4)){ 
+            
+                    $added_class = 'header_compress';
+            
+                }else{ 
+                    $added_class = '';
+                 } ?>
+            
+			<ul class="nav navbar-nav pull-right <?php echo $added_class; ?>">
 			<?php if(!empty($loggedCheck) && ($loggedCheck['role_id'] == 4)){ ?>
 			<li><a href="<?php echo $siteUrl.'/customer/customers/myaccount'; ?>"> <?php echo __('My Account', true); ?></a> </li>
 		    <li> <a href="<?php echo $siteUrl.'/customer/users/userLogout'; ?>"> <?php echo __('Logout', true); ?></a> </li>
@@ -132,7 +141,7 @@
           <div class="dropdown-menu productmenu top_cart_arrow">
           <span class="toparrow"></span>
           <div class="scroll_area">
-          <div class="subnavheading clearfix"><h4 class="pull-left">Total Price</h4> <div class="pull-right"><p><span class="rs-icon"></span><span class="cartTotal">0.00</span></p></div></div>
+          <div class="subnavheading clearfix"><h4 class="pull-left">Total Price</h4> <div class="pull-right"><p><?php echo html_entity_decode('&euro;') ?><span class="cartTotal">0.00</span></p></div></div>
                     <ul class="cart_data" style="height: 300px; overflow-y: scroll;">
 
                     <?php   //$this->requestAction(array('controller' => 'searches', 'action' => 'header_data_cart'));  ?>

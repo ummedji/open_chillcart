@@ -1,5 +1,55 @@
+<div class="row">
+                             <form>
+                             <div class="col-md-12"><div class="cardDetailHead">Cash on delivery</div></div>
+                             <div class="clearfix"></div>
+                                 <div class="col-md-6">
+                                   <fieldset>
+                                       <input type="radio" name="data[Order][paymentMethod]" value="cod" id="cod" checked="checked">
+                                       <label class="editpayment" for="cod">
+                                       <img style="height:24px; vertical-align: middle;" alt="cod_icon" title="cod_icon" src="https://testing.chillcart.ie/frontend/images/cod_icon.png">
 
-<div class="alert alert-success" id="cardMessage"><?php echo __('Your card has been added successfully'); ?></div>
+                                                                               <span class="editAdd ">Cash on delivery</span>
+                                       </label>
+                                   </fieldset>
+                                   <div class="clearfix"></div>
+                                 </div>
+                                 <div class="clearfix"></div>
+                                 <div class="col-md-12"><div class="cardDetailHead">Saved Card Details</div></div>
+                                 <div class="clearfix"></div>
+								 <?php
+
+									foreach ($stripeCards as $key => $card) { ?>
+										<div class="col-md-6">
+										   <fieldset>
+										   <input type="radio" name="data[Order][paymentMethod]" value="<?php echo $card['StripeCustomer']['id']; ?>" id="<?php echo $card['StripeCustomer']['id']; ?>" />
+											<label class="editpayment" for="<?php echo $card['StripeCustomer']['id']; ?>">
+				        						
+				        						<div class="card_info">
+				        							<span class="editAdd contain truncate">
+				        								<img style="height:24px; vertical-align: middle;" alt="cod_icon" title="cod_icon" src="<?php echo $siteUrl.'/	frontend/images/debit_card.png'; ?>">
+				        								<?php echo $card['StripeCustomer']['customer_name']; ?>
+				        							</span>
+				        							<p class="margin-t-20">XXXX XXXX XXXX <?php echo $card['StripeCustomer']['card_number']; ?> </p>	        							
+				        						</div>  
+				        					</label>
+											</fieldset>
+				        				</div>
+										<div class="clearfix"></div>
+				        			<?php } ?>
+								 <div class="col-md-12"><a class="addbtn btn" data-target="#demo-15" data-toggle="modal"><span class="cardiconwt"></span>Add Card</a>  </div>
+								 
+								 
+                               </form>
+
+
+                            </div>
+                            
+
+
+
+<?php 
+
+/*<div class="alert alert-success" id="cardMessage"><?php echo __('Your card has been added successfully'); ?></div>
 <div class="panel panel-default">
 	<div class="panel-body addressBg">
 		<div class="panel-subheading">
@@ -72,3 +122,5 @@ $(".paymentWrapper .editpayment").click(function() {
 });
 
 </script>
+*/
+?>

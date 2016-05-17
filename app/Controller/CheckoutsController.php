@@ -173,6 +173,10 @@ class CheckoutsController extends AppController
 								'conditions' => array('ShoppingCart.session_id' => $this->SessionId),
 								'order' => array('ShoppingCart.store_id')));
         
+        
+       // echo "<pre>";
+       // print_r($storeCart);
+       // die;
        
        // $customerCountry = $this->Countries->find('list', array(
        //      'conditions' => array('Countries.id' => $addresses[0]["State"]["countrty_id"]),

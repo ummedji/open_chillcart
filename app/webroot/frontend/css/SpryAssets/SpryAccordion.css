@@ -2,6 +2,8 @@
 .Accordion {
 	font-family:Helvetica, Arial, sans-serif;
 	overflow: hidden;
+    outline: none;
+    box-shadow: none;
 }
 
 .AccordionPanel {
