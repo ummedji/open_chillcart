@@ -1,4 +1,4 @@
-<div class="modal-dialog modal-lg">
+<div class="modal-dialog modal-lg main_as_pro_popup">
 	<div class="modal-content">
 		<div class="modal-header menuCartHeader clearfix">
 			<button type="button" class="close" data-dismiss="modal">
@@ -14,19 +14,82 @@
 				?>	
 			</h4>
 		</div>
-		<div class="modal-body menuInner clearfix">
-			<div class="col-md-8"> 
-			<div class="imagdiv">
-				<?php					
+		<div class="modal-body menuInner clearfix as_pro_popup">
+			<div class="col-md-7">
+
+
+<div id='carousel-custom' class='carousel slide' data-ride='carousel'>
+    <div class='carousel-outer'>
+        <!-- Wrapper for slides -->
+        <div class='carousel-inner'>
+            
+            
+            <?php
+            
+            $j = 0;
+            
 				foreach ($productDetails['ProductImage'] as $key => $value) {
 				$imageName = (isset($value['image_alias'])) ? $value['image_alias'] : '';
 		$imageSrc = $cdn.'/stores/products/home/'.$imageName;
 		$imageSrc = 'https://dnrskjoxjtgst.cloudfront.net/stores/products/home/'.$imageName;  ?>
-				<span><img src="<?php echo $imageSrc;?>" alt="<?php echo $productDetails['Product']['product_name']; ?>"></span>
-				<?php } ?>
+            
+            <div class='item <?php if($j == 0){ ?>active <?php } ?>'>
+                <img src="<?php echo $imageSrc;?>" alt="<?php echo $productDetails['Product']['product_name']; ?>" />
+            </div>
+            
+            <?php 
+            $j++;
+                                } ?>
+            
+        </div>
+
+        <!-- Controls
+        <a class='left carousel-control' href='#carousel-custom' data-slide='prev'>
+            <span class='glyphicon glyphicon-chevron-left'></span>
+        </a>
+        <a class='right carousel-control' href='#carousel-custom' data-slide='next'>
+            <span class='glyphicon glyphicon-chevron-right'></span>
+        </a>-->
+    </div>
+
+    <!-- Indicators -->
+    <ol class='carousel-indicators mCustomScrollbar'>
+        <?php
+        $k = 0;
+				foreach ($productDetails['ProductImage'] as $key => $value) {
+				$imageName = (isset($value['image_alias'])) ? $value['image_alias'] : '';
+		$imageSrc = $cdn.'/stores/products/home/'.$imageName;
+		$imageSrc = 'https://dnrskjoxjtgst.cloudfront.net/stores/products/home/'.$imageName;  ?>
+        
+        <li data-target='#carousel-custom' data-slide-to='<?php echo $k; ?>' class='active'><img src="<?php echo $imageSrc;?>" alt="<?php echo $productDetails['Product']['product_name']; ?>" /></li>
+        <?php 
+        
+        $k++;
+                                } ?>
+        
+        
+    </ol>
+</div>
+<div class="clearfix"></div>
+
+
+
+
+
+
+
+
+			<!--<div class="imagdiv">
+				<?php
+				//foreach ($productDetails['ProductImage'] as $key => $value) {
+				//$imageName = (isset($value['image_alias'])) ? $value['image_alias'] : '';
+		//$imageSrc = $cdn.'/stores/products/home/'.$imageName;
+		//$imageSrc = 'https://dnrskjoxjtgst.cloudfront.net/stores/products/home/'.$imageName;  ?>
+				<span><img src="<?php //echo $imageSrc;?>" alt="<?php //echo $productDetails['Product']['product_name']; ?>"></span>
+				<?php //} ?>
+			</div> -->
 			</div>
-			</div>
-			<div class="col-md-4 detailPopCont">
+			<div class="col-md-5 detailPopCont as_popup_cont">
 					<?php
 					if ($productDetails['Product']['price_option'] != 'single') {  ?>
 						<div class="varient_height">
@@ -58,7 +121,7 @@
 								if ($productDetails['ProductDetail'][0]['quantity'] != 0) { ?>
 									
 									<div class="row">
-										<div class="col-md-8">
+										<div class="col-md-8 mr_top_bot">
 											<input class="form-control text-center" id="quantity" type="text" value="">	
 										</div>							
 									</div>
@@ -79,11 +142,13 @@
 				            if ($productDetails['ProductDetail'][0]['quantity'] != 0) { ?>
 
 
-					            <div class="col-sm-12 text-center">
+					            <div class="col-sm-12 text-left form_sub">
+					            	<div class="row">
 					            	<button type="submit" onclick="variantCart();" class="btn btn-primary margin-t-25"><?php echo __('Add To Cart'); ?> </button>
+					            	</div>
 					            </div> <?php
 					        } else { ?>
-					        	<div class="col-sm-12 text-center">
+					        	<div class="col-sm-12 text-left form_sub">
 					            	<button type="submit" class="btn btn-primary margin-t-25 opacity_5"><?php echo __('Out of Stock'); ?> </button>
 					            </div>
 					        	<?php
@@ -121,7 +186,7 @@
 						<?php
 						if ($productDetails['ProductDetail'][0]['quantity'] != 0) { ?>
 							<div class="row">
-								<div class="col-md-8">
+								<div class="col-md-8 mr_top_bot">
 									<input class="form-control text-center" id="quantity" type="text" value="">	
 								</div>				
 							</div> <?php
@@ -131,22 +196,24 @@
 				        <label class="error" id="addcart_failed" style="display:none;"> <?php echo __('Quantity Exceeded..!'); ?> 
 				        </label> <?php
 				        if (!empty($productDetails['Product']['product_description'])) { ?>
-				            <h5 class="addcart_popup_head"><?php echo  __('Product Description'); ?> :</h5>
-				            <p><?php echo $productDetails['Product']['product_description'];?></p> <?php
+				            <div class="addcart_popup_head_1">
+				              <h5 class="addcart_popup_head"><?php echo  __('Product Description'); ?> :</h5>
+                              <p><?php echo $productDetails['Product']['product_description'];?></p>
+				            </div> <?php
 				        }
 				        ?>
 			        </div>
 			        <?php
 		            if ($productDetails['ProductDetail'][0]['quantity'] != 0) { ?>
 
-			            <div class="col-sm-12 text-center">
-			            	<button type="submit" onclick="variantCart();" class="btn btn-primary margin-t-25"><?php echo __('Add To Cart'); ?> </button>
+			            <div class="col-sm-12 text-left form_sub">
+			            	<div class="row"><button type="submit" onclick="variantCart();" class="btn btn-primary margin-t-25"><?php echo __('Add To Cart'); ?> </button></div>
 			            </div> <?php
 
 			        } else { ?>
 
-		        		<div class="col-sm-12 text-center">
-			            	<button type="submit" class="btn btn-primary margin-t-25 opacity_5"><?php echo __('Out of Stock'); ?> </button>
+		        		<div class="col-sm-12 text-left form_sub">
+			            	<div class="row"><button type="submit" class="btn btn-primary margin-t-25 opacity_5"><?php echo __('Out of Stock'); ?> </button></div>
 			            </div>
 			            
 			        	<?php

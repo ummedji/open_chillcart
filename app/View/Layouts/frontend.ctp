@@ -29,8 +29,8 @@
 		<link rel="stylesheet" href="<?php echo $this->webroot; ?>frontend/css/common_new.css" type="text/css" media="all">
 
 		<link rel="stylesheet" href="<?php echo $this->webroot; ?>frontend/css/mobile.css" type="text/css" media="all">
-		<link rel="stylesheet" href="<?php echo $this->webroot; ?>frontend/css/mobile_1.css" type="text/css" media="all">		
-
+		<link rel="stylesheet" href="<?php echo $this->webroot; ?>frontend/css/mobile_1.css" type="text/css" media="all">
+	    <link rel="stylesheet" href="<?php echo $this->webroot; ?>frontend/css/jquery.mCustomScrollbar.css" type="text/css" media="all">
 		<link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,400italic" rel="stylesheet" type="text/css"> -->
 		
 		 <?php
@@ -95,6 +95,7 @@
 	<script src="<?php echo $this->webroot; ?>frontend/js/jQuerySimpleCounter.js" type="text/javascript"></script>
     <script type="text/javascript" src="<?php echo $this->webroot; ?>frontend/js/prefixfree.min.js"></script>
     <script type="text/javascript" src="<?php echo $this->webroot; ?>frontend/js/index.js"></script>
+    <script type="text/javascript" src="<?php echo $this->webroot; ?>frontend/js/jquery.mCustomScrollbar.js"></script>
 
     <script type="text/javascript">
 	
@@ -1234,7 +1235,16 @@ $(document).ready(function(){
        }
    });
 
+
 });
+</script>
+<script type='text/javascript'>//<![CDATA[
+$(window).on('load', function() {
+$(document).ready(function() {
+    $(".mCustomScrollbar").mCustomScrollbar({axis:"x"});
+});
+});//]]>
+
 </script>
 
 	

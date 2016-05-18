@@ -48,7 +48,7 @@ foreach ($productList as $key => $value) {
 		<div class="col-md-2 col-sm-4 productblock">
 		<div class="row">
               <div class="product hr_products">
-                <div class="image" id="img_<?php echo $value['Product']['id']; ?>"> <img class="img-responsive image1" alt="" src="<?php echo $imageSrc; ?>" onclick="productDetails(<?php echo $value['Product']['id']; ?>);">  <span class="prod-id" id="cart_prod_num">
+                <div class="image" id="img_<?php echo $value['Product']['id']; ?>"> <img class="img-responsive image1" alt="" src="<?php echo $imageSrc; ?>" onclick="productDetails(<?php echo $value['Product']['id']; ?>);">  <span  class="prod-id" id="cart_prod_num_<?php echo $value['Product']['id']; ?>">
                      <?php 
                      $count_data = 0;
                       foreach($shoppin_cart_data as $cart_key=>$cart_data){

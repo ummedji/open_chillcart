@@ -516,7 +516,7 @@ class SearchesController extends AppController {
                                                         elseif($value["ShoppingCart"]["product_quantity"] == 1){
                                                             
                                                       
-                                                         $html .= '<a rel="'.$value["ShoppingCart"]["product_id"].'" class="change-qty qty-dec pointer" onclick="deleteCart('.$value["ShoppingCart"]["id"].','.$value["ShoppingCart"]["product_id"].');">
+                                                         $html .= '<a rel="'.$value["ShoppingCart"]["product_id"].'" class="change-qty qty-dec pointer" onclick="deleteCart('.$value["ShoppingCart"]["id"].','.$value['ProductDetail']['product_id'].');">
 									 <span class="down"></span>
 								</a>';
                                                       
@@ -641,7 +641,7 @@ class SearchesController extends AppController {
                                                         elseif($value["ShoppingCart"]["product_quantity"] == 1){
                                                             
                                                       
-                                                         $html .= '<a rel="'.$value["ShoppingCart"]["product_id"].'" class="change-qty qty-dec pointer" onclick="deleteCart('.$value["ShoppingCart"]["id"].','.$value["ShoppingCart"]["product_id"].');">
+                                                         $html .= '<a rel="'.$value["ShoppingCart"]["product_id"].'" class="change-qty qty-dec pointer" onclick="deleteCart('.$value["ShoppingCart"]["id"].','.$value['ProductDetail']['product_id'].');">
 									 <span class="down"></span>
 								</a>';
                                                       
