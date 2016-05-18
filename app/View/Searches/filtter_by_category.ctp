@@ -191,7 +191,7 @@ foreach ($productList as $key => $value) {
                                                         
                                                         
                                                         <?php //if ($value['Product']['price_option'] == 'single') { //echo "<pre>";print_r($value);die();
-                                if($value['ProductDetail'][0]['quantity'] != 0){?>
+                                if($pr_value['quantity'] != 0){?>
                                                         
                                                     <a href="javascript:void(0);" class="add-to-cart pull-right plus_ii">
                                                         
@@ -227,12 +227,12 @@ foreach ($productList as $key => $value) {
                                                      </a>   
                                                       
                                                         <?php //if ($value['Product']['price_option'] == 'single') { //echo "<pre>";print_r($value);die();
-                                if($value['ProductDetail'][0]['quantity'] != 0){?>
+                                if($pr_value['quantity'] != 0){ ?>
                                                         
                                                      <a href="javascript:void(0);" class="add-to-cart pull-right plus_ii">   <i class="fa fa-plus plushide" onclick="addToCart(<?php echo $pr_value['id']; ?>);"></i>
                                                      </a>
                                                         
-                                                         <?php }else {?>  
+                                                         <?php } else { ?>  
                                                         
                                                           <a href="javascript:void(0);" ><img style="width:18px;" title="Out Of Stock" src="<?php echo $siteUrl; ?>/frontend/images/out_of_cart.png" /></a>
                                                         
