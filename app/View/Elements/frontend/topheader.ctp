@@ -99,7 +99,7 @@
                   
                   
                   
-		  <div class="navbar-collapse collapse in" id="nave_respo">
+		  <div class="pi_navebar navbar-collapse collapse in" id="nave_respo">
         <div class="main-menu">
             
                 <?php if(!empty($loggedCheck) && ($loggedCheck['role_id'] == 4)){ 
