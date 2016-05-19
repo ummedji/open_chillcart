@@ -558,10 +558,19 @@ figcaption {
     border: 1px solid #ddd;
     box-shadow: 0 1px 7px -2px rgba(0, 0, 0, 0.3);
     display: block;
-    margin-right: 5px; 
+    margin-right: 5px;
+	height: 90px;
+	text-align: center;
+	overflow: hidden;
+}
+.grocerystorelogo a:hover {
+	overflow: inherit;
 }
 .grocerystorelogo a img {
-    width: 100%;transition:300ms all ease;
+    /*width: 100%;*/
+	transition:300ms all ease;
+	max-height: 90px;
+	display: inline-block;
 }
 
 .grocerystorelogo a:hover img {
@@ -812,8 +821,15 @@ ul.header_compress li a {
 .categorylist .sort {
 	padding: 15px 10px 0px 5px;
 	color: #3e3b3b;
-	font-size: 16.67px; list-style:none;
+	font-size: 13.67px;
+	list-style:none;
 	font-family : arial;
+}
+@media screen and (max-width:1199px){
+	.categorylist .sort { font-size: 12px;}
+}
+@media screen and (max-width:991px){
+	.categorylist .sort { font-size: 14px;}
 }
 .tabbing {
     border-bottom: 1px solid #dedede;
@@ -838,8 +854,9 @@ ul.header_compress li a {
 		margin-right: 0px;
 	}
 	.categorylist .sort {
-		padding: 15px 0px;
-		font-size: 14.67px;
+		/*padding: 15px 0px;*/
+		padding: 10px 0px 5px 0;
+		/*font-size: 14.67px;*/
 	}
 	.as_categories {
 		margin-left: 30px;
@@ -1336,7 +1353,7 @@ display: inline-block;
  border-radius: 0;
     font-family: robotoregular;
     font-size: 20px;
-    padding: 0 12px;
+    padding: 0 13px;
     position: relative;
     right: -90px;
     transform: rotate(-90deg);
@@ -2263,7 +2280,7 @@ color: #fff;
 text-decoration: none;
 cursor: pointer;
 display: block;
-width: 105px;
+width: 85px;
 margin-top: 7px;
 
 }
@@ -2503,6 +2520,7 @@ margin-top: 7px;
 
 .affix {
 	top: 80px;
+	width: 14.5%;
 }
 
 .affix,
