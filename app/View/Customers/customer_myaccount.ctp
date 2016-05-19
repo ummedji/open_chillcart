@@ -552,7 +552,7 @@
     </div>
   </div>
 </div>
-<div class="modal fade" id="editBookAddress">
+<div class="modal fade edit_address_pr" id="editBookAddress">
 
 </div>
 <!---Add Card-->

@@ -403,13 +403,16 @@ color:#fff !important;
 	padding: 15px 5px;
 }
 .navtop .pi_navebar ul li a { display: inline-block;}
+.navtop .pi_navebar ul li.shopping-cart a { display: inherit;}
 .navtop .pi_navebar ul li:after {
 	content: "|";
 	color: #fff;
 	font-size: 16px;
 	display: inline-block;
 	position: relative;
+	padding: 0 5px;
 }
+.navtop .pi_navebar .header_compress li:after {padding: 0 !important;}
 @media screen and (max-width: 767px){
 	.navtop .pi_navebar ul li:after { display: none;}
 }
@@ -1298,6 +1301,7 @@ display: inline-block;
     color: #8f8f8f;
     font-size: 14.91px;
 }
+.css-popup .form-group .error { color: #ff0000;}
 .css-popup .form-control:focus{ box-shadow: 0 0 1px 1px #66afe9!important;}
 .add-new-card-popup p {
     color: #3a3a3a;
@@ -1906,6 +1910,7 @@ ul.detail-action_li {
 }
 ul.select_product_data li { list-style: none;}
 .add_adress_parent .css-popup { left: 0;}
+.edit_address_pr .css-popup { left: 0;}
 /*as style*/
 .as_fade_in .fade {
 	opacity: 1;
@@ -2241,7 +2246,7 @@ ul.select_product_data li { list-style: none;}
 	/*margin-top: 10px;*/
 	display: inline-block;
 }
-.as-searchMenuFormList .error { color: #ff0000;}
+.as-searchMenuFormList .error { color: #ff0000; margin-top: 10px;}
 
 @media screen and (max-width:1285px) {
 	.custome_searchbar_nv { width: 53%;}
